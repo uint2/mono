@@ -3,7 +3,7 @@ name: git-ln build
 on:
   push:
     paths:
-      - "code/ln/**.*"
+      - "code/ln/**/*"
 
 jobs:
   build-c:

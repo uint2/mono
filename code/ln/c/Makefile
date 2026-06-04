@@ -14,10 +14,9 @@ VALGRIND_FLAGS += --log-file=$(VALGRIND_LOG)
 # VALGRIND_FLAGS += --xml=yes
 # VALGRIND_FLAGS += --xml-file=valgrind.xml
 
+current: install
 
-# current: run
-current: install-zig
-
+# Use zig's C compiler.
 install-zig:
 	zig cc -o /usr/local/bin/git-ln -O3 src/main.c
 
@@ -28,7 +27,6 @@ build:
 	cmake --build $(BUILD_DIR)
 
 install: build
-	echo $(realpath $(MAKEFILE_DIR))
 	cmake --install $(BUILD_DIR)
 
 run: install
