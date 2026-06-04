@@ -16,10 +16,7 @@ pub fn home_dir() -> &'static Path {
 
 /// Obtains the filesize using the `du` program.
 pub fn get_file_size_with_du<P: AsRef<Path>>(filepath: P) -> usize {
-    let out = cmd!("du", filepath.as_ref())
-        .collect_stdout()
-        .run()
-        .expect("Failed to run `du`.");
+    let Ok(out) = cmd!("du", filepath.as_ref()).collect_stdout().run() else { return 0 };
     let size = out
         .stdout
         .as_ref()
