@@ -1,0 +1,64 @@
+Welcome to Khang's personal guide to setting up Debian 13.
+Intended audience: future Khang.
+
+So you've (re)installed Debian 13. Probably because of some system error that
+you can't fix and it's easier to just reset the system. Valid.
+
+Pre-install
+-----------
+
+If you've forgot how to install Debian 13, here's a quick guide for the crux,
+which is the hard-drive partitioning step: Clean out a partition and set the
+mountpoint to root ("/"). That's it. The installer will take care of the rest.
+Also, for pkgsel, uncheck  *every*  box. None of those are necessary.
+
+Also, if your grub screen is blue, that's Debian's artistic choice. Edit
+"/etc/grub.d/05_debian_theme" to remove that custom coloring. Also, to remove
+grub's timeout, edit "/etc/default/grub" and set GRUB_TIMEOUT=-1, followed by
+running "update-grub".
+
+Post-install
+------------
+
+Now that you've booted into Debian 13 for the first time, there should be almost
+nothing installed. Perfect.
+
+To kickstart everything, we first install `sudo`. To do that, switch to the root
+user using "su -". This is important because any other method may not expose the
+`usermod` command. Then add as many users as you like to the "sudo" group:
+
+  usermod -aG sudo <username>
+
+Check that it worked with `groups <username>`. Then install `sudo` with
+
+  apt update
+  apt upgrade
+  apt install sudo
+
+Now log out and log back in, and users should have sudo access.
+
+User space
+----------
+
+At this point, we're gonna install the Debian 13 setup runner found in
+ssh://git@codeberg.org/nguyenvukhang/debian13.git. For that, we need git and
+rust. So do
+
+  apt install git curl wget
+  curl -o rustup.sh --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs
+  sh rustup.sh
+
+and then we can install the automated setup runner with
+
+  cargo install --git https://codeberg.org/nguyenvukhang/debian13.git
+
+To run the setup, simply execute "debian13". Once done, uninstall it with "cargo
+uninstall debian 13".
+
+Common Problems/FAQ
+-------------------
+
+If apps like Telegram fails to start or takes very long and glitches, try
+removing either `xdg-desktop-portal-gtk` or `xdg-desktop-portal-gnome`.
+
+vim:tw=80

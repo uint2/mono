@@ -1,0 +1,4 @@
+/target/
+*.stdout.txt
+*.stderr.txt
+/nvidia.sh
