@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:41:25 2012 -->
+<title>XcmsQueryColor</title>
+
+</head>
+<body>
+
+<h1>XcmsQueryColor</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNTAX</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">DIAGNOSTICS</a><br/>
+<a href="#heading6">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">XcmsQueryColor,
+XcmsQueryColors, XcmsLookupColor &minus; obtain color
+values</p>
+
+<h2 id="heading2">SYNTAX
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="89%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Status XcmsQueryColor(Display
+*<i>display</i>, Colormap <i>colormap</i>, XcmsColor
+*<i>color_in_out</i>, XcmsColorFormat
+<i>result_format</i>);</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Status XcmsQueryColors(Display
+*<i>display</i>, Colormap <i>colormap</i>, XcmsColor
+<i>colors_in_out</i>[], unsigned int <i>ncolors</i>,
+XcmsColorFormat <i>result_format</i>);</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Status XcmsLookupColor(Display
+*<i>display</i>, Colormap <i>colormap</i>, char
+*<i>color_string</i>, XcmsColor *<i>color_exact_return</i>,
+XcmsColor *<i>color_screen_return</i>, XcmsColorFormat
+<i>result_format</i>);</p> </td></tr>
+</table>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="12%"></col>
+<col width="3%" class="center"></col>
+<col width="63%"></col>
+<col width="11%"></col>
+</colgroup>
+<tr valign="top" align="left">
+
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+<td></td>
+<td></td>
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>display</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the connection to the X server.</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>colormap</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the colormap.</p></td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>color_exact_return</i></p>
+
+<p style="margin-left:26%;">Returns the color specification
+parsed from the color string or parsed from the
+corresponding string found in a color-name database.</p>
+
+<p style="margin-left:11%;"><i>color_in_out</i></p>
+
+<p style="margin-left:26%;">Specifies the pixel member that
+indicates the color cell to query. The color specification
+stored for the color cell is returned in this
+<i>XcmsColor</i> structure.</p>
+
+<p style="margin-left:11%;"><i>color_screen_return</i></p>
+
+<p style="margin-left:26%;">Returns the color that can be
+reproduced on the screen.</p>
+
+<p style="margin-left:11%;"><i>color_string</i></p>
+
+<p style="margin-left:26%;">Specifies the color string.</p>
+
+<p style="margin-left:11%;"><i>result_format</i></p>
+
+<p style="margin-left:26%;">Specifies the color format for
+the returned color specifications (color_screen_return and
+color_exact_return arguments). If the format is
+<i>XcmsUndefinedFormat</i> and the color string contains a
+numerical color specification, the specification is returned
+in the format used in that numerical color specification. If
+the format is <i>XcmsUndefinedFormat</i> and the color
+string contains a color name, the specification is returned
+in the format used to store the color in the database.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="11%"></col>
+<col width="4%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>ncolors</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the number of <i>XcmsColor</i> structures in
+the color-specification array.</p></td></tr>
+</table>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XcmsQueryColor</i> function obtains the RGB value for the
+pixel value in the pixel member of the specified
+<i>XcmsColor</i> structure and then converts the value to
+the target format as specified by the result_format
+argument. If the pixel is not a valid index in the specified
+colormap, a <i>BadValue</i> error results. The
+<i>XcmsQueryColors</i> function obtains the RGB values for
+pixel values in the pixel members of <i>XcmsColor</i>
+structures and then converts the values to the target format
+as specified by the result_format argument. If a pixel is
+not a valid index into the specified colormap, a
+<i>BadValue</i> error results. If more than one pixel is in
+error, the one that gets reported is arbitrary.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XcmsQueryColor</i>
+and <i>XcmsQueryColors</i> can generate <i>BadColor</i> and
+<i>BadValue</i> errors.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XcmsLookupColor</i> function looks up the string name of
+a color with respect to the screen associated with the
+specified colormap. It returns both the exact color values
+and the closest values provided by the screen with respect
+to the visual type of the specified colormap. The values are
+returned in the format specified by result_format. If the
+color name is not in the Host Portable Character Encoding,
+the result is implementation-dependent. Use of uppercase or
+lowercase does not matter. <i>XcmsLookupColor</i> returns
+<i>XcmsSuccess</i> or <i>XcmsSuccessWithCompression</i> if
+the name is resolved; otherwise, it returns
+<i>XcmsFailure</i>. If <i>XcmsSuccessWithCompression</i> is
+returned, the color specification returned in
+color_screen_return is the result of gamut compression.</p>
+
+<h2 id="heading5">DIAGNOSTICS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="12%"></col>
+<col width="3%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><i>BadColor</i></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">A value for a Colormap argument
+does not name a defined Colormap.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>BadValue</i></p></td>
+<td></td>
+<td>
+
+
+<p>Some numeric value falls outside the range of values
+accepted by the request. Unless a specific range is
+specified for an argument, the full range defined by the
+argument&rsquo;s type is accepted. Any argument defined as a
+set of alternatives can generate this error.</p></td></tr>
+</table>
+
+<h2 id="heading6">SEE ALSO
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XcmsAllocColor.3.xhtml"><em>XcmsAllocColor</em>(3)</a>,
+<a href="../man3/XcmsStoreColor.3.xhtml"><em>XcmsStoreColor</em>(3)</a>, <a href="../man3/XQueryColor.3.xhtml"><em>XQueryColor</em>(3)</a> <i><br/>
+<a href="../../libX11/libX11/libX11.html">Xlib &minus; C Language X Interface</a></i></p>
+<hr/>
+</body>
+</html>

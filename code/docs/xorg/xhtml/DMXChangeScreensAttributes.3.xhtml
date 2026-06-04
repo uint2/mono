@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:37:07 2012 -->
+<title>DMXChangeScreensAttributes</title>
+
+</head>
+<body>
+
+<h1>DMXChangeScreensAttributes</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNOPSIS</a><br/>
+<a href="#heading3">DESCRIPTION</a><br/>
+<a href="#heading4">RETURN VALUE</a><br/>
+<a href="#heading5">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">DMXChangeScreensAttributes
+&minus; change back-end screen attributes</p>
+
+<h2 id="heading2">SYNOPSIS
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>#include
+&lt;X11/extensions/dmxext.h&gt;</b></p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>int
+DMXChangeScreensAttributes(Display</b> <i>*dpy</i><b>, <br/>
+int</b> <i>screen_count</i><b>, <br/>
+int</b> <i>*screens</i><b>, <br/>
+int</b> <i>mask_count</i><b>, <br/>
+unsigned int</b> <i>*masks</i><b>, <br/>
+DMXScreenAttributes</b> <i>*attr</i><b>, <br/>
+int *</b><i>error_screen</i><b>);</b></p>
+
+<h2 id="heading3">DESCRIPTION
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>DMXChangeScreensAttributes()</b>
+changes the geometries and positions of the DMX screen and
+DMX root windows on the back-end X servers.
+<i>screen_count</i> specifies the number of screens to be
+changed. For each screen, the screen number is placed in
+<i>screens</i>, an attribute mask is placed in <i>masks</i>,
+and a <i>DMXScreenAttributes</i> structure is included in
+<i>attr</i>.</p>
+
+<p style="margin-left:11%; margin-top: 1em">An explanation
+of the <i>DMXScreenAttributes</i> structure is given in
+<a href="../man3/DMXGetScreenAttributes.3.xhtml"><em>DMXGetScreenAttributes</em>(3)</a>.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The values that
+are used to compute each value in <i>masks</i> are as
+follows</p>
+
+
+<p style="margin-left:11%; margin-top: 1em">DMXScreenWindowWidth
+<br/>
+DMXScreenWindowHeight <br/>
+DMXScreenWindowXoffset <br/>
+DMXScreenWindowYoffset <br/>
+DMXRootWindowWidth <br/>
+DMXRootWindowHeight <br/>
+DMXRootWindowXoffset <br/>
+DMXRootWindowYoffset <br/>
+DMXRootWindowXorigin <br/>
+DMXRootWindowYorigin</p>
+
+<p style="margin-left:11%; margin-top: 1em">In general,
+<i>mask_count</i> should be equal to <i>screen_count</i>.
+However, as a convenience, <i>mask_count</i> may be less
+than <i>screen_count</i>, and the last entry in <i>masks</i>
+will then be used for all of the remaining screens. For
+example, this allows identical changes to be made to several
+screens using only one mask.</p>
+
+<h2 id="heading4">RETURN VALUE
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">On success, 0
+is returned. Otherwise, <i>error_screen</i> is set to the
+value of the first screen in the list that caused the error
+and a non-zero value is returned. If <i>screen_count</i> or
+<i>mask_count</i> is less than 1, or if any of the attribute
+values are not within the appropriate bounding boxes,
+<b>DmxBadValue</b> is returned. If a protocol error occurs,
+<b>DmxBadReply</b> is returned.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>DMXChangeScreensAttributes()</b>
+can generate <b>BadLength</b> (if the data provided does not
+match the data implicitly required by the
+<i>screen_count</i> and <i>mask_count</i> values),
+<b>BadValue</b> (if the values in <i>screens</i> are not
+valid), and <b>BadAlloc</b> errors.</p>
+
+<h2 id="heading5">SEE ALSO
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/DMXGetScreenCount.3.xhtml"><em>DMXGetScreenCount</em>(3)</a>,
+<a href="../man3/DMXGetScreenAttributes.3.xhtml"><em>DMXGetScreenAttributes</em>(3)</a>, <a href="../man3/DMX.3.xhtml"><em>DMX</em>(3)</a>,
+<a href="../man1/Xdmx.1.xhtml"><em>Xdmx</em>(1)</a></p>
+<hr/>
+</body>
+</html>

@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:40:57 2012 -->
+<title>xcb_xkb_controls_notify_event_t</title>
+
+</head>
+<body>
+
+<h1>xcb_xkb_controls_notify_event_t</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNOPSIS</a><br/>
+<a href="#heading3">EVENT FIELDS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">SEE ALSO</a><br/>
+<a href="#heading6">AUTHOR</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">xcb_xkb_controls_notify_event_t
+&minus;</p>
+
+<h2 id="heading2">SYNOPSIS
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>#include
+&lt;xcb/xkb.h&gt;</b></p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>Event
+datastructure</b> <br/>
+typedef struct xcb_xkb_controls_notify_event_t { <br/>
+uint8_t <i>response_type</i>; <br/>
+xcb_timestamp_t <i>time</i>; <br/>
+uint16_t <i>sequence</i>; <br/>
+uint8_t <i>deviceID</i>; <br/>
+uint8_t <i>numGroups</i>; <br/>
+uint8_t <i>pad0</i>[2]; <br/>
+uint32_t <i>changedControls</i>; <br/>
+uint32_t <i>enabledControls</i>; <br/>
+uint32_t <i>enabledControlChanges</i>; <br/>
+xcb_keycode_t <i>keycode</i>; <br/>
+uint8_t <i>eventType</i>; <br/>
+uint8_t <i>requestMajor</i>; <br/>
+uint8_t <i>requestMinor</i>; <br/>
+uint8_t <i>pad1</i>[4]; <br/>
+} <b>xcb_xkb_controls_notify_event_t</b>;</p>
+
+<h2 id="heading3">EVENT FIELDS
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>response_type</i></p>
+
+<p style="margin-left:26%;">The type of this event, in this
+case <i>XCB_XKB_CONTROLS_NOTIFY</i>. This field is also
+present in the <i>xcb_generic_event_t</i> and can be used to
+tell events apart from each other.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="14%"></col>
+<col width="1%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>sequence</i></p></td>
+<td></td>
+<td>
+
+
+<p>The sequence number of the last request processed by the
+X11 server.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>time</i></p></td>
+<td></td>
+<td>
+
+
+<p>NOT YET DOCUMENTED.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>deviceID</i></p></td>
+<td></td>
+<td>
+
+
+<p>NOT YET DOCUMENTED.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>numGroups</i></p></td>
+<td></td>
+<td>
+
+
+<p>NOT YET DOCUMENTED.</p></td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>changedControls</i></p>
+
+<p style="margin-left:26%;">NOT YET DOCUMENTED.</p>
+
+<p style="margin-left:11%;"><i>enabledControls</i></p>
+
+<p style="margin-left:26%;">NOT YET DOCUMENTED.</p>
+
+
+<p style="margin-left:11%;"><i>enabledControlChanges</i></p>
+
+<p style="margin-left:26%;">NOT YET DOCUMENTED.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="14%"></col>
+<col width="1%" class="center"></col>
+<col width="29%"></col>
+<col width="45%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>keycode</i></p></td>
+<td></td>
+<td>
+
+
+<p>NOT YET DOCUMENTED.</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>eventType</i></p></td>
+<td></td>
+<td>
+
+
+<p>NOT YET DOCUMENTED.</p></td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>requestMajor</i></p>
+
+<p style="margin-left:26%;">NOT YET DOCUMENTED.</p>
+
+<p style="margin-left:11%;"><i>requestMinor</i></p>
+
+<p style="margin-left:26%;">NOT YET DOCUMENTED.</p>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<h2 id="heading5">SEE ALSO
+</h2>
+
+
+<h2 id="heading6">AUTHOR
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Generated from
+xkb.xml. Contact xcb@lists.freedesktop.org for corrections
+and improvements.</p>
+<hr/>
+</body>
+</html>

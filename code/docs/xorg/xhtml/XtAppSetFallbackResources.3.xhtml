@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:43:02 2012 -->
+<title>XtAppSetFallbackResources</title>
+
+</head>
+<body>
+
+<h1>XtAppSetFallbackResources</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNTAX</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">XtAppSetFallbackResources
+&minus; set fallback resources</p>
+
+<h2 id="heading2">SYNTAX
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="89%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">void
+XtAppSetFallbackResources(XtAppContext <i>app_context</i>,
+String* <i>specification_list</i>);</p></td></tr>
+</table>
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>app_context</i></p>
+
+<p style="margin-left:26%;">Specifies the application
+context.</p>
+
+<p style="margin-left:11%;"><i>specification_list</i></p>
+
+<p style="margin-left:26%;">Specifies a NULL-terminated
+list of resource specifications to pre-load the database, or
+NULL.</p>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Each entry in
+<i>specification_list</i> points to a string in the format
+<i>XrmPutLineResource</i>. following a call to
+<i>XtAppSetFallbackResources</i>, when a resource database
+is being created for a particular screen and the Intrinsics
+are not able to find or read an application-specific class
+resource file and if <i>specification_list</i> is not NULL
+the resource specification in <i>specification_list</i> will
+be merged into the screen resource database in place of the
+application-specific class resource file.
+<i>XtAppSetFallbackResources</i> is not required to copy
+<i>specification_list</i>; the caller must ensure that the
+contents of the list and the strings addressed by the list
+remain valid until all displays are initialized or until
+<i>XtAppSetFallbackResources</i> is called again. The value
+NULL for <i>specification_list</i> removes any previous
+fallback resource specification for the application context.
+The intended use for fallback resources is to provide a
+minimal number of resources that will make the application
+usable (or at least terminate with helpful diagnostic
+messages) when some problem exists in finding and loading
+the application defaults file.</p>
+
+<h2 id="heading5">SEE ALSO
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>X Toolkit
+Intrinsics &minus; C Language Interface <br/>
+<a href="../../libX11/libX11/libX11.html">Xlib &minus; C Language X Interface</a></i></p>
+<hr/>
+</body>
+</html>

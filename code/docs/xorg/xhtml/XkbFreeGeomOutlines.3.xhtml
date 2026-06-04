@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:28:52 2012 -->
+<title>XkbFreeGeomOutlines</title>
+
+</head>
+<body>
+
+<h1>XkbFreeGeomOutlines</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNOPSIS</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">XkbFreeGeomOutlines
+&minus; Free geometry outlines</p>
+
+<h2 id="heading2">SYNOPSIS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="37%"></col>
+<col width="1%" class="center"></col>
+<col width="51%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>void
+XkbFreeGeomOutlines</b></p> </td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>(XkbShapePtr</b>
+<i>shape</i><b>, int</b> <i>first</i><b>, int</b>
+<i>count</i><b>, Bool</b></p></td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>free_all</i><b>);</b></p>
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b><i>&minus;
+shape</i></b></p>
+
+<p style="margin-left:22%;">shape in which outlines should
+be freed</p>
+
+<p style="margin-left:11%;"><i>&minus; first</i></p>
+
+<p style="margin-left:22%;">first outline to be freed</p>
+
+<p style="margin-left:11%;"><i>&minus; count</i></p>
+
+<p style="margin-left:22%;">number of outlines to be
+freed</p>
+
+<p style="margin-left:11%;"><i>&minus; free_all</i></p>
+
+<p style="margin-left:22%;">True =&gt; all outlines are
+freed</p>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">If
+<i>free_all</i> is True, all outlines are freed regardless
+of the value of <i>first</i> or <i>count.</i> Otherwise,
+<i>count</i> outlines are freed beginning with the one
+specified by <i>first.</i></p>
+<hr/>
+</body>
+</html>

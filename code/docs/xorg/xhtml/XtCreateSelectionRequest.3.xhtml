@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:43:49 2012 -->
+<title>XtCreateSelectionRequest</title>
+
+</head>
+<body>
+
+<h1>XtCreateSelectionRequest</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNTAX</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">XtCreateSelectionRequest,
+XtSendSelectionRequest, XtCancelSelectionRequest &minus;
+bundle multiple selection conversion requests into a single
+request using MULTIPLE target</p>
+
+<h2 id="heading2">SYNTAX
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="89%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">void
+XtCreateSelectionRequest(Widget <i>requestor</i>, Atom
+<i>selection</i>):</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">void
+XtSendSelectionRequest(Widget <i>requestor</i>, Atom
+<i>selection</i>, Time <i>time</i>);</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">void
+XtCancelSelectionRequest(Widget <i>requestor</i>, Atom
+<i>selection</i>);</p> </td></tr>
+</table>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="14%"></col>
+<col width="1%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+<td></td>
+<td></td>
+<td></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>requestor</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the widget making the request. Must be of
+class Core or a subclass thereof.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>selection</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the particular selection desired.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>time</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the timestamp to be used in making the
+request.</p> </td></tr>
+</table>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">When
+<i>XtCreateSelectionRequest</i> is called, subsequent calls
+to <i>XtGetSelectionValue</i> and
+<i>XtGetSelectionValueIncremental</i> with the requestor and
+selection as specified to <i>XtCreateSelectionRequest</i>
+will be bundled into a single selection conversion request
+with multiple targets. The request is actually initiated by
+calling <i>XtSendSelectionRequest</i>.</p>
+
+<p style="margin-left:11%; margin-top: 1em">When
+<i>XtSendSelectionRequest</i> is called with a value of
+<i>requestor</i> and <i>selection</i> matching a previous
+call to <i>XtCreateSelectionRequest</i>, a selection
+conversion request is actually sent to the selection owner.
+If a single target request is queued, that request is made.
+If multiple targets are queued they are bundled into a
+single request with the target MULTIPLE using the specified
+timestamp. As the conversions are made, the callbacks
+associated with each <i>XtGetSelectionValue</i> and
+<i>XtGetSelectionValueIncremental</i> are invoked in
+turn.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Multi-threaded
+applications should lock the application context before
+calling <i>XtCreateSelectionRequest</i> and release the lock
+after calling <i>XtSendSelectionRequest</i> to ensure that
+the thread assembling the request is safe from interference
+by another thread assembling a different request naming the
+same widget and selection.</p>
+
+<p style="margin-left:11%; margin-top: 1em">When
+<i>XtCancelSelectionRequest</i> is called, any requests
+queued since the last call to
+<i>XtCreateSelectionRequest</i> are cleaned up. Subsequent
+calls to <i>XtGetSelectionValue</i>,
+<i>XtGetSelectionValues</i>,
+<i>XtGetSelectionValueIncremental</i>, and
+<i>XtGetSelectionValuesIncremental</i> will not be
+deferred.</p>
+
+<h2 id="heading5">SEE ALSO
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>X Toolkit
+Intrinsics &minus; C Language Interface <br/>
+<a href="../../libX11/libX11/libX11.html">Xlib &minus; C Language X Interface</a></i></p>
+<hr/>
+</body>
+</html>

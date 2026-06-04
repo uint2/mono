@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:24:42 2012 -->
+<title>XkbGetNamedGeometry</title>
+
+</head>
+<body>
+
+<h1>XkbGetNamedGeometry</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNTAX</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">DIAGNOSTICS</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">XkbGetNamedGeometry
+&minus; Loads a keyboard geometry description from this
+database by name</p>
+
+<h2 id="heading2">SYNTAX
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="40%"></col>
+<col width="1%" class="center"></col>
+<col width="48%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>Status
+XkbGetNamedGeometry</b></p> </td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>(Display *</b><i>dpy</i><b>,
+XkbDescPtr</b> <i>xkb</i><b>, Atom</b>
+<i>name</i><b>);</b></p> </td></tr>
+</table>
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="9%"></col>
+<col width="2%" class="center"></col>
+<col width="78%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b><i>&minus; dpy</i></b></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">connection to the X server</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>&minus; xkb</i></p></td>
+<td></td>
+<td>
+
+
+<p>keyboard description into which the geometry should be
+loaded</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>&minus; name</i></p></td>
+<td></td>
+<td>
+
+
+<p>name of the geometry to be loaded</p></td></tr>
+</table>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">It is also
+possible to load a keyboard geometry by name. The X server
+maintains a database of keyboard components (see below).</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XkbGetNamedGeometry</i>
+can return BadName if the name cannot be found.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The X server
+maintains a database of keyboard components, identified by
+component type. The database contains all the information
+necessary to build a complete keyboard description for a
+particular device, as well as to assemble partial
+descriptions. Table 1 identifies the component types and the
+type of information they contain.</p>
+
+
+<p class="center" style="margin-top: 1em"><img src="grohtml-64261.png" alt="Image grohtml-64261.png"></img></p>
+
+<p style="margin-left:11%; margin-top: 1em">While a keymap
+is a database entry for a complete keyboard description, and
+therefore logically different from the individual component
+database entries, the rules for processing keymap entries
+are identical to those for the individual components. In the
+discussion that follows, the term component is used to refer
+to either individual components or a keymap.</p>
+
+<p style="margin-left:11%; margin-top: 1em">There may be
+multiple entries for each of the component types. An entry
+may be either <i>complete</i> or <i>partial.</i> Partial
+entries describe only a piece of the corresponding keyboard
+component and are designed to be combined with other entries
+of the same type to form a complete entry.</p>
+
+<p style="margin-left:11%; margin-top: 1em">For example, a
+partial symbols map might describe the differences between a
+common ASCII keyboard and some national layout. Such a
+partial map is not useful on its own because it does not
+include those symbols that are the same on both the ASCII
+and national layouts (such as function keys). On the other
+hand, this partial map can be used to configure <i>any</i>
+ASCII keyboard to use a national layout.</p>
+
+<p style="margin-left:11%; margin-top: 1em">When a keyboard
+description is built, the components are processed in the
+order in which they appear in Table 1; later definitions
+override earlier ones.</p>
+
+<h2 id="heading5">DIAGNOSTICS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="11%"></col>
+<col width="12%" class="center"></col>
+<col width="66%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>BadName</b></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">A font or color of the specified
+name does not exist.</p></td></tr>
+ </table>
+<hr/>
+</body>
+</html>

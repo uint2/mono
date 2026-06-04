@@ -1,0 +1,363 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:41:02 2012 -->
+<title>XCreateOC</title>
+
+</head>
+<body>
+
+<h1>XCreateOC</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNTAX</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">XCreateOC,
+XDestroyOC, XSetOCValues, XGetOCValues, XOMOfOC &minus;
+create output contexts</p>
+
+<h2 id="heading2">SYNTAX
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="51%"></col>
+<col width="38%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">XOC XCreateOC(XOM
+<i>om</i>);</p> </td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">void XDestroyOC(XOC
+<i>oc</i>);</p> </td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">char * XSetOCValues(XOC
+<i>oc</i>, ...);</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">char * XGetOCValues(XOC
+<i>oc</i>, ...);</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">XOM XOMOfOC(XOC <i>oc</i>);</p></td>
+<td>
+</td></tr>
+</table>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="4%"></col>
+<col width="11%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+<td></td>
+<td></td>
+<td></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>oc</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the output context.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>om</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the output method.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>...</p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the variable length argument list&nbsp;to set
+or get XOC values.</p></td></tr>
+</table>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XCreateOC</i> function creates an output context within
+the specified output method.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The base font
+names argument is mandatory at creation time, and the output
+context will not be created unless it is provided. All other
+output context values can be set later.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XCreateOC</i>
+returns NULL if no output context could be created. NULL can
+be returned for any of the following reasons:</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="1%"></col>
+<col width="6%" class="center"></col>
+<col width="71%"></col>
+<col width="11%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">&bull;</p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">A required argument was not
+set.</p> </td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>&bull;</p></td>
+<td></td>
+<td>
+
+
+<p>A read-only argument was set.</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>&bull;</p></td>
+<td></td>
+<td>
+
+
+<p>An argument name is not recognized.</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>&bull;</p></td>
+<td></td>
+<td>
+
+
+<p>The output method encountered an output method
+implementation-dependent error.</p></td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XDestroyOC</i> function destroys the specified output
+context.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XSetOCValues</i> function returns NULL if no error
+occurred; otherwise, it returns the name of the first
+argument that could not be set. An argument might not be set
+for any of the following reasons:</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="1%"></col>
+<col width="6%" class="center"></col>
+<col width="64%"></col>
+<col width="18%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">&bull;</p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">The argument is read-only.</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>&bull;</p></td>
+<td></td>
+<td>
+
+
+<p>The argument name is not recognized.</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>&bull;</p></td>
+<td></td>
+<td>
+
+
+<p>An implementation-dependent error occurs.</p></td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:11%; margin-top: 1em">Each value to
+be set must be an appropriate datum, matching the data type
+imposed by the semantics of the argument.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XGetOCValues</i> function returns NULL if no error
+occurred; otherwise, it returns the name of the first
+argument that could not be obtained. An argument might not
+be obtained for any of the following reasons:</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="1%"></col>
+<col width="6%" class="center"></col>
+<col width="64%"></col>
+<col width="18%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">&bull;</p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">The argument name is not
+recognized.</p> </td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>&bull;</p></td>
+<td></td>
+<td>
+
+
+<p>An implementation-dependent error occurs.</p></td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:11%; margin-top: 1em">Each argument
+value following a name must point to a location where the
+value is to be stored.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XOMOfOC</i> function returns the output method associated
+with the specified output context.</p>
+
+<h2 id="heading5">SEE ALSO
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XCreateOM.3.xhtml"><em>XCreateOM</em>(3)</a>,
+<a href="../man3/XCreateFontSet.3.xhtml"><em>XCreateFontSet</em>(3)</a> <i><br/>
+<a href="../../libX11/libX11/libX11.html">Xlib &minus; C Language X Interface</a></i></p>
+<hr/>
+</body>
+</html>

@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:42:47 2012 -->
+<title>XtGetKeysymTable</title>
+
+</head>
+<body>
+
+<h1>XtGetKeysymTable</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNTAX</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">XtGetKeysymTable,
+XtKeysymToKeycodeList &minus; query keysyms and keycodes</p>
+
+<h2 id="heading2">SYNTAX
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="89%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Keysym*
+XtGetKeysymTable(Display* <i>display</i>, KeyCode*
+<i>min_keycode_return</i>, int
+*<i>keysyms_per_keycode_return</i>);</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">void
+XtKeysymToKeycodeList(Display* <i>display</i>, KeySym
+<i>keysym</i>, KeyCode** <i>keycodes_return</i>, Cardinal*
+<i>keycount_return</i>);</p> </td></tr>
+</table>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="11%"></col>
+<col width="4%" class="center"></col>
+<col width="71%"></col>
+<col width="3%"></col>
+</colgroup>
+<tr valign="top" align="left">
+
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+<td></td>
+<td></td>
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>display</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the display whose table is required.</p></td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>min_keycode_return</i></p>
+
+<p style="margin-left:26%;">Returns the minimum KeyCode
+valid for the display.</p>
+
+
+<p style="margin-left:11%;"><i>keysyms_per_keycode_return</i></p>
+
+<p style="margin-left:22%;">Returns the number of KeySyms
+stored for each KeyCode.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="9%"></col>
+<col width="6%" class="center"></col>
+<col width="63%"></col>
+<col width="11%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>keysym</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the KeySym for which to search.</p></td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>keycodes_return</i></p>
+
+<p style="margin-left:26%;">Returns a list of KeyCodes that
+have <i>keysym</i> associated with them, or NULL if
+<i>keycount_return</i> is 0.</p>
+
+<p style="margin-left:11%;"><i>keycount_return</i></p>
+
+<p style="margin-left:26%;">Returns the number of KeyCodes
+in the keycode list.</p>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XtGetKeysymTable</i>
+returns a pointer to the Intrinsics&rsquo; copy of the
+server&rsquo;s KeyCode-to-KeySym table. This table must not
+be modified.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XtKeysymToKeycodeList</i> procedure returns all the
+KeyCodes that have <i>keysym</i> in their entry for the
+keyboard mapping table associated with <i>display</i>. The
+caller should free the storage pointed to by
+<i>keycodes_return</i> using <i>XtFree</i> when it is no
+longer useful.</p>
+
+<h2 id="heading5">SEE ALSO
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>X Toolkit
+Intrinsics &minus; C Language Interface <br/>
+<a href="../../libX11/libX11/libX11.html">Xlib &minus; C Language X Interface</a></i></p>
+<hr/>
+</body>
+</html>

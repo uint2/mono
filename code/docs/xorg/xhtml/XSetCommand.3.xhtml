@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:43:59 2012 -->
+<title>XSetCommand</title>
+
+</head>
+<body>
+
+<h1>XSetCommand</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNTAX</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">PROPERTIES</a><br/>
+<a href="#heading6">DIAGNOSTICS</a><br/>
+<a href="#heading7">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">XSetCommand,
+XGetCommand &minus; set or read a window&rsquo;s WM_COMMAND
+property</p>
+
+<h2 id="heading2">SYNTAX
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="89%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">int XSetCommand(Display
+*<i>display</i>, Window <i>w</i>, char **<i>argv</i>, int
+<i>argc</i>);</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Status XGetCommand(Display
+*<i>display</i>, Window <i>w</i>, char
+***<i>argv_return</i>, int *<i>argc_return</i>);</p></td></tr>
+</table>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="6%"></col>
+<col width="9%" class="center"></col>
+<col width="52%"></col>
+<col width="22%"></col>
+</colgroup>
+<tr valign="top" align="left">
+
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+<td></td>
+<td></td>
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>argc</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the number of arguments.</p></td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>argc_return</i></p>
+
+<p style="margin-left:26%;">Returns the number of arguments
+returned.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="6%"></col>
+<col width="9%" class="center"></col>
+<col width="65%"></col>
+<col width="9%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>argv</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the application&rsquo;s argument list.</p></td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>argv_return</i></p>
+
+<p style="margin-left:26%;">Returns the application&rsquo;s
+argument list.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="11%"></col>
+<col width="4%" class="center"></col>
+<col width="63%"></col>
+<col width="11%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>display</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the connection to the X server.</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>w</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the window.</p></td>
+<td>
+</td></tr>
+</table>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XSetCommand</i> function sets the command and arguments
+used to invoke the application. (Typically, argv is the argv
+array of your main program.) If the strings are not in the
+Host Portable Character Encoding, the result is
+implementation-dependent.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XSetCommand</i>
+can generate <i>BadAlloc</i> and <i>BadWindow</i>
+errors.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XGetCommand</i> function reads the WM_COMMAND property
+from the specified window and returns a string list. If the
+WM_COMMAND property exists, it is of type STRING and format
+8. If sufficient memory can be allocated to contain the
+string list, <i>XGetCommand</i> fills in the argv_return and
+argc_return arguments and returns a nonzero status.
+Otherwise, or if any other error is encountered, it returns
+a zero status. If the data returned by the server is in the
+Latin Portable Character Encoding, then the returned strings
+are in the Host Portable Character Encoding. Otherwise, the
+result is implementation-dependent. To free the memory
+allocated to the string list, use
+<i>XFreeStringList</i>.</p>
+
+<h2 id="heading5">PROPERTIES
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><small>WM_COMMAND</small></p>
+
+<p style="margin-left:26%;">The command and arguments,
+null-separated, used to invoke the application.</p>
+
+<h2 id="heading6">DIAGNOSTICS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="14%"></col>
+<col width="1%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><i>BadAlloc</i></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">The server failed to allocate
+the requested resource or server memory.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>BadWindow</i></p></td>
+<td></td>
+<td>
+
+
+<p>A value for a Window argument does not name a defined
+Window.</p> </td></tr>
+</table>
+
+<h2 id="heading7">SEE ALSO
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XAllocClassHint.3.xhtml"><em>XAllocClassHint</em>(3)</a>,
+<a href="../man3/XAllocIconSize.3.xhtml"><em>XAllocIconSize</em>(3)</a>, <a href="../man3/XAllocSizeHints.3.xhtml"><em>XAllocSizeHints</em>(3)</a>, <a href="../man3/XAllocWMHints.3.xhtml"><em>XAllocWMHints</em>(3)</a>,
+<a href="../man3/XSetTransientForHint.3.xhtml"><em>XSetTransientForHint</em>(3)</a>, <a href="../man3/XSetTextProperty.3.xhtml"><em>XSetTextProperty</em>(3)</a>,
+<a href="../man3/XSetWMClientMachine.3.xhtml"><em>XSetWMClientMachine</em>(3)</a>, <a href="../man3/XSetWMColormapWindows.3.xhtml"><em>XSetWMColormapWindows</em>(3)</a>,
+<a href="../man3/XSetWMIconName.3.xhtml"><em>XSetWMIconName</em>(3)</a>, <a href="../man3/XSetWMName.3.xhtml"><em>XSetWMName</em>(3)</a>, <a href="../man3/XSetWMProperties.3.xhtml"><em>XSetWMProperties</em>(3)</a>,
+<a href="../man3/XSetWMProtocols.3.xhtml"><em>XSetWMProtocols</em>(3)</a>, <a href="../man3/XStringListToTextProperty.3.xhtml"><em>XStringListToTextProperty</em>(3)</a> <i><br/>
+<a href="../../libX11/libX11/libX11.html">Xlib &minus; C Language X Interface</a></i></p>
+<hr/>
+</body>
+</html>

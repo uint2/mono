@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:44:21 2012 -->
+<title>XIconifyWindow</title>
+
+</head>
+<body>
+
+<h1>XIconifyWindow</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNTAX</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">DIAGNOSTICS</a><br/>
+<a href="#heading6">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">XIconifyWindow,
+XWithdrawWindow, XReconfigureWMWindow &minus; manipulate
+top-level windows</p>
+
+<h2 id="heading2">SYNTAX
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="89%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Status XIconifyWindow(Display
+*<i>display</i>, Window <i>w</i>, int
+<i>screen_number</i>);</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Status XWithdrawWindow(Display
+*<i>display</i>, Window <i>w</i>, int
+<i>screen_number</i>);</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Status
+XReconfigureWMWindow(Display *<i>display</i>, Window
+<i>w</i>, int <i>screen_number</i>, unsigned int
+<i>value_mask</i>, XWindowChanges *<i>values</i>);</p></td></tr>
+</table>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="11%"></col>
+<col width="4%" class="center"></col>
+<col width="63%"></col>
+<col width="11%"></col>
+</colgroup>
+<tr valign="top" align="left">
+
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+<td></td>
+<td></td>
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>display</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the connection to the X server.</p></td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>screen_number</i></p>
+
+<p style="margin-left:26%;">Specifies the appropriate
+screen number on the host server.</p>
+
+<p style="margin-left:11%;"><i>value_mask</i></p>
+
+<p style="margin-left:26%;">Specifies which values are to
+be set using information in the values structure. This mask
+is the bitwise inclusive OR of the valid configure window
+values bits.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="9%"></col>
+<col width="6%" class="center"></col>
+<col width="60%"></col>
+<col width="14%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>values</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the <i>XWindowChanges</i> structure.</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>w</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the window.</p></td>
+<td>
+</td></tr>
+</table>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XIconifyWindow</i> function sends a WM_CHANGE_STATE
+<i>ClientMessage</i> event with a format of 32 and a first
+data element of <i>IconicState</i> (as described in section
+4.1.4 of the <i>Inter-Client Communication Conventions
+Manual</i>) and a window of w to the root window of the
+specified screen with an event mask set to
+<i>SubstructureNotifyMask</i>|
+<i>SubstructureRedirectMask</i>. Window managers may elect
+to receive this message and if the window is in its normal
+state, may treat it as a request to change the
+window&rsquo;s state from normal to iconic. If the
+WM_CHANGE_STATE property cannot be interned,
+<i>XIconifyWindow</i> does not send a message and returns a
+zero status. It returns a nonzero status if the client
+message is sent successfully; otherwise, it returns a zero
+status.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XWithdrawWindow</i> function unmaps the specified window
+and sends a synthetic <i>UnmapNotify</i> event to the root
+window of the specified screen. Window managers may elect to
+receive this message and may treat it as a request to change
+the window&rsquo;s state to withdrawn. When a window is in
+the withdrawn state, neither its normal nor its iconic
+representations is visible. It returns a nonzero status if
+the <i>UnmapNotify</i> event is successfully sent;
+otherwise, it returns a zero status.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XWithdrawWindow</i>
+can generate a <i>BadWindow</i> error.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XReconfigureWMWindow</i> function issues a
+<i>ConfigureWindow</i> request on the specified top-level
+window. If the stacking mode is changed and the request
+fails with a <i>BadMatch</i> error, the error is trapped by
+Xlib and a synthetic <i>ConfigureRequestEvent</i> containing
+the same configuration parameters is sent to the root of the
+specified window. Window managers may elect to receive this
+event and treat it as a request to reconfigure the indicated
+window. It returns a nonzero status if the request or event
+is successfully sent; otherwise, it returns a zero
+status.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XReconfigureWMWindow</i>
+can generate <i>BadValue</i> and <i>BadWindow</i>
+errors.</p>
+
+<h2 id="heading5">DIAGNOSTICS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="14%"></col>
+<col width="1%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><i>BadValue</i></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Some numeric value falls outside
+the range of values accepted by the request. Unless a
+specific range is specified for an argument, the full range
+defined by the argument&rsquo;s type is accepted. Any
+argument defined as a set of alternatives can generate this
+error.</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>BadWindow</i></p></td>
+<td></td>
+<td>
+
+
+<p>A value for a Window argument does not name a defined
+Window.</p> </td></tr>
+</table>
+
+<h2 id="heading6">SEE ALSO
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XChangeWindowAttributes.3.xhtml"><em>XChangeWindowAttributes</em>(3)</a>,
+<a href="../man3/XConfigureWindow.3.xhtml"><em>XConfigureWindow</em>(3)</a>, <a href="../man3/XCreateWindow.3.xhtml"><em>XCreateWindow</em>(3)</a>, <a href="../man3/XDestroyWindow.3.xhtml"><em>XDestroyWindow</em>(3)</a>,
+<a href="../man3/XRaiseWindow.3.xhtml"><em>XRaiseWindow</em>(3)</a>, <a href="../man3/XMapWindow.3.xhtml"><em>XMapWindow</em>(3)</a>, <a href="../man3/XUnmapWindow.3.xhtml"><em>XUnmapWindow</em>(3)</a> <i><br/>
+<a href="../../libX11/libX11/libX11.html">Xlib &minus; C Language X Interface</a></i></p>
+<hr/>
+</body>
+</html>

@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:29:15 2012 -->
+<title>XkbFreeControls</title>
+
+</head>
+<body>
+
+<h1>XkbFreeControls</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNOPSIS</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">XkbFreeControls
+&minus; Frees memory used by the ctrls member of an
+XkbDescRec structure</p>
+
+<h2 id="heading2">SYNOPSIS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="32%"></col>
+<col width="3%" class="center"></col>
+<col width="54%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>void XkbFreeControls</b></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>(XkbDescPtr</b>
+<i>xkb</i><b>, unsigned int</b> <i>which</i><b>,
+Bool</b></p> </td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>free_all</i><b>);</b></p>
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="7%"></col>
+<col width="4%" class="center"></col>
+<col width="78%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b><i>&minus; xkb</i></b></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Xkb description in which to free
+controls components</p></td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>&minus; which</i></p>
+
+<p style="margin-left:22%;">mask of components of ctrls to
+free</p>
+
+<p style="margin-left:11%;"><i>&minus; free_all</i></p>
+
+<p style="margin-left:22%;">True =&gt; free everything +
+ctrls itself</p>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XkbFreeControls</i>
+frees the specified components of the <i>ctrls</i> field in
+the <i>xkb</i> keyboard description and sets the
+corresponding structure component values to NULL or zero.
+The <i>which</i> mask specifies the fields of <i>ctrls</i>
+to be freed and can contain any of the controls components
+specified in Table 1.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Table 1 shows
+the actual values for the individual mask bits used to
+select controls for modification and to enable and disable
+the control. Note that the same mask bit is used to specify
+general modifications to the parameters used to configure
+the control (which), and to enable and disable the control
+(enabled_ctrls). The anomalies in the table (no
+&quot;ok&quot; in column) are for controls that have no
+configurable attributes; and for controls that are not
+boolean controls and therefore cannot be enabled or
+disabled.</p>
+
+
+<p class="center" style="margin-top: 1em"><img src="grohtml-159511.png" alt="Image grohtml-159511.png"></img></p>
+
+<p style="margin-left:11%; margin-top: 1em">If
+<i>free_all</i> is True, <i>XkbFreeControls</i> frees every
+non-NULL structure component in the controls, frees the
+XkbControlsRec structure referenced by the <i>ctrls</i>
+member of <i>xkb,</i> and sets <i>ctrls</i> to NULL.</p>
+<hr/>
+</body>
+</html>

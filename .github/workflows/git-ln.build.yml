@@ -3,7 +3,7 @@ name: git-ln build
 on:
   push:
     paths:
-      - "code/ln/**/*"
+      - "code/tools/ln/**/*"
 
 jobs:
   build-c:
@@ -27,7 +27,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     defaults:
       run:
-        working-directory: code/ln/c
+        working-directory: code/tools/ln/c
     steps:
       - uses: actions/checkout@v5
       - run: make configure
@@ -59,7 +59,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     defaults:
       run:
-        working-directory: code/ln/${{ matrix.lang }}
+        working-directory: code/tools/ln/${{ matrix.lang }}
     steps:
       - uses: actions/checkout@v5
       - run: cp build.zig.zon ${{ github.workspace }}

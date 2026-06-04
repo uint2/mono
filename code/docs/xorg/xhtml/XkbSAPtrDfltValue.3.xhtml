@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:24:25 2012 -->
+<title>XkbSAPtrDfltValue</title>
+
+</head>
+<body>
+
+<h1>XkbSAPtrDfltValue</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNOPSIS</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">STRUCTURES</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">XkbSAPtrDfltValue
+&minus; Returns the valueXXX field of act converted to a
+signed int</p>
+
+<h2 id="heading2">SYNOPSIS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="32%"></col>
+<col width="2%" class="center"></col>
+<col width="24%"></col>
+<col width="31%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>int XkbSAPtrDfltValue</b></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>(XkbAction</b>
+<i>act</i><b>);</b></p> </td>
+<td>
+</td></tr>
+</table>
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="7%"></col>
+<col width="4%" class="center"></col>
+<col width="52%"></col>
+<col width="26%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b><i>&minus; act</i></b></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">action from which to extract
+group</p> </td>
+<td>
+</td></tr>
+</table>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Actions
+associated with the XkbPtrDfltAction structure change the
+mk_dflt_btn attribute of the MouseKeys control.</p>
+
+<p style="margin-left:11%; margin-top: 1em">If the
+MouseKeys control is not enabled, KeyPress and KeyRelease
+events are treated as though the action is XkbSA_NoAction.
+Otherwise, this action changes the <i>mk_dflt_btn</i>
+attribute of the MouseKeys control.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The <i>type</i>
+field of the XkbPtrDfltAction structure should always be
+XkbSA_SetPtrDflt.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>flags</i> field is composed of the bitwise inclusive OR
+of the values shown in Table 1 (currently there is only one
+value defined).</p>
+
+
+<p class="center" style="margin-top: 1em"><img src="grohtml-57851.png" alt="Image grohtml-57851.png"></img></p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>affect</i> field specifies what changes as a result of
+this action. The only valid value for the <i>affect</i>
+field is XkbSA_AffectDfltBtn.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>valueXXX</i> field is a signed character that represents
+the new button value for the <i>mk_dflt_btn</i> attribute of
+the MouseKeys control. If XkbSA_DfltBtnAbsolute is set in
+<i>flags, valueXXX</i> specifies the button to be used;
+otherwise, <i>valueXXX</i> specifies the amount to be added
+to the current default button. In either case, illegal
+button choices are wrapped back around into range. Xkb
+provides macros, to convert between the integer and signed
+character values in XkbPtrDfltAction structures.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XkbSAPtrDfltValue</i>
+returns the <i>valueXXX</i> field of <i>act</i> converted to
+a signed int.</p>
+
+<h2 id="heading5">STRUCTURES
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">typedef struct
+_XkbPtrDfltAction { <br/>
+unsigned char type; /&lowast; XkbSA_SetPtrDflt */ <br/>
+unsigned char flags; /&lowast; controls the pointer button
+number */ <br/>
+unsigned char affect; /&lowast; XkbSA_AffectDfltBtn */ <br/>
+char valueXXX; /&lowast; new default button member */ <br/>
+} XkbPtrDfltAction;</p>
+<hr/>
+</body>
+</html>

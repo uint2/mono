@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:35:35 2012 -->
+<title>XvVideoNotify</title>
+
+</head>
+<body>
+
+<h1>XvVideoNotify</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNOPSIS</a><br/>
+<a href="#heading3">DESCRIPTION</a><br/>
+<a href="#heading4">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">XvVideoNotify
+&minus; event generated for video processing</p>
+
+<h2 id="heading2">SYNOPSIS
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>#include
+&lt;X11/extensions/Xvlib.h&gt;</b></p>
+<pre style="margin-left:11%; margin-top: 1em">     typedef union {
+       int type;
+       XvVideoNotifyEvent xvvideo;
+       XvPortNotifyEvent xvport;
+       long pad[24];
+     } XvEvent;
+
+
+     typedef struct {
+       int type;
+       unsigned long serial;
+       Bool send_event;
+       Display *display;
+       Drawable drawable;
+       unsigned long reason;
+       XvPortID port_id;
+       Time time;
+     } XvVideoNotifyEvent;</pre>
+
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="9%"></col>
+<col width="3%" class="center"></col>
+<col width="77%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>type</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the type of event: <b>XvVideoNotify</b>.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>serial</i></p></td>
+<td></td>
+<td>
+
+
+<p>Number of the last request processed by the server.</p></td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>send_event</i></p>
+
+<p style="margin-left:23%;">True if the event was generated
+by a SendEvent request.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="11%"></col>
+<col width="1%" class="center"></col>
+<col width="75%"></col>
+<col width="2%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>display</i></p></td>
+<td></td>
+<td>
+
+
+<p>A pointer to the display the event was read from.</p></td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>drawable</i></p>
+
+<p style="margin-left:23%;">The drawable for which the
+event was generated.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="11%"></col>
+<col width="1%" class="center"></col>
+<col width="77%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>reason</i></p></td>
+<td></td>
+<td>
+
+
+<p>The reason the event was generated: <b>XvStarted</b>,
+<b>XvStopped</b>, <b>XvPreempted</b>, <b>XvBusy</b>,
+<b>XvHardError</b>.</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>port_id</i></p></td>
+<td></td>
+<td>
+
+
+<p>The port processing the video for which the event was
+generated.</p> </td></tr>
+</table>
+
+<h2 id="heading3">DESCRIPTION
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>XvVideoNotify</b>
+events are generated when video is started, stopped,
+preempted by another video request, ignored because the port
+is grabbed by another client, or interrupted because of a
+hard transmission or reception error.</p>
+
+<h2 id="heading4">SEE ALSO
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XvPutVideo.3.xhtml"><em>XvPutVideo</em>(3)</a>,
+<a href="../man3/XvPutStill.3.xhtml"><em>XvPutStill</em>(3)</a>, <a href="../man3/XvGetVideo.3.xhtml"><em>XvGetVideo</em>(3)</a>,
+<a href="../man3/XvGetStill.3.xhtml"><em>XvGetStill</em>(3)</a>, <a href="../man3/XvStopVideo.3.xhtml"><em>XvStopVideo</em>(3)</a>,
+<a href="../man3/XvSelectVideoNotify.3.xhtml"><em>XvSelectVideoNotify</em>(3)</a></p>
+<hr/>
+</body>
+</html>

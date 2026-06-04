@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:28:33 2012 -->
+<title>XkbFreeGeomKeys</title>
+
+</head>
+<body>
+
+<h1>XkbFreeGeomKeys</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNOPSIS</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">XkbFreeGeomKeys
+&minus; Free geometry keys</p>
+
+<h2 id="heading2">SYNOPSIS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="32%"></col>
+<col width="3%" class="center"></col>
+<col width="54%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>void XkbFreeGeomKeys</b></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>(XkbRowPtr</b> <i>row</i><b>,
+int</b> <i>first</i><b>, int</b> <i>count</i><b>,
+Bool</b></p> </td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>free_all</i><b>);</b></p>
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="7%"></col>
+<col width="4%" class="center"></col>
+<col width="50%"></col>
+<col width="28%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b><i>&minus; row</i></b></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">row in which keys should be
+freed</p> </td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>&minus; first</i></p>
+
+<p style="margin-left:22%;">first key to be freed</p>
+
+<p style="margin-left:11%;"><i>&minus; count</i></p>
+
+<p style="margin-left:22%;">number of keys to be freed</p>
+
+<p style="margin-left:11%;"><i>&minus; free_all</i></p>
+
+<p style="margin-left:22%;">True =&gt; all keys are
+freed</p>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">If
+<i>free_all</i> is True, all keys are freed regardless of
+the value of <i>first</i> or <i>count.</i> Otherwise,
+<i>count</i> keys are freed beginning with the one specified
+by <i>first.</i></p>
+<hr/>
+</body>
+</html>

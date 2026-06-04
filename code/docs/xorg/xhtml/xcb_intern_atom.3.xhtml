@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:42:07 2012 -->
+<title>xcb_intern_atom</title>
+
+</head>
+<body>
+
+<h1>xcb_intern_atom</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNOPSIS</a><br/>
+<a href="#heading3">REQUEST ARGUMENTS</a><br/>
+<a href="#heading4">REPLY FIELDS</a><br/>
+<a href="#heading5">DESCRIPTION</a><br/>
+<a href="#heading6">RETURN VALUE</a><br/>
+<a href="#heading7">ERRORS</a><br/>
+<a href="#heading8">EXAMPLE</a><br/>
+<a href="#heading9">SEE ALSO</a><br/>
+<a href="#heading10">AUTHOR</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">xcb_intern_atom
+&minus; Get atom identifier by name</p>
+
+<h2 id="heading2">SYNOPSIS
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>#include
+&lt;xcb/xproto.h&gt;</b></p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>Request
+function</b></p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="89%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>xcb_intern_atom_cookie_t
+<b>xcb_intern_atom</b>(xcb_connection_t&nbsp;*<i>conn</i>,
+uint8_t&nbsp;<i>only_if_exists</i>,
+uint16_t&nbsp;<i>name_len</i>, const
+char&nbsp;*<i>name</i>);</p> </td></tr>
+</table>
+
+<p><b>Reply datastructure</b></p></table>
+
+<p style="margin-left:11%;">typedef struct
+xcb_intern_atom_reply_t { <br/>
+uint8_t <i>response_type</i>; <br/>
+uint8_t <i>pad0</i>; <br/>
+uint16_t <i>sequence</i>; <br/>
+uint32_t <i>length</i>; <br/>
+xcb_atom_t <i>atom</i>; <br/>
+} <b>xcb_intern_atom_reply_t</b>;</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>Reply
+function</b></p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="89%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>xcb_intern_atom_reply_t
+*<b>xcb_intern_atom_reply</b>(xcb_connection_t&nbsp;*<i>conn</i>,
+xcb_intern_atom_cookie_t&nbsp;<i>cookie</i>,
+xcb_generic_error_t&nbsp;**<i>e</i>);</p> </td></tr>
+</table>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="6%"></col>
+<col width="9%" class="center"></col>
+<col width="40%"></col>
+<col width="34%"></col>
+</colgroup>
+<tr valign="top" align="left">
+
+
+<h2 id="heading3">REQUEST ARGUMENTS
+</h2>
+<td></td>
+<td></td>
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>conn</i></p></td>
+<td></td>
+<td>
+
+
+<p>The XCB connection to X11.</p></td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>only_if_exists</i></p>
+
+<p style="margin-left:26%;">Return a valid atom id only if
+the atom already exists.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="12%"></col>
+<col width="3%" class="center"></col>
+<col width="51%"></col>
+<col width="23%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>name_len</i></p></td>
+<td></td>
+<td>
+
+
+<p>The length of the following <i>name</i>.</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>name</i></p></td>
+<td></td>
+<td>
+
+
+<p>The name of the atom.</p></td>
+<td>
+</td></tr>
+</table>
+
+<h2 id="heading4">REPLY FIELDS
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>response_type</i></p>
+
+<p style="margin-left:26%;">The type of this reply, in this
+case <i>XCB_INTERN_ATOM</i>. This field is also present in
+the <i>xcb_generic_reply_t</i> and can be used to tell
+replies apart from each other.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="12%"></col>
+<col width="3%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>sequence</i></p></td>
+<td></td>
+<td>
+
+
+<p>The sequence number of the last request processed by the
+X11 server.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>length</i></p></td>
+<td></td>
+<td>
+
+
+<p>The length of the reply, in words (a word is 4
+bytes).</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>atom</i></p></td>
+<td></td>
+<td>
+
+
+<p>TODO: NOT YET DOCUMENTED.</p></td></tr>
+</table>
+
+<h2 id="heading5">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Retrieves the
+identifier (xcb_atom_t TODO) for the atom with the specified
+name. Atoms are used in protocols like EWMH, for example to
+store window titles (<i>_NET_WM_NAME</i> atom) as property
+of a window.</p>
+
+<p style="margin-left:11%; margin-top: 1em">If
+<i>only_if_exists</i> is 0, the atom will be created if it
+does not already exist. If <i>only_if_exists</i> is 1,
+<i>XCB_ATOM_NONE</i> will be returned if the atom does not
+yet exist.</p>
+
+<h2 id="heading6">RETURN VALUE
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Returns an
+<i>xcb_intern_atom_cookie_t</i>. Errors have to be handled
+when calling the reply function
+<i>xcb_intern_atom_reply</i>.</p>
+
+<p style="margin-left:11%; margin-top: 1em">If you want to
+handle errors in the event loop instead, use
+<i>xcb_intern_atom_unchecked</i>. See <b>xcb-<a href="../man3/requests.3.xhtml"><em>requests</em>(3)</a></b>
+for details.</p>
+
+<h2 id="heading7">ERRORS
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>xcb_alloc_error_t</i></p>
+
+<p style="margin-left:26%;">TODO: reasons?</p>
+
+<p style="margin-left:11%;"><i>xcb_value_error_t</i></p>
+
+<p style="margin-left:26%;">A value other than 0 or 1 was
+specified for <i>only_if_exists</i>.</p>
+
+<h2 id="heading8">EXAMPLE
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">/* <br/>
+* Resolves the _NET_WM_NAME atom. <br/>
+* <br/>
+*/ <br/>
+void my_example(xcb_connection *c) { <br/>
+xcb_intern_atom_cookie_t cookie; <br/>
+xcb_intern_atom_reply_t *reply;</p>
+
+<p style="margin-left:11%; margin-top: 1em">cookie =
+xcb_intern_atom(c, 0, strlen(&quot;_NET_WM_NAME&quot;),
+&quot;_NET_WM_NAME&quot;); <br/>
+/* ... do other work here if possible ... */ <br/>
+if ((reply = xcb_intern_atom_reply(c, cookie, NULL))) {
+<br/>
+printf(&quot;The _NET_WM_NAME atom has ID %u0,
+reply-&gt;atom); <br/>
+free(reply); <br/>
+} <br/>
+}</p>
+
+<h2 id="heading9">SEE ALSO
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/xcb-requests.3.xhtml"><em>xcb-requests</em>(3)</a>,
+<a href="../man3/xcb-examples.3.xhtml"><em>xcb-examples</em>(3)</a>, <a href="../man3/xcb_get_atom_name.3.xhtml"><em>xcb_get_atom_name</em>(3)</a>,
+<a href="../man1/xlsatoms.1.xhtml"><em>xlsatoms</em>(1)</a></p>
+
+<h2 id="heading10">AUTHOR
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Generated from
+xproto.xml. Contact xcb@lists.freedesktop.org for
+corrections and improvements.</p>
+<hr/>
+</body>
+</html>

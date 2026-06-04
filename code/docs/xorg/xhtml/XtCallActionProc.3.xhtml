@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:44:27 2012 -->
+<title>XtCallActionProc</title>
+
+</head>
+<body>
+
+<h1>XtCallActionProc</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNTAX</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">XtCallActionProc
+&minus; invoke an action procedure directly</p>
+
+<h2 id="heading2">SYNTAX
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="89%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">void XtCallActionProc(Widget
+<i>widget</i>, String <i>action</i>, XEvent* <i>event</i>,
+String* <i>params</i>, Cardinal <i>num_params</i>);</p></td></tr>
+</table>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="9%"></col>
+<col width="6%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+<td></td>
+<td></td>
+<td></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>widget</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the widget in which the action is to be
+invoked. Must be of class core of any subclass thereof.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>action</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the name of the action routine.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>event</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the contents of the <i>event</i> passed to the
+action routine.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>params</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the contents of the <i>params</i> passed to
+the action routine.</p></td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>num_params</i></p>
+
+<p style="margin-left:26%;">Specifies the num of entries in
+<i>params</i>.</p>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XtCallActionProc</i>
+searches for the named action routine in the same manner and
+order as translation tables are bound. If found, the action
+routine is invoked with the specified widget, event pointer,
+and parameters. It is the responsibility of the caller to
+ensure that the contents of <i>event</i>, <i>params</i>, and
+<i>num_params</i> arguments are appropriate for the
+specified routine, and if necessary, that the specified
+widget is realized or sensitive. If the named action routine
+cannot be found, <i>XtCallActionProc</i> generates a warning
+message and returns.</p>
+
+<h2 id="heading5">SEE ALSO
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>X Toolkit
+Intrinsics &minus; C Language Interface <br/>
+<a href="../../libX11/libX11/libX11.html">Xlib &minus; C Language X Interface</a></i></p>
+<hr/>
+</body>
+</html>

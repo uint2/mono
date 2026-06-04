@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:32:48 2012 -->
+<title>XResourceManagerString</title>
+
+</head>
+<body>
+
+<h1>XResourceManagerString</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNTAX</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">XResourceManagerString,
+XScreenResourceString &minus; obtain server resource
+properties</p>
+
+<h2 id="heading2">SYNTAX
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="72%"></col>
+<col width="17%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">char
+*XResourceManagerString(Display *<i>display</i>);</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">char
+*XScreenResourceString(Screen *<i>screen</i>);</p></td>
+<td>
+</td></tr>
+</table>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="11%"></col>
+<col width="4%" class="center"></col>
+<col width="63%"></col>
+<col width="11%"></col>
+</colgroup>
+<tr valign="top" align="left">
+
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+<td></td>
+<td></td>
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>display</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the connection to the X server.</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>screen</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the screen.</p></td>
+<td>
+</td></tr>
+</table>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XResourceManagerString</i> function returns the
+RESOURCE_MANAGER property from the server&rsquo;s root
+window of screen zero, which was returned when the
+connection was opened using <i>XOpenDisplay</i>. The
+property is converted from type STRING to the current
+locale. The conversion is identical to that produced by
+<i>XmbTextPropertyToTextList</i> for a single element STRING
+property. The returned string is owned by Xlib and should
+not be freed by the client. The property value must be in a
+format that is acceptable to <i>XrmGetStringDatabase</i>. If
+no property exists, NULL is returned.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XScreenResourceString</i> function returns the
+SCREEN_RESOURCES property from the root window of the
+specified screen. The property is converted from type STRING
+to the current locale. The conversion is identical to that
+produced by <i>XmbTextPropertyToTextList</i> for a single
+element STRING property. The property value must be in a
+format that is acceptable to <i>XrmGetStringDatabase</i>. If
+no property exists, NULL is returned. The caller is
+responsible for freeing the returned string by using
+<i>XFree</i>.</p>
+
+<h2 id="heading5">SEE ALSO
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>Xlib &minus;
+C Language X Interface</i></p>
+<hr/>
+</body>
+</html>

@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:28:53 2012 -->
+<title>DMXGetScreenAttributes</title>
+
+</head>
+<body>
+
+<h1>DMXGetScreenAttributes</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNOPSIS</a><br/>
+<a href="#heading3">DESCRIPTION</a><br/>
+<a href="#heading4">RETURN VALUE</a><br/>
+<a href="#heading5">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">DMXGetScreenAttributes
+&minus; determine back-end screen attributes</p>
+
+<h2 id="heading2">SYNOPSIS
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>#include
+&lt;X11/extensions/dmxext.h&gt;</b></p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>Bool
+DMXGetScreenAttributes(Display</b> <i>*dpy</i><b>, <br/>
+int</b> <i>screen</i><b>, <br/>
+DMXScreenAttributes</b> <i>*attr</i><b>);</b></p>
+
+<h2 id="heading3">DESCRIPTION
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>DMXGetScreenAttributes()</b>
+returns the attributes for the single DMX screen specified
+in <i>screen</i>.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>DMXScreenAttributes</i> structure is:</p>
+
+<p style="margin-left:11%; margin-top: 1em">typedef struct
+{ <br/>
+char *displayName; <br/>
+int logicalScreen;</p>
+
+<p style="margin-left:11%; margin-top: 1em">unsigned int
+screenWindowWidth; <br/>
+unsigned int screenWindowHeight; <br/>
+int screenWindowXoffset; <br/>
+int screenWindowYoffset;</p>
+
+<p style="margin-left:11%; margin-top: 1em">unsigned int
+rootWindowWidth; <br/>
+unsigned int rootWindowHeight; <br/>
+int rootWindowXoffset; <br/>
+int rootWindowYoffset;</p>
+
+<p style="margin-left:11%; margin-top: 1em">int
+rootWindowXorigin; <br/>
+int rootWindowYorigin; <br/>
+} DMXScreenAttributes;</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>displayName</i>
+is the name used to open the display, either from the
+<a href="../man1/Xdmx.1.xhtml"><em>Xdmx</em>(1)</a> command-line or from the configuration
+file.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>logicalScreen</i>
+is the value of the screen that that <a href="../man1/Xdmx.1.xhtml"><em>Xdmx</em>(1)</a> server
+exports to clients. When Xinerama is in use, this value is
+typically 0 for all values of physicalScreen. If Xinerama is
+in use, <i>rootWindowXorigin</i> and
+<i>rootWindowYorigin</i> specify where the physical screen
+is positioned in the global Xinerama coordinate system.
+Otherwise, these values are set to 0.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>screenWindowWidth</i>,
+<i>screenWindowHeight</i>, <i>screenWindowXoffset</i>, and
+<i>screenWindowYoffset</i> are a geometry specification (see
+<b>X</b>(7x)) for the location of the DMX screen on the
+back-end screen. The coordinate system of the back-end
+display is used for these values.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>rootWindowWidth</i>,
+<i>rootWindowHeight</i>, <i>rootWindowXoffset</i>, and
+<i>rootWindowYoffset</i> are a geometry specification (see
+<b>X</b>(7x)) for the location of the root window on the
+screen window. The coordinate system of the screen window is
+used. In most cases, the root window will have the same
+geometry as the DMX screen window, and will occupy the same
+area of the back-end display. (This would not be the case,
+for example, if automatic projector alignment is used.)</p>
+
+<h2 id="heading4">RETURN VALUE
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>DMXGetScreenAttributes()</b>
+returns <b>True</b> unless there is a protocol error.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>DMXGetScreenAttributes()</b>
+can generate <b>BadValue</b> errors.</p>
+
+<h2 id="heading5">SEE ALSO
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/DMXGetScreenCount.3.xhtml"><em>DMXGetScreenCount</em>(3)</a>,
+<a href="../man3/DMXChangeScreensAttributes.3.xhtml"><em>DMXChangeScreensAttributes</em>(3)</a>, <a href="../man3/DMX.3.xhtml"><em>DMX</em>(3)</a>,
+<a href="../man1/Xdmx.1.xhtml"><em>Xdmx</em>(1)</a></p>
+<hr/>
+</body>
+</html>

@@ -1,0 +1,368 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:27:43 2012 -->
+<title>XkbKeyNumGroups</title>
+
+</head>
+<body>
+
+<h1>XkbKeyNumGroups</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNOPSIS</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">STRUCTURES</a><br/>
+<a href="#heading6">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">XkbKeyNumGroups
+&minus; Returns the number of groups of symbols bound to the
+key corresponding to keycode</p>
+
+<h2 id="heading2">SYNOPSIS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="29%"></col>
+<col width="2%" class="center"></col>
+<col width="52%"></col>
+<col width="6%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>int XkbKeyNumGroups</b></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>(XkbDescPtr</b>
+<i>xkb</i><b>, KeyCode</b> <i>keycode</i><b>);</b></p></td>
+<td>
+</td></tr>
+</table>
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="7%"></col>
+<col width="4%" class="center"></col>
+<col width="41%"></col>
+<col width="37%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b><i>&minus; xkb</i></b></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Xkb description of interest</p></td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>&minus; keycode</i></p>
+
+<p style="margin-left:22%;">keycode of interest</p>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>group_info</i> field of an XkbSymMapRec is an encoded
+value containing the number of groups of symbols bound to
+the key as well as the specification of the treatment of
+out-of-range groups. It is legal for a key to have zero
+groups, in which case it also has zero symbols and all
+events from that key yield NoSymbol. To obtain the number of
+groups of symbols bound to the key, use
+<i>XkbKeyNumGroups.</i> To change the number of groups bound
+to a key, use <i>XkbChangeTypesOfKey.</i> To obtain a mask
+that determines the treatment of out-of-range groups, use
+<i>XkbKeyGroupInfo</i> and
+<i>XkbOutOfRangeGroupInfo.</i></p>
+
+<p style="margin-left:11%; margin-top: 1em">The keyboard
+controls contain a <i>groups_wrap</i> field specifying the
+handling of illegal groups on a global basis. That is, when
+the user performs an action causing the effective group to
+go out of the legal range, the <i>groups_wrap</i> field
+specifies how to normalize the effective keyboard group to a
+group that is legal for the keyboard as a whole, but there
+is no guarantee that the normalized group will be within the
+range of legal groups for any individual key. The per-key
+<i>group_info</i> field specifies how a key treats a legal
+effective group if the key does not have a type specified
+for the group of concern. For example, the Enter key usually
+has just one group defined. If the user performs an action
+causing the global keyboard group to change to Group2, the
+<i>group_info</i> field for the Enter key describes how to
+handle this situation.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Out-of-range
+groups for individual keys are mapped to a legal group using
+the same options as are used for the overall keyboard group.
+The particular type of mapping used is controlled by the
+bits set in the <i>group_info</i> flag, as shown in Table
+1.</p>
+
+
+<p class="center" style="margin-top: 1em"><img src="grohtml-126911.png" alt="Image grohtml-126911.png"></img></p>
+
+<p style="margin-left:11%; margin-top: 1em">The Xkb
+extension is composed of two parts: a server extension, and
+a client-side X library extension. This chapter discusses
+functions used to modify controls effecting the behavior of
+the server portion of the Xkb extension. X Library Controls
+discusses functions used to modify controls that affect only
+the behavior of the client portion of the extension; those
+controls are known as Library Controls.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Xkb contains
+control features that affect the entire keyboard, known as
+global keyboard controls. Some of the controls may be
+selectively enabled and disabled; these controls are known
+as the <i>Boolean Controls.</i> Boolean Controls can be
+turned on or off under program control and can also be
+automatically set to an on or off condition when a client
+program exits. The remaining controls, known as the
+<i>Non-Boolean Controls,</i> are always active. The
+XkbControlsRec structure describes the current state of most
+of the global controls and the attributes effecting the
+behavior of each of these Xkb features. This chapter
+describes the Xkb controls and how to manipulate them.</p>
+
+<p style="margin-left:11%; margin-top: 1em">There are two
+possible components for each of the Boolean Controls:
+attributes describing how the control should work, and a
+state describing whether the behavior as a whole is enabled
+or disabled. The attributes and state for most of these
+controls are held in the XkbControlsRec structure.</p>
+
+<p style="margin-left:11%; margin-top: 1em">You can
+manipulate the Xkb controls individually, via convenience
+functions, or as a whole. To treat them as a group, modify
+an XkbControlsRec structure to describe all of the changes
+to be made, and then pass that structure and appropriate
+flags to an Xkb library function, or use a
+XkbControlsChangesRec to reduce network traffic. When using
+a convenience function to manipulate one control
+individually, you do not use an XkbControlsRec structure
+directly.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The Xkb
+controls are grouped as shown in Table 2.</p>
+
+
+<p class="center" style="margin-top: 1em"><img src="grohtml-126912.png" alt="Image grohtml-126912.png"></img></p>
+
+<p style="margin-left:11%;">The individual categories and
+controls are described first, together with <br/>
+functions for manipulating <br/>
+them.</p>
+
+<h2 id="heading5">STRUCTURES
+</h2>
+
+
+<p style="margin-left:22%; margin-top: 1em">The
+KeySymMapRec structure is defined as follows:</p>
+
+<p style="margin-left:11%;">#define XkbNumKbdGroups 4 <br/>
+#define XkbMaxKbdGroup (XkbNumKbdGroups-1) <br/>
+typedef struct { /&lowast; map to keysyms for a single
+keycode <br/>
+*/ <br/>
+unsigned char kt_index[XkbNumKbdGroups]; /&lowast; key type
+index for <br/>
+each group */ <br/>
+unsigned char group_info; /&lowast; # of groups and out of
+range group <br/>
+handling */ <br/>
+unsigned char width; /&lowast; max # of shift levels for key
+*/ <br/>
+unsigned short offset; /&lowast; index to keysym table in
+syms array <br/>
+*/</p>
+
+<p>} XkbSymMapRec, *XkbSymMapPtr; <br/>
+The XkbControlsRec structure is defined as follows: <br/>
+#define XkbMaxLegalKeyCode 255 <br/>
+#define XkbPerKeyBitArraySize ((XkbMaxLegalKeyCode+1)/8)
+<br/>
+typedef struct { <br/>
+unsigned char mk_dflt_btn; /&lowast; default button for
+keyboard driven <br/>
+mouse */ <br/>
+unsigned char num_groups; /&lowast; number of keyboard
+groups */ <br/>
+unsigned char groups_wrap; /&lowast; how to wrap
+out-of-bounds groups */ <br/>
+XkbModsRec internal; /&lowast; defines server internal
+modifiers <br/>
+*/ <br/>
+XkbModsRec ignore_lock; /&lowast; modifiers to ignore when
+checking <br/>
+for grab */ <br/>
+unsigned int enabled_ctrls; /&lowast; 1 bit =&gt;
+corresponding boolean <br/>
+control enabled */ <br/>
+unsigned short repeat_delay; /&lowast; ms delay until first
+repeat */ <br/>
+unsigned short repeat_interval; /&lowast; ms delay between
+repeats */ <br/>
+unsigned short slow_keys_delay; /&lowast; ms minimum time
+key must be down to <br/>
+be ok */ <br/>
+unsigned short debounce_delay; /&lowast; ms delay before key
+reactivated */ <br/>
+unsigned short mk_delay; /&lowast; ms delay to second mouse
+motion <br/>
+event */ <br/>
+unsigned short mk_interval; /&lowast; ms delay between
+repeat mouse <br/>
+events */ <br/>
+unsigned short mk_time_to_max; /&lowast; # intervals until
+constant mouse <br/>
+move */ <br/>
+unsigned short mk_max_speed; /&lowast; multiplier for
+maximum mouse speed <br/>
+*/ <br/>
+short mk_curve; /&lowast; determines mouse move curve type
+*/ <br/>
+unsigned short ax_options; /&lowast; 1 bit =&gt; Access X
+option enabled */ <br/>
+unsigned short ax_timeout; /&lowast; seconds until Access X
+disabled */ <br/>
+unsigned short axt_opts_mask; /&lowast; 1 bit =&gt; options
+to reset on Access <br/>
+X timeout */ <br/>
+unsigned short axt_opts_values; /&lowast; 1 bit =&gt; turn
+option on, 0=&gt; off */ <br/>
+unsigned int axt_ctrls_mask; /&lowast; which bits in
+enabled_ctrls to <br/>
+modify */ <br/>
+unsigned int axt_ctrls_values; /&lowast; values for new bits
+in <br/>
+enabled_ctrls */ <br/>
+unsigned char per_key_repeat[XkbPerKeyBitArraySize];
+/&lowast; per key auto <br/>
+repeat */ <br/>
+} XkbControlsRec, *XkbControlsPtr;</p>
+
+<p>The XkbControlsRec structure is defined as follows:
+<br/>
+#define XkbMaxLegalKeyCode 255 <br/>
+#define XkbPerKeyBitArraySize ((XkbMaxLegalKeyCode+1)/8)
+<br/>
+typedef struct { <br/>
+unsigned char mk_dflt_btn; /&lowast; default button for
+keyboard driven <br/>
+mouse */ <br/>
+unsigned char num_groups; /&lowast; number of keyboard
+groups */ <br/>
+unsigned char groups_wrap; /&lowast; how to wrap
+out-of-bounds groups */ <br/>
+XkbModsRec internal; /&lowast; defines server internal
+modifiers <br/>
+*/ <br/>
+XkbModsRec ignore_lock; /&lowast; modifiers to ignore when
+checking <br/>
+for grab */ <br/>
+unsigned int enabled_ctrls; /&lowast; 1 bit =&gt;
+corresponding boolean <br/>
+control enabled */ <br/>
+unsigned short repeat_delay; /&lowast; ms delay until first
+repeat */ <br/>
+unsigned short repeat_interval; /&lowast; ms delay between
+repeats */ <br/>
+unsigned short slow_keys_delay; /&lowast; ms minimum time
+key must be down to <br/>
+be ok */ <br/>
+unsigned short debounce_delay; /&lowast; ms delay before key
+reactivated */ <br/>
+unsigned short mk_delay; /&lowast; ms delay to second mouse
+motion <br/>
+event */ <br/>
+unsigned short mk_interval; /&lowast; ms delay between
+repeat mouse <br/>
+events */ <br/>
+unsigned short mk_time_to_max; /&lowast; # intervals until
+constant mouse <br/>
+move */ <br/>
+unsigned short mk_max_speed; /&lowast; multiplier for
+maximum mouse speed <br/>
+*/ <br/>
+short mk_curve; /&lowast; determines mouse move curve type
+*/ <br/>
+unsigned short ax_options; /&lowast; 1 bit =&gt; Access X
+option enabled */ <br/>
+unsigned short ax_timeout; /&lowast; seconds until Access X
+disabled */ <br/>
+unsigned short axt_opts_mask; /&lowast; 1 bit =&gt; options
+to reset on Access <br/>
+X timeout */ <br/>
+unsigned short axt_opts_values; /&lowast; 1 bit =&gt; turn
+option on, 0=&gt; off */ <br/>
+unsigned int axt_ctrls_mask; /&lowast; which bits in
+enabled_ctrls to <br/>
+modify */ <br/>
+unsigned int axt_ctrls_values; /&lowast; values for new bits
+in <br/>
+enabled_ctrls */ <br/>
+unsigned char per_key_repeat[XkbPerKeyBitArraySize];
+/&lowast; per key auto <br/>
+repeat */ <b><br/>
+XkbChangeTypesOfKey</b>(3), <a href="../man3/XkbKeyGroupInfo.3.xhtml"><em>XkbKeyGroupInfo</em>(3)</a>,
+<a href="../man3/XkbOutOfRangeGroupInfo..3.xhtml"><em>XkbOutOfRangeGroupInfo.</em>(3)</a></p>
+
+<p>} XkbControlsRec, *XkbControlsPtr;</p>
+
+<h2 id="heading6">SEE ALSO
+</h2>
+<hr/>
+</body>
+</html>

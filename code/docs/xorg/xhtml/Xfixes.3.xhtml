@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:32:31 2012 -->
+<title>XFIXES</title>
+
+</head>
+<body>
+
+<h1>XFIXES</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNTAX</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">RESTRICTIONS</a><br/>
+<a href="#heading6">AUTHORS</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">XFixes &minus;
+Augmented versions of core protocol requests</p>
+
+<h2 id="heading2">SYNTAX
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">#include
+&lt;X11/extensions/Xfixes.h&gt;</p>
+
+<p style="margin-left:11%; margin-top: 1em">Bool
+XFixesQueryExtension (Display *<i>dpy</i>,</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="8%"></col>
+<col width="7%"></col>
+<col width="85%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td></td>
+<td>
+
+
+<p>int *<i>event_base_return</i>, int
+*<i>error_base_return</i>);</p> </td></tr>
+</table>
+
+<p style="margin-left:11%; margin-top: 1em">Status
+XFixesQueryVersion (Display *<i>dpy</i>,</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="8%"></col>
+<col width="92%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>int *<i>major_version_return</i>,</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>int *<i>minor_version_return</i>);</p></td></tr>
+</table>
+
+<p style="margin-left:11%; margin-top: 1em">void
+XFixesChangeSaveSet (Display *dpy,</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="8%"></col>
+<col width="92%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>Window <i>window</i>,</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>int <i>mode</i>,</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>int <i>target</i>,</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>int <i>map</i>);</p></td></tr>
+</table>
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="11%"></col>
+<col width="4%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><i>display</i></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Specifies the connection to the
+X server.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>window</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies which window.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>mode</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the save set operation
+(SetModeInsert/SetModeDelete).</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>target</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the target when executing the save set
+(SaveSetNearest/SaveSetRoot). In SaveSetNearest mode, the
+save set member window will be reparented to the nearest
+window not owned by the save set client. In SaveSetRoot
+mode, the save set member window will be reparented to the
+root window.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>map</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the map mode (SaveSetMap/SaveSetUnmap) which
+selects whether the save setmember window will be mapped or
+unmapped during save set processing.</p></td></tr>
+</table>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>Xfixes</b>
+is a simple library designed to interface the X Fixes
+Extension. This extension provides application with work
+arounds for various limitations in the core protocol.</p>
+
+<h2 id="heading5">RESTRICTIONS
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>Xfixes</b>
+will remain upward compatible after the current 1.0
+release.</p>
+
+<h2 id="heading6">AUTHORS
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Keith Packard,
+member of the XFree86 Project, Inc. and HP, Owen Taylor,
+member of the Gnome Foundation and Redhat, Inc.</p>
+<hr/>
+</body>
+</html>

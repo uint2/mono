@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:33:35 2012 -->
+<title>XRaiseWindow</title>
+
+</head>
+<body>
+
+<h1>XRaiseWindow</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNTAX</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">DIAGNOSTICS</a><br/>
+<a href="#heading6">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">XRaiseWindow,
+XLowerWindow, XCirculateSubwindows, XCirculateSubwindowsUp,
+XCirculateSubwindowsDown, XRestackWindows &minus; change
+window stacking order</p>
+
+<h2 id="heading2">SYNTAX
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="89%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">int XRaiseWindow(Display
+*<i>display</i>, Window <i>w</i>);</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">int XLowerWindow(Display
+*<i>display</i>, Window <i>w</i>);</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">int XCirculateSubwindows(Display
+*<i>display</i>, Window <i>w</i>, int <i>direction</i>);</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">int
+XCirculateSubwindowsUp(Display *<i>display</i>, Window
+<i>w</i>);</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">int
+XCirculateSubwindowsDown(Display *<i>display</i>, Window
+<i>w</i>);</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">int XRestackWindows(Display
+*<i>display</i>, Window <i>windows</i>[], int
+<i>nwindows</i>);</p> </td></tr>
+</table>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="14%"></col>
+<col width="1%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+<td></td>
+<td></td>
+<td></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>direction</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the direction (up or down) that you want to
+circulate the window. You can pass <i>RaiseLowest</i> or
+<i>LowerHighest</i>.</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>display</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the connection to the X server.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>nwindows</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the number of windows to be restacked.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>w</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the window.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>windows</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies an array containing the windows to be
+restacked.</p> </td></tr>
+</table>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XRaiseWindow</i> function raises the specified window to
+the top of the stack so that no sibling window obscures it.
+If the windows are regarded as overlapping sheets of paper
+stacked on a desk, then raising a window is analogous to
+moving the sheet to the top of the stack but leaving its x
+and y location on the desk constant. Raising a mapped window
+may generate <i>Expose</i> events for the window and any
+mapped subwindows that were formerly obscured.</p>
+
+<p style="margin-left:11%; margin-top: 1em">If the
+override-redirect attribute of the window is <i>False</i>
+and some other client has selected
+<i>SubstructureRedirectMask</i> on the parent, the X server
+generates a <i>ConfigureRequest</i> event, and no processing
+is performed. Otherwise, the window is raised.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XRaiseWindow</i>
+can generate a <i>BadWindow</i> error.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XLowerWindow</i> function lowers the specified window to
+the bottom of the stack so that it does not obscure any
+sibling windows. If the windows are regarded as overlapping
+sheets of paper stacked on a desk, then lowering a window is
+analogous to moving the sheet to the bottom of the stack but
+leaving its x and y location on the desk constant. Lowering
+a mapped window will generate <i>Expose</i> events on any
+windows it formerly obscured.</p>
+
+<p style="margin-left:11%; margin-top: 1em">If the
+override-redirect attribute of the window is <i>False</i>
+and some other client has selected
+<i>SubstructureRedirectMask</i> on the parent, the X server
+generates a <i>ConfigureRequest</i> event, and no processing
+is performed. Otherwise, the window is lowered to the bottom
+of the stack.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XLowerWindow</i>
+can generate a <i>BadWindow</i> error.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XCirculateSubwindows</i> function circulates children of
+the specified window in the specified direction. If you
+specify <i>RaiseLowest</i>, <i>XCirculateSubwindows</i>
+raises the lowest mapped child (if any) that is occluded by
+another child to the top of the stack. If you specify
+<i>LowerHighest</i>, <i>XCirculateSubwindows</i> lowers the
+highest mapped child (if any) that occludes another child to
+the bottom of the stack. Exposure processing is then
+performed on formerly obscured windows. If some other client
+has selected <i>SubstructureRedirectMask</i> on the window,
+the X server generates a <i>CirculateRequest</i> event, and
+no further processing is performed. If a child is actually
+restacked, the X server generates a <i>CirculateNotify</i>
+event.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XCirculateSubwindows</i>
+can generate <i>BadValue</i> and <i>BadWindow</i>
+errors.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XCirculateSubwindowsUp</i> function raises the lowest
+mapped child of the specified window that is partially or
+completely occluded by another child. Completely unobscured
+children are not affected. This is a convenience function
+equivalent to <i>XCirculateSubwindows</i> with
+<i>RaiseLowest</i> specified.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XCirculateSubwindowsUp</i>
+can generate a <i>BadWindow</i> error.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XCirculateSubwindowsDown</i> function lowers the highest
+mapped child of the specified window that partially or
+completely occludes another child. Completely unobscured
+children are not affected. This is a convenience function
+equivalent to <i>XCirculateSubwindows</i> with
+<i>LowerHighest</i> specified.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XCirculateSubwindowsDown</i>
+can generate a <i>BadWindow</i> error.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XRestackWindows</i> function restacks the windows in the
+order specified, from top to bottom. The stacking order of
+the first window in the windows array is unaffected, but the
+other windows in the array are stacked underneath the first
+window, in the order of the array. The stacking order of the
+other windows is not affected. For each window in the window
+array that is not a sibling of the first window, a
+<i>BadMatch</i> error results.</p>
+
+<p style="margin-left:11%; margin-top: 1em">If the
+override-redirect attribute of a window is <i>False</i> and
+some other client has selected
+<i>SubstructureRedirectMask</i> on the parent, the X server
+generates <i>ConfigureRequest</i> events for each window
+whose override-redirect flag is not set, and no further
+processing is performed. Otherwise, the windows will be
+restacked in top-to-bottom order.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XRestackWindows</i>
+can generate <i>BadWindow</i> error.</p>
+
+<h2 id="heading5">DIAGNOSTICS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="14%"></col>
+<col width="1%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><i>BadValue</i></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Some numeric value falls outside
+the range of values accepted by the request. Unless a
+specific range is specified for an argument, the full range
+defined by the argument&rsquo;s type is accepted. Any
+argument defined as a set of alternatives can generate this
+error.</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>BadWindow</i></p></td>
+<td></td>
+<td>
+
+
+<p>A value for a Window argument does not name a defined
+Window.</p> </td></tr>
+</table>
+
+<h2 id="heading6">SEE ALSO
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XChangeWindowAttributes.3.xhtml"><em>XChangeWindowAttributes</em>(3)</a>,
+<a href="../man3/XConfigureWindow.3.xhtml"><em>XConfigureWindow</em>(3)</a>, <a href="../man3/XCreateWindow.3.xhtml"><em>XCreateWindow</em>(3)</a>, <a href="../man3/XDestroyWindow.3.xhtml"><em>XDestroyWindow</em>(3)</a>,
+<a href="../man3/XMapWindow.3.xhtml"><em>XMapWindow</em>(3)</a>, <a href="../man3/XUnmapWindow.3.xhtml"><em>XUnmapWindow</em>(3)</a> <i><br/>
+<a href="../../libX11/libX11/libX11.html">Xlib &minus; C Language X Interface</a></i></p>
+<hr/>
+</body>
+</html>

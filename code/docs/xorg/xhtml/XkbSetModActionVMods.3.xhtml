@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:39:51 2012 -->
+<title>XkbSetModActionVMods</title>
+
+</head>
+<body>
+
+<h1>XkbSetModActionVMods</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNOPSIS</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">NOTES</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">XkbSetModActionVMods
+&minus; Sets the vmods1 and vmods2 fields of act using the
+vmods format of an Xkb modifier description</p>
+
+<h2 id="heading2">SYNOPSIS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="38%"></col>
+<col width="2%" class="center"></col>
+<col width="49%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>void
+XkbSetModActionVMods</b></p> </td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>(XkbAction</b> <i>act</i><b>,
+unsigned short</b> <i>vmods</i><b>);</b></p></td></tr>
+</table>
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="7%"></col>
+<col width="4%" class="center"></col>
+<col width="43%"></col>
+<col width="35%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b><i>&minus; act</i></b></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">action in which to set vmods</p></td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>&minus; vmods</i></p>
+
+<p style="margin-left:22%;">virtual mods to set</p>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XkbSetModActionVMods</i>
+sets the <i>vmods1</i> and <i>vmods2</i> fields of
+<i>act</i> using the <i>vmods</i> format of an Xkb modifier
+description.</p>
+
+<h2 id="heading5">NOTES
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Despite the
+fact that the first parameter of these two macros is of type
+XkbAction, these macros may be used only with Actions of
+type XkbModAction and XkbISOAction.</p>
+<hr/>
+</body>
+</html>

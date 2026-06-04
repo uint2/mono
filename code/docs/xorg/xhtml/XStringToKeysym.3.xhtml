@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:39:22 2012 -->
+<title>XStringToKeysym</title>
+
+</head>
+<body>
+
+<h1>XStringToKeysym</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNTAX</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">XStringToKeysym,
+XKeysymToString, XKeycodeToKeysym, XKeysymToKeycode,
+XConvertCase &minus; convert keysyms</p>
+
+<h2 id="heading2">SYNTAX
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="89%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">KeySym XStringToKeysym(char
+*<i>string</i>);</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">char *XKeysymToString(KeySym
+<i>keysym</i>);</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">KeySym XKeycodeToKeysym(Display
+*<i>display</i>, KeyCode <i>keycode</i>, int
+<i>index</i>);</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">KeyCode XKeysymToKeycode(Display
+*<i>display</i>, KeySym <i>keysym</i>);</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">void XConvertCase(KeySym
+<i>keysym</i>, KeySym *<i>lower_return</i>, KeySym
+*<i>upper_return</i>);</p> </td></tr>
+</table>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="11%"></col>
+<col width="4%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+<td></td>
+<td></td>
+<td></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>display</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the connection to the X server.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>index</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the element of KeyCode vector.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>keycode</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the KeyCode.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>keysym</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the KeySym that is to be searched for or
+converted.</p> </td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>lower_return</i></p>
+
+<p style="margin-left:26%;">Returns the lowercase form of
+keysym, or keysym.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="9%"></col>
+<col width="6%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>string</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the name of the KeySym that is to be
+converted.</p> </td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>upper_return</i></p>
+
+<p style="margin-left:26%;">Returns the uppercase form of
+keysym, or keysym.</p>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Standard KeySym
+names are obtained from &lt;<i>X11/keysymdef.h</i>&gt; by
+removing the XK_ prefix from each name. KeySyms that are not
+part of the Xlib standard also may be obtained with this
+function. The set of KeySyms that are available in this
+manner and the mechanisms by which Xlib obtains them is
+implementation-dependent.</p>
+
+<p style="margin-left:11%; margin-top: 1em">If the KeySym
+name is not in the Host Portable Character Encoding, the
+result is implementation-dependent. If the specified string
+does not match a valid KeySym, <i>XStringToKeysym</i>
+returns <i>NoSymbol</i>.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The returned
+string is in a static area and must not be modified. The
+returned string is in the Host Portable Character Encoding.
+If the specified KeySym is not defined,
+<i>XKeysymToString</i> returns a NULL.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XKeycodeToKeysym</i> function uses internal Xlib tables
+and returns the KeySym defined for the specified KeyCode and
+the element of the KeyCode vector. If no symbol is defined,
+<i>XKeycodeToKeysym</i> returns <i>NoSymbol</i>.
+<i>XKeycodeToKeysym</i> predates the XKB extension. If you
+want to lookup a KeySym while using XKB you have to use
+<i>XkbKeycodeToKeysym</i>.</p>
+
+<p style="margin-left:11%; margin-top: 1em">If the
+specified KeySym is not defined for any KeyCode,
+<i>XKeysymToKeycode</i> returns zero.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XConvertCase</i> function returns the uppercase and
+lowercase forms of the specified Keysym, if the KeySym is
+subject to case conversion; otherwise, the specified KeySym
+is returned to both lower_return and upper_return. Support
+for conversion of other than Latin and Cyrillic KeySyms is
+implementation-dependent.</p>
+
+<h2 id="heading5">SEE ALSO
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XkbKeycodeToKeysym.3.xhtml"><em>XkbKeycodeToKeysym</em>(3)</a>,
+<a href="../man3/XLookupKeysym.3.xhtml"><em>XLookupKeysym</em>(3)</a> <i><br/>
+<a href="../../libX11/libX11/libX11.html">Xlib &minus; C Language X Interface</a></i></p>
+<hr/>
+</body>
+</html>

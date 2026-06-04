@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:43:05 2012 -->
+<title>XtOpenApplication</title>
+
+</head>
+<body>
+
+<h1>XtOpenApplication</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNTAX</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">XtOpenApplication,
+XtVaOpenApplication &minus; initialize, open, or close a
+display</p>
+
+<h2 id="heading2">SYNTAX
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="89%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Widget
+XtOpenApplication(XtAppContext *<i>app_context_return</i>,
+String <i>application_class</i>, XrmOptionDescRec
+*<i>options</i>, Cardinal <i>num_options</i>, int
+*<i>argc_in_out</i>, String *<i>argv_in_out</i>, String
+*<i>fallback_resources</i>, WidgetClass <i>widget_class</i>,
+ArgList <i>args</i>, Cardinal <i>num_args</i>);</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Widget
+XtVaOpenApplication(XtAppContext *<i>app_context_return</i>,
+String <i>application_class</i>, XrmOptionDescRec
+*<i>options</i>, Cardinal <i>num_options</i>, int
+*<i>argc_in_out</i>, String *<i>argv_in_out</i>, String
+*<i>fallback_resources</i>, WidgetClass <i>widget_class</i>,
+...);</p> </td></tr>
+</table>
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>app_context_return</i></p>
+
+<p style="margin-left:26%;">Specifies the application
+context.</p>
+
+<p style="margin-left:11%;"><i>application_class</i></p>
+
+<p style="margin-left:26%;">Specifies the class name of
+this application, which usually is the generic name for all
+instances of this application.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="11%"></col>
+<col width="4%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>options</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies how to parse the command line for any
+application-specific resources. The options argument is
+passed as a parameter to <i>XrmParseCommand</i>. For further
+information, see <i>Xlib &minus; C Language X
+Interface</i>.</p> </td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>num_options</i></p>
+
+<p style="margin-left:26%;">Specifies the number of entries
+in the options list.</p>
+
+<p style="margin-left:11%;"><i>argc_in_out</i></p>
+
+<p style="margin-left:26%;">Specifies a pointer to the
+number of command line parameters.</p>
+
+<p style="margin-left:11%;"><i>argv_in_out</i></p>
+
+<p style="margin-left:26%;">Specifies the command line
+parameters.</p>
+
+<p style="margin-left:11%;"><i>fallback_resources</i></p>
+
+<p style="margin-left:26%;">Specifies resource values to be
+used if the application class resource file cannot be opened
+or read, or NULL.</p>
+
+<p style="margin-left:11%;"><i>widget_class</i></p>
+
+<p style="margin-left:26%;">Specifies the widget class of
+the shell to be created.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="12%"></col>
+<col width="3%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>args</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the argument list to override any other
+resource specification for the created shell widget.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>num_args</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the number of entries in the argument
+list.</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>...</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the variable argument list to override any
+other resource specification for the created shell
+widget.</p> </td></tr>
+</table>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XtOpenApplication</i> function calls
+<i>XtToolkitInitialize</i> followed by
+<i>XtCreateApplicationContext</i>, then calls
+<i>XtOpenDisplay</i> with <i>display_string</i> NULL and
+<i>application_name</i> NULL, and finally calls
+<i>XtAppCreateShell</i> with <i>application_name</i> NULL,
+the specified <i>widget_class</i>, and the specified
+<i>args</i> and <i>num_args</i> and returns the created
+shell. The modified <i>argc</i> and <i>argv</i> returned by
+<i>XtDisplayInitialize</i> are returned in
+<i>argc_in_out</i> and <i>argv_in_out</i>. If
+<i>app_context_return</i> is not NULL, the created
+application context is also returned. If the display
+specified by the command line cannot be opened, an error
+message is issued and <i>XtOpenApplication</i> terminates
+the application. If <i>fallback_resources</i> is non-NULL,
+<i>XtAppSetFallbackResources</i> is called with the value
+prior to calling <i>XtOpenDisplay</i>.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em">XtAppInitialize
+and XtVaAppInitialize have been superceded by
+<i>XtOpenApplication</i> and <i>XtVaOpenApplication</i>
+respectively.</p>
+
+<h2 id="heading5">SEE ALSO
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XtAppInitialize.3.xhtml"><em>XtAppInitialize</em>(3)</a>,
+<a href="../man3/XtVaAppInitialize.3.xhtml"><em>XtVaAppInitialize</em>(3)</a> <i><br/>
+X Toolkit Intrinsics &minus; C Language Interface <br/>
+<a href="../../libX11/libX11/libX11.html">Xlib &minus; C Language X Interface</a></i></p>
+<hr/>
+</body>
+</html>

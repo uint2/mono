@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:26:29 2012 -->
+<title>XkbGetAutoResetControls</title>
+
+</head>
+<body>
+
+<h1>XkbGetAutoResetControls</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNOPSIS</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">RETURN VALUES</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">XkbGetAutoResetControls
+&minus; Gets the current values of the auto-reset
+controls</p>
+
+<h2 id="heading2">SYNOPSIS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="43%"></col>
+<col width="1%" class="center"></col>
+<col width="45%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>Bool
+XkbGetAutoResetControls</b></p> </td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>(Display *</b><i>dpy</i><b>,
+unsigned int *</b><i>auto_ctrls</i><b>,</b></p></td></tr>
+</table>
+
+<p style="margin-left:11%;"><b>unsigned int
+*</b><i>auto_values</i><b>);</b></p>
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="7%"></col>
+<col width="5%" class="center"></col>
+<col width="34%"></col>
+<col width="43%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b><i>&minus; dpy</i></b></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">connection to X server</p></td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>&minus; auto_ctrls</i></p>
+
+<p style="margin-left:22%;">specifies which bits in
+auto_values are relevant</p>
+
+<p style="margin-left:11%;"><i>&minus; auto_values</i></p>
+
+<p style="margin-left:22%;">1 bit =&gt; corresponding
+control has auto-reset on</p>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">You can
+configure the boolean controls to automatically be enabled
+or disabled when a program exits. This capability is
+controlled via two masks maintained in the X server on a
+per-client basis. There is no client-side Xkb data structure
+corresponding to these masks. Whenever the client exits for
+any reason, any boolean controls specified in the
+<i>auto-reset mask</i> are set to the corresponding value
+from the <i>auto-reset values</i> mask. This makes it
+possible for clients to &quot;clean up after
+themselves&quot; automatically, even if abnormally
+terminated. The bits used in the masks correspond to the
+EnabledControls control bits.</p>
+
+<p style="margin-left:11%; margin-top: 1em">For example, a
+client that replaces the keyboard bell with some other
+audible cue might want to turn off the AudibleBell control
+to prevent the server from also generating a sound and avoid
+cacophony. If the client were to exit without resetting the
+AudibleBell control, the user would be left without any
+feedback at all. Setting AudibleBell in both the auto-reset
+mask and auto-reset values guarantees that the audible bell
+will be turned back on when the client exits.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XkbGetAutoResetControls</i>
+backfills <i>auto_ctrls</i> and <i>auto_values</i> with the
+AutoReset control attributes for this particular client. It
+returns True if successful, and False otherwise.</p>
+
+<h2 id="heading5">RETURN VALUES
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="7%"></col>
+<col width="16%" class="center"></col>
+<col width="66%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">True</p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">The
+<i>XkbGetAutoResetControls</i> function returns True when it
+successfully backfills <i>auto_ctrls</i> and
+<i>auto_values</i> with the AutoReset control attributes for
+this particular client.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>False</p></td>
+<td></td>
+<td>
+
+
+<p>The <i>XkbGetAutoResetControls</i> function returns
+False when it does not successfully backfill
+<i>auto_ctrls</i> and <i>auto_values</i> with the AutoReset
+control attributes for this particular client.</p></td></tr>
+ </table>
+<hr/>
+</body>
+</html>

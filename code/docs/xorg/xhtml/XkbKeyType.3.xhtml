@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:38:45 2012 -->
+<title>XkbKeyType</title>
+
+</head>
+<body>
+
+<h1>XkbKeyType</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNOPSIS</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">STRUCTURES</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">XkbKeyType
+&minus; Obtain the index of a key type or the pointer to a
+key type</p>
+
+<h2 id="heading2">SYNOPSIS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="37%"></col>
+<col width="1%" class="center"></col>
+<col width="51%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>XkbKeyTypePtr
+XkbKeyType</b></p> </td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>(XkbDescPtr</b>
+<i>xkb</i><b>, KeyCode</b> <i>keycode</i><b>, int</b>
+<i>group</i><b>);</b></p> </td></tr>
+</table>
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="7%"></col>
+<col width="4%" class="center"></col>
+<col width="41%"></col>
+<col width="37%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b><i>&minus; xkb</i></b></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Xkb description of interest</p></td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>&minus; keycode</i></p>
+
+<p style="margin-left:22%;">keycode of interest</p>
+
+<p style="margin-left:11%;"><i>&minus; group</i></p>
+
+<p style="margin-left:22%;">group index</p>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XkbKeyType</i>
+returns a pointer to the key type in the <i>types</i> vector
+of the client map in <i>xkb</i> corresponding to the given
+<i>keycode</i> and <i>group</i> index.</p>
+
+<h2 id="heading5">STRUCTURES
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">typedef struct
+{ /&lowast; Key Type */</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="8%"></col>
+<col width="7%"></col>
+<col width="85%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td></td>
+<td>
+
+
+<p>XkbModsRec mods; /&lowast; modifiers used to compute
+shift level */</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td></td>
+<td>
+
+
+<p>unsigned char num_levels; /&lowast; total # shift
+levels, do not modify directly */</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td></td>
+<td>
+
+
+<p>unsigned char map_count; /&lowast; # entries in map,
+preserve (if non-NULL) */</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td></td>
+<td>
+
+
+<p>XkbKTMapEntryPtr map; /&lowast; vector of modifiers for
+each shift level */</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td></td>
+<td>
+
+
+<p>XkbModsPtr preserve; /&lowast; mods to preserve for
+corresponding map entry */</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td></td>
+<td>
+
+
+<p>Atom name; /&lowast; name of key type */</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td></td>
+<td>
+
+
+<p>Atom * level_names; /&lowast; array of names of each
+shift level */</p></td></tr>
+</table>
+
+<p style="margin-left:11%;">} XkbKeyTypeRec,
+*XkbKeyTypePtr;</p>
+<hr/>
+</body>
+</html>

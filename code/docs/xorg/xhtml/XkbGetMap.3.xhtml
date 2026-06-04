@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:41:06 2012 -->
+<title>XkbGetMap</title>
+
+</head>
+<body>
+
+<h1>XkbGetMap</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNOPSIS</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">STRUCTURES</a><br/>
+<a href="#heading6">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">XkbGetMap
+&minus; Allocate an XkbDescRec structure and populate it
+with the server&rsquo;s keyboard client map and server
+map</p>
+
+<h2 id="heading2">SYNOPSIS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="31%"></col>
+<col width="1%" class="center"></col>
+<col width="57%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>XkbDescPtr XkbGetMap</b></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>(Display
+*</b><i>display</i><b>, unsigned int</b> <i>which</i><b>,
+unsigned</b></p> </td></tr>
+</table>
+
+<p style="margin-left:11%;"><b>int</b>
+<i>device_spec</i><b>);</b></p>
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b><i>&minus;
+display</i></b></p>
+
+<p style="margin-left:22%;">connection to X server</p>
+
+<p style="margin-left:11%;"><i>&minus; which</i></p>
+
+<p style="margin-left:22%;">mask selecting subcomponents to
+populate</p>
+
+<p style="margin-left:11%;"><i>&minus; device_spec</i></p>
+
+<p style="margin-left:22%;">device_id, or XkbUseCoreKbd</p>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Xkb provides
+two functions to obtain the keyboard mapping components from
+the server. The first function, <i>XkbGetMap,</i> allocates
+an XkbDescRec structure, retrieves mapping components from
+the server, and stores them in the XkbDescRec structure it
+just allocated. The second function,
+<i>XkbGetUpdatedMap,</i> retrieves mapping components from
+the server and stores them in an XkbDescRec structure that
+has previously been allocated.</p>
+
+<p style="margin-left:11%; margin-top: 1em">To allocate an
+XkbDescRec structure and populate it with the server&rsquo;s
+keyboard client map and server map, use <i>XkbGetMap.
+XkbGetMap</i> is similar to <i>XkbGetKeyboard,</i> but is
+used only for obtaining the address of an XkbDescRec
+structure that is populated with keyboard mapping
+components. It allows finer control over which substructures
+of the keyboard mapping components are to be populated.
+<i>XkbGetKeyboard</i> always returns fully populated
+components, while <i>XkbGetMap</i> can be instructed to
+return a partially populated component.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The <i>which
+mask is a bitwise inclusive OR of the masks defined in Table
+14.1. Only</i> those portions of the keyboard server map and
+the keyboard client maps that are specified in <i>which</i>
+are allocated and populated.</p>
+
+<p style="margin-left:11%; margin-top: 1em">In addition to
+allocating and obtaining the server map and the client map,
+<i>XkbGetMap</i> also sets the <i>device_spec,</i> the
+<i>min_key_code,</i> and <i>max_key_code</i> fields of the
+keyboard description.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XkbGetMap</i>
+is synchronous; it queries the server for the desired
+information, waits for a reply, and then returns. If
+successful, <i>XkbGetMap</i> returns a pointer to the
+XkbDescRec structure it allocated. If unsuccessful,
+<i>XkbGetMap</i> returns NULL. When unsuccessful, one of the
+following protocol errors is also generated: BadAlloc
+(unable to allocate the XkbDescRec structure), BadValue
+(some mask bits in <i>which</i> are undefined), or
+BadImplementation (a compatible version of the Xkb extension
+is not available in the server). To free the returned data,
+use <i>XkbFreeClientMap.</i></p>
+
+<p style="margin-left:11%; margin-top: 1em">Xkb also
+provides convenience functions to get partial component
+definitions from the server. These functions are specified
+in the &quot;convenience functions&quot; column in Table 1.
+Refer to the sections listed in the table for more
+information on these functions.</p>
+
+
+<p class="center" style="margin-top: 1em"><img src="grohtml-78091.png" alt="Image grohtml-78091.png"></img></p>
+
+<p style="margin-top: 1em">Xkb defines combinations of
+these masks for convenience:</p>
+
+<p style="margin-top: 1em">#define XkbResizableInfoMask
+(XkbKeyTypesMask) <br/>
+#define XkbAllClientInfoMask (XkbKeyTypesMask |
+XkbKeySymsMask | <br/>
+XkbModifierMapMask) <br/>
+#define XkbAllServerInfoMask (XkbExplicitComponentsMask |
+<br/>
+XkbKeyActionsMask | <br/>
+XkbKeyBehaviorsMask | <br/>
+XkbVirtualModsMask | <br/>
+XkbVirtualModMapMask) <br/>
+#define XkbAllMapComponentsMask XkbAllClientInfoMask | <br/>
+XkbAllServerInfoMask)</p>
+
+<p style="margin-top: 1em">Key types, symbol maps, and
+actions are all interrelated: changes in one require changes
+in the others. The convenience functions make it easier to
+edit these components and handle the interdependencies.</p>
+
+<h2 id="heading5">STRUCTURES
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The complete
+description of an Xkb keyboard is given by an XkbDescRec.
+The component structures in the XkbDescRec represent the
+major Xkb components.</p>
+
+<p style="margin-left:11%; margin-top: 1em">typedef struct
+{ <br/>
+struct _XDisplay * display; /&lowast; connection to X server
+*/ <br/>
+unsigned short flags; /&lowast; private to Xkb, do not
+modify */ <br/>
+unsigned short device_spec; /&lowast; device of interest */
+<br/>
+KeyCode min_key_code; /&lowast; minimum keycode for device
+*/ <br/>
+KeyCode max_key_code; /&lowast; maximum keycode for device
+*/ <br/>
+XkbControlsPtr ctrls; /&lowast; controls */ <br/>
+XkbServerMapPtr server; /&lowast; server keymap */ <br/>
+XkbClientMapPtr map; /&lowast; client keymap */ <br/>
+XkbIndicatorPtr indicators; /&lowast; indicator map */ <br/>
+XkbNamesPtr names; /&lowast; names for all components */
+<br/>
+XkbCompatMapPtr compat; /&lowast; compatibility map */ <br/>
+XkbGeometryPtr geom; /&lowast; physical geometry of keyboard
+*/ <br/>
+} XkbDescRec, *XkbDescPtr;</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>display</i> field points to an X display structure. The
+<i>flags field is private to the library: modifying
+flags</i> may yield unpredictable results. The
+<i>device_spec</i> field specifies the device identifier of
+the keyboard input device, or XkbUseCoreKeyboard, which
+specifies the core keyboard device. The <i>min_key_code</i>
+and <i>max_key_code</i> fields specify the least and
+greatest keycode that can be returned by the keyboard.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Each structure
+component has a corresponding mask bit that is used in
+function calls to indicate that the structure should be
+manipulated in some manner, such as allocating it or freeing
+it. These masks and their relationships to the fields in the
+XkbDescRec are shown in Table 2.</p>
+
+
+<p class="center" style="margin-top: 1em"><img src="grohtml-78092.png" alt="Image grohtml-78092.png"></img></p>
+
+<h2 id="heading6">SEE ALSO
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XkbChangeTypesOfKey.3.xhtml"><em>XkbChangeTypesOfKey</em>(3)</a>,
+<a href="../man3/XkbCopyKeyType.3.xhtml"><em>XkbCopyKeyType</em>(3)</a>, <a href="../man3/XkbCopyKeyTypes.3.xhtml"><em>XkbCopyKeyTypes</em>(3)</a>,
+<a href="../man3/XkbFreeClientMap.3.xhtml"><em>XkbFreeClientMap</em>(3)</a>, <a href="../man3/XkbGetKeyActions.3.xhtml"><em>XkbGetKeyActions</em>(3)</a>,
+<a href="../man3/XkbGetKeyBehaviors.3.xhtml"><em>XkbGetKeyBehaviors</em>(3)</a>, <a href="../man3/XkbGetKeyboard.3.xhtml"><em>XkbGetKeyboard</em>(3)</a>,
+<a href="../man3/XkbGetKeyExplicitComponents.3.xhtml"><em>XkbGetKeyExplicitComponents</em>(3)</a>,
+<a href="../man3/XkbGetKeyModifierMap.3.xhtml"><em>XkbGetKeyModifierMap</em>(3)</a>, <a href="../man3/XkbGetKeySyms.3.xhtml"><em>XkbGetKeySyms</em>(3)</a>,
+<a href="../man3/XkbGetKeyTypes.3.xhtml"><em>XkbGetKeyTypes</em>(3)</a>, <a href="../man3/XkbGetUpdatedMap.3.xhtml"><em>XkbGetUpdatedMap</em>(3)</a>,
+<a href="../man3/XkbGetVirtualModMap.3.xhtml"><em>XkbGetVirtualModMap</em>(3)</a>, <a href="../man3/XkbGetVirtualMods.3.xhtml"><em>XkbGetVirtualMods</em>(3)</a>,
+<a href="../man3/XkbResizeKeyActions.3.xhtml"><em>XkbResizeKeyActions</em>(3)</a>, <a href="../man3/XkbResizeKeySyms.3.xhtml"><em>XkbResizeKeySyms</em>(3)</a>,
+<a href="../man3/XkbResizeKeyType.3.xhtml"><em>XkbResizeKeyType</em>(3)</a></p>
+<hr/>
+</body>
+</html>

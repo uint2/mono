@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:44:11 2012 -->
+<title>DMXChangeDesktopAttributes</title>
+
+</head>
+<body>
+
+<h1>DMXChangeDesktopAttributes</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNOPSIS</a><br/>
+<a href="#heading3">DESCRIPTION</a><br/>
+<a href="#heading4">RETURN VALUE</a><br/>
+<a href="#heading5">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">DMXChangeDesktopAttributes
+&minus; change global bounding box</p>
+
+<h2 id="heading2">SYNOPSIS
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>#include
+&lt;X11/extensions/dmxext.h&gt;</b></p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>int
+DMXChangeDesktopAttributes(Display</b> <i>*dpy</i><b>, <br/>
+unsigned int</b> <i>mask</i><b>, <br/>
+DMXDesktopAttributes</b> <i>*attr</i><b>);</b></p>
+
+<h2 id="heading3">DESCRIPTION
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>DMXChangeDesktopAttributes()</b>
+resizes the bounding box of the whole screen when using the
+Xinerama extension. Otherwise, it has no effect on the
+screen layout. An attribute mask is placed in <i>mask</i>
+and the attributes to change are placed in <i>attr</i>.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The values that
+are used to compute <i>mask</i> are as follows:</p>
+
+
+<p style="margin-left:11%; margin-top: 1em">DMXDesktopWidth
+<br/>
+DMXDesktopHeight <br/>
+DMXDesktopShiftX <br/>
+DMXDesktopShiftY</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<b>DMXDesktopAttributes</b> structure is:</p>
+
+<p style="margin-left:11%; margin-top: 1em">typedef struct
+{ <br/>
+unsigned int width; <br/>
+unsigned int height; <br/>
+int shiftX; <br/>
+int shiftY; <br/>
+} DMXDesktopAttributes;</p>
+
+<p style="margin-left:11%; margin-top: 1em"><i>width and
+height</i> specify the new width and height for the bounding
+box. <i>shiftX and shiftY</i> specify where the Xinerama
+origin will be placed with respect to the origin of the new
+bounding box. This allows the left and upper edges of the
+bounding box to be changed without changing the visual
+position of the windows on the desktop. If <i>width or
+height</i> is not specified, the current values will be
+used. If <i>shiftX or shiftY</i> is not specified, 0 will be
+used.</p>
+
+<p style="margin-left:11%; margin-top: 1em">All coordinates
+are in the global DMX coordinate system. If Xinerama is not
+active, an error will be generated.</p>
+
+<h2 id="heading4">RETURN VALUE
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>DMXChangeDesktopAttributes()</b>
+will return 0 on success, <b>DmxBadXinerama</b> if Xinerama
+is not active, <b>DmxBadValue</b> if the size of the
+bounding box is too large, and <b>DmxBadReply</b> if there
+was a protocol error.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>DMXChangeDesktopAttributes()</b>
+can generate <b>BadLength</b> (if the request is malformed,
+which should never happen when using this library
+interface), and <b>BadValue</b> (if any values are out of
+range).</p>
+
+<h2 id="heading5">SEE ALSO
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/DMXGetDesktopAttributes.3.xhtml"><em>DMXGetDesktopAttributes</em>(3)</a>,
+<a href="../man3/DMX.3.xhtml"><em>DMX</em>(3)</a>, <a href="../man1/Xdmx.1.xhtml"><em>Xdmx</em>(1)</a></p>
+<hr/>
+</body>
+</html>

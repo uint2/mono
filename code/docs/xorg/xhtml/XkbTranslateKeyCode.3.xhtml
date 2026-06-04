@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:23:33 2012 -->
+<title>XkbTranslateKeyCode</title>
+
+</head>
+<body>
+
+<h1>XkbTranslateKeyCode</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNOPSIS</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">XkbTranslateKeyCode
+&minus; Translate a keycode to a key symbol and
+modifiers</p>
+
+<h2 id="heading2">SYNOPSIS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="37%"></col>
+<col width="1%" class="center"></col>
+<col width="51%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>Bool
+XkbTranslateKeyCode</b></p> </td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>(XkbDescPtr</b>
+<i>xkb</i><b>, KeyCode</b> <i>key</i><b>, unsigned
+int</b></p> </td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>mods</i><b>, unsigned int
+*</b><i>mods_rtrn</i><b>, KeySym
+*</b><i>keysym_rtrn</i><b>);</b></p>
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="9%"></col>
+<col width="2%" class="center"></col>
+<col width="66%"></col>
+<col width="12%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b><i>&minus; xkb</i></b></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">keyboard description to use for
+translation</p> </td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>&minus; key</i></p></td>
+<td></td>
+<td>
+
+
+<p>keycode to translate</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>&minus; mods</i></p></td>
+<td></td>
+<td>
+
+
+<p>modifiers to apply when translating key</p></td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>&minus; mods_rtrn</i></p>
+
+<p style="margin-left:22%;">backfilled with unconsumed
+modifiers</p>
+
+<p style="margin-left:11%;"><i>&minus; keysym_rtrn</i></p>
+
+<p style="margin-left:22%;">keysym resulting from
+translation</p>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>mods_rtrn</i>
+is backfilled with the modifiers consumed by the translation
+process. <i>mods</i> is a bitwise inclusive OR of the legal
+modifier masks: ShiftMask, LockMask, ControlMask, Mod1Mask,
+Mod2Mask, Mod3Mask, Mod4Mask, Mod5Mask.The
+AlwaysConsumeShiftAndLock library control (see below), if
+enabled, causes <i>XkbTranslateKeyCode</i> to consume shift
+and lock. <i>XkbTranslateKeyCode</i> returns True if the
+translation resulted in a keysym, and False if it resulted
+in NoSymbol.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+AlwaysConsumeShiftAndLock control, if enabled, forces
+<i>XLookupString</i> to consume the Shift and Lock modifiers
+when processing all keys, even if the definition for the key
+type does not specify these modifiers. The
+AlwaysConsumeShiftAndLock control is unset by default.</p>
+
+<h2 id="heading5">SEE ALSO
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XLookupString.3.xhtml"><em>XLookupString</em>(3)</a></p>
+<hr/>
+</body>
+</html>

@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:43:17 2012 -->
+<title>XtSetSensitive</title>
+
+</head>
+<body>
+
+<h1>XtSetSensitive</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNTAX</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">XtSetSensitive,
+XtIsSensitive &minus; set and check a widget&rsquo;s
+sensitivity state</p>
+
+<h2 id="heading2">SYNTAX
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="75%"></col>
+<col width="14%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">void XtSetSensitive(Widget
+<i>w</i>, Boolean <i>sensitive</i>);</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Boolean XtIsSensitive(Widget
+<i>w</i>);</p> </td>
+<td>
+</td></tr>
+</table>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="14%"></col>
+<col width="1%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+<td></td>
+<td></td>
+<td></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>sensitive</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies a Boolean value that indicates whether the
+widget should receive keyboard and pointer events.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>w</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the widget.</p></td></tr>
+</table>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XtSetSensitive</i> function first calls
+<i>XtSetValues</i> on the current widget with an argument
+list specifying that the sensitive field should change to
+the new value. It then recursively propagates the new value
+down the managed children tree by calling <i>XtSetValues</i>
+on each child to set the ancestor_sensitive to the new value
+if the new values for sensitive and the child&rsquo;s
+ancestor_sensitive are not the same.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XtSetSensitive</i>
+calls <i>XtSetValues</i> to change sensitive and
+ancestor_sensitive. Therefore, when one of these changes,
+the widget&rsquo;s set_values procedure should take whatever
+display actions are needed (for example, greying out or
+stippling the widget).</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XtSetSensitive</i>
+maintains the invariant that if parent has either sensitive
+or ancestor_sensitive <i>False</i>, then all children have
+ancestor_sensitive <i>False</i>.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XtIsSensitive</i> function returns <i>True</i> or
+<i>False</i> to indicate whether or not user input events
+are being dispatched. If both core.sensitive and
+core.ancestor_sensitive are <i>True</i>,
+<i>XtIsSensitive</i> returns <i>True</i>; otherwise, it
+returns <i>False</i>.</p>
+
+<h2 id="heading5">SEE ALSO
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>X Toolkit
+Intrinsics &minus; C Language Interface <br/>
+<a href="../../libX11/libX11/libX11.html">Xlib &minus; C Language X Interface</a></i></p>
+<hr/>
+</body>
+</html>

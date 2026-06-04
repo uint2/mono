@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:32:51 2012 -->
+<title>XtAddGrab</title>
+
+</head>
+<body>
+
+<h1>XtAddGrab</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNTAX</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">XtAddGrab,
+XtRemoveGrab &minus; redirect user input to a modal
+widget</p>
+
+<h2 id="heading2">SYNTAX
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="89%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">void XtAddGrab(Widget <i>w</i>,
+Boolean <i>exclusive</i>, Boolean <i>spring_loaded</i>);</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">void XtRemoveGrab(Widget
+<i>w</i>);</p> </td></tr>
+</table>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="14%"></col>
+<col width="1%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+<td></td>
+<td></td>
+<td></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>exclusive</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies whether user events should be dispatched
+exclusively to this widget or also to previous widgets in
+the cascade.</p></td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>spring_loaded</i></p>
+
+<p style="margin-left:26%;">Specifies whether this widget
+was popped up because the user pressed a pointer button.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="1%"></col>
+<col width="14%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>w</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the widget to add to or remove from the modal
+cascade.</p> </td></tr>
+</table>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XtAddGrab</i> function appends the widget (and associated
+parameters) to the modal cascade and checks that exclusive
+is <i>True</i> if spring_loaded is <i>True</i>. If these are
+not <i>True</i>, <i>XtAddGrab</i> generates an error.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The modal
+cascade is used by <i>XtDispatchEvent</i> when it tries to
+dispatch a user event. When at least one modal widget is in
+the widget cascade, <i>XtDispatchEvent</i> first determines
+if the event should be delivered. It starts at the most
+recent cascade entry and follows the cascade up to and
+including the most recent cascade entry added with the
+exclusive parameter <i>True</i>.</p>
+
+<p style="margin-left:11%; margin-top: 1em">This subset of
+the modal cascade along with all descendants of these
+widgets comprise the active subset. User events that occur
+outside the widgets in this subset are ignored or remapped.
+Modal menus with submenus generally add a submenu widget to
+the cascade with exclusive <i>False</i>. Modal dialog boxes
+that need to restrict user input to the most deeply nested
+dialog box add a subdialog widget to the cascade with
+exclusive <i>True</i>. User events that occur within the
+active subset are delivered to the appropriate widget, which
+is usually a child or further descendant of the modal
+widget.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Regardless of
+where on the screen they occur, remap events are always
+delivered to the most recent widget in the active subset of
+the cascade that has spring_loaded <i>True</i>, if any such
+widget exists.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XtRemoveGrab</i> function removes widgets from the modal
+cascade starting at the most recent widget up to and
+including the specified widget. It issues an error if the
+specified widget is not on the modal cascade.</p>
+
+<h2 id="heading5">SEE ALSO
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>X Toolkit
+Intrinsics &minus; C Language Interface <br/>
+<a href="../../libX11/libX11/libX11.html">Xlib &minus; C Language X Interface</a></i></p>
+<hr/>
+</body>
+</html>

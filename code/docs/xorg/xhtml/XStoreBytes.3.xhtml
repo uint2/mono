@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:23:53 2012 -->
+<title>XStoreBytes</title>
+
+</head>
+<body>
+
+<h1>XStoreBytes</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNTAX</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">DIAGNOSTICS</a><br/>
+<a href="#heading6">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">XStoreBytes,
+XStoreBuffer, XFetchBytes, XFetchBuffer, XRotateBuffers
+&minus; manipulate cut and paste buffers</p>
+
+<h2 id="heading2">SYNTAX
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="89%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">int XStoreBytes(Display
+*<i>display</i>, char *<i>bytes</i>, int <i>nbytes</i>);</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">int XStoreBuffer(Display
+*<i>display</i>, char *<i>bytes</i>, int <i>nbytes</i>, int
+<i>buffer</i>);</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">char *XFetchBytes(Display
+*<i>display</i>, int *<i>nbytes_return</i>);</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">char *XFetchBuffer(Display
+*<i>display</i>, int *<i>nbytes_return</i>, int
+<i>buffer</i>);</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">int XRotateBuffers(Display
+*<i>display</i>, int <i>rotate</i>);</p></td></tr>
+</table>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="11%"></col>
+<col width="4%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+<td></td>
+<td></td>
+<td></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>buffer</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the buffer in which you want to store the
+bytes or from which you want the stored data returned.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>bytes</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the bytes, which are not necessarily ASCII or
+null-terminated.</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>display</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the connection to the X server.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>nbytes</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the number of bytes to be stored.</p></td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>nbytes_return</i></p>
+
+<p style="margin-left:26%;">Returns the number of bytes in
+the buffer.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="9%"></col>
+<col width="6%" class="center"></col>
+<col width="69%"></col>
+<col width="5%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>rotate</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies how much to rotate the cut buffers.</p></td>
+<td>
+</td></tr>
+</table>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The data can
+have embedded null characters and need not be
+null-terminated. The cut buffer&rsquo;s contents can be
+retrieved later by any client calling
+<i>XFetchBytes</i>.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XStoreBytes</i>
+can generate a <i>BadAlloc</i> error.</p>
+
+<p style="margin-left:11%; margin-top: 1em">If an invalid
+buffer is specified, the call has no effect. The data can
+have embedded null characters and need not be
+null-terminated.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XStoreBuffer</i>
+can generate a <i>BadAlloc</i> error.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XFetchBytes</i> function returns the number of bytes in
+the nbytes_return argument, if the buffer contains data.
+Otherwise, the function returns NULL and sets nbytes to 0.
+The appropriate amount of storage is allocated and the
+pointer returned. The client must free this storage when
+finished with it by calling <i>XFree</i>.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XFetchBuffer</i> function returns zero to the
+nbytes_return argument if there is no data in the buffer or
+if an invalid buffer is specified.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XFetchBuffer</i>
+can generate a <i>BadValue</i> error.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XRotateBuffers</i> function rotates the cut buffers, such
+that buffer 0 becomes buffer n, buffer 1 becomes n + 1 mod
+8, and so on. This cut buffer numbering is global to the
+display. Note that <i>XRotateBuffers</i> generates
+<i>BadMatch</i> errors if any of the eight buffers have not
+been created.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XRotateBuffers</i>
+can generate a <i>BadMatch</i> error.</p>
+
+<h2 id="heading5">DIAGNOSTICS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="12%"></col>
+<col width="3%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><i>BadAlloc</i></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">The server failed to allocate
+the requested resource or server memory.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>BadAtom</i></p></td>
+<td></td>
+<td>
+
+
+<p>A value for an Atom argument does not name a defined
+Atom.</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>BadMatch</i></p></td>
+<td></td>
+<td>
+
+
+<p>Some argument or pair of arguments has the correct type
+and range but fails to match in some other way required by
+the request.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>BadValue</i></p></td>
+<td></td>
+<td>
+
+
+<p>Some numeric value falls outside the range of values
+accepted by the request. Unless a specific range is
+specified for an argument, the full range defined by the
+argument&rsquo;s type is accepted. Any argument defined as a
+set of alternatives can generate this error.</p></td></tr>
+</table>
+
+<h2 id="heading6">SEE ALSO
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XFree.3.xhtml"><em>XFree</em>(3)</a>
+<i><br/>
+<a href="../../libX11/libX11/libX11.html">Xlib &minus; C Language X Interface</a></i></p>
+<hr/>
+</body>
+</html>

@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:26:44 2012 -->
+<title>DMXGetInputAttributes</title>
+
+</head>
+<body>
+
+<h1>DMXGetInputAttributes</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNOPSIS</a><br/>
+<a href="#heading3">DESCRIPTION</a><br/>
+<a href="#heading4">RETURN VALUE</a><br/>
+<a href="#heading5">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">DMXGetInputAttributes
+&minus; determine input device attributes</p>
+
+<h2 id="heading2">SYNOPSIS
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>#include
+&lt;X11/extensions/dmxext.h&gt;</b></p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>Bool
+DMXGetInputAttributes(Display</b> <i>*dpy</i><b>, <br/>
+int</b> <i>id</i><b>, <br/>
+DMXInputAttributes</b> <i>*attr</i><b>);</b></p>
+
+<h2 id="heading3">DESCRIPTION
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>DMXGetInputAttributes()</b>
+returns information about the input device specified with
+<i>id</i>. This information cannot be obtained from the
+<a href="../man3/XListInputDevices.3.xhtml"><em>XListInputDevices</em>(3)</a> call. <i>id</i> is the same as
+that used by the <a href="../man3/XListInputDevices.3.xhtml"><em>XListInputDevices</em>(3)</a> call, and must
+be in the range 0 to one less than the value returned by
+<b><a href="../man3/DMXGetInputCount.3.xhtml"><em>DMXGetInputCount</em>(3)</a></b>, inclusive.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<b>DMXInputAttributes</b> structure is:</p>
+
+<p style="margin-left:11%; margin-top: 1em">typedef struct
+{ <br/>
+DMXInputEnum inputType; <br/>
+int physicalScreen; <br/>
+int physicalId; <br/>
+Bool isCore; <br/>
+Bool sendsCore; <br/>
+const char *name; <br/>
+Bool detached; <br/>
+} DMXInputAttributes;</p>
+
+<p style="margin-left:11%; margin-top: 1em">The value of
+<i>inputType</i> will always be valid, and will have one of
+the following values, depending on the type of input:
+<b>DMXLocalInputType , DMXConsoleInputType , or
+DMXBackendInputType .</b></p>
+
+<p style="margin-left:11%; margin-top: 1em">For local
+devices, all other fields returned, except <i>isCore and
+sendsCore ,</i> are invalid.</p>
+
+<p style="margin-left:11%; margin-top: 1em">For console
+devices, <i>physicalScreen and physicalID</i> will be
+invalid, and <i>name</i> will return the name of the X
+server on which the console window is displayed.</p>
+
+<p style="margin-left:11%; margin-top: 1em">For back-end
+devices, <i>physicalScreen</i> will identify the back-end
+display and can be used as an argument to
+<a href="../man3/DMXGetScreenAttributes.3.xhtml"><em>DMXGetScreenAttributes</em>(3)</a> to obtain more information;
+<i>physicalId</i> will be the XInput device id on the
+back-end X server; and <i>name</i> will be invalid (since it
+does not provide any additional information that cannot be
+obtained with <a href="../man3/DMXGetScreenAttributes.3.xhtml"><em>DMXGetScreenAttributes</em>(3)</a>).</p>
+
+<p style="margin-left:11%; margin-top: 1em">If
+<i>isCore</i> is <b>True</b>, then this device is active as
+a true core input device and will send core events. If
+<b>sendsCore</b> is True, then this device is an XInput
+extension device, but sends core events <i>instead</i> of
+extension events. This behavior is different from that of
+XFree86 or Xorg, where XInput extension devices may send
+<i>both</i> extension events and core events.</p>
+
+<p style="margin-left:11%; margin-top: 1em">If
+<i>detached</i> is True, then this device has been detached
+and is no longer producing input events. The device may be
+reattached using <a href="../man3/DMXAddInput.3.xhtml"><em>DMXAddInput</em>(3)</a>.</p>
+
+<h2 id="heading4">RETURN VALUE
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>DMXGetInputAttributes()</b>
+returns <b>True</b> unless there is a protocol error.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>DMXGetInputAttributes()</b>
+can generate <b>BadValue</b> (if the value of <i>id</i> is
+out of range).</p>
+
+<h2 id="heading5">SEE ALSO
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/DMXGetInputCount.3.xhtml"><em>DMXGetInputCount</em>(3)</a>,
+<a href="../man3/XListInputDevices.3.xhtml"><em>XListInputDevices</em>(3)</a>,
+<a href="../man3/DMXGetScreenAttributes.3.xhtml"><em>DMXGetScreenAttributes</em>(3)</a>, <a href="../man3/DMXAddInput.3.xhtml"><em>DMXAddInput</em>(3)</a>,
+<a href="../man3/DMX.3.xhtml"><em>DMX</em>(3)</a>, <a href="../man1/Xdmx.1.xhtml"><em>Xdmx</em>(1)</a></p>
+<hr/>
+</body>
+</html>

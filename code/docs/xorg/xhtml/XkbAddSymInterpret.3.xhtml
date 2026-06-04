@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:38:04 2012 -->
+<title>XkbAddSymInterpret</title>
+
+</head>
+<body>
+
+<h1>XkbAddSymInterpret</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNOPSIS</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">XkbAddSymInterpret
+&minus; Add a symbol interpretation to the list of symbol
+interpretations in an XkbCompatRec</p>
+
+<h2 id="heading2">SYNOPSIS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="64%"></col>
+<col width="11%" class="center"></col>
+<col width="14%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>XkbSymInterpretPtr
+XkbAddSymInterpret</b></p> </td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>(XkbDescPtr</b>
+<i>xkb</i><b>,</b></p> </td></tr>
+</table>
+
+<p style="margin-left:11%;"><b>XkbSymInterpretPtr</b>
+<i>si</i><b>, Bool</b> <i>updateMap</i><b>,
+XkbChangesPtr</b> <i>changes</i><b>);</b></p>
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="7%"></col>
+<col width="4%" class="center"></col>
+<col width="52%"></col>
+<col width="26%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b><i>&minus; xkb</i></b></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">keyboard description to be
+updated</p> </td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>&minus; si</i></p></td>
+<td></td>
+<td>
+
+
+<p>symbol interpretation to be added</p></td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>&minus; updateMap</i></p>
+
+<p style="margin-left:22%;">True=&gt;apply compatibility
+map to keys</p>
+
+<p style="margin-left:11%;"><i>&minus; changes</i></p>
+
+<p style="margin-left:22%;">changes are put here</p>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XkbAddSymInterpret</i>
+adds <i>si</i> to the list of symbol interpretations in
+<i>xkb.</i> If <i>updateMap</i> is True, it (re)applies the
+compatibility map to all of the keys on the keyboard. If
+<i>changes</i> is non-NULL, it reports the parts of the
+keyboard that were affected (unless <i>updateMap</i> is
+True, not much changes). <i>XkbAddSymInterpret</i> returns a
+pointer to the actual new symbol interpretation in the list
+or NULL if it failed.</p>
+<hr/>
+</body>
+</html>

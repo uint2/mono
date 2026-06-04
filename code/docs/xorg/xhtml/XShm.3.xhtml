@@ -1,0 +1,471 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:40:27 2012 -->
+<title>XShm</title>
+
+</head>
+<body>
+
+<h1>XShm</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNTAX</a><br/>
+<a href="#heading3">STRUCTURES</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">XShmQueryExtension,
+XShmQueryVersion, XShmPixmapFormat, XShmAttach, XShmDetach
+XShmCreateImage, XShmPutImage, XShmGetImage,
+XShmCreatePixmap, XShmGetEventBase - X Shared Memory
+extension functions</p>
+
+<h2 id="heading2">SYNTAX
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">#include
+&lt;X11/Xlib.h&gt; <br/>
+#include &lt;sys/ipc.h&gt; <br/>
+#include &lt;sys/shm.h&gt; <br/>
+#include &lt;X11/extensions/XShm.h&gt;</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="-3%"></col>
+<col width="7%"></col>
+<col width="85%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td></td>
+<td>
+
+
+<p>Bool</p></td>
+<td>
+
+
+<p>XShmQueryExtension(</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td></td>
+<td></td>
+<td>
+
+
+<p>Display *display);</p></td></tr>
+</table>
+
+<p style="margin-left:11%; margin-top: 1em">Bool
+XShmQueryVersion(</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="8%"></col>
+<col width="92%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>Display *display;</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>int *major, *minor;</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>Bool *pixmaps);</p></td></tr>
+</table>
+
+<p style="margin-left:11%; margin-top: 1em">int
+XShmPixmapFormat(</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="8%"></col>
+<col width="92%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>Display *display);</p></td></tr>
+</table>
+
+<p style="margin-left:11%; margin-top: 1em">Bool
+XShmAttach(</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="8%"></col>
+<col width="92%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>Display *display;</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>XShmSegmentInfo *shminfo);</p></td></tr>
+</table>
+
+<p style="margin-left:11%; margin-top: 1em">Bool
+XShmDetach(</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="8%"></col>
+<col width="92%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>Display *display;</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>XShmSegmentInfo *shminfo);</p></td></tr>
+</table>
+
+<p style="margin-left:11%; margin-top: 1em">XImage
+*XShmCreateImage (</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="8%"></col>
+<col width="92%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>Display *display;</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>Visual *visual;</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>unsigned int depth;</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>int format;</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>char *data;</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>XShmSegmentInfo *shminfo;</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>unsigned int width, height);</p></td></tr>
+</table>
+
+<p style="margin-left:11%; margin-top: 1em">Bool
+XShmPutImage(</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="8%"></col>
+<col width="92%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>Display *display;</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>Drawable d;</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>GC gc;</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>XImage *image;</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>int src_x, src_y, dest_x, dest_y;</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>unsigned int width, height;</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>bool send_event);</p></td></tr>
+</table>
+
+<p style="margin-left:11%; margin-top: 1em">Bool
+XShmGetImage (</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="8%"></col>
+<col width="92%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>Display *display;</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>Drawable d;</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>XImage *image;</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>int x, y;</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>unsigned long plane_mask);</p></td></tr>
+</table>
+
+<p style="margin-left:11%; margin-top: 1em">Pixmap
+XShmCreatePixmap( <br/>
+Display *display; <br/>
+Drawable d; <br/>
+char *data;</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="8%"></col>
+<col width="92%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>XShmSegmentInfo *shminfo;</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>unsigned int width, height, depth);</p></td></tr>
+</table>
+
+<p style="margin-left:11%; margin-top: 1em">Status
+XShmGetEventBase(</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="8%"></col>
+<col width="92%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>Display *display);</p></td></tr>
+</table>
+
+<h2 id="heading3">STRUCTURES
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>Events:</i>
+<br/>
+typedef struct { <br/>
+int type; /* of event */ <br/>
+unsigned long serial; /* # of last request processed by
+server*/ <br/>
+Bool send_event; /* true if this came from a SendEvent
+request*/ <br/>
+Display *display; /* Display the event was read from */
+<br/>
+Drawable drawable; /* drawable of request */ <br/>
+int major_code; /* ShmReqCode */ <br/>
+int minor_code; /* X_ShmPutImage */ <br/>
+ShmSeg shmseg; /* the ShmSeg used in the request*/ <br/>
+unsigned long offset; /* the offset into ShmSeg used in the
+request*/ <br/>
+} XShmCompletionEvent;</p>
+
+<p style="margin-left:11%; margin-top: 1em"><i>a structure
+of type XShmSegmentInfo :</i></p>
+
+<p style="margin-left:11%; margin-top: 1em">typedef struct
+{ <br/>
+ShmSeg shmseg; /* resource id */ <br/>
+int shmid; /* kernel id */ <br/>
+char *shmaddr; /* address in client */ <br/>
+Bool readOnly; /* how the server should attach it */ <br/>
+} XShmSegmentInfo;</p>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XShmQueryExtension</i>
+checks to see if the shared memory extensions are available
+for the specified display.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XShmQueryVersion</i>
+returns the version numbers of the extension implementation.
+Shared memory pixmaps are supported if the pixmaps argument
+returns true.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XShmAttach</i>
+tells the server to attach to your shared memory segment. If
+all goes well, you will get a non-zero status, back and your
+XImage is ready for use.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XShmDetach</i>
+tells the server to detach from your shared memory
+segment.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XShmPutImage</i>
+combines an image in memory with a shape of the specified
+drawable. If XYBitmap format is used, the depth must be one,
+or a &lsquo;&lsquo;BadMatch&rsquo;&rsquo; error results. The
+foreground pixel in the GC defines the source for the one
+bits in the image, and the background pixel defines the
+source for the zero bits. For XYPixmap and ZPixmap, the
+depth must match the depth of the drawable, or a
+&lsquo;&lsquo;BadMatch&rsquo;&rsquo; error results.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XShmGetImage</i>
+reads image data into a shared memory XImage where display
+is the display of interest, drawable is the source drawable,
+image is the destination XImage, x and y are offsets within
+the drawable, and plane_mask defines which planes are to be
+read.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XShmCreateImage</i>
+allocates the memory needed for an XImage structure for the
+specified display but does not allocate space for the image
+itself.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XShmPixmapFormat</i>
+gets the format for the server. If your application can deal
+with the server pixmap data format, a shared memory segment
+and shminfo structure are created.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XShmCreatePixmap</i>
+points to a pixmap which you can manipulate in all of the
+usual ways, with the added bonus of being able to edit its
+contents directly through the shared memory segment.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XShmGetEventBase</i>
+gets the completion event value.</p>
+
+<h2 id="heading5">SEE ALSO
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>MIT-SHM -
+The MIT Shared Memory Extension</i></p>
+<hr/>
+</body>
+</html>

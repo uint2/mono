@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:41:19 2012 -->
+<title>XAllocIconSize</title>
+
+</head>
+<body>
+
+<h1>XAllocIconSize</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNTAX</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">PROPERTIES</a><br/>
+<a href="#heading6">STRUCTURES</a><br/>
+<a href="#heading7">DIAGNOSTICS</a><br/>
+<a href="#heading8">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">XAllocIconSize,
+XSetIconSizes, XGetIconSizes, XIconSize &minus; allocate
+icon size structure and set or read a window&rsquo;s
+WM_ICON_SIZES property</p>
+
+<h2 id="heading2">SYNTAX
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">XIconSize
+*XAllocIconSize(void);</p>
+
+<p style="margin-left:11%; margin-top: 1em">int
+XSetIconSizes(Display *<i>display</i>, Window <i>w</i>,
+XIconSize *<i>size_list</i>, int <i>count</i>);</p>
+
+<p style="margin-left:11%; margin-top: 1em">Status
+XGetIconSizes(Display *<i>display</i>, Window <i>w</i>,
+XIconSize **<i>size_list_return</i>, int
+<i>count_return</i>);</p>
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="11%"></col>
+<col width="4%" class="center"></col>
+<col width="72%"></col>
+<col width="2%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><i>display</i></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Specifies the connection to the
+X server.</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>count</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the number of items in the size list.</p></td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>count_return</i></p>
+
+<p style="margin-left:26%;">Returns the number of items in
+the size list.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="14%"></col>
+<col width="1%" class="center"></col>
+<col width="37%"></col>
+<col width="37%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>size_list</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the size list.</p></td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>size_list_return</i></p>
+
+<p style="margin-left:26%;">Returns the size list.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="1%"></col>
+<col width="14%" class="center"></col>
+<col width="32%"></col>
+<col width="42%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>w</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the window.</p></td>
+<td>
+</td></tr>
+</table>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XAllocIconSize</i> function allocates and returns a
+pointer to a <i>XIconSize</i> structure. Note that all
+fields in the <i>XIconSize</i> structure are initially set
+to zero. If insufficient memory is available,
+<i>XAllocIconSize</i> returns NULL. To free the memory
+allocated to this structure, use <i>XFree</i>.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XSetIconSizes</i> function is used only by window
+managers to set the supported icon sizes.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XSetIconSizes</i>
+can generate <i>BadAlloc</i> and <i>BadWindow</i>
+errors.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XGetIconSizes</i> function returns zero if a window
+manager has not set icon sizes; otherwise, it return
+nonzero. <i>XGetIconSizes</i> should be called by an
+application that wants to find out what icon sizes would be
+most appreciated by the window manager under which the
+application is running. The application should then use
+<i>XSetWMHints</i> to supply the window manager with an icon
+pixmap or window in one of the supported sizes. To free the
+data allocated in size_list_return, use <i>XFree</i>.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XGetIconSizes</i>
+can generate a <i>BadWindow</i> error.</p>
+
+<h2 id="heading5">PROPERTIES
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><small>WM_ICON_SIZES</small></p>
+
+<p style="margin-left:26%;">The window manager may set this
+property on the root window to specify the icon sizes it
+supports. The C type of this property is
+<i>XIconSize</i>.</p>
+
+<h2 id="heading6">STRUCTURES
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XIconSize</i> structure contains:</p>
+
+<p style="margin-left:11%; margin-top: 1em">typedef struct
+{</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="8%"></col>
+<col width="30%"></col>
+<col width="62%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>int min_width, min_height;</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>int max_width, max_height;</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>int width_inc, height_inc;</p></td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:11%;">} XIconSize;</p>
+
+<p style="margin-left:11%; margin-top: 1em">The width_inc
+and height_inc members define an arithmetic progression of
+sizes (minimum to maximum) that represent the supported icon
+sizes.</p>
+
+<h2 id="heading7">DIAGNOSTICS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="14%"></col>
+<col width="1%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><i>BadAlloc</i></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">The server failed to allocate
+the requested resource or server memory.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>BadWindow</i></p></td>
+<td></td>
+<td>
+
+
+<p>A value for a Window argument does not name a defined
+Window.</p> </td></tr>
+</table>
+
+<h2 id="heading8">SEE ALSO
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XAllocClassHint.3.xhtml"><em>XAllocClassHint</em>(3)</a>,
+<a href="../man3/XAllocSizeHints.3.xhtml"><em>XAllocSizeHints</em>(3)</a>, <a href="../man3/XAllocWMHints.3.xhtml"><em>XAllocWMHints</em>(3)</a>, <a href="../man3/XFree.3.xhtml"><em>XFree</em>(3)</a>,
+<a href="../man3/XSetCommand.3.xhtml"><em>XSetCommand</em>(3)</a>, <a href="../man3/XSetTransientForHint.3.xhtml"><em>XSetTransientForHint</em>(3)</a>,
+<a href="../man3/XSetTextProperty.3.xhtml"><em>XSetTextProperty</em>(3)</a>, <a href="../man3/XSetWMClientMachine.3.xhtml"><em>XSetWMClientMachine</em>(3)</a>,
+<a href="../man3/XSetWMColormapWindows.3.xhtml"><em>XSetWMColormapWindows</em>(3)</a>, <a href="../man3/XSetWMIconName.3.xhtml"><em>XSetWMIconName</em>(3)</a>, <a href="../man3/XSetWMName.3.xhtml"><em>XSetWMName</em>(3)</a>,
+<a href="../man3/XSetWMProperties.3.xhtml"><em>XSetWMProperties</em>(3)</a>, <a href="../man3/XSetWMProtocols.3.xhtml"><em>XSetWMProtocols</em>(3)</a>,
+<a href="../man3/XStringListToTextProperty.3.xhtml"><em>XStringListToTextProperty</em>(3)</a> <i><br/>
+<a href="../../libX11/libX11/libX11.html">Xlib &minus; C Language X Interface</a></i></p>
+<hr/>
+</body>
+</html>

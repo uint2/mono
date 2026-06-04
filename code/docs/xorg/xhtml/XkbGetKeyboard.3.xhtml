@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:36:16 2012 -->
+<title>XkbGetKeyboard</title>
+
+</head>
+<body>
+
+<h1>XkbGetKeyboard</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNOPSIS</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">DIAGNOSTICS</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">XkbGetKeyboard
+&minus; Retrieves one or more components of a keyboard
+device description</p>
+
+<h2 id="heading2">SYNOPSIS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="40%"></col>
+<col width="3%" class="center"></col>
+<col width="46%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>XkbDescPtr
+XkbGetKeyboard</b></p> </td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>(Display
+*</b><i>display</i><b>, unsigned int</b>
+<i>which</i><b>,</b></p> </td></tr>
+</table>
+
+<p style="margin-left:11%;"><b>unsigned int</b>
+<i>device_spec</i><b>);</b></p>
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b><i>display</i></b></p>
+
+<p style="margin-left:22%;">connection to the X server</p>
+
+<p style="margin-left:11%;"><i>device_spec</i></p>
+
+<p style="margin-left:22%;">device ID, or XkbUseCoreKbd</p>
+
+<p style="margin-left:11%;"><i>bits_to_change</i></p>
+
+<p style="margin-left:22%;">determines events to be
+selected / deselected</p>
+
+<p style="margin-left:11%;"><i>values_for_bits</i></p>
+
+<p style="margin-left:22%;">1=&gt;select, 0-&gt;deselect;
+for events in bits_to_change</p>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XkbGetKeyboard</i>
+allocates and returns a pointer to a keyboard description.
+It queries the server for those components specified in the
+<i>which</i> parameter for device <i>device_spec</i> and
+copies the results to the XkbDescRec it allocated. The
+remaining fields in the keyboard description are set to
+NULL. The valid masks for <i>which</i> are those listed in
+Table 1.</p>
+
+
+<p class="center" style="margin-top: 1em"><img src="grohtml-309061.png" alt="Image grohtml-309061.png"></img></p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XkbGetKeyboard</i>
+is used to read the current description for one or more
+components of a keyboard device. It calls
+<i>XkbGetKeyboardByName</i> as follows:</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XkbGetKeyboardByName(dpy,
+device_spec,</i> NULL, <i>which, which,</i> False).</p>
+
+<h2 id="heading5">DIAGNOSTICS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="12%"></col>
+<col width="11%" class="center"></col>
+<col width="40%"></col>
+<col width="26%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><small>BadAlloc</small></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Unable to allocate storage</p></td>
+<td>
+</td></tr>
+ </table>
+<hr/>
+</body>
+</html>

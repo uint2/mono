@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:29:56 2012 -->
+<title>XRes</title>
+
+</head>
+<body>
+
+<h1>XRes</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNOPSIS</a><br/>
+<a href="#heading3">DESCRIPTION</a><br/>
+<a href="#heading4">ERRORS</a><br/>
+<a href="#heading5">SEE ALSO</a><br/>
+<a href="#heading6">AUTHOR</a><br/>
+<a href="#heading7">STABILITY</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">XRes &minus;
+X-Resource extension client library</p>
+
+<h2 id="heading2">SYNOPSIS
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>#include
+&lt;X11/extensions/XRes.h&gt;</b></p>
+
+<p style="margin-left:11%; margin-top: 1em">typedef struct
+{</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="8%"></col>
+<col width="23%"></col>
+<col width="69%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>XID</p></td>
+<td>
+
+
+<p>resource_base;</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>XID</p></td>
+<td>
+
+
+<p>resource_mask;</p></td></tr>
+</table>
+
+<p style="margin-left:11%;">} XResClient;</p>
+
+<p style="margin-left:11%; margin-top: 1em">typedef struct
+{</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="8%"></col>
+<col width="23%"></col>
+<col width="69%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>Atom</p></td>
+<td>
+
+
+<p>resource_type;</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>unsigned int</p></td>
+<td>
+
+
+<p>count;</p></td></tr>
+</table>
+
+<p style="margin-left:11%;">} XResType;</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="89%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Bool XResQueryExtension(Display
+*<i>dpy</i>, int *<i>event_base_return</i>, int
+*<i>error_base_return</i>);</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Status XResQueryVersion(Display
+*<i>dpy</i>, int *<i>major_version_return</i>, int
+*<i>minor_version_return</i>);</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Status XResQueryClients(Display
+*<i>dpy</i>, int *<i>num_clients</i>, XResClient
+**<i>clients</i>);</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Status
+XResQueryClientResources(Display *<i>dpy</i>, XID
+<i>xid</i>, int *<i>num_types</i>, XResType
+**<i>types</i>);</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Status
+XResQueryClientPixmapBytes(Display *<i>dpy</i>, XID
+<i>xid</i>, unsigned long *<i>bytes</i>);</p></td></tr>
+</table>
+
+<h2 id="heading3">DESCRIPTION
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>X-Resource</b>
+is an extension that allows a client to query the X server
+about its usage of various resources. It should not be
+confused with the X resource database access functions.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>XResQueryExtension</b>
+returns <b>True</b> if the <i>XRes</i> extension is
+available on the given display. A client must call
+<b>XResQueryExtension</b> before calling any other XRes
+function in order to negotiate a compatible protocol
+version; otherwise the client will get undefined behavior
+(XRes may or may not work).</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>XResQueryVersion</b>
+returns <b>True</b> if the request succeeded; the values of
+the major and minor protocol versions supported by the
+server are returned in <i>major_version_return</i> and
+<i>minor_version_return .</i></p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>XResQueryClients</b>
+fills a list of clients of the given display. For each
+client it returns in the <i>XResClient</i> structure a mask
+and a base value of the resources used by these clients.
+Returns <b>True</b> on success or <b>False</b> on
+failure.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>XResQueryClientResources</b>
+fills a list of XResType structures, indicating for each
+resource type allocated by the client its name (as an Atom)
+and the number of resources of this type allocated. Returns
+<b>True</b> on success or <b>False</b> on failure.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>XResQueryClientPixmapBytes</b>
+gives, for resources of type <i>PIXMAP</i> the total number
+of bytes allocated in the X server by the given client.
+Returns <b>True</b> on success or <b>False</b> on
+failure.</p>
+
+<h2 id="heading4">ERRORS
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>XResQueryClientResources</b>
+and <b>XResQueryClientPixmapBytes</b> will return
+<i>BadValue</i> if passed an illegal client identifier.</p>
+
+<h2 id="heading5">SEE ALSO
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man7/X.7.xhtml"><em>X</em>(7)</a></p>
+
+<h2 id="heading6">AUTHOR
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Mark Vojkovich,
+originally for The XFree86 Project Inc.</p>
+
+<h2 id="heading7">STABILITY
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">This API is
+considered as experimental. The XRes library major revision
+may be incremented whenever incompatible changes are done to
+the API without notice. Use with care.</p>
+<hr/>
+</body>
+</html>

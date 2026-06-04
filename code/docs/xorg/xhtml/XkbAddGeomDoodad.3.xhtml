@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:27:38 2012 -->
+<title>XkbAddGeomDoodad</title>
+
+</head>
+<body>
+
+<h1>XkbAddGeomDoodad</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNOPSIS</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">STRUCTURES</a><br/>
+<a href="#heading6">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">XkbAddGeomDoodad
+&minus; Add one doodad to a section of a keyboard geometry
+or to the top-level geometry</p>
+
+<h2 id="heading2">SYNOPSIS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="46%"></col>
+<col width="3%" class="center"></col>
+<col width="40%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>XkbDoodadPtr
+XkbAddGeomDoodad</b></p> </td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>(XkbGeometryPtr</b>
+<i>geom</i><b>, XkbSectionPtr</b></p></td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>section</i><b>, Atom</b>
+<i>name</i><b>);</b></p>
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="9%"></col>
+<col width="2%" class="center"></col>
+<col width="56%"></col>
+<col width="22%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b><i>&minus; geom</i></b></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">geometry to which the doodad is
+added</p> </td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>&minus; section</i></p>
+
+<p style="margin-left:22%;">section, if any, to which the
+doodad is added</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="9%"></col>
+<col width="2%" class="center"></col>
+<col width="33%"></col>
+<col width="45%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>&minus; name</i></p></td>
+<td></td>
+<td>
+
+
+<p>name of the new doodad</p></td>
+<td>
+</td></tr>
+</table>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Xkb provides
+functions to add a single new element to the top-level
+keyboard geometry. In each case the <i>num_ *</i> fields of
+the corresponding structure is incremented by 1. These
+functions do not change <i>sz_*</i> unless there is no more
+room in the array. Some of these functions fill in the
+values of the element&rsquo;s structure from the arguments.
+For other functions, you must explicitly write code to fill
+the structure&rsquo;s elements.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The top-level
+geometry description includes a list of <i>geometry
+properties.</i> A geometry property associates an arbitrary
+string with an equally arbitrary name. Programs that display
+images of keyboards can use geometry properties as hints,
+but they are not interpreted by Xkb. No other geometry
+structures refer to geometry properties.</p>
+
+<p style="margin-left:11%; margin-top: 1em">A <i>doodad</i>
+describes some visible aspect of the keyboard that is not a
+key and is not a section. <i>XkbAddGeomDoodad</i> adds a
+doodad with name specified by <i>name</i> to the geometry
+<i>geom</i> if <i>section</i> is NULL or to the section of
+the geometry specified by <i>section</i> if <i>section</i>
+is not NULL. <i>XkbAddGeomDoodad</i> returns NULL if any of
+the parameters is empty or if it was not able to allocate
+space for the doodad. If there is already a doodad with the
+name <i>name</i> in the doodad array for the geometry (if
+<i>section</i> is NULL) or the section (if <i>section</i> is
+non-NULL), a pointer to that doodad is returned. To allocate
+space for an arbitrary number of doodads to a section, use
+the <i>XkbAllocGeomSectionDoodads</i> function. To allocate
+space for an arbitrary number of doodads to a keyboard
+geometry, use the <i>XkbAllocGeomDoodads</i> function.</p>
+
+<h2 id="heading5">STRUCTURES
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">typedef union
+_XkbDoodad { <br/>
+XkbAnyDoodadRec any; <br/>
+XkbShapeDoodadRec shape; <br/>
+XkbTextDoodadRec text; <br/>
+XkbIndicatorDoodadRec indicator; <br/>
+XkbLogoDoodadRec logo; <br/>
+} XkbDoodadRec, *XkbDoodadPtr;</p>
+
+<h2 id="heading6">SEE ALSO
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XkbAllocGeomDoodads.3.xhtml"><em>XkbAllocGeomDoodads</em>(3)</a>,
+<a href="../man3/XkbAllocGeomSectionDoodads.3.xhtml"><em>XkbAllocGeomSectionDoodads</em>(3)</a></p>
+<hr/>
+</body>
+</html>

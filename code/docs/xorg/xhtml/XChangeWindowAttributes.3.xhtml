@@ -1,0 +1,453 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:25:28 2012 -->
+<title>XChangeWindowAttributes</title>
+
+</head>
+<body>
+
+<h1>XChangeWindowAttributes</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNTAX</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">DIAGNOSTICS</a><br/>
+<a href="#heading6">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">XChangeWindowAttributes,
+XSetWindowBackground, XSetWindowBackgroundPixmap,
+XSetWindowBorder, XSetWindowBorderPixmap, XSetWindowColormap
+&minus; change window attributes</p>
+
+<h2 id="heading2">SYNTAX
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="89%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">int
+XChangeWindowAttributes(Display *<i>display</i>, Window
+<i>w</i>, unsigned long <i>valuemask</i>,
+XSetWindowAttributes *<i>attributes</i>);</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">int XSetWindowBackground(Display
+*<i>display</i>, Window <i>w</i>, unsigned long
+<i>background_pixel</i>);</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">int
+XSetWindowBackgroundPixmap(Display *<i>display</i>, Window
+<i>w</i>, Pixmap <i>background_pixmap</i>);</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">int XSetWindowBorder(Display
+*<i>display</i>, Window <i>w</i>, unsigned long
+<i>border_pixel</i>);</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">int
+XSetWindowBorderPixmap(Display *<i>display</i>, Window
+<i>w</i>, Pixmap <i>border_pixmap</i>);</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">int XSetWindowColormap(Display
+*<i>display</i>, Window <i>w</i>, Colormap
+<i>colormap</i>);</p> </td></tr>
+</table>
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>attributes</i></p>
+
+<p style="margin-left:26%;">Specifies the structure from
+which the values (as specified by the value mask) are to be
+taken. The value mask should have the appropriate bits set
+to indicate which attributes have been set in the
+structure.</p>
+
+<p style="margin-left:11%;"><i>background_pixel</i></p>
+
+<p style="margin-left:26%;">Specifies the pixel that is to
+be used for the background.</p>
+
+<p style="margin-left:11%;"><i>background_pixmap</i></p>
+
+<p style="margin-left:26%;">Specifies the background
+pixmap, <i>ParentRelative</i>, or <i>None</i>.</p>
+
+<p style="margin-left:11%;"><i>border_pixel</i></p>
+
+<p style="margin-left:26%;">Specifies the entry in the
+colormap.</p>
+
+<p style="margin-left:11%;"><i>border_pixmap</i></p>
+
+<p style="margin-left:26%;">Specifies the border pixmap or
+<i>CopyFromParent</i>.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="14%"></col>
+<col width="1%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>display</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the connection to the X server.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>valuemask</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies which window attributes are defined in the
+attributes argument. This mask is the bitwise inclusive OR
+of the valid attribute mask bits. If valuemask is zero, the
+attributes are ignored and are not referenced.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>w</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the window.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>colormap</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the colormap.</p></td></tr>
+</table>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Depending on
+the valuemask, the <i>XChangeWindowAttributes</i> function
+uses the window attributes in the
+<i>XSetWindowAttributes</i> structure to change the
+specified window attributes. Changing the background does
+not cause the window contents to be changed. To repaint the
+window and its background, use <i>XClearWindow</i>. Setting
+the border or changing the background such that the border
+tile origin changes causes the border to be repainted.
+Changing the background of a root window to <i>None</i> or
+<i>ParentRelative</i> restores the default background
+pixmap. Changing the border of a root window to
+<i>CopyFromParent</i> restores the default border pixmap.
+Changing the win-gravity does not affect the current
+position of the window. Changing the backing-store of an
+obscured window to <i>WhenMapped</i> or <i>Always</i>, or
+changing the backing-planes, backing-pixel, or save-under of
+a mapped window may have no immediate effect. Changing the
+colormap of a window (that is, defining a new map, not
+changing the contents of the existing map) generates a
+<i>ColormapNotify</i> event. Changing the colormap of a
+visible window may have no immediate effect on the screen
+because the map may not be installed (see
+<i>XInstallColormap</i>). Changing the cursor of a root
+window to <i>None</i> restores the default cursor. Whenever
+possible, you are encouraged to share colormaps.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Multiple
+clients can select input on the same window. Their event
+masks are maintained separately. When an event is generated,
+it is reported to all interested clients. However, only one
+client at a time can select for
+<i>SubstructureRedirectMask</i>, <i>ResizeRedirectMask</i>,
+and <i>ButtonPressMask</i>. If a client attempts to select
+any of these event masks and some other client has already
+selected one, a <i>BadAccess</i> error results. There is
+only one do-not-propagate-mask for a window, not one per
+client.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XChangeWindowAttributes</i>
+can generate <i>BadAccess</i>, <i>BadColor</i>,
+<i>BadCursor</i>, <i>BadMatch</i>, <i>BadPixmap</i>,
+<i>BadValue</i>, and <i>BadWindow</i> errors.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XSetWindowBackground</i> function sets the background of
+the window to the specified pixel value. Changing the
+background does not cause the window contents to be changed.
+<i>XSetWindowBackground</i> uses a pixmap of undefined size
+filled with the pixel value you passed. If you try to change
+the background of an <i>InputOnly</i> window, a
+<i>BadMatch</i> error results.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XSetWindowBackground</i>
+can generate <i>BadMatch</i> and <i>BadWindow</i>
+errors.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XSetWindowBackgroundPixmap</i> function sets the
+background pixmap of the window to the specified pixmap. The
+background pixmap can immediately be freed if no further
+explicit references to it are to be made. If
+<i>ParentRelative</i> is specified, the background pixmap of
+the window&rsquo;s parent is used, or on the root window,
+the default background is restored. If you try to change the
+background of an <i>InputOnly</i> window, a <i>BadMatch</i>
+error results. If the background is set to <i>None</i>, the
+window has no defined background.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XSetWindowBackgroundPixmap</i>
+can generate <i>BadMatch</i>, <i>BadPixmap</i>, and
+<i>BadWindow</i> errors.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XSetWindowBorder</i> function sets the border of the
+window to the pixel value you specify. If you attempt to
+perform this on an <i>InputOnly</i> window, a
+<i>BadMatch</i> error results.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XSetWindowBorder</i>
+can generate <i>BadMatch</i> and <i>BadWindow</i>
+errors.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XSetWindowBorderPixmap</i> function sets the border
+pixmap of the window to the pixmap you specify. The border
+pixmap can be freed immediately if no further explicit
+references to it are to be made. If you specify
+<i>CopyFromParent</i>, a copy of the parent window&rsquo;s
+border pixmap is used. If you attempt to perform this on an
+<i>InputOnly</i> window, a <i>BadMatch</i> error
+results.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XSetWindowBorderPixmap</i>
+can generate <i>BadMatch</i>, <i>BadPixmap</i>, and
+<i>BadWindow</i> errors.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XSetWindowColormap</i> function sets the specified
+colormap of the specified window. The colormap must have the
+same visual type as the window, or a <i>BadMatch</i> error
+results.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XSetWindowColormap</i>
+can generate <i>BadColor</i>, <i>BadMatch</i>, and
+<i>BadWindow</i> errors.</p>
+
+<h2 id="heading5">DIAGNOSTICS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="14%"></col>
+<col width="1%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><i>BadAccess</i></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">A client attempted to free a
+color map entry that it did not already allocate.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>BadAccess</i></p></td>
+<td></td>
+<td>
+
+
+<p>A client attempted to store into a read-only color map
+entry.</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>BadColor</i></p></td>
+<td></td>
+<td>
+
+
+<p>A value for a Colormap argument does not name a defined
+Colormap.</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>BadCursor</i></p></td>
+<td></td>
+<td>
+
+
+<p>A value for a Cursor argument does not name a defined
+Cursor.</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>BadMatch</i></p></td>
+<td></td>
+<td>
+
+
+<p>Some argument or pair of arguments has the correct type
+and range but fails to match in some other way required by
+the request.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>BadMatch</i></p></td>
+<td></td>
+<td>
+
+
+<p>An <i>InputOnly</i> window locks this attribute.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>BadPixmap</i></p></td>
+<td></td>
+<td>
+
+
+<p>A value for a Pixmap argument does not name a defined
+Pixmap.</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>BadValue</i></p></td>
+<td></td>
+<td>
+
+
+<p>Some numeric value falls outside the range of values
+accepted by the request. Unless a specific range is
+specified for an argument, the full range defined by the
+argument&rsquo;s type is accepted. Any argument defined as a
+set of alternatives can generate this error.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>BadWindow</i></p></td>
+<td></td>
+<td>
+
+
+<p>A value for a Window argument does not name a defined
+Window.</p> </td></tr>
+</table>
+
+<h2 id="heading6">SEE ALSO
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XConfigureWindow.3.xhtml"><em>XConfigureWindow</em>(3)</a>,
+<a href="../man3/XCreateWindow.3.xhtml"><em>XCreateWindow</em>(3)</a>, <a href="../man3/XDestroyWindow.3.xhtml"><em>XDestroyWindow</em>(3)</a>, <a href="../man3/XInstallColormap.3.xhtml"><em>XInstallColormap</em>(3)</a>,
+<a href="../man3/XMapWindow.3.xhtml"><em>XMapWindow</em>(3)</a>, <a href="../man3/XRaiseWindow.3.xhtml"><em>XRaiseWindow</em>(3)</a>, <a href="../man3/XUnmapWindow.3.xhtml"><em>XUnmapWindow</em>(3)</a> <i><br/>
+<a href="../../libX11/libX11/libX11.html">Xlib &minus; C Language X Interface</a></i></p>
+<hr/>
+</body>
+</html>

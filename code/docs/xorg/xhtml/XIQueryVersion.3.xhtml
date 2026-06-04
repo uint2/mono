@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:26:32 2012 -->
+<title>XIQUERYVERSION</title>
+
+</head>
+<body>
+
+<h1>XIQUERYVERSION</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNOPSIS</a><br/>
+<a href="#heading3">DESCRIPTION</a><br/>
+<a href="#heading4">EXAMPLES</a><br/>
+<a href="#heading5">DIAGNOSTICS</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">XIQueryVersion
+&minus; announce and query the support XI2 version.</p>
+
+<h2 id="heading2">SYNOPSIS
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">#include
+&lt;X11/extensions/XInput2.h&gt;</p>
+
+<p style="margin-left:11%; margin-top: 1em">Status
+XIQueryVersion( Display *display, <br/>
+int *major_version_inout, <br/>
+int *minor_version_inout);</p>
+
+<p style="margin-left:11%; margin-top: 1em">display <br/>
+Specifies the connection to the X server.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em">major_version_inout
+<br/>
+Specifies the client&acute;s supported XI2 version, and
+<br/>
+returns the server&acute;s supported version.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em">minor_version_inout
+<br/>
+Specifies the client&acute;s supported XI2 version, and
+<br/>
+returns the server&acute;s supported version.</p>
+
+<h2 id="heading3">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:17%; margin-top: 1em">XIQueryVersion
+announces the client&acute;s supported XI2 version to <br/>
+the server and returns server&acute;s supported X Input
+version. Clients <br/>
+are required to use XIQueryVersion instead of
+XGetExtensionVersion <br/>
+if they use XI2 calls. The server may treat a client
+differently <br/>
+depending on the supported version announced by the client.
+<br/>
+The major_version_inout must be 2 or greater, otherwise a
+BadValue <br/>
+error occurs.</p>
+
+<p style="margin-left:17%; margin-top: 1em">If the server
+does not support XI2, XIQueryVersion returns BadRequest
+<br/>
+to the client. Otherwise, XIQueryVersion returns Success. In
+both <br/>
+cases major_version_inout and minor_version_inout are set to
+the <br/>
+server&acute;s supported version.</p>
+
+<p style="margin-left:17%; margin-top: 1em">XIQueryVersion
+can generate a BadValue error.</p>
+
+<h2 id="heading4">EXAMPLES
+</h2>
+
+
+<p style="margin-left:17%; margin-top: 1em">int rc; <br/>
+int major = 2; <br/>
+int minor = 0;</p>
+
+<p style="margin-left:17%; margin-top: 1em">rc =
+XIQueryVersion(dpy, &amp;major, &amp;minor); <br/>
+if (rc == Success) <br/>
+printf(&quot;XI2 supported. (%d.%d)\n&quot;, major, minor);
+<br/>
+else if (rc == BadRequest) <br/>
+printf(&quot;No XI2 support. (%d.%d only)\n&quot;, major,
+minor); <br/>
+else <br/>
+printf(&quot;Internal error\n&quot;);</p>
+
+<h2 id="heading5">DIAGNOSTICS
+</h2>
+
+
+<p style="margin-left:17%; margin-top: 1em">BadValue <br/>
+A value is outside of the permitted range.</p>
+<hr/>
+</body>
+</html>

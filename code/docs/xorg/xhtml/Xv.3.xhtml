@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:34:03 2012 -->
+<title>Xv</title>
+
+</head>
+<body>
+
+<h1>Xv</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">DESCRIPTION</a><br/>
+<a href="#heading3">SUMMARY OF LIBRARY FUNCTIONS</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Xv &minus; X
+Window System video extension</p>
+
+<h2 id="heading2">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The X Video
+Extension (Xv) extension provides support for video adaptors
+attached to an X display. It takes the approach that a
+display may have one or more video adaptors, each of which
+has one or more ports through which independent video
+streams pass.</p>
+
+<p style="margin-left:11%; margin-top: 1em">An adaptor may
+be able to display video in a drawable, capture video from a
+drawable, or both. It translates between video encoding
+(NTSC, PAL, SECAM, etc...) and drawable format (depth and
+visual-id pair). An adaptor may support multiple video
+encodings and/or multiple drawable formats.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Clients use
+<a href="../man3/Xv.3.xhtml"><em>Xv</em>(3)</a> to gain access and manage sharing of a
+display&rsquo;s video resources. Typically, a client will
+use <a href="../man3/XvQueryExtension.3.xhtml"><em>XvQueryExtension</em>(3)</a> to determine the status of
+the extension, <a href="../man3/XvQueryAdaptors.3.xhtml"><em>XvQueryAdaptors</em>(3)</a> to get a
+description of what video adaptors exist, and
+<a href="../man3/XvQueryEncodings.3.xhtml"><em>XvQueryEncodings</em>(3)</a> to get a description of what
+video encodings an adaptor supports.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Once a client
+has determined what video resources are available, it is
+free to put video into a drawable or get video from a
+drawable, according the capabilities supported. Clients can
+select to receive events when video activity changes in a
+drawable and when port attributes have changed.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The Xv protocol
+version 2.2 and later is extended to support client images
+in alternate colorspaces (XvImages). Xv adaptors which are
+capable of displaying XvImages will have the XvImageMask
+field set in the type field of the XvAdaptorInfo. XvImage
+formats supported by the port may be queried with
+<a href="../man3/XvListImageFormats.3.xhtml"><em>XvListImageFormats</em>(3)</a>. XvImages may be created with
+the help of <a href="../man3/XvCreateImage.3.xhtml"><em>XvCreateImage</em>(3)</a> or
+<a href="../man3/XvShmCreateImage.3.xhtml"><em>XvShmCreateImage</em>(3)</a>; XvImages may be displayed with
+<a href="../man3/XvPutImage.3.xhtml"><em>XvPutImage</em>(3)</a> or <a href="../man3/XvShmPutImage.3.xhtml"><em>XvShmPutImage</em>(3)</a>. The Port
+attributes of the port specified in the Xv(Shm)PutImage
+command will be valid for the image operation when
+applicable. There will be a port encoding with the name
+&quot;XV_IMAGE&quot;. The width and height of that encoding
+will indicate the maximum source image size.</p>
+
+<h2 id="heading3">SUMMARY OF LIBRARY FUNCTIONS
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The following
+is a summary of Xv library functions and events:</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XvCreateImage.3.xhtml"><em>XvCreateImage</em>(3)</a>
+&minus; create an XvImage</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XvGetPortAttribute.3.xhtml"><em>XvGetPortAttribute</em>(3)</a>
+&minus; return current port attribute value</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XvGetStill.3.xhtml"><em>XvGetStill</em>(3)</a>
+&minus; capture a single frame of video from a drawable</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XvGetVideo.3.xhtml"><em>XvGetVideo</em>(3)</a>
+&minus; capture video from a drawable</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XvGrabPort.3.xhtml"><em>XvGrabPort</em>(3)</a>
+&minus; lock port for exclusive use by client</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XvListImageFormats.3.xhtml"><em>XvListImageFormats</em>(3)</a>
+&minus; return list of image formats for a port</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XvPortNotify.3.xhtml"><em>XvPortNotify</em>(3)</a>
+&minus; event generated when port attributes change</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XvPutImage.3.xhtml"><em>XvPutImage</em>(3)</a>
+&minus; write a XvImage to a drawable</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XvPutStill.3.xhtml"><em>XvPutStill</em>(3)</a>
+&minus; write a single frame of video to a drawable</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XvPutVideo.3.xhtml"><em>XvPutVideo</em>(3)</a>
+&minus; write video into a drawable</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XvQueryAdaptors.3.xhtml"><em>XvQueryAdaptors</em>(3)</a>
+&minus; return adaptor information for a screen</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XvQueryBestSize.3.xhtml"><em>XvQueryBestSize</em>(3)</a>
+&minus; determine the optimum drawable region size</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XvQueryEncodings.3.xhtml"><em>XvQueryEncodings</em>(3)</a>
+&minus; return list of encodings for an adaptor</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XvQueryExtension.3.xhtml"><em>XvQueryExtension</em>(3)</a>
+&minus; return version and revision of extension</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XvQueryPortAttributes.3.xhtml"><em>XvQueryPortAttributes</em>(3)</a>
+&minus; return list of attributes of a port</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XvSelectPortNotify.3.xhtml"><em>XvSelectPortNotify</em>(3)</a>
+&minus; enable or disable XvPortNotify events</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XvSelectVideoNotify.3.xhtml"><em>XvSelectVideoNotify</em>(3)</a>
+&minus; enable or disable XvVideoNotify events</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XvSetPortAttribute.3.xhtml"><em>XvSetPortAttribute</em>(3)</a>
+&minus; set an attribute for a port</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XvShmCreateImage.3.xhtml"><em>XvShmCreateImage</em>(3)</a>
+&minus; create an XvImage in shared memory</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XvShmPutImage.3.xhtml"><em>XvShmPutImage</em>(3)</a>
+&minus; write a XvImage in shared memory to a drawable</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XvStopVideo.3.xhtml"><em>XvStopVideo</em>(3)</a>
+&minus; stop active video</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XvUngrabPort.3.xhtml"><em>XvUngrabPort</em>(3)</a>
+&minus; release a grabbed port</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XvVideoNotify.3.xhtml"><em>XvVideoNotify</em>(3)</a>
+&minus; event generated for video processing</p>
+
+<p style="margin-left:11%; margin-top: 1em">Each of these
+functions and events is described in its own Xv man
+page.</p>
+<hr/>
+</body>
+</html>

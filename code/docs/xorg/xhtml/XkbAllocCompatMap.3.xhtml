@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:43:48 2012 -->
+<title>XkbAllocCompatMap</title>
+
+</head>
+<body>
+
+<h1>XkbAllocCompatMap</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNOPSIS</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">STRUCTURES</a><br/>
+<a href="#heading6">DIAGNOSTICS</a><br/>
+<a href="#heading7">SEE ALSO</a><br/>
+<a href="#heading8">NOTES</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">XkbAllocCompatMap
+&minus; Allocate a new compatibility map if you do not
+already have one available</p>
+
+<h2 id="heading2">SYNOPSIS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="37%"></col>
+<col width="1%" class="center"></col>
+<col width="51%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>Status
+XkbAllocCompatMap</b></p> </td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>(XkbDescPtr</b>
+<i>xkb</i><b>, unsigned int</b> <i>which</i><b>,
+unsigned</b></p> </td></tr>
+</table>
+
+<p style="margin-left:11%;"><b>int</b>
+<i>num_si</i><b>);</b></p>
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="7%"></col>
+<col width="4%" class="center"></col>
+<col width="78%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b><i>&minus; xkb</i></b></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">keyboard description in which to
+allocate compat map</p></td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>&minus; which</i></p>
+
+<p style="margin-left:22%;">mask of compatibility map
+components to allocate</p>
+
+<p style="margin-left:11%;"><i>&minus; num_si</i></p>
+
+<p style="margin-left:22%;">number of symbol
+interpretations to allocate</p>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>xkb</i>
+specifies the keyboard description for which compatibility
+maps are to be allocated. The compatibility map is the
+<i>compat</i> field in this structure.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><i>which</i>
+specifies the compatibility map components to be allocated
+(see XkbGetCompatMap). <i>which</i> is an inclusive OR of
+the bits shown in Table 1.</p>
+
+
+<p class="center" style="margin-top: 1em"><img src="grohtml-134571.png" alt="Image grohtml-134571.png"></img></p>
+
+<p style="margin-left:11%; margin-top: 1em"><i>num_si</i>
+specifies the total number of entries to allocate in the
+symbol interpretation vector
+<i>(xkb.compat.sym_interpret).</i></p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XkbAllocCompatMap</i>
+returns Success if successful, BadMatch if <i>xkb</i> is
+NULL, or BadAlloc if errors are encountered when attempting
+to allocate storage.</p>
+
+<h2 id="heading5">STRUCTURES
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">typedef struct
+{ <br/>
+KeySym sym; /&lowast; keysym of interest or NULL */ <br/>
+unsigned char flags; /&lowast; XkbSI_AutoRepeat,
+XkbSI_LockingKey */ <br/>
+unsigned char match; /&lowast; specifies how mods is
+interpreted */ <br/>
+unsigned char mods; /&lowast; modifier bits, correspond to
+eight real modifiers */ <br/>
+unsigned char virtual_mod; /&lowast; 1 modifier to add to
+key virtual mod map */ <br/>
+XkbAnyAction act; /&lowast; action to bind to symbol
+position on key */ <br/>
+} XkbSymInterpretRec,*XkbSymInterpretPtr;</p>
+
+<h2 id="heading6">DIAGNOSTICS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="12%"></col>
+<col width="11%" class="center"></col>
+<col width="66%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>BadAlloc</b></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Unable to allocate storage</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><b>BadMatch</b></p></td>
+<td></td>
+<td>
+
+
+<p>A compatible version of Xkb was not available in the
+server or an argument has correct type and range, but is
+otherwise invalid</p></td></tr>
+</table>
+
+<h2 id="heading7">SEE ALSO
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XkbGetCompatMap.3.xhtml"><em>XkbGetCompatMap</em>(3)</a></p>
+
+<h2 id="heading8">NOTES
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Note that
+symbol interpretations in a compatibility map (the
+<i>sym_interpret</i> vector of XkbSymInterpretRec
+structures) are also allocated using this same function. To
+ensure that there is sufficient space in the symbol
+interpretation vector for entries to be added, use
+<i>XkbAllocCompatMap</i> specifying <i>which</i> as
+XkbSymInterpretMask and the number of free symbol
+interpretations needed in <i>num_si.</i></p>
+<hr/>
+</body>
+</html>

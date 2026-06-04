@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:30:51 2012 -->
+<title>XkbComputeShapeTop</title>
+
+</head>
+<body>
+
+<h1>XkbComputeShapeTop</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNOPSIS</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">STRUCTURES</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">XkbComputeShapeTop
+&minus; Determines the bounding box of the top surface of a
+shape</p>
+
+<h2 id="heading2">SYNOPSIS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="35%"></col>
+<col width="2%" class="center"></col>
+<col width="52%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>Bool
+XkbComputeShapeTop</b></p> </td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>(XkbShapePtr</b>
+<i>shape</i><b>, XkbBoundsPtr</b>
+<i>bounds_rtrn</i><b>);</b></p> </td></tr>
+</table>
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b><i>&minus;
+shape</i></b></p>
+
+<p style="margin-left:22%;">shape to be examined</p>
+
+<p style="margin-left:11%;"><i>&minus; bounds_rtrn</i></p>
+
+<p style="margin-left:22%;">backfilled with the bounding
+box for the shape</p>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Xkb provides a
+number of convenience functions to help use a keyboard
+geometry. These include functions to return the bounding box
+of a shape&rsquo;s top surface and to update the bounding
+box of a shape row or section.</p>
+
+<p style="margin-left:11%; margin-top: 1em">A shape is made
+up of a number of outlines. Each outline is a polygon made
+up of a number of points. The bounding box of a shape is a
+rectangle that contains all the outlines of that shape.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XkbComputeShapeTop</i>
+returns a BoundsRec that contains two x and y coordinates.
+These coordinates describe the corners of a rectangle that
+contains the outline that describes the top surface of the
+shape. The top surface is defined to be the approximating
+outline if the <i>approx</i> field of <i>shape</i> is not
+NULL. If <i>approx</i> is NULL, the top surface is defined
+as the last outline in the <i>shape&rsquo;s</i> array of
+outlines. <i>XkbComputeShapeTop</i> returns False if
+<i>shape</i> is NULL or if there are no outlines for the
+shape; otherwise, it returns True.</p>
+
+<h2 id="heading5">STRUCTURES
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">typedef struct
+_XkbBounds {</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="8%"></col>
+<col width="7%"></col>
+<col width="8%" class="center"></col>
+<col width="8%"></col>
+<col width="7%" class="center"></col>
+<col width="8%"></col>
+<col width="54%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>short</p></td>
+<td></td>
+<td>
+
+
+<p>x1,y1;</p></td>
+<td></td>
+<td></td>
+<td>
+
+
+<p>/&lowast; upper left corner of the bounds, in mm/10
+*/</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>short</p></td>
+<td></td>
+<td>
+
+
+<p>x2,y2;</p></td>
+<td></td>
+<td></td>
+<td>
+
+
+<p>/&lowast; lower right corner of the bounds, in mm/10
+*/</p> </td></tr>
+</table>
+
+<p style="margin-left:11%;">} XkbBoundsRec,
+*XkbBoundsPtr;</p>
+<hr/>
+</body>
+</html>

@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:26:35 2012 -->
+<title>XSetClipOrigin</title>
+
+</head>
+<body>
+
+<h1>XSetClipOrigin</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNTAX</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">DIAGNOSTICS</a><br/>
+<a href="#heading6">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">XSetClipOrigin,
+XSetClipMask, XSetClipRectangles &minus; GC convenience
+routines</p>
+
+<h2 id="heading2">SYNTAX
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="89%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">int XSetClipOrigin(Display
+*<i>display</i>, GC <i>gc</i>, int <i>clip_x_origin</i>, int
+<i>clip_y_origin</i>);</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">int XSetClipMask(Display
+*<i>display</i>, GC <i>gc</i>, Pixmap <i>pixmap</i>);</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">int XSetClipRectangles(Display
+*<i>display</i>, GC <i>gc</i>, int <i>clip_x_origin</i>, int
+<i>clip_y_origin</i>, XRectangle <i>rectangles</i>[], int
+<i>n</i>, int <i>ordering</i>);</p></td></tr>
+</table>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="11%"></col>
+<col width="4%" class="center"></col>
+<col width="63%"></col>
+<col width="11%"></col>
+</colgroup>
+<tr valign="top" align="left">
+
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+<td></td>
+<td></td>
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>display</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the connection to the X server.</p></td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>clip_x_origin <br/>
+clip_y_origin</i></p>
+
+<p style="margin-left:26%;">Specify the x and y coordinates
+of the clip-mask origin.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="12%"></col>
+<col width="3%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>gc</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the GC.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>n</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the number of rectangles.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>ordering</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the ordering relations on the rectangles. You
+can pass <i>Unsorted</i>, <i>YSorted</i>, <i>YXSorted</i>,
+or <i>YXBanded</i>.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>pixmap</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the pixmap or <i>None</i>.</p></td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>rectangles</i></p>
+
+<p style="margin-left:26%;">Specifies an array of
+rectangles that define the clip-mask.</p>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XSetClipOrigin</i> function sets the clip origin in the
+specified GC. The clip-mask origin is interpreted relative
+to the origin of whatever destination drawable is specified
+in the graphics request.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XSetClipOrigin</i>
+can generate <i>BadAlloc</i> and <i>BadGC</i> errors.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XSetClipMask</i> function sets the clip-mask in the
+specified GC to the specified pixmap. If the clip-mask is
+set to <i>None</i>, the pixels are are always drawn
+(regardless of the clip-origin).</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XSetClipMask</i>
+can generate <i>BadAlloc</i>, <i>BadGC</i>, <i>BadMatch</i>,
+and <i>BadValue</i> errors.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XSetClipRectangles</i> function changes the clip-mask in
+the specified GC to the specified list of rectangles and
+sets the clip origin. The output is clipped to remain
+contained within the rectangles. The clip-origin is
+interpreted relative to the origin of whatever destination
+drawable is specified in a graphics request. The rectangle
+coordinates are interpreted relative to the clip-origin. The
+rectangles should be nonintersecting, or the graphics
+results will be undefined. Note that the list of rectangles
+can be empty, which effectively disables output. This is the
+opposite of passing <i>None</i> as the clip-mask in
+<i>XCreateGC</i>, <i>XChangeGC</i>, and
+<i>XSetClipMask</i>.</p>
+
+<p style="margin-left:11%; margin-top: 1em">If known by the
+client, ordering relations on the rectangles can be
+specified with the ordering argument. This may provide
+faster operation by the server. If an incorrect ordering is
+specified, the X server may generate a <i>BadMatch</i>
+error, but it is not required to do so. If no error is
+generated, the graphics results are undefined.
+<i>Unsorted</i> means the rectangles are in arbitrary order.
+<i>YSorted</i> means that the rectangles are nondecreasing
+in their Y origin. <i>YXSorted</i> additionally constrains
+<i>YSorted</i> order in that all rectangles with an equal Y
+origin are nondecreasing in their X origin. <i>YXBanded</i>
+additionally constrains <i>YXSorted</i> by requiring that,
+for every possible Y scanline, all rectangles that include
+that scanline have an identical Y origins and Y extents.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XSetClipRectangles</i>
+can generate <i>BadAlloc</i>, <i>BadGC</i>, <i>BadMatch</i>,
+and <i>BadValue</i> errors.</p>
+
+<h2 id="heading5">DIAGNOSTICS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="12%"></col>
+<col width="3%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><i>BadAlloc</i></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">The server failed to allocate
+the requested resource or server memory.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>BadGC</i></p></td>
+<td></td>
+<td>
+
+
+<p>A value for a GContext argument does not name a defined
+GContext.</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>BadMatch</i></p></td>
+<td></td>
+<td>
+
+
+<p>Some argument or pair of arguments has the correct type
+and range but fails to match in some other way required by
+the request.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>BadValue</i></p></td>
+<td></td>
+<td>
+
+
+<p>Some numeric value falls outside the range of values
+accepted by the request. Unless a specific range is
+specified for an argument, the full range defined by the
+argument&rsquo;s type is accepted. Any argument defined as a
+set of alternatives can generate this error.</p></td></tr>
+</table>
+
+<h2 id="heading6">SEE ALSO
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XCreateGC.3.xhtml"><em>XCreateGC</em>(3)</a>,
+<a href="../man3/XDrawRectangle.3.xhtml"><em>XDrawRectangle</em>(3)</a>, <a href="../man3/XQueryBestSize.3.xhtml"><em>XQueryBestSize</em>(3)</a>, <a href="../man3/XSetArcMode.3.xhtml"><em>XSetArcMode</em>(3)</a>,
+<a href="../man3/XSetFillStyle.3.xhtml"><em>XSetFillStyle</em>(3)</a>, <a href="../man3/XSetFont.3.xhtml"><em>XSetFont</em>(3)</a>, <a href="../man3/XSetLineAttributes.3.xhtml"><em>XSetLineAttributes</em>(3)</a>,
+<a href="../man3/XSetState.3.xhtml"><em>XSetState</em>(3)</a>, <a href="../man3/XSetTile.3.xhtml"><em>XSetTile</em>(3)</a> <i><br/>
+<a href="../../libX11/libX11/libX11.html">Xlib &minus; C Language X Interface</a></i></p>
+<hr/>
+</body>
+</html>

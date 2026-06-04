@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:41:50 2012 -->
+<title>XtAppAddTimeOut</title>
+
+</head>
+<body>
+
+<h1>XtAppAddTimeOut</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNTAX</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">XtAppAddTimeOut,
+XtRemoveTimeOut &minus; register and remove timeouts</p>
+
+<h2 id="heading2">SYNTAX
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="89%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">XtIntervalId
+XtAppAddTimeOut(XtAppContext <i>app_context</i>, unsigned
+long <i>interval</i>, XtTimerCallbackProc <i>proc</i>,
+XtPointer <i>client_data</i>);</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">void
+XtRemoveTimeOut(XtIntervalId <i>timer</i>);</p></td></tr>
+</table>
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>app_context</i></p>
+
+<p style="margin-left:26%;">Specifies the application
+context for which the timer is to be set.</p>
+
+<p style="margin-left:11%;"><i>client_data</i></p>
+
+<p style="margin-left:26%;">Specifies the argument that is
+to be passed to the specified procedure when .</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="12%"></col>
+<col width="3%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>interval</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the time interval in milliseconds.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>proc</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the procedure that is&nbsp;to be called when
+time expires.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>timer</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the ID for the timeout request to be
+destroyed.</p> </td></tr>
+</table>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XtAppAddTimeOut</i> function creates a timeout and
+returns an identifier for it. The timeout value is set to
+interval. The callback procedure is called when the time
+interval elapses, and then the timeout is removed.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XtRemoveTimeOut</i> function removes the timeout. Note
+that timeouts are automatically removed once they
+trigger.</p>
+
+<h2 id="heading5">SEE ALSO
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XtAppAddInput.3.xhtml"><em>XtAppAddInput</em>(3)</a>,<a href="../man3/XtAppAddSignal.3.xhtml"><em>XtAppAddSignal</em>(3)</a>
+<i><br/>
+X Toolkit Intrinsics &minus; C Language Interface <br/>
+<a href="../../libX11/libX11/libX11.html">Xlib &minus; C Language X Interface</a></i></p>
+<hr/>
+</body>
+</html>

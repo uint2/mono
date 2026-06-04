@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:36:48 2012 -->
+<title>XtRealizeWidget</title>
+
+</head>
+<body>
+
+<h1>XtRealizeWidget</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNTAX</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">XtRealizeWidget,
+XtIsRealized, XtUnrealizeWidget &minus; realize and
+unrealize widgets</p>
+
+<h2 id="heading2">SYNTAX
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="51%"></col>
+<col width="38%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">void XtRealizeWidget(Widget
+<i>w</i>);</p> </td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Boolean XtIsRealized(Widget
+<i>w</i>);</p> </td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">void XtUnrealizeWidget(Widget
+<i>w</i>);</p> </td>
+<td>
+</td></tr>
+</table>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="1%"></col>
+<col width="14%" class="center"></col>
+<col width="32%"></col>
+<col width="42%"></col>
+</colgroup>
+<tr valign="top" align="left">
+
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+<td></td>
+<td></td>
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>w</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the widget.</p></td>
+<td>
+</td></tr>
+</table>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">If the widget
+is already realized, <i>XtRealizeWidget</i> simply returns.
+Otherwise, it performs the following:</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="1%"></col>
+<col width="6%" class="center"></col>
+<col width="82%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">&bull;</p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Binds all action names in the
+widget&rsquo;s translation table to procedures (see Section
+10.1.2).</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>&bull;</p></td>
+<td></td>
+<td>
+
+
+<p>Makes a post-order traversal of the widget tree rooted
+at the specified widget and calls the change_managed
+procedure of each composite widget that has one or more
+managed children.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>&bull;</p></td>
+<td></td>
+<td>
+
+
+<p>Constructs an <i>XSetWindowAttributes</i> structure
+filled in with information derived from the <i>Core</i>
+widget fields and calls the realize procedure for the
+widget, which adds any widget-specific attributes and
+creates the X window.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>&bull;</p></td>
+<td></td>
+<td>
+
+
+<p>If the widget is not a subclass of
+<i>compositeWidgetClass</i>, <i>XtRealizeWidget</i> returns;
+otherwise, it continues and performs the following:</p></td></tr>
+</table>
+
+<p style="margin-left:18%;">&minus;</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="18%"></col>
+<col width="2%"></col>
+<col width="6%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Descends recursively to each of
+the widget&rsquo;s managed children and calls the realize
+procedures. Primitive widgets that instantiate children are
+responsible for realizing those children themselves.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>&minus;</p></td>
+<td></td>
+<td>
+
+
+<p>Maps all of the managed children windows that have
+mapped_when_managed <i>True</i>. (If a widget is managed but
+mapped_when_managed is <i>False</i>, the widget is allocated
+visual space but is not displayed. Some people seem to like
+this to indicate certain states.)</p></td></tr>
+</table>
+
+<p style="margin-left:11%; margin-top: 1em">If the widget
+is a top-level shell widget (that is, it has no parent), and
+mapped_when_managed is <i>True</i>, <i>XtRealizeWidget</i>
+maps the widget window.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XtIsRealized</i> function returns <i>True</i> if the
+widget has been realized, that is, if the widget has a
+nonzero X window ID.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Some widget
+procedures (for example, set_values) might wish to operate
+differently after the widget has been realized.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XtUnrealizeWidget</i> function destroys the windows of an
+existing widget and all of its children (recursively down
+the widget tree). To recreate the windows at a later time,
+call <i>XtRealizeWidget</i> again. If the widget was
+managed, it will be unmanaged automatically before its
+window is freed.</p>
+
+<h2 id="heading5">SEE ALSO
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XtManageChildren.3.xhtml"><em>XtManageChildren</em>(3)</a>
+<i><br/>
+X Toolkit Intrinsics &minus; C Language Interface <br/>
+<a href="../../libX11/libX11/libX11.html">Xlib &minus; C Language X Interface</a></i></p>
+<hr/>
+</body>
+</html>

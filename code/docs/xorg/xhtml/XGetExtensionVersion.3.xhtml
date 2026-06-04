@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:26:03 2012 -->
+<title>XGETEXTENSIONVERSION</title>
+
+</head>
+<body>
+
+<h1>XGETEXTENSIONVERSION</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNOPSIS</a><br/>
+<a href="#heading3">DESCRIPTION</a><br/>
+<a href="#heading4">STRUCTURES</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">XGetExtensionVersion
+&minus; query the version of the input extension.</p>
+
+<h2 id="heading2">SYNOPSIS
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">#include
+&lt;X11/extensions/XInput.h&gt;</p>
+
+
+<p style="margin-left:11%; margin-top: 1em">XExtensionVersion
+*XGetExtensionVersion( Display *display, <br/>
+char *name);</p>
+
+<p style="margin-left:11%; margin-top: 1em">display <br/>
+Specifies the connection to the X server.</p>
+
+<p style="margin-left:11%; margin-top: 1em">name <br/>
+Specifies the extension to be queried. The input <br/>
+extension name is definedin the header file XI.h.</p>
+
+<h2 id="heading3">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:17%; margin-top: 1em">The
+XGetExtensionVersion request is deprecated and should not
+<br/>
+be used in XI2 applications. Clients issuing a
+XGetExtensionVersion <br/>
+request will not be able to use XI2 features.</p>
+
+<p style="margin-left:17%; margin-top: 1em">The
+XGetExtensionVersion request queries the version of the
+input <br/>
+extension, and returns an XExtensionVersion structure. This
+structure <br/>
+contains a major_version and minor_version number which can
+be compared <br/>
+with constants defined in XI.h. Support for additional
+protocol <br/>
+requests added to the input extension after its initial
+release <br/>
+is indicated by a version number corresponding to the added
+<br/>
+requests. Each version contains all the protocol requests
+<br/>
+contained by previous versions.</p>
+
+<p style="margin-left:17%; margin-top: 1em">You should use
+XFree to free the XExtensionVersion structure.</p>
+
+<h2 id="heading4">STRUCTURES
+</h2>
+
+
+<p style="margin-left:17%; margin-top: 1em">This request
+returns an XExtensionVersion structure.</p>
+
+<p style="margin-left:17%; margin-top: 1em">typedef struct
+{ <br/>
+int present; <br/>
+short major_version; <br/>
+short minor_version; <br/>
+} XExtensionVersion;</p>
+<hr/>
+</body>
+</html>

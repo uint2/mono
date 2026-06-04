@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:39:26 2012 -->
+<title>XkbAllocControls</title>
+
+</head>
+<body>
+
+<h1>XkbAllocControls</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNOPSIS</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">RETURN VALUES</a><br/>
+<a href="#heading6">DIAGNOSTICS</a><br/>
+<a href="#heading7">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">XkbAllocControls
+&minus; Allocates an XkbControlsRec structure in the
+XkbDescRec</p>
+
+<h2 id="heading2">SYNOPSIS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="35%"></col>
+<col width="2%" class="center"></col>
+<col width="52%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>Status
+XkbAllocControls</b></p> </td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>(XkbDescPtr</b>
+<i>xkb</i><b>, unsigned int</b> <i>which</i><b>);</b></p></td></tr>
+</table>
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="7%"></col>
+<col width="4%" class="center"></col>
+<col width="70%"></col>
+<col width="8%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b><i>&minus; xkb</i></b></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Xkb description in which to
+allocate ctrls rec</p></td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>&minus; which</i></p>
+
+<p style="margin-left:22%;">mask of components of ctrls to
+allocate</p>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The need to
+allocate an XkbControlsRec structure seldom arises; Xkb
+creates one when an application calls <i>XkbGetControls</i>
+or a related function. For those situations where there is
+not an XkbControlsRec structure allocated in the XkbDescRec,
+allocate one by calling <i>XkbAllocControls.</i></p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XkbAllocControls</i>
+allocates the <i>ctrls</i> field of the <i>xkb</i>
+parameter, initializes all fields to zero, and returns
+Success. If the <i>ctrls</i> field is not NULL,
+<i>XkbAllocControls</i> simply returns Success. If
+<i>xkb</i> is NULL, <i>XkbAllocControls</i> reports a
+BadMatch error. If the <i>ctrls</i> field could not be
+allocated, it reports a BadAlloc error.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>which</i> mask specifies the individual fields of the
+<i>ctrls</i> structure to be allocated and can contain any
+of the valid masks defined in Table 1. (SHOULD THIS COMMENT
+BE LEFT IN????) Because none of the currently existing
+controls have any structures associated with them, which is
+currently of little practical value in this call.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Table 1 shows
+the actual values for the individual mask bits used to
+select controls for modification and to enable and disable
+the control. Note that the same mask bit is used to specify
+general modifications to the parameters used to configure
+the control (which), and to enable and disable the control
+(enabled_ctrls). The anomalies in the table (no
+&quot;ok&quot; in column) are for controls that have no
+configurable attributes; and for controls that are not
+boolean controls and therefore cannot be enabled or
+disabled.</p>
+
+
+<p class="center" style="margin-top: 1em"><img src="grohtml-45831.png" alt="Image grohtml-45831.png"></img></p>
+
+<h2 id="heading5">RETURN VALUES
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="11%"></col>
+<col width="12%" class="center"></col>
+<col width="66%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">SUCCESS</p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">allocates the ctrls field of the
+xkb parameter, initializes all fields to zero</p></td></tr>
+</table>
+
+<p style="margin-left:31%; margin-top: 1em">the ctrls field
+is not NULL</p>
+
+<h2 id="heading6">DIAGNOSTICS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="12%"></col>
+<col width="11%" class="center"></col>
+<col width="66%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>BadAlloc</b></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Unable to allocate storage</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><b>BadMatch</b></p></td>
+<td></td>
+<td>
+
+
+<p>A compatible version of Xkb was not available in the
+server or an argument has correct type and range, but is
+otherwise invalid</p></td></tr>
+</table>
+
+<h2 id="heading7">SEE ALSO
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XkbGetControls.3.xhtml"><em>XkbGetControls</em>(3)</a></p>
+<hr/>
+</body>
+</html>

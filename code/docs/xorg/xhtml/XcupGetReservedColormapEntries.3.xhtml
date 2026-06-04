@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:35:01 2012 -->
+<title>XCUP</title>
+
+</head>
+<body>
+
+<h1>XCUP</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNOPSIS</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">XcupGetReservedColormapEntries
+&minus; list colormap entries reserved by the system</p>
+
+<h2 id="heading2">SYNOPSIS
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>cc</b> [
+<i>flag</i> ... ] <i>file</i> ... -<b>lXext</b> [
+<i>library</i> ... ] <br/>
+#include &lt;X11/extensions/Xcup.h&gt;</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="84%"></col>
+<col width="5%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Status
+<b>XcupGetReservedColormapEntries</b>(Display
+*<i>display</i>,</p> </td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:22%;">int <i>screen</i>, XColor
+**<i>colors_out</i>, int *<i>ncolors</i>);</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="11%"></col>
+<col width="4%" class="center"></col>
+<col width="63%"></col>
+<col width="11%"></col>
+</colgroup>
+<tr valign="top" align="left">
+
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+<td></td>
+<td></td>
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>display</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the connection to the X server.</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>screen</i></p></td>
+<td></td>
+<td>
+
+
+<p>Screen number on the host server.</p></td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>colors_out</i></p>
+
+<p style="margin-left:26%;">Returns the values reserved by
+the server.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="11%"></col>
+<col width="4%" class="center"></col>
+<col width="65%"></col>
+<col width="9%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>ncolors</i></p></td>
+<td></td>
+<td>
+
+
+<p>Returns the number of items in <i>colors_out</i>.</p></td>
+<td>
+</td></tr>
+</table>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XcupGetReservedColormapEntries</i> function returns a
+list of colormap entries (pixels) that are reserved by the
+system. This list will, at a minimum, contain entries for
+the BlackPixel and WhitePixel of the specified screen. Use
+<i>XFree</i> to free <i>colors_out.</i></p>
+
+<p style="margin-left:11%; margin-top: 1em">To minimize
+colormap flash, an application which installs its own
+private colormap should query the special colors by calling
+<i>XCupGetReservedColormapEntries</i>, and can then store
+those entries (in the proper location) in its private
+colormap using <i>XCupStoreColors</i>.</p>
+
+<h2 id="heading5">SEE ALSO
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>XcupQueryVersion</b>(3Xext),
+<b>XcupStoreColors</b>(3Xext), <b>XFree</b>(3X11), <i><br/>
+Colormap Utilization Policy and Extension</i></p>
+<hr/>
+</body>
+</html>

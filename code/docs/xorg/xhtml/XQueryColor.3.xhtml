@@ -1,0 +1,400 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:24:51 2012 -->
+<title>XQueryColor</title>
+
+</head>
+<body>
+
+<h1>XQueryColor</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNTAX</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">COLOR NAMES</a><br/>
+<a href="#heading6">DIAGNOSTICS</a><br/>
+<a href="#heading7">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">XQueryColor,
+XQueryColors, XLookupColor, XParseColor &minus; obtain color
+values</p>
+
+<h2 id="heading2">SYNTAX
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="89%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">int XQueryColor(Display
+*<i>display</i>, Colormap <i>colormap</i>, XColor
+*<i>def_in_out</i>);</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">int XQueryColors(Display
+*<i>display</i>, Colormap <i>colormap</i>, XColor
+<i>defs_in_out</i>[], int <i>ncolors</i>);</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Status XLookupColor(Display
+*<i>display</i>, Colormap <i>colormap</i>, char
+*<i>color_name</i>, XColor *<i>exact_def_return</i>, XColor
+*<i>screen_def_return</i>);</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Status XParseColor(Display
+*<i>display</i>, Colormap <i>colormap</i>, char
+*<i>spec</i>, XColor *<i>exact_def_return</i>);</p></td></tr>
+</table>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="12%"></col>
+<col width="3%" class="center"></col>
+<col width="36%"></col>
+<col width="38%"></col>
+</colgroup>
+<tr valign="top" align="left">
+
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+<td></td>
+<td></td>
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>colormap</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the colormap.</p></td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>color_name</i></p>
+
+<p style="margin-left:26%;">Specifies the color name string
+(for example, red) whose color definition structure you want
+returned.</p>
+
+<p style="margin-left:11%;"><i>def_in_out</i></p>
+
+<p style="margin-left:26%;">Specifies and returns the RGB
+values for the pixel specified in the structure.</p>
+
+<p style="margin-left:11%;"><i>defs_in_out</i></p>
+
+<p style="margin-left:26%;">Specifies and returns an array
+of color definition structures for the pixel specified in
+the structure.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="11%"></col>
+<col width="4%" class="center"></col>
+<col width="63%"></col>
+<col width="11%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>display</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the connection to the X server.</p></td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>exact_def_return</i></p>
+
+<p style="margin-left:26%;">Returns the exact RGB
+values.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="11%"></col>
+<col width="4%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>ncolors</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the number of <i>XColor</i> structures in the
+color definition array.</p></td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>screen_def_return</i></p>
+
+<p style="margin-left:26%;">Returns the closest RGB values
+provided by the hardware.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="6%"></col>
+<col width="9%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>spec</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the color name string; case is ignored.</p></td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>exact_def_return</i></p>
+
+<p style="margin-left:26%;">Returns the exact color value
+for later use and sets the <i>DoRed</i>, <i>DoGreen</i>, and
+<i>DoBlue</i> flags.</p>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XQueryColor</i> function returns the current RGB value
+for the pixel in the <i>XColor</i> structure and sets the
+<i>DoRed</i>, <i>DoGreen</i>, and <i>DoBlue</i> flags. The
+<i>XQueryColors</i> function returns the RGB value for each
+pixel in each <i>XColor</i> structure and sets the
+<i>DoRed</i>, <i>DoGreen</i>, and <i>DoBlue</i> flags in
+each structure.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XQueryColor</i>
+and <i>XQueryColors</i> can generate <i>BadColor</i> and
+<i>BadValue</i> errors.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XLookupColor</i> function looks up the string name of a
+color with respect to the screen associated with the
+specified colormap. It returns both the exact color values
+and the closest values provided by the screen with respect
+to the visual type of the specified colormap. If the color
+name is not in the Host Portable Character Encoding, the
+result is implementation-dependent. Use of uppercase or
+lowercase does not matter. <i>XLookupColor</i> returns
+nonzero if the name is resolved; otherwise, it returns
+zero.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XParseColor</i> function looks up the string name of a
+color with respect to the screen associated with the
+specified colormap. It returns the exact color value. If the
+color name is not in the Host Portable Character Encoding,
+the result is implementation-dependent. Use of uppercase or
+lowercase does not matter. <i>XParseColor</i> returns
+nonzero if the name is resolved; otherwise, it returns
+zero.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XLookupColor</i>
+and <i>XParseColor</i> can generate <i>BadColor</i>
+error.</p>
+
+<h2 id="heading5">COLOR NAMES
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">An RGB Device
+specification is identified by the prefix
+&lsquo;&lsquo;rgb:&rsquo;&rsquo; and conforms to the
+following syntax:</p>
+
+
+<p style="margin-left:11%; margin-top: 1em">rgb:<i>&lt;red&gt;/&lt;green&gt;/&lt;blue&gt;</i></p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>&lt;red&gt;</i>,
+<i>&lt;green&gt;</i>, <i>&lt;blue&gt;</i> := <i>h</i> |
+<i>hh</i> | <i>hhh</i> | <i>hhhh <br/>
+h</i> := single hexadecimal digits (case insignificant)</p>
+
+<p style="margin-left:11%; margin-top: 1em">Note that
+<i>h</i> indicates the value scaled in 4 bits, <i>hh</i> the
+value scaled in 8 bits, <i>hhh</i> the value scaled in 12
+bits, and <i>hhhh</i> the value scaled in 16 bits,
+respectively.</p>
+
+<p style="margin-left:11%; margin-top: 1em">For backward
+compatibility, an older syntax for RGB Device is supported,
+but its continued use is not encouraged. The syntax is an
+initial sharp sign character followed by a numeric
+specification, in one of the following formats:</p>
+
+
+<p class="center" style="margin-top: 1em"><img src="grohtml-66171.png" alt="Image grohtml-66171.png"></img></p>
+
+<p style="margin-left:11%; margin-top: 1em">The R, G, and B
+represent single hexadecimal digits. When fewer than 16 bits
+each are specified, they represent the most significant bits
+of the value (unlike the &lsquo;&lsquo;rgb:&rsquo;&rsquo;
+syntax, in which values are scaled). For example, the string
+&lsquo;&lsquo;#3a7&rsquo;&rsquo; is the same as
+&lsquo;&lsquo;#3000a0007000&rsquo;&rsquo;.</p>
+
+<p style="margin-left:11%; margin-top: 1em">An RGB
+intensity specification is identified by the prefix
+&lsquo;&lsquo;rgbi:&rsquo;&rsquo; and conforms to the
+following syntax:</p>
+
+
+<p style="margin-left:11%; margin-top: 1em">rgbi:<i>&lt;red&gt;/&lt;green&gt;/&lt;blue&gt;</i></p>
+
+<p style="margin-left:11%; margin-top: 1em">Note that red,
+green, and blue are floating-point values between 0.0 and
+1.0, inclusive. The input format for these values is an
+optional sign, a string of numbers possibly containing a
+decimal point, and an optional exponent field containing an
+E or e followed by a possibly signed integer string.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The standard
+device-independent string specifications have the following
+syntax:</p>
+
+
+<p style="margin-left:11%; margin-top: 1em">CIEXYZ:<i>&lt;X&gt;/&lt;Y&gt;/&lt;Z&gt;</i>
+<br/>
+CIEuvY:<i>&lt;u&gt;/&lt;v&gt;/&lt;Y&gt;</i> <br/>
+CIExyY:<i>&lt;x&gt;/&lt;y&gt;/&lt;Y&gt;</i> <br/>
+CIELab:<i>&lt;L&gt;/&lt;a&gt;/&lt;b&gt;</i> <br/>
+CIELuv:<i>&lt;L&gt;/&lt;u&gt;/&lt;v&gt;</i> <br/>
+TekHVC:<i>&lt;H&gt;/&lt;V&gt;/&lt;C&gt;</i></p>
+
+<p style="margin-left:11%; margin-top: 1em">All of the
+values (C, H, V, X, Y, Z, a, b, u, v, y, x) are
+floating-point values. The syntax for these values is an
+optional plus or minus sign, a string of digits possibly
+containing a decimal point, and an optional exponent field
+consisting of an &lsquo;&lsquo;E&rsquo;&rsquo; or
+&lsquo;&lsquo;e&rsquo;&rsquo; followed by an optional plus
+or minus followed by a string of digits.</p>
+
+<h2 id="heading6">DIAGNOSTICS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="12%"></col>
+<col width="3%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><i>BadColor</i></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">A value for a Colormap argument
+does not name a defined Colormap.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>BadValue</i></p></td>
+<td></td>
+<td>
+
+
+<p>Some numeric value falls outside the range of values
+accepted by the request. Unless a specific range is
+specified for an argument, the full range defined by the
+argument&rsquo;s type is accepted. Any argument defined as a
+set of alternatives can generate this error.</p></td></tr>
+</table>
+
+<h2 id="heading7">SEE ALSO
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XAllocColor.3.xhtml"><em>XAllocColor</em>(3)</a>,
+<a href="../man3/XCreateColormap.3.xhtml"><em>XCreateColormap</em>(3)</a>, <a href="../man3/XStoreColors.3.xhtml"><em>XStoreColors</em>(3)</a> <i><br/>
+<a href="../../libX11/libX11/libX11.html">Xlib &minus; C Language X Interface</a></i></p>
+<hr/>
+</body>
+</html>

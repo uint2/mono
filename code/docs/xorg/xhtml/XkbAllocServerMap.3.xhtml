@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:27:29 2012 -->
+<title>XkbAllocServerMap</title>
+
+</head>
+<body>
+
+<h1>XkbAllocServerMap</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNOPSIS</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">DIAGNOSTICS</a><br/>
+<a href="#heading6">NOTES</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">XkbAllocServerMap
+&minus; Allocate and initialize an empty server map
+description record</p>
+
+<h2 id="heading2">SYNOPSIS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="37%"></col>
+<col width="1%" class="center"></col>
+<col width="51%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>Status
+XkbAllocServerMap</b></p> </td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>(XkbDescPtr</b>
+<i>xkb</i><b>, unsigned int</b> <i>which</i><b>,
+unsigned</b></p> </td></tr>
+</table>
+
+<p style="margin-left:11%;"><b>int</b>
+<i>count_acts</i><b>);</b></p>
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="7%"></col>
+<col width="4%" class="center"></col>
+<col width="78%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b><i>&minus; xkb</i></b></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">keyboard description in which to
+allocate server map</p></td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>&minus; which</i></p>
+
+<p style="margin-left:22%;">mask selecting map components
+to allocate</p>
+
+<p style="margin-left:11%;"><i>&minus; count_acts</i></p>
+
+<p style="margin-left:22%;">value of num_acts field in map
+to be allocated</p>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XkbAllocServerMap</i>
+allocates and initializes an empty server map in the
+<i>server</i> field of the keyboard description specified by
+<i>xkb.</i> The <i>which</i> parameter specifies the
+particular components of the server map structure to
+allocate, as specified in Table 1.</p>
+
+
+<p class="center" style="margin-top: 1em"><img src="grohtml-121771.png" alt="Image grohtml-121771.png"></img></p>
+
+<p style="margin-left:11%; margin-top: 1em">If the server
+map of the keyboard description is not NULL and any fields
+are already allocated in the server map,
+<i>XkbAllocServerMap</i> does not overwrite the existing
+values. The only exception is with the <i>acts</i> array. If
+the <i>count_acts</i> parameter is greater than the current
+<i>num_acts</i> field of the server map,
+<i>XkbAllocServerMap</i> resizes the <i>acts</i> array and
+resets the <i>num_acts</i> field accordingly.</p>
+
+<p style="margin-left:11%; margin-top: 1em">If
+<i>XkbAllocServerMap</i> is successful, it returns Success.
+Otherwise, it can return either BadMatch or BadAlloc
+errors.</p>
+
+<h2 id="heading5">DIAGNOSTICS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="12%"></col>
+<col width="11%" class="center"></col>
+<col width="66%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>BadAlloc</b></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Unable to allocate storage</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><b>BadMatch</b></p></td>
+<td></td>
+<td>
+
+
+<p>A compatible version of Xkb was not available in the
+server or an argument has correct type and range, but is
+otherwise invalid</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><b>BadValue</b></p></td>
+<td></td>
+<td>
+
+
+<p>An argument is out of range</p></td></tr>
+</table>
+
+<h2 id="heading6">NOTES
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>min_key_code</i> and <i>max_key_code</i> fields of the
+<i>xkb</i> parameter must be legal values. If they are not
+valid, <i>XkbAllocServerMap</i> returns BadValue.</p>
+<hr/>
+</body>
+</html>

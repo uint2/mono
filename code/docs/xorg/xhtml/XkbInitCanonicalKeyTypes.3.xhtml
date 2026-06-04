@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:24:32 2012 -->
+<title>XkbInitCanonicalKeyTypes</title>
+
+</head>
+<body>
+
+<h1>XkbInitCanonicalKeyTypes</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNOPSIS</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">RETURN VALUES</a><br/>
+<a href="#heading6">DIAGNOSTICS</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">XkbInitCanonicalKeyTypes
+&minus; Set the definitions of the canonical key types in a
+client map to their default values</p>
+
+<h2 id="heading2">SYNOPSIS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="47%"></col>
+<col width="2%" class="center"></col>
+<col width="40%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>Status
+XkbInitCanonicalKeyTypes</b></p> </td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>(XkbDescPtr</b>
+<i>xkb</i><b>, unsigned int</b> <i>which</i><b>,</b></p></td></tr>
+</table>
+
+<p style="margin-left:11%;"><b>int</b>
+<i>keypadVMod</i><b>);</b></p>
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="7%"></col>
+<col width="4%" class="center"></col>
+<col width="78%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b><i>&minus; xkb</i></b></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">keyboard description containing
+client map to initialize</p></td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>&minus; which</i></p>
+
+<p style="margin-left:22%;">mask of types to initialize</p>
+
+<p style="margin-left:11%;"><i>&minus; keypadVMod</i></p>
+
+<p style="margin-left:22%;">index of NumLock virtual
+modifier</p>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XkbInitCanonicalKeyTypes</i>
+initializes the first XkbNumRequiredTypes key types of the
+keyboard specified by the <i>xkb</i> parameter to their
+default values. The <i>which</i> parameter specifies what
+canonical key types to initialize and is a bitwise inclusive
+OR of the following masks: XkbOneLevelMask, XkbTwoLevelMask,
+XkbAlphabeticMask, and XkbKeypadMask. Only those canonical
+types specified by the <i>which</i> mask are
+initialized.</p>
+
+<p style="margin-left:11%; margin-top: 1em">If
+XkbKeypadMask is set in the <i>which</i> parameter,
+<i>XkbInitCanonicalKeyTypes</i> looks up the NumLock named
+virtual modifier to determine which virtual modifier to use
+when initializing the KEYPAD key type. If the NumLock
+virtual modifier does not exist,
+<i>XkbInitCanonicalKeyTypes</i> creates it.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XkbInitCanonicalKeyTypes</i>
+normally returns Success. It returns BadAccess if the Xkb
+extension has not been properly initialized, and BadAccess
+if the xkb parameter is not valid.</p>
+
+<h2 id="heading5">RETURN VALUES
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="11%"></col>
+<col width="12%" class="center"></col>
+<col width="66%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Success</p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">The
+<i>XkbInitCanonicalKeyTypes</i> funtion return Success if
+the Xkb extension has been properly initialized and the xkb
+parameter is valid.</p></td></tr>
+</table>
+
+<h2 id="heading6">DIAGNOSTICS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="14%"></col>
+<col width="9%" class="center"></col>
+<col width="66%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>BadAccess</b></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">The Xkb extension has not been
+properly initialized</p></td></tr>
+ </table>
+<hr/>
+</body>
+</html>

@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:23:49 2012 -->
+<title>XkbGetVirtualMods</title>
+
+</head>
+<body>
+
+<h1>XkbGetVirtualMods</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNOPSIS</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">RETURN VALUES</a><br/>
+<a href="#heading6">STRUCTURES</a><br/>
+<a href="#heading7">DIAGNOSTICS</a><br/>
+<a href="#heading8">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">XkbGetVirtualMods
+&minus; Obtain a subset of the virtual modifier bindings
+(the vmods array) in a keyboard description</p>
+
+<h2 id="heading2">SYNOPSIS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="37%"></col>
+<col width="1%" class="center"></col>
+<col width="51%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>Status
+XkbGetVirtualMods</b></p> </td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>(Display *</b><i>dpy</i><b>,
+unsigned int</b> <i>which</i><b>, XkbDescPtr</b></p></td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>xkb</i><b>);</b></p>
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="7%"></col>
+<col width="4%" class="center"></col>
+<col width="30%"></col>
+<col width="48%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b><i>&minus; dpy</i></b></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">connection to server</p></td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>&minus; which</i></p>
+
+<p style="margin-left:22%;">mask indicating virtual
+modifier bindings to get</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="7%"></col>
+<col width="4%" class="center"></col>
+<col width="67%"></col>
+<col width="11%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>&minus; xkb</i></p></td>
+<td></td>
+<td>
+
+
+<p>Xkb description where results will be placed</p></td>
+<td>
+</td></tr>
+</table>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XkbGetVirtualMods</i>
+sends a request to the server to obtain the <i>vmods</i>
+entries for the virtual modifiers specified in the mask,
+<i>which,</i> and waits for a reply.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Virtual
+modifiers are named by converting their string name to an X
+Atom and storing the Atom in the <i>names.vmods</i> array in
+an XkbDescRec structure. The position of a name Atom in the
+<i>names.vmods</i> array defines the bit position used to
+represent the virtual modifier and also the index used when
+accessing virtual modifier information in arrays: the name
+in the i-th (0 relative) entry of <i>names.vmods</i> is the
+i-th virtual modifier, represented by the mask (1&lt;&lt;i).
+Throughout Xkb, various functions have a parameter that is a
+mask representing virtual modifier choices. In each case,
+the i-th bit (0 relative) of the mask represents the i-th
+virtual modifier.</p>
+
+<p style="margin-left:11%; margin-top: 1em">To set the name
+of a virtual modifier, use <i>XkbSetNames,</i> using
+XkbVirtualModNamesMask in <i>which</i> and the name in the
+<i>xkb</i> argument; to retrieve indicator names, use
+<i>XkbGetNames.</i></p>
+
+<p style="margin-left:11%; margin-top: 1em">For each bit
+set in <i>which, XkbGetVirtualMods</i> updates the
+corresponding virtual modifier definition in the
+<i>server-&gt;vmods</i> array of <i>xkb.</i> The <i>xkb</i>
+parameter must be a pointer to a valid Xkb keyboard
+description. If successful, <i>XkbGetVirtualMods</i> returns
+Success.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>Virtual
+Modifier Names and Masks</b></p>
+
+<p style="margin-left:11%; margin-top: 1em">Virtual
+modifiers are named by converting their string name to an X
+Atom and storing the Atom in the <i>names.vmods</i> array in
+an XkbDescRec structure. The position of a name Atom in the
+<i>names.vmods</i> array defines the bit position used to
+represent the virtual modifier and also the index used when
+accessing virtual modifier information in arrays: the name
+in the i-th (0 relative) entry of <i>names.vmods</i> is the
+i-th virtual modifier, represented by the mask (1&lt;&lt;i).
+Throughout Xkb, various functions have a parameter that is a
+mask representing virtual modifier choices. In each case,
+the i-th bit (0 relative) of the mask represents the i-th
+virtual modifier.</p>
+
+<p style="margin-left:11%; margin-top: 1em">To set the name
+of a virtual modifier, use <i>XkbSetNames,</i> using
+XkbVirtualModNamesMask in <i>which</i> and the name in the
+<i>xkb</i> argument; to retrieve indicator names, use
+<i>XkbGetNames.</i></p>
+
+<p style="margin-left:11%; margin-top: 1em">If the
+<i>server</i> map has not been allocated in the <i>xkb</i>
+parameter, <i>XkbGetVirtualMods</i> allocates and
+initializes it before obtaining the virtual modifier
+bindings.</p>
+
+<p style="margin-left:11%; margin-top: 1em">If the server
+does not have a compatible version of Xkb, or the Xkb
+extension has not been properly initialized,
+<i>XkbGetVirtualMods</i> returns BadMatch. Any errors in
+allocation cause <i>XkbGetVirtualMods</i> to return
+BadAlloc.</p>
+
+<h2 id="heading5">RETURN VALUES
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="11%"></col>
+<col width="12%" class="center"></col>
+<col width="66%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Success</p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">The <i>XkbGetVirtualMods</i>
+function returns Success when it successfully updates the
+corresponding virtual modifier definition in the
+<i>server-&gt;vmods</i> array of <i>xkb.</i></p></td></tr>
+</table>
+
+<h2 id="heading6">STRUCTURES
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The complete
+description of an Xkb keyboard is given by an XkbDescRec.
+The component structures in the XkbDescRec represent the
+major Xkb components.</p>
+
+<p style="margin-left:11%; margin-top: 1em">typedef struct
+{ <br/>
+struct _XDisplay * display; /&lowast; connection to X server
+*/ <br/>
+unsigned short flags; /&lowast; private to Xkb, do not
+modify */ <br/>
+unsigned short device_spec; /&lowast; device of interest */
+<br/>
+KeyCode min_key_code; /&lowast; minimum keycode for device
+*/ <br/>
+KeyCode max_key_code; /&lowast; maximum keycode for device
+*/ <br/>
+XkbControlsPtr ctrls; /&lowast; controls */ <br/>
+XkbServerMapPtr server; /&lowast; server keymap */ <br/>
+XkbClientMapPtr map; /&lowast; client keymap */ <br/>
+XkbIndicatorPtr indicators; /&lowast; indicator map */ <br/>
+XkbNamesPtr names; /&lowast; names for all components */
+<br/>
+XkbCompatMapPtr compat; /&lowast; compatibility map */ <br/>
+XkbGeometryPtr geom; /&lowast; physical geometry of keyboard
+*/ <br/>
+} XkbDescRec, *XkbDescPtr;</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>display</i> field points to an X display structure. The
+<i>flags</i> field is private to the library: modifying
+<i>flags</i> may yield unpredictable results. The
+<i>device_spec</i> field specifies the device identifier of
+the keyboard input device, or XkbUseCoreKeyboard, which
+specifies the core keyboard device. The <i>min_key_code</i>
+and <i>max_key_code</i> fields specify the least and
+greatest keycode that can be returned by the keyboard.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Each structure
+component has a corresponding mask bit that is used in
+function calls to indicate that the structure should be
+manipulated in some manner, such as allocating it or freeing
+it. These masks and their relationships to the fields in the
+XkbDescRec are shown in Table 1.</p>
+
+
+<p class="center" style="margin-top: 1em"><img src="grohtml-45051.png" alt="Image grohtml-45051.png"></img></p>
+
+<h2 id="heading7">DIAGNOSTICS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="12%"></col>
+<col width="11%" class="center"></col>
+<col width="66%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>BadAlloc</b></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Unable to allocate storage</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><b>BadMatch</b></p></td>
+<td></td>
+<td>
+
+
+<p>A compatible version of Xkb was not available in the
+server or an argument has correct type and range, but is
+otherwise invalid</p></td></tr>
+</table>
+
+<h2 id="heading8">SEE ALSO
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XkbGetNames.3.xhtml"><em>XkbGetNames</em>(3)</a>,
+<a href="../man3/XkbSetNames.3.xhtml"><em>XkbSetNames</em>(3)</a></p>
+<hr/>
+</body>
+</html>

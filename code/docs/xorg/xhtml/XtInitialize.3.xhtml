@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:40:05 2012 -->
+<title>XtInitialize</title>
+
+</head>
+<body>
+
+<h1>XtInitialize</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNTAX</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">XtInitialize
+&minus; initialize</p>
+
+<h2 id="heading2">SYNTAX
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="89%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Widget XtInitialize(String
+<i>shell_name</i>, String <i>application_class</i>,
+XrmOptionDescRec* <i>options</i>, Cardinal
+<i>num_options</i>, int* <i>argc</i>, char**
+<i>argv</i>);</p> </td></tr>
+</table>
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>shell_name</i></p>
+
+<p style="margin-left:26%;">Specifies the name of the
+created shell widget.</p>
+
+<p style="margin-left:11%;"><i>application_class</i></p>
+
+<p style="margin-left:26%;">Specifies the class name of
+this application, which usually is the generic name for all
+instances of this application.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="11%"></col>
+<col width="4%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>options</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies how to parse the command line for any
+application-specific resources. The options argument is
+passed as a parameter to <i>XrmParseCommand</i>. For further
+information, see <i>Xlib &minus; C Language X
+Interface</i>.</p> </td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>num_options</i></p>
+
+<p style="margin-left:26%;">Specifies the number of entries
+in the options list.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="6%"></col>
+<col width="9%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>argc</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies a pointer to the number of command line
+parameters.</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>argv</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the command line parameters.</p></td></tr>
+</table>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XtInitialize</i>
+calls <i>XtToolkitInitialize</i> followed by
+<i>XtOpenDisplay</i> with <i>display_string</i> NULL and
+<i>application_name</i> NULL, and finally calls
+<i>XtAppCreateShell</i> with <i>application_name</i> NULL,
+<i>widget_class applicationShellWidgetClass</i>, and the
+specified <i>args</i> and <i>num_args</i> and returns the
+created shell. The semantics of calling <i>XtInitialize</i>
+more than once are undefined. This routine has been replaced
+by <i>XtAppInitialize</i>.</p>
+
+<h2 id="heading5">SEE ALSO
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XtAppInitialize.3.xhtml"><em>XtAppInitialize</em>(3)</a>
+<i><br/>
+X Toolkit Intrinsics &minus; C Language Interface <br/>
+<a href="../../libX11/libX11/libX11.html">Xlib &minus; C Language X Interface</a></i></p>
+<hr/>
+</body>
+</html>

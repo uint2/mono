@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:33:59 2012 -->
+<title>XrmMergeDatabases</title>
+
+</head>
+<body>
+
+<h1>XrmMergeDatabases</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNTAX</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">XrmMergeDatabases,
+XrmCombineDatabase, XrmCombineFileDatabase &minus; merge
+resource databases</p>
+
+<h2 id="heading2">SYNTAX
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="89%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">void
+XrmMergeDatabases(XrmDatabase <i>source_db</i>, XrmDatabase
+*<i>target_db</i>);</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">void
+XrmCombineDatabase(XrmDatabase <i>source_db</i>, XrmDatabase
+*<i>target_db</i>, Bool <i>override</i>);</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Status
+XrmCombineFileDatabase(char *<i>filename</i>, XrmDatabase
+*<i>target_db</i>, Bool <i>override</i>);</p></td></tr>
+</table>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="14%"></col>
+<col width="1%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+<td></td>
+<td></td>
+<td></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>source_db</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the resource database that is to be merged
+into the target database.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>target_db</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the resource database into which the source
+database is to be merged.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>filename</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the resource database file name.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>override</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies whether source entries override target
+ones.</p> </td></tr>
+</table>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Calling the
+<i>XrmMergeDatabases</i> function is equivalent to calling
+the <i>XrmCombineDatabase</i> function with an override
+argument of <i>True</i>.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XrmCombineDatabase</i> function merges the contents of
+one database into another. If the same specifier is used for
+an entry in both databases, the entry in the source_db will
+replace the entry in the target_db if override is
+<i>True</i>; otherwise, the entry in source_db is discarded.
+If target_db contains NULL, <i>XrmCombineDatabase</i> simply
+stores source_db in it. Otherwise, source_db is destroyed by
+the merge, but the database pointed to by target_db is not
+destroyed. The database entries are merged without changing
+values or types, regardless of the locales of the databases.
+The locale of the target database is not modified.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XrmCombineFileDatabase</i> function merges the contents
+of a resource file into a database. If the same specifier is
+used for an entry in both the file and the database, the
+entry in the file will replace the entry in the database if
+override is <i>True</i>; otherwise, the entry in the file is
+discarded. The file is parsed in the current locale. If the
+file cannot be read, a zero status is returned; otherwise, a
+nonzero status is returned. If target_db contains NULL,
+<i>XrmCombineFileDatabase</i> creates and returns a new
+database to it. Otherwise, the database pointed to by
+target_db is not destroyed by the merge. The database
+entries are merged without changing values or types,
+regardless of the locale of the database. The locale of the
+target database is not modified.</p>
+
+<h2 id="heading5">SEE ALSO
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XrmGetResource.3.xhtml"><em>XrmGetResource</em>(3)</a>,
+<a href="../man3/XrmInitialize.3.xhtml"><em>XrmInitialize</em>(3)</a>, <a href="../man3/XrmPutResource.3.xhtml"><em>XrmPutResource</em>(3)</a> <i><br/>
+<a href="../../libX11/libX11/libX11.html">Xlib &minus; C Language X Interface</a></i></p>
+<hr/>
+</body>
+</html>

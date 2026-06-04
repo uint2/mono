@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:42:34 2012 -->
+<title>XChangePointerControl</title>
+
+</head>
+<body>
+
+<h1>XChangePointerControl</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNTAX</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">DIAGNOSTICS</a><br/>
+<a href="#heading6">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">XChangePointerControl,
+XGetPointerControl &minus; control pointer</p>
+
+<h2 id="heading2">SYNTAX
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="89%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">int
+XChangePointerControl(Display *<i>display</i>, Bool
+<i>do_accel</i>, Bool <i>do_threshold</i>, int
+<i>accel_numerator</i>, int <i>accel_denominator</i>, int
+<i>threshold</i>);</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">int XGetPointerControl(Display
+*<i>display</i>, int *<i>accel_numerator_return</i>, int
+*<i>accel_denominator_return</i>, int
+*<i>threshold_return</i>);</p> </td></tr>
+</table>
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>accel_denominator</i></p>
+
+<p style="margin-left:26%;">Specifies the denominator for
+the acceleration multiplier.</p>
+
+
+<p style="margin-left:11%;"><i>accel_denominator_return</i></p>
+
+<p style="margin-left:26%;">Returns the denominator for the
+acceleration multiplier.</p>
+
+<p style="margin-left:11%;"><i>accel_numerator</i></p>
+
+<p style="margin-left:26%;">Specifies the numerator for the
+acceleration multiplier.</p>
+
+
+<p style="margin-left:11%;"><i>accel_numerator_return</i></p>
+
+<p style="margin-left:26%;">Returns the numerator for the
+acceleration multiplier.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="12%"></col>
+<col width="3%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>display</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the connection to the X server.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>do_accel</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies a Boolean value that controls whether the
+values for the accel_numerator or accel_denominator are
+used.</p> </td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>do_threshold</i></p>
+
+<p style="margin-left:26%;">Specifies a Boolean value that
+controls whether the value for the threshold is used.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="14%"></col>
+<col width="1%" class="center"></col>
+<col width="57%"></col>
+<col width="17%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>threshold</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the acceleration threshold.</p></td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>threshold_return</i></p>
+
+<p style="margin-left:26%;">Returns the acceleration
+threshold.</p>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XChangePointerControl</i> function defines how the
+pointing device moves. The acceleration, expressed as a
+fraction, is a multiplier for movement. For example,
+specifying 3/1 means the pointer moves three times as fast
+as normal. The fraction may be rounded arbitrarily by the X
+server. Acceleration only takes effect if the pointer moves
+more than threshold pixels at once and only applies to the
+amount beyond the value in the threshold argument. Setting a
+value to &minus;1 restores the default. The values of the
+do_accel and do_threshold arguments must be <i>True</i> for
+the pointer values to be set, or the parameters are
+unchanged. Negative values (other than &minus;1) generate a
+<i>BadValue</i> error, as does a zero value for the
+accel_denominator argument.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XChangePointerControl</i>
+can generate a <i>BadValue</i> error.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XGetPointerControl</i> function returns the
+pointer&rsquo;s current acceleration multiplier and
+acceleration threshold.</p>
+
+<h2 id="heading5">DIAGNOSTICS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="12%"></col>
+<col width="3%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><i>BadValue</i></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Some numeric value falls outside
+the range of values accepted by the request. Unless a
+specific range is specified for an argument, the full range
+defined by the argument&rsquo;s type is accepted. Any
+argument defined as a set of alternatives can generate this
+error.</p> </td></tr>
+</table>
+
+<h2 id="heading6">SEE ALSO
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>Xlib &minus;
+C Language X Interface</i></p>
+<hr/>
+</body>
+</html>

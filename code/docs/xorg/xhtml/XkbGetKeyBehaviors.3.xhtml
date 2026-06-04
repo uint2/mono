@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:30:17 2012 -->
+<title>XkbChangeTypesOfKey</title>
+
+</head>
+<body>
+
+<h1>XkbChangeTypesOfKey</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNOPSIS</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">DIAGNOSTICS</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">XkbChangeTypesOfKey
+&minus; Obtain the behaviors (the behaviors array) for a
+subset of the keys in a keyboard description from the
+server</p>
+
+<h2 id="heading2">SYNOPSIS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="40%"></col>
+<col width="1%" class="center"></col>
+<col width="48%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>Status
+XkbChangeTypesOfKey</b></p> </td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>(Display *</b><i>dpy</i><b>,
+unsigned int</b> <i>first</i><b>, unsigned</b></p></td></tr>
+</table>
+
+<p style="margin-left:11%;"><b>int</b> <i>num</i><b>,
+XkbDescPtr</b> <i>xkb</i><b>);</b></p>
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="7%"></col>
+<col width="4%" class="center"></col>
+<col width="30%"></col>
+<col width="48%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b><i>&minus; dpy</i></b></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">connection to server</p></td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>&minus; first</i></p>
+
+<p style="margin-left:22%;">keycode of first key to get</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="7%"></col>
+<col width="4%" class="center"></col>
+<col width="70%"></col>
+<col width="8%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>&minus; num</i></p></td>
+<td></td>
+<td>
+
+
+<p>number of keys for which behaviors are desired</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>&minus; xkb</i></p></td>
+<td></td>
+<td>
+
+
+<p>Xkb description to contain the result</p></td>
+<td>
+</td></tr>
+</table>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XkbGetKeyBehaviors</i>
+sends a request to the server to obtain the behaviors for
+<i>num</i> keys on the keyboard starting with the key whose
+keycode is <i>first.</i> It waits for a reply and returns
+the behaviors in the <i>server-&gt;behaviors</i> field of
+<i>xkb.</i> If successful, <i>XkbGetKeyBehaviors</i> returns
+Success.</p>
+
+<p style="margin-left:11%; margin-top: 1em">If the
+<i>server</i> map in the <i>xkb</i> parameter has not been
+allocated, <i>XkbGetKeyBehaviors</i> allocates and
+initializes it before obtaining the actions.</p>
+
+<p style="margin-left:11%; margin-top: 1em">If the server
+does not have a compatible version of Xkb, or the Xkb
+extension has not been properly initialized,
+<i>XkbGetKeyBehaviors</i> returns BadAccess. If <i>num</i>
+is less than 1 or greater than XkbMaxKeyCount,
+<i>XkbGetKeyBehaviors</i> returns BadValue. If any
+allocation errors occur, <i>XkbGetKeyBehaviors</i> returns
+BadAlloc.</p>
+
+<h2 id="heading5">DIAGNOSTICS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="14%"></col>
+<col width="9%" class="center"></col>
+<col width="66%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>BadAccess</b></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">The Xkb extension has not been
+properly initialized</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><b>BadAlloc</b></p></td>
+<td></td>
+<td>
+
+
+<p>Unable to allocate storage</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><b>BadValue</b></p></td>
+<td></td>
+<td>
+
+
+<p>An argument is out of range</p></td></tr>
+ </table>
+<hr/>
+</body>
+</html>

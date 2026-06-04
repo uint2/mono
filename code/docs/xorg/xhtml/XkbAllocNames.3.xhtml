@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:43:22 2012 -->
+<title>XkbAllocNames</title>
+
+</head>
+<body>
+
+<h1>XkbAllocNames</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNOPSIS</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">DIAGNOSTICS</a><br/>
+<a href="#heading6">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">XkbAllocNames
+&minus; Allocate symbolic names structures</p>
+
+<h2 id="heading2">SYNOPSIS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="32%"></col>
+<col width="3%" class="center"></col>
+<col width="54%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>Status XkbAllocNames</b></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>(XkbDescPtr</b>
+<i>xkb</i><b>, unsigned int</b> <i>which</i><b>, int</b>
+<i>num_rg</i><b>,</b></p> </td></tr>
+</table>
+
+<p style="margin-left:11%;"><b>int</b>
+<i>num_key_aliases</i><b>);</b></p>
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="7%"></col>
+<col width="4%" class="center"></col>
+<col width="78%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b><i>&minus; xkb</i></b></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">keyboard description for which
+names are to be allocated</p></td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>&minus; which</i></p>
+
+<p style="margin-left:22%;">mask of names to be
+allocated</p>
+
+<p style="margin-left:11%;"><i>&minus; num_rg</i></p>
+
+<p style="margin-left:22%;">total number of radio group
+names needed</p>
+
+<p style="margin-left:11%;"><i>&minus;
+num_key_aliases</i></p>
+
+<p style="margin-left:22%;">total number of key aliases
+needed</p>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Most
+applications do not need to directly allocate symbolic names
+structures. Do not allocate a names structure directly using
+<i>malloc</i> or <i>Xmalloc</i> if your application changes
+the number of key aliases or radio groups or constructs a
+symbolic names structure without loading the necessary
+components from the X server. Instead use
+<i>XkbAllocNames.</i></p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XkbAllocNames</i>
+can return BadAlloc, BadMatch, and BadValue errors. The
+<i>which</i> parameter is the bitwise inclusive OR of the
+valid names mask bits defined in Table 1.</p>
+
+
+<p class="center" style="margin-top: 1em"><img src="grohtml-126831.png" alt="Image grohtml-126831.png"></img></p>
+
+<p style="margin-left:11%; margin-top: 1em">Do not free
+symbolic names structures directly using <i>free</i> or
+<i>XFree.</i> Use <i>XkbFreeNames</i> instead.</p>
+
+<h2 id="heading5">DIAGNOSTICS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="12%"></col>
+<col width="11%" class="center"></col>
+<col width="66%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>BadAlloc</b></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Unable to allocate storage</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><b>BadMatch</b></p></td>
+<td></td>
+<td>
+
+
+<p>A compatible version of Xkb was not available in the
+server or an argument has correct type and range, but is
+otherwise invalid</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><b>BadValue</b></p></td>
+<td></td>
+<td>
+
+
+<p>An argument is out of range</p></td></tr>
+</table>
+
+<h2 id="heading6">SEE ALSO
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XkbFreeNames.3.xhtml"><em>XkbFreeNames</em>(3)</a></p>
+<hr/>
+</body>
+</html>

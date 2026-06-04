@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:45:17 2012 -->
+<title>XkbKeyGroupWidth</title>
+
+</head>
+<body>
+
+<h1>XkbKeyGroupWidth</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNOPSIS</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">XkbKeyGroupWidth
+&minus; Computes the width of the type associated with the
+group <i>grp</i> for the key corresponding to
+<i>keycode</i></p>
+
+<h2 id="heading2">SYNOPSIS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="31%"></col>
+<col width="1%" class="center"></col>
+<col width="57%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><i><b>int
+XkbKeyGroupWidth</b></i></p> </td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><i><b>(XkbDescPtr</b>
+xkb</i><b>, KeyCode</b> <i>keycode</i><b>, int</b>
+<i>grp</i><b>);</b></p> </td></tr>
+</table>
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="7%"></col>
+<col width="4%" class="center"></col>
+<col width="41%"></col>
+<col width="37%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b><i>&minus; xkb</i></b></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Xkb description of interest</p></td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>&minus; keycode</i></p>
+
+<p style="margin-left:22%;">keycode of interest</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="7%"></col>
+<col width="4%" class="center"></col>
+<col width="26%"></col>
+<col width="52%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>&minus; grp</i></p></td>
+<td></td>
+<td>
+
+
+<p>group of interest</p></td>
+<td>
+</td></tr>
+</table>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The key width
+and number of groups associated with a key are used to form
+a small two-dimensional array of KeySyms for a key. This
+array may be different sizes for different keys. The array
+for a single key is stored as a linear list, in row-major
+order. The arrays for all of the keys are stored in the
+<i>syms</i> field of the client map. There is one row for
+each group associated with a key and one column for each
+level. The index corresponding to a given group and shift
+level is computed as:</p>
+
+<p style="margin-left:11%; margin-top: 1em">idx =
+group_index * key_width + shift_level</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>offset</i> field of the <i>key_sym_map</i> entry for a
+key is used to access the beginning of the array.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XkbKeyGroupWidth</i>
+computes the width of the type associated with the group
+<i>grp</i> for the key corresponding to <i>keycode.</i></p>
+<hr/>
+</body>
+</html>

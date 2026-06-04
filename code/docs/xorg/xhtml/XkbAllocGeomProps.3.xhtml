@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:26:10 2012 -->
+<title>XkbAllocGeomProps</title>
+
+</head>
+<body>
+
+<h1>XkbAllocGeomProps</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNOPSIS</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">DIAGNOSTICS</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">XkbAllocGeomProps
+&minus; Allocate geometry properties</p>
+
+<h2 id="heading2">SYNOPSIS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="37%"></col>
+<col width="1%" class="center"></col>
+<col width="51%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>Status
+XkbAllocGeomProps</b></p> </td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>(XkbGeometryPtr</b>
+<i>geom</i><b>, int</b> <i>num_needed</i><b>);</b></p></td></tr>
+</table>
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="9%"></col>
+<col width="2%" class="center"></col>
+<col width="13%"></col>
+<col width="65%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b><i>&minus; geom</i></b></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">_summary_</p></td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>&minus; num_needed</i></p>
+
+<p style="margin-left:22%;">_summary_</p>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Xkb provides a
+number of functions to allocate and free subcomponents of a
+keyboard geometry. Use these functions to create or modify
+keyboard geometries. Note that these functions merely
+allocate space for the new element(s), and it is up to you
+to fill in the values explicitly in your code. These
+allocation functions increase <i>sz_*</i> but never touch
+<i>num_*</i> (unless there is an allocation failure, in
+which case they reset both <i>sz_*</i> and <i>num_*</i> to
+zero). These functions return Success if they succeed,
+BadAlloc if they are not able to allocate space, or BadValue
+if a parameter is not as expected.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XkbAllocGeomProps</i>
+allocates space for <i>num_needed</i> properties and adds
+them to the specified geometry <i>geom.</i> No
+initialization of the properties is done. A geometry
+property associates an arbitrary string with an equally
+arbitrary name. Geometry properties can be used to provide
+hints to programs that display images of keyboards, but they
+are not interpreted by Xkb. No other geometry structures
+refer to geometry properties.</p>
+
+<h2 id="heading5">DIAGNOSTICS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="12%"></col>
+<col width="11%" class="center"></col>
+<col width="41%"></col>
+<col width="25%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>BadAlloc</b></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Unable to allocate storage</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><b>BadValue</b></p></td>
+<td></td>
+<td>
+
+
+<p>An argument is out of range</p></td>
+<td>
+</td></tr>
+ </table>
+<hr/>
+</body>
+</html>

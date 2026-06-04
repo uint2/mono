@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:40:00 2012 -->
+<title>XtAppAddSignal</title>
+
+</head>
+<body>
+
+<h1>XtAppAddSignal</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNTAX</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">XtAppAddSignal,
+XtRemoveSignal, XtNoticeSignal &minus; register and remove a
+signal source</p>
+
+<h2 id="heading2">SYNTAX
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="87%"></col>
+<col width="2%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">XtSignalId
+XtAppAddSignal(XtAppContext <i>app_context</i>,
+XtSignalCallbackProc <i>proc</i>, XtPointer
+<i>client_data</i>);</p> </td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">void XtRemoveSignal(XtSignalId
+<i>id</i>);</p> </td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">void XtNoticeSignal(XtSignalId
+<i>id</i>);</p> </td>
+<td>
+</td></tr>
+</table>
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>app_context</i></p>
+
+<p style="margin-left:26%;">Specifies the application
+context.</p>
+
+<p style="margin-left:11%;"><i>client_data</i></p>
+
+<p style="margin-left:26%;">Specifies the argument that is
+to be passed to the specified procedure when a signal has
+been raised.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="6%"></col>
+<col width="9%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>id</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the ID returned from the corresponding
+<i>XtAppAddSignal</i> call.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>proc</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the procedure that is to be called when the
+signal has been raised.</p></td></tr>
+</table>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XtAppAddSignal</i> function initiates a mechanism for
+handling signals within the context of the Intrinsics. Prior
+to establishing an operating system dependent signal handler
+the application may call <i>XtAppAddSignal</i> and store the
+returned <i>id</i> in a place accessible to the signal
+handler.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Upon receipt of
+a signal from the operating system, the application may call
+<i>XtNoticeSignal</i> passing the <i>id</i> returned by the
+call to <i>XtAppAddSignal</i>.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XtNoticeSignal</i>
+is the only Intrinsics function that can safely be called
+from a signal handler. If <i>XtNoticeSignal</i> is called
+multiple times before the Intrinsics are able to invoke the
+registered callback, the callback is only called once.
+Logically the Intrinsics maintain
+&lsquo;&lsquo;pending&rsquo;&rsquo; for each registered
+callback. This flag is initially <i>False</i> and is set to
+<i>True</i> by <i>XtNoticeSignal</i>; the Intrinsics invoke
+the callback whenever the flag is <i>True</i>, and the flag
+is set to <i>False</i> just before the callback is
+invoked.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XtRemoveSignal</i> function is called to remove the
+specified Intrinsics signal handler. The client should
+disable the source of the signal before calling
+<i>XtRemoveSignal</i>.</p>
+
+<h2 id="heading5">SEE ALSO
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XtAppAddTimeOut.3.xhtml"><em>XtAppAddTimeOut</em>(3)</a>,<a href="../man3/XtAppAddInput.3.xhtml"><em>XtAppAddInput</em>(3)</a>,<a href="../man3/XtAppAddWorkProc.3.xhtml"><em>XtAppAddWorkProc</em>(3)</a>
+<i><br/>
+X Toolkit Intrinsics &minus; C Language Interface <br/>
+<a href="../../libX11/libX11/libX11.html">Xlib &minus; C Language X Interface</a></i></p>
+<hr/>
+</body>
+</html>

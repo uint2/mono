@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:34:50 2012 -->
+<title>XkbIgnoreExtension</title>
+
+</head>
+<body>
+
+<h1>XkbIgnoreExtension</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNOPSIS</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">RETURN VALUES</a><br/>
+<a href="#heading6">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">XkbIgnoreExtension
+&minus; Prevents core X library keyboard functions from
+using the X Keyboard Extension</p>
+
+<h2 id="heading2">SYNOPSIS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="35%"></col>
+<col width="2%" class="center"></col>
+<col width="23%"></col>
+<col width="29%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>Bool
+XkbIgnoreExtension</b></p> </td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>(Bool
+*</b><i>ignore</i><b>);</b></p> </td>
+<td>
+</td></tr>
+</table>
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="9%"></col>
+<col width="2%" class="center"></col>
+<col width="47%"></col>
+<col width="31%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b><i>ignore</i></b></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">True means ignore the
+extension</p> </td>
+<td>
+</td></tr>
+</table>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">If a server
+supports the Xkb extension, the X library normally
+implements preXkb keyboard functions using the Xkb keyboard
+description and state. The server Xkb keyboard state may
+differ from the preXkb keyboard state. This difference does
+not affect most clients, but there are exceptions. To allow
+these clients to work properly, you may instruct the
+extension not to use Xkb functionality.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Call
+<i>XkbIgnoreExtension</i> to prevent core X library keyboard
+functions from using the X Keyboard Extension. You must call
+<i>XkbIgnoreExtension</i> before you open a server
+connection; Xkb does not provide a way to enable or disable
+use of the extension once a connection is established.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XkbIgnoreExtension</i>
+tells the X library whether to use the X Keyboard Extension
+on any subsequently opened X display connections. If ignore
+is True, the library does not initialize the Xkb extension
+when it opens a new display. This forces the X server to use
+compatibility mode and communicate with the client using
+only core protocol requests and events. If ignore is False,
+the library treats subsequent calls to <i>XOpenDisplay</i>
+normally and uses Xkb extension requests, events, and state.
+Do not explicitly use Xkb on a connection for which it is
+disabled. <i>XkbIgnoreExtension</i> returns False if it was
+unable to apply the ignore request.</p>
+
+<h2 id="heading5">RETURN VALUES
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="7%"></col>
+<col width="16%" class="center"></col>
+<col width="66%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">True</p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">The <i>XkbIgnoreExtension</i>
+returns True if</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>False</p></td>
+<td></td>
+<td>
+
+
+<p>The <i>XkbIgnoreExtension</i> function returns False if
+it was unable to apply the ignore request.</p></td></tr>
+</table>
+
+<h2 id="heading6">SEE ALSO
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XOpenDisplay.3.xhtml"><em>XOpenDisplay</em>(3)</a></p>
+<hr/>
+</body>
+</html>

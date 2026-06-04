@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:24:27 2012 -->
+<title>ImageByteOrder</title>
+
+</head>
+<body>
+
+<h1>ImageByteOrder</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNTAX</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">STRUCTURES</a><br/>
+<a href="#heading6">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">ImageByteOrder,
+BitmapBitOrder, BitmapPad, BitmapUnit, DisplayHeight,
+DisplayHeightMM, DisplayWidth, DisplayWidthMM,
+XListPixmapFormats, XPixmapFormatValues &minus; image format
+functions and macros</p>
+
+<h2 id="heading2">SYNTAX
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="89%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">XPixmapFormatValues
+*XListPixmapFormats(Display *<i>display</i>, int
+*<i>count_return</i>);</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">int ImageByteOrder(Display
+*<i>display</i>);</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">int BitmapBitOrder(Display
+*<i>display</i>);</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">int BitmapPad(Display
+*<i>display</i>);</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">int BitmapUnit(Display
+*<i>display</i>);</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">int DisplayHeight(Display
+*<i>display</i>, int <i>screen_number</i>);</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">int DisplayHeightMM(Display
+*<i>display</i>, int <i>screen_number</i>);</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">int DisplayWidth(Display
+*<i>display</i>, int <i>screen_number</i>);</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">int DisplayWidthMM(Display
+*<i>display</i>, int <i>screen_number</i>);</p></td></tr>
+</table>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="11%"></col>
+<col width="4%" class="center"></col>
+<col width="63%"></col>
+<col width="11%"></col>
+</colgroup>
+<tr valign="top" align="left">
+
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+<td></td>
+<td></td>
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>display</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the connection to the X server.</p></td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>count_return</i></p>
+
+<p style="margin-left:26%;">Returns the number of pixmap
+formats that are supported by the display.</p>
+
+<p style="margin-left:11%;"><i>screen_number</i></p>
+
+<p style="margin-left:26%;">Specifies the appropriate
+screen number on the host server.</p>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XListPixmapFormats</i> function returns an array of
+<i>XPixmapFormatValues</i> structures that describe the
+types of Z format images supported by the specified display.
+If insufficient memory is available,
+<i>XListPixmapFormats</i> returns NULL. To free the
+allocated storage for the <i>XPixmapFormatValues</i>
+structures, use <i>XFree</i>.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>ImageByteOrder</i> macro specifies the required byte
+order for images for each scanline unit in XY format
+(bitmap) or for each pixel value in Z format.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>BitmapBitOrder</i> macro returns <i>LSBFirst</i> or
+<i>MSBFirst</i> to indicate whether the leftmost bit in the
+bitmap as displayed on the screen is the least or most
+significant bit in the unit.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>BitmapPad</i> macro returns the number of bits that each
+scanline must be padded.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>BitmapUnit</i> macro returns the size of a bitmap&rsquo;s
+scanline unit in bits.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>DisplayHeight</i> macro returns the height of the
+specified screen in pixels.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>DisplayHeightMM</i> macro returns the height of the
+specified screen in millimeters.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>DisplayWidth</i> macro returns the width of the screen in
+pixels.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>DisplayWidthMM</i> macro returns the width of the
+specified screen in millimeters.</p>
+
+<h2 id="heading5">STRUCTURES
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XPixmapFormatValues</i> structure provides an interface
+to the pixmap format information that is returned at the
+time of a connection setup. It contains: <br/>
+typedef struct {</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="8%"></col>
+<col width="38%"></col>
+<col width="54%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>int depth;</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>int bits_per_pixel;</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>int scanline_pad;</p></td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:11%;">} XPixmapFormatValues;</p>
+
+<h2 id="heading6">SEE ALSO
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/AllPlanes.3.xhtml"><em>AllPlanes</em>(3)</a>,
+<a href="../man3/BlackPixelOfScreen.3.xhtml"><em>BlackPixelOfScreen</em>(3)</a>, <a href="../man3/IsCursorKey.3.xhtml"><em>IsCursorKey</em>(3)</a>, <a href="../man3/XFree.3.xhtml"><em>XFree</em>(3)</a> <i><br/>
+<a href="../../libX11/libX11/libX11.html">Xlib &minus; C Language X Interface</a></i></p>
+<hr/>
+</body>
+</html>

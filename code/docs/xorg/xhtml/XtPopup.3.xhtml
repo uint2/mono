@@ -1,0 +1,507 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:32:31 2012 -->
+<title>XtPopup</title>
+
+</head>
+<body>
+
+<h1>XtPopup</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNTAX</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">XtPopup,
+XtPopupSpringLoaded, XtCallbackNone, XtCallbackNonexclusive,
+XtCallbackExclusive &minus; map a pop-up</p>
+
+<h2 id="heading2">SYNTAX
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="89%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">void XtPopup(Widget
+<i>popup_shell</i>, XtGrabKind <i>grab_kind</i>);</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">void XtPopupSpringLoaded(Widget
+<i>popup_shell</i>);</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">void XtCallbackNone(Widget
+<i>w</i>, XtPointer <i>client_data</i>, XtPointer
+<i>call_data</i>):</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">void
+XtCallbackNonexclusive(Widget <i>w</i>, XtPointer
+<i>client_data</i>, XtPointer <i>call_data</i>);</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">void XtCallbackExclusive(Widget
+<i>w</i>, XtPointer <i>client_data</i>, XtPointer
+<i>call_data</i>);</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">void MenuPopup(String
+<i>shell_name</i>);</p> </td></tr>
+</table>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="14%"></col>
+<col width="1%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+<td></td>
+<td></td>
+<td></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>call_data</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the callback data, which is not used by this
+procedure.</p> </td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>client_data</i></p>
+
+<p style="margin-left:26%;">Specifies the pop-up shell.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="14%"></col>
+<col width="1%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>grab_kind</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the way in which user events should be
+constrained.</p> </td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>popup_shell</i></p>
+
+<p style="margin-left:26%;">Specifies the widget shell.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="1%"></col>
+<col width="14%" class="center"></col>
+<col width="32%"></col>
+<col width="42%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>w</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the widget.</p></td>
+<td>
+</td></tr>
+</table>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XtPopup</i> function performs the following:</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="1%"></col>
+<col width="6%" class="center"></col>
+<col width="82%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">&bull;</p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Calls <i>XtCheckSubclass</i> to
+ensure popup_shell is a subclass of <i>Shell</i>.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>&bull;</p></td>
+<td></td>
+<td>
+
+
+<p>Generates an error if the shell&rsquo;s popped_up field
+is already <i>True</i>.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>&bull;</p></td>
+<td></td>
+<td>
+
+
+<p>Calls the callback procedures on the shell&rsquo;s
+popup_callback list.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>&bull;</p></td>
+<td></td>
+<td>
+
+
+<p>Sets the shell popped_up field to <i>True</i>, the shell
+spring_loaded field to <i>False</i>, and the shell grab_kind
+field from grab_kind.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>&bull;</p></td>
+<td></td>
+<td>
+
+
+<p>If the shell&rsquo;s create_popup_child field is
+non-NULL, <i>XtPopup</i> calls it with popup_shell as the
+parameter.</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>&bull;</p></td>
+<td></td>
+<td>
+
+
+<p>If grab_kind is either <i>XtGrabNonexclusive</i> or
+<i>XtGrabExclusive</i>, it calls:</p></td></tr>
+</table>
+
+
+<p style="margin-left:11%; margin-top: 1em">XtAddGrab(popup_shell,
+(grab_kind == XtGrabExclusive), False)</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="1%"></col>
+<col width="6%" class="center"></col>
+<col width="76%"></col>
+<col width="6%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">&bull;</p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Calls <i>XtRealizeWidget</i>
+with popup_shell specified.</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>&bull;</p></td>
+<td></td>
+<td>
+
+
+<p>Calls <i>XMapWindow</i> with popup_shell specified.</p></td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XtPopupSpringLoaded</i> function performs exactly as
+<i>XtPopup</i> except that it sets the shell
+<i>spring_loaded</i> field to <i>True</i> and always calls
+<i>XtAddGrab</i> with <i>exclusive True</i> and
+<i>spring_loaded True</i>.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XtCallbackNone</i>, <i>XtCallbackNonexclusive</i>, and
+<i>XtCallbackExclusive</i> functions call <i>XtPopup</i>
+with the shell specified by the client data argument and
+grab_kind set as the name specifies. <i>XtCallbackNone</i>,
+<i>XtCallbackNonexclusive</i>, and
+<i>XtCallbackExclusive</i> specify <i>XtGrabNone</i>,
+<i>XtGrabNonexclusive</i>, and <i>XtGrabExclusive</i>,
+respectively. Each function then sets the widget that
+executed the callback list to be insensitive by using
+<i>XtSetSensitive</i>. Using these functions in callbacks is
+not required. In particular, an application must provide
+customized code for callbacks that create pop-up shells
+dynamically or that must do more than desensitizing the
+button.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>MenuPopup</i>
+is known to the translation manager, which must perform
+special actions for spring-loaded pop-ups. Calls to
+<i>MenuPopup</i> in a translation specification are mapped
+into calls to a nonexported action procedure, and the
+translation manager fills in parameters based on the event
+specified on the left-hand side of a translation.</p>
+
+<p style="margin-left:11%; margin-top: 1em">If
+<i>MenuPopup</i> is invoked on <i>ButtonPress</i> (possibly
+with modifiers), the translation manager pops up the shell
+with grab_kind set to <i>XtGrabExclusive</i> and
+spring_loaded set to <i>True</i>. If <i>MenuPopup</i> is
+invoked on <i>EnterWindow</i> (possibly with modifiers), the
+translation manager pops up the shell with grab_kind set to
+<i>XtGrabNonexclusive</i> and spring_loaded set to
+<i>False</i>. Otherwise, the translation manager generates
+an error. When the widget is popped up, the following
+actions occur:</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="1%"></col>
+<col width="6%" class="center"></col>
+<col width="82%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">&bull;</p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Calls <i>XtCheckSubclass</i> to
+ensure popup_shell is a subclass of <i>Shell</i>.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>&bull;</p></td>
+<td></td>
+<td>
+
+
+<p>Generates an error if the shell&rsquo;s popped_up field
+is already <i>True</i>.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>&bull;</p></td>
+<td></td>
+<td>
+
+
+<p>Calls the callback procedures on the shell&rsquo;s
+popup_callback list.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>&bull;</p></td>
+<td></td>
+<td>
+
+
+<p>Sets the shell popped_up field to <i>True</i> and the
+shell grab_kind and spring_loaded fields appropriately.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>&bull;</p></td>
+<td></td>
+<td>
+
+
+<p>If the shell&rsquo;s create_popup_child field is
+non-NULL, it is called with popup_shell as the
+parameter.</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>&bull;</p></td>
+<td></td>
+<td>
+
+
+<p>Calls:</p></td></tr>
+</table>
+
+
+<p style="margin-left:11%; margin-top: 1em">XtAddGrab(popup_shell,
+(grab_kind == XtGrabExclusive), spring_loaded)</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="1%"></col>
+<col width="6%" class="center"></col>
+<col width="76%"></col>
+<col width="6%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">&bull;</p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Calls <i>XtRealizeWidget</i>
+with popup_shell specified.</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>&bull;</p></td>
+<td></td>
+<td>
+
+
+<p>Calls <i>XMapWindow</i> with popup_shell specified.</p></td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:11%; margin-top: 1em">(Note that
+these actions are the same as those for <i>XtPopup</i>.)
+<i>MenuPopup</i> tries to find the shell by searching the
+widget tree starting at the parent of the widget in which it
+is invoked. If it finds a shell with the specified name in
+the pop-up children of that parent, it pops up the shell
+with the appropriate parameters. Otherwise, it moves up the
+parent chain as needed. If <i>MenuPopup</i> gets to the
+application widget and cannot find a matching shell, it
+generates an error.</p>
+
+<h2 id="heading5">SEE ALSO
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XtCreatePopupShell.3.xhtml"><em>XtCreatePopupShell</em>(3)</a>,
+<a href="../man3/XtPopdown.3.xhtml"><em>XtPopdown</em>(3)</a> <i><br/>
+X Toolkit Intrinsics &minus; C Language Interface <br/>
+<a href="../../libX11/libX11/libX11.html">Xlib &minus; C Language X Interface</a></i></p>
+<hr/>
+</body>
+</html>

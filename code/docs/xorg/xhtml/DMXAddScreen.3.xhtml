@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:36:09 2012 -->
+<title>DMXAddScreen</title>
+
+</head>
+<body>
+
+<h1>DMXAddScreen</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNOPSIS</a><br/>
+<a href="#heading3">DESCRIPTION</a><br/>
+<a href="#heading4">RETURN VALUE</a><br/>
+<a href="#heading5">NOTES</a><br/>
+<a href="#heading6">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">DMXAddScreen
+&minus; attach a new back-end screen</p>
+
+<h2 id="heading2">SYNOPSIS
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>#include
+&lt;X11/extensions/dmxext.h&gt;</b></p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>Bool
+DMXAddScreen(Display</b> <i>*dpy</i><b>, <br/>
+const char</b> <i>*displayName</i><b>, <br/>
+unsigned int</b> <i>mask</i><b>, <br/>
+DMXScreenAttributes</b> <i>*attr</i><b>, <br/>
+int</b> <i>*screen</i><b>);</b></p>
+
+<h2 id="heading3">DESCRIPTION
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>DMXAddScreen()</b>
+attaches a back-end screen to the <a href="../man1/Xdmx.1.xhtml"><em>Xdmx</em>(1)</a> server, in
+place of the previously detached back-end server specified
+by <i>screen</i>.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>displayName</i>
+is the name of the new back-end display, <i>mask</i>
+specifies the field in <i>attr</i> that are active, and
+<i>screen</i> returns the new <a href="../man1/Xdmx.1.xhtml"><em>Xdmx</em>(1)</a> screen number
+for the attached screen.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The information
+stored in <i>mask and attr</i> is identical to that used by
+the <a href="../man3/DMXChangeScreensAttributes.3.xhtml"><em>DMXChangeScreensAttributes</em>(3)</a> and
+<a href="../man3/DMXGetScreenAttributes.3.xhtml"><em>DMXGetScreenAttributes</em>(3)</a> functions.</p>
+
+<h2 id="heading4">RETURN VALUE
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>DMXAddScreen()</b>
+will return <b>True</b> if the screen was successfully
+attached, and <b>False</b> otherwise. <b>False</b> will be
+returned if the <i>&minus;addremovescreens</i> command line
+option was not specified on the <a href="../man1/Xdmx.1.xhtml"><em>Xdmx</em>(1)</a> command line,
+the input value of <i>screen</i> is out of range,
+<i>screen</i> is not currently detached, <i>displayName</i>
+cannot be opened, has unexpected visuals, or has
+characteristics that do not match the previously detached
+screen.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>DMXAddScreen()</b>
+can generate <b>BadLength</b>, <b>BadAlloc</b>, and
+<b>BadValue</b> errors.</p>
+
+<h2 id="heading5">NOTES
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Attributes that
+are not specified will default to 0. This may lead to
+unintended results.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Unlike other
+functions in the <a href="../man3/DMX.3.xhtml"><em>DMX</em>(3)</a> API, this function uses
+<i>screen</i> for both input and output.</p>
+
+<h2 id="heading6">SEE ALSO
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/DMXRemoveScreen.3.xhtml"><em>DMXRemoveScreen</em>(3)</a>,
+<a href="../man3/DMXChangeScreensAttributes.3.xhtml"><em>DMXChangeScreensAttributes</em>(3)</a>,
+<a href="../man3/DMXGetScreenAttributes.3.xhtml"><em>DMXGetScreenAttributes</em>(3)</a>, <a href="../man3/DMX.3.xhtml"><em>DMX</em>(3)</a>,
+<a href="../man1/Xdmx.1.xhtml"><em>Xdmx</em>(1)</a></p>
+<hr/>
+</body>
+</html>

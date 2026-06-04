@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:39:07 2012 -->
+<title>XDrawImageString</title>
+
+</head>
+<body>
+
+<h1>XDrawImageString</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNTAX</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">DIAGNOSTICS</a><br/>
+<a href="#heading6">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">XDrawImageString,
+XDrawImageString16 &minus; draw image text</p>
+
+<h2 id="heading2">SYNTAX
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="89%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">int XDrawImageString(Display
+*<i>display</i>, Drawable <i>d</i>, GC <i>gc</i>, int
+<i>x</i>, int <i>y</i>, char *<i>string</i>, int
+<i>length</i>);</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">int XDrawImageString16(Display
+*<i>display</i>, Drawable <i>d</i>, GC <i>gc</i>, int
+<i>x</i>, int <i>y</i>, XChar2b *<i>string</i>, int
+<i>length</i>);</p> </td></tr>
+</table>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="11%"></col>
+<col width="4%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+<td></td>
+<td></td>
+<td></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>d</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the drawable.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>display</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the connection to the X server.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>gc</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the GC.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>length</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the number of characters in the string
+argument.</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>string</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the character string.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>x</i></p></td>
+<td></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>y</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specify the x and y coordinates, which are relative to
+the origin of the specified drawable and define the origin
+of the first character.</p></td></tr>
+</table>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XDrawImageString16</i> function is similar to
+<i>XDrawImageString</i> except that it uses 2-byte or 16-bit
+characters. Both functions also use both the foreground and
+background pixels of the GC in the destination.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The effect is
+first to fill a destination rectangle with the background
+pixel defined in the GC and then to paint the text with the
+foreground pixel. The upper-left corner of the filled
+rectangle is at:</p>
+
+<p style="margin-left:11%; margin-top: 1em">[x, y &minus;
+font-ascent]</p>
+
+<p style="margin-left:11%; margin-top: 1em">The width
+is:</p>
+
+
+<p style="margin-left:11%; margin-top: 1em">overall-width</p>
+
+<p style="margin-left:11%; margin-top: 1em">The height
+is:</p>
+
+<p style="margin-left:11%; margin-top: 1em">font-ascent +
+font-descent</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+overall-width, font-ascent, and font-descent are as would be
+returned by <i>XQueryTextExtents</i> using gc and string.
+The function and fill-style defined in the GC are ignored
+for these functions. The effective function is
+<i>GXcopy</i>, and the effective fill-style is
+<i>FillSolid</i>.</p>
+
+<p style="margin-left:11%; margin-top: 1em">For fonts
+defined with 2-byte matrix indexing and used with
+<i>XDrawImageString</i>, each byte is used as a byte2 with a
+byte1 of zero.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Both functions
+use these GC components: plane-mask, foreground, background,
+font, subwindow-mode, clip-x-origin, clip-y-origin, and
+clip-mask.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XDrawImageString</i>
+and <i>XDrawImageString16</i> can generate
+<i>BadDrawable</i>, <i>BadGC</i>, and <i>BadMatch</i>
+errors.</p>
+
+<h2 id="heading5">DIAGNOSTICS
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>BadDrawable</i></p>
+
+<p style="margin-left:26%;">A value for a Drawable argument
+does not name a defined Window or Pixmap.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="12%"></col>
+<col width="3%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>BadGC</i></p></td>
+<td></td>
+<td>
+
+
+<p>A value for a GContext argument does not name a defined
+GContext.</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>BadMatch</i></p></td>
+<td></td>
+<td>
+
+
+<p>An <i>InputOnly</i> window is used as a Drawable.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>BadMatch</i></p></td>
+<td></td>
+<td>
+
+
+<p>Some argument or pair of arguments has the correct type
+and range but fails to match in some other way required by
+the request.</p></td></tr>
+</table>
+
+<h2 id="heading6">SEE ALSO
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XDrawString.3.xhtml"><em>XDrawString</em>(3)</a>,
+<a href="../man3/XDrawText.3.xhtml"><em>XDrawText</em>(3)</a>, <a href="../man3/XLoadFont.3.xhtml"><em>XLoadFont</em>(3)</a>, <a href="../man3/XTextExtents.3.xhtml"><em>XTextExtents</em>(3)</a> <i><br/>
+<a href="../../libX11/libX11/libX11.html">Xlib &minus; C Language X Interface</a></i></p>
+<hr/>
+</body>
+</html>

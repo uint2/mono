@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:35:15 2012 -->
+<title>DMXAddInput</title>
+
+</head>
+<body>
+
+<h1>DMXAddInput</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNOPSIS</a><br/>
+<a href="#heading3">DESCRIPTION</a><br/>
+<a href="#heading4">RETURN VALUE</a><br/>
+<a href="#heading5">NOTES</a><br/>
+<a href="#heading6">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">DMXAddInput,
+DMXAddBackendInput, DMXAddConsoleInput &minus; attach a new
+input</p>
+
+<h2 id="heading2">SYNOPSIS
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>#include
+&lt;X11/extensions/dmxext.h&gt;</b></p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>Bool
+DMXAddInput(Display</b> <i>*dpy</i><b>, <br/>
+unsigned int</b> <i>mask</i><b>, <br/>
+DMXInputAttributes</b> <i>*attr</i><b>, <br/>
+int</b> <i>*id</i><b>); <br/>
+Bool DMXAddBackendInput(Display</b> <i>*dpy</i><b>, <br/>
+int</b> <i>screen</i><b>, <br/>
+int</b> <i>sendsCore</i><b>, <br/>
+int</b> <i>*newId</i><b>); <br/>
+Bool DMXAddConsoleInput(Display</b> <i>*dpy</i><b>, <br/>
+const char</b> <i>*name</i><b>, <br/>
+int</b> <i>sendsCore</i><b>, <br/>
+int</b> <i>*newId</i><b>);</b></p>
+
+<h2 id="heading3">DESCRIPTION
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>DMXAddInput()</b>
+is used to attach a new input (or a previously detached
+input) to the <a href="../man1/Xdmx.1.xhtml"><em>Xdmx</em>(1)</a> server. <i>mask</i> specifies
+the fields in <i>attr</i> that are active, and <i>id</i>
+returns the device if of the first device in the series that
+is added.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The value of
+<i>mask</i> is computed from the following values:</p>
+
+<p style="margin-left:11%; margin-top: 1em">DMXInputType
+<br/>
+DMXInputPhysicalScreen <br/>
+DMXInputSendsCore</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<b>DMXInputAttributes</b> structure is:</p>
+
+<p style="margin-left:11%; margin-top: 1em">typedef struct
+{ <br/>
+DMXInputEnum inputType; <br/>
+int physicalScreen; <br/>
+int physicalId; <br/>
+Bool isCore; <br/>
+Bool sendsCore; <br/>
+const char *name; <br/>
+Bool detached; <br/>
+} DMXInputAttributes;</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>inputType</i>
+may have the value <b>DMXConsoleInputType or
+DMXBackendInputType .</b></p>
+
+<p style="margin-left:11%; margin-top: 1em">For console
+devices, <i>name</i> will specify the display to be
+used.</p>
+
+<p style="margin-left:11%; margin-top: 1em">For back-end
+devices, <i>physicalScreen</i> will specify the
+<a href="../man1/Xdmx.1.xhtml"><em>Xdmx</em>(1)</a> screen number.</p>
+
+<p style="margin-left:11%; margin-top: 1em">If
+<i>sendsCore</i> is <b>True</b>, the new device will be
+added as a true core device.</p>
+
+<p style="margin-left:11%; margin-top: 1em">If a device was
+removed with <a href="../man3/DMXRemoveInput.3.xhtml"><em>DMXRemoveInput</em>(3)</a> an attempt will be
+made to reconnect the previous devices (<i>sendsCore</i> is
+ignored in this case).</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>DMXAddBackendInput()</b>
+is a helper function that is used to add input from a
+back-end server. With this function, <i>screen</i> refers to
+the back-end screen, <i>sendsCore</i> is <b>True</b> if the
+new input should send core events (and it ignored if the
+input has been detached), and <i>newId</i> will hold the
+device id of the first device in the series added.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>DMXAddConsoleInput()</b>
+is a helper function that is used to add input from a
+console. With this function, <i>name</i> is the name of the
+console display, <i>sendsCore</i> is <b>True</b> if the new
+input should send core events (and it ignored if the input
+has been detached), and <i>newId</i> will hold the device id
+of the first device in the series added.</p>
+
+<h2 id="heading4">RETURN VALUE
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>DMXAddInput()</b>
+returns <b>True</b> on success and <b>False</b>
+otherwise.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>DMXAddInput()</b>
+can generate <b>BadValue</b> (if <i>inputType</i> is invalid
+or <i>physicalScreen</i> is out of range), <b>BadAccess</b>
+(if the input has already been attached or if the backend
+screen is currently detached).</p>
+
+<h2 id="heading5">NOTES
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Local devices
+cannot be attached or detached.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Attributes that
+are not specified will default to 0. This may lead to
+unintended results.</p>
+
+<h2 id="heading6">SEE ALSO
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/DMXRemoveInput.3.xhtml"><em>DMXRemoveInput</em>(3)</a>,
+<a href="../man3/DMX.3.xhtml"><em>DMX</em>(3)</a>, <a href="../man1/Xdmx.1.xhtml"><em>Xdmx</em>(1)</a></p>
+<hr/>
+</body>
+</html>

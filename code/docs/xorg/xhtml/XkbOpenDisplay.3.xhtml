@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:23:06 2012 -->
+<title>XkbOpenDisplay</title>
+
+</head>
+<body>
+
+<h1>XkbOpenDisplay</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNOPSIS</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">RETURN VALUES</a><br/>
+<a href="#heading6">DIAGNOSTICS</a><br/>
+<a href="#heading7">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">XkbOpenDisplay
+&minus; Checks for a compatible version of the Xkb extension
+in both the library and the server, and initializes the
+extension for use.</p>
+
+<h2 id="heading2">SYNOPSIS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="37%"></col>
+<col width="3%" class="center"></col>
+<col width="49%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>Display
+XkbOpenDisplay</b></p> </td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>(char
+*</b><i>display_name</i><b>, int *</b><i>event_rtrn</i><b>,
+int</b></p> </td></tr>
+</table>
+
+<p style="margin-left:11%;"><b>*</b><i>error_rtrn</i><b>,
+int *</b><i>major_in_out</i><b>, int
+*</b><i>minor_in_out</i><b>, int
+*</b><i>reason_rtrn</i><b>);</b></p>
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b><i>display_name</i></b></p>
+
+<p style="margin-left:22%;">hardware display name, which
+determines the display and communications domain to be
+used</p>
+
+<p style="margin-left:11%;"><i>event_rtrn</i></p>
+
+<p style="margin-left:22%;">backfilled with the extension
+base event code</p>
+
+<p style="margin-left:11%;"><i>error_rtrn</i></p>
+
+<p style="margin-left:22%;">backfilled with the extension
+base error code</p>
+
+<p style="margin-left:11%;"><i>major_in_out</i></p>
+
+<p style="margin-left:22%;">compile time lib major version
+in, server major version out</p>
+
+<p style="margin-left:11%;"><i>minor_in_out</i></p>
+
+<p style="margin-left:22%;">compile time lib min version
+in, server minor version out</p>
+
+<p style="margin-left:11%;"><i>reason_rtrn</i></p>
+
+<p style="margin-left:22%;">backfilled with a status
+code</p>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">As a
+convenience, you can use the function <i>XkbOpenDisplay</i>
+to perform these three tasks at once: open a connection to
+an X server, check for a compatible version of the Xkb
+extension in both the library and the server, and initialize
+the extension for use.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XkbOpenDisplay</i>
+is a convenience function that opens an X display connection
+and initializes the X keyboard extension. In all cases, upon
+return <i>reason_rtrn</i> contains a status value indicating
+success or the type of failure. If <i>major_in_out</i> and
+<i>minor_in_out</i> are not NULL, <i>XkbOpenDisplay</i>
+first calls <i>XkbLibraryVersion</i> to determine whether
+the client library is compatible, passing it the values
+pointed to by <i>major_in_out and minor_in_out. If the
+library is</i> incompatible, <i>XkbOpenDisplay backfills
+major_in_out</i> and <i>minor_in_out</i> with the major and
+minor extension versions of the library being used and
+returns NULL. If the library is compatible,
+<i>XkbOpenDisplay</i> next calls <i>XOpenDisplay</i> with
+the <i>display_name.</i> If this fails, the function returns
+NULL. If successful, <i>XkbOpenDisplay</i> calls
+<i>XkbQueryExtension</i> and backfills the major and minor
+Xkb server extension version numbers in <i>major_in_out and
+minor_in_out. If the server</i> extension version is not
+compatible with the library extension version or if the
+server extension is not present, <i>XkbOpenDisplay</i>
+closes the display and returns NULL. When successful, the
+function returns the display connection.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The possible
+values for reason_rtrn are:</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="1%"></col>
+<col width="6%" class="center"></col>
+<col width="82%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>&bull;</p></td>
+<td></td>
+<td>
+
+
+<p>XkbOD_BadLibraryVersion indicates XkbLibraryVersion
+returned False.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>&bull;</p></td>
+<td></td>
+<td>
+
+
+<p>XkbOD_ConnectionRefused indicates the display could not
+be opened.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>&bull;</p></td>
+<td></td>
+<td>
+
+
+<p>XkbOD_BadServerVersion indicates the library and the
+server have incompatible extension versions.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>&bull;</p></td>
+<td></td>
+<td>
+
+
+<p>XkbOD_NonXkbServer indicates the extension is not
+present in the X server.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>&bull;</p></td>
+<td></td>
+<td>
+
+
+<p>XkbOD_Success indicates that the function succeeded.</p></td></tr>
+</table>
+
+<h2 id="heading5">RETURN VALUES
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="6%"></col>
+<col width="17%" class="center"></col>
+<col width="66%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">NULL</p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">The <i>XkbOpenDisplay</i>
+function returns NULL if the library is incompatible.</p></td></tr>
+</table>
+
+<p style="margin-left:31%; margin-top: 1em">The
+<i>XkbOpenDisplay</i> function returns NULL if the call to
+<i>XOpenDisplay</i> with the <i>display_name</i> fails.</p>
+
+<p style="margin-left:31%; margin-top: 1em">The
+<i>XkbOpenDisplay</i> function returns NULL and closes the
+display if the server extension version is not compatible
+with the library extension version or if the server
+extension is not present.</p>
+
+<h2 id="heading6">DIAGNOSTICS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="14%"></col>
+<col width="9%" class="center"></col>
+<col width="66%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><small>BadAccess</small></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">The Xkb extension has not been
+properly initialized</p></td></tr>
+</table>
+
+<h2 id="heading7">SEE ALSO
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XkbLibraryVersion.3.xhtml"><em>XkbLibraryVersion</em>(3)</a>,
+<a href="../man3/XkbQueryExtension.3.xhtml"><em>XkbQueryExtension</em>(3)</a>, <a href="../man3/XOpenDisplay.3.xhtml"><em>XOpenDisplay</em>(3)</a></p>
+<hr/>
+</body>
+</html>

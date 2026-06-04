@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:29:08 2012 -->
+<title>XQueryPointer</title>
+
+</head>
+<body>
+
+<h1>XQueryPointer</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNTAX</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">DIAGNOSTICS</a><br/>
+<a href="#heading6">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">XQueryPointer
+&minus; get pointer coordinates</p>
+
+<h2 id="heading2">SYNTAX
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="89%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Bool XQueryPointer(Display
+*<i>display</i>, Window <i>w</i>, Window
+*<i>root_return</i>, Window *<i>child_return</i>, int
+*<i>root_x_return</i>, int *<i>root_y_return</i>, int
+*<i>win_x_return</i>, int *<i>win_y_return</i>, unsigned int
+*<i>mask_return</i>);</p> </td></tr>
+</table>
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>child_return</i></p>
+
+<p style="margin-left:26%;">Returns the child window that
+the pointer is located in, if any.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="11%"></col>
+<col width="4%" class="center"></col>
+<col width="63%"></col>
+<col width="11%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>display</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the connection to the X server.</p></td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>mask_return</i></p>
+
+<p style="margin-left:26%;">Returns the current state of
+the modifier keys and pointer buttons.</p>
+
+<p style="margin-left:11%;"><i>root_return</i></p>
+
+<p style="margin-left:26%;">Returns the root window that
+the pointer is in.</p>
+
+<p style="margin-left:11%;"><i>root_x_return <br/>
+root_y_return</i></p>
+
+<p style="margin-left:26%;">Return the pointer coordinates
+relative to the root window&rsquo;s origin.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="1%"></col>
+<col width="14%" class="center"></col>
+<col width="32%"></col>
+<col width="42%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>w</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the window.</p></td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>win_x_return <br/>
+win_y_return</i></p>
+
+<p style="margin-left:26%;">Return the pointer coordinates
+relative to the specified window.</p>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XQueryPointer</i> function returns the root window the
+pointer is logically on and the pointer coordinates relative
+to the root window&rsquo;s origin. If <i>XQueryPointer</i>
+returns <i>False</i>, the pointer is not on the same screen
+as the specified window, and <i>XQueryPointer</i> returns
+<i>None</i> to child_return and zero to win_x_return and
+win_y_return. If <i>XQueryPointer</i> returns <i>True</i>,
+the pointer coordinates returned to win_x_return and
+win_y_return are relative to the origin of the specified
+window. In this case, <i>XQueryPointer</i> returns the child
+that contains the pointer, if any, or else <i>None</i> to
+child_return.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XQueryPointer</i>
+returns the current logical state of the keyboard buttons
+and the modifier keys in mask_return. It sets mask_return to
+the bitwise inclusive OR of one or more of the button or
+modifier key bitmasks to match the current state of the
+mouse buttons and the modifier keys.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XQueryPointer</i>
+can generate a <i>BadWindow</i> error.</p>
+
+<h2 id="heading5">DIAGNOSTICS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="14%"></col>
+<col width="1%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><i>BadWindow</i></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">A value for a Window argument
+does not name a defined Window.</p></td></tr>
+</table>
+
+<h2 id="heading6">SEE ALSO
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XGetWindowAttributes.3.xhtml"><em>XGetWindowAttributes</em>(3)</a>,
+<a href="../man3/XQueryTree.3.xhtml"><em>XQueryTree</em>(3)</a> <i><br/>
+<a href="../../libX11/libX11/libX11.html">Xlib &minus; C Language X Interface</a></i></p>
+<hr/>
+</body>
+</html>

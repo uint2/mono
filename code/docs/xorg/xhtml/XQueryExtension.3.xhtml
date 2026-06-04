@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:30:51 2012 -->
+<title>XQueryExtension</title>
+
+</head>
+<body>
+
+<h1>XQueryExtension</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNTAX</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">XQueryExtension,
+XListExtensions, XFreeExtensionList &minus; list available
+extensions</p>
+
+<h2 id="heading2">SYNTAX
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="89%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Bool XQueryExtension(<i>display,
+name, major_opcode_return, first_event_return,
+first_error_return)</i></p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">char
+**XListExtensions(<i>display</i>,
+<i>nextensions_return</i>)</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+
+<p style="margin-top: 1em">XFreeExtensionList(<i>list</i>)</p> </td></tr>
+</table>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="11%"></col>
+<col width="4%" class="center"></col>
+<col width="63%"></col>
+<col width="11%"></col>
+</colgroup>
+<tr valign="top" align="left">
+
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+<td></td>
+<td></td>
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>display</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the connection to the X server.</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>name</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the extension name.</p></td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>major_opcode_return</i></p>
+
+<p style="margin-left:26%;">Returns the major opcode.</p>
+
+<p style="margin-left:11%;"><i>first_event_return</i></p>
+
+<p style="margin-left:26%;">Returns the first event code,
+if any.</p>
+
+<p style="margin-left:11%;"><i>first_error_return</i></p>
+
+<p style="margin-left:26%;">Returns the first error code,
+if any.</p>
+
+<p style="margin-left:11%;"><i>nextensions_return</i></p>
+
+<p style="margin-left:26%;">Returns the number of
+extensions listed.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="6%"></col>
+<col width="9%" class="center"></col>
+<col width="59%"></col>
+<col width="15%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>list</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the list of extension names.</p></td>
+<td>
+</td></tr>
+</table>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XQueryExtension</i> function determines if the named
+extension is present. If the extension is not present,
+<i>XQueryExtension</i> returns <i>False</i>; otherwise, it
+returns <i>True</i>. If the extension is present,
+<i>XQueryExtension</i> returns the major opcode for the
+extension to major_opcode_return; otherwise, it returns
+zero. Any minor opcode and the request formats are specific
+to the extension. If the extension involves additional event
+types, <i>XQueryExtension</i> returns the base event type
+code to first_event_return; otherwise, it returns zero. The
+format of the events is specific to the extension. If the
+extension involves additional error codes,
+<i>XQueryExtension</i> returns the base error code to
+first_error_return; otherwise, it returns zero. The format
+of additional data in the errors is specific to the
+extension. If the extension name is not in the Host Portable
+Character Encoding the result is implementation-dependent.
+Uppercase and lowercase matter; the strings
+&lsquo;&lsquo;thing&rsquo;&rsquo;,
+&lsquo;&lsquo;Thing&rsquo;&rsquo;, and
+&lsquo;&lsquo;thinG&rsquo;&rsquo; are all considered
+different names.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XListExtensions</i> function returns a list of all
+extensions supported by the server. If the data returned by
+the server is in the Latin Portable Character Encoding, then
+the returned strings are in the Host Portable Character
+Encoding. Otherwise, the result is
+implementation-dependent.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XFreeExtensionList</i> function frees the memory
+allocated by <i>XListExtensions</i>.</p>
+<hr/>
+</body>
+</html>

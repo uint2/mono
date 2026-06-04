@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:26:00 2012 -->
+<title>XtErrorMsg</title>
+
+</head>
+<body>
+
+<h1>XtErrorMsg</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNTAX</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">XtErrorMsg,
+XtSetErrorMsgHandler, XtWarningMsg, XtSetWarningMsgHandler
+&minus; high-level error handlers</p>
+
+<h2 id="heading2">SYNTAX
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="89%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">void XtErrorMsg(String
+<i>name</i>, String <i>type</i>, String <i>class</i>, String
+<i>default</i>, String *<i>params</i>, Cardinal
+*<i>num_params</i>);</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">void
+XtSetErrorMsgHandler(XtErrorMsgHandler
+<i>msg_handler</i>);</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">void
+XtSetWarningMsgHandler(XtErrorMsgHandler
+<i>msg_handler</i>);</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">void XtWarningMsg(String
+<i>name</i>, String <i>type</i>, String <i>class</i>, String
+<i>default</i>, String *<i>params</i>, Cardinal
+*<i>num_params</i>);</p> </td></tr>
+</table>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="11%"></col>
+<col width="4%" class="center"></col>
+<col width="63%"></col>
+<col width="11%"></col>
+</colgroup>
+<tr valign="top" align="left">
+
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+<td></td>
+<td></td>
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>class</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the resource class.</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>default</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the default message to use.</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>name</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the general kind of error.</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>type</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the detailed name of the error.</p></td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>msg_handler</i></p>
+
+<p style="margin-left:26%;">Specifies the new fatal error
+procedure, which should not return or the nonfatal error
+procedure, which usually returns.</p>
+
+<p style="margin-left:11%;"><i>num_params</i></p>
+
+<p style="margin-left:26%;">Specifies the number of values
+in the parameter list.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="9%"></col>
+<col width="6%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>params</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies a pointer to a list of values to be stored in
+the message.</p></td></tr>
+</table>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XtErrorMsg</i> function has been superceded by
+<i>XtAppErrorMsg</i>.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XtSetErrorMsgHandler</i> function has been superceded by
+<i>XtAppSetErrorMsgHandler</i>.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XtSetWarningMsgHandler</i> function has been superceded
+by <i>XtAppSetWarningMsgHandler</i>.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XtWarningMsg</i> function has been superceded by
+<i>XtAppWarningMsg</i></p>
+
+<h2 id="heading5">SEE ALSO
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><i><b>XtAppErrorMsg</b></i>(3)
+<i><br/>
+X Toolkit Intrinsics &minus; C Language Interface <br/>
+<a href="../../libX11/libX11/libX11.html">Xlib &minus; C Language X Interface</a></i></p>
+<hr/>
+</body>
+</html>

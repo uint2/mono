@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:37:33 2012 -->
+<title>XSetICValues</title>
+
+</head>
+<body>
+
+<h1>XSetICValues</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNTAX</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">DIAGNOSTICS</a><br/>
+<a href="#heading6">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">XSetICValues,
+XGetICValues &minus; set and obtain XIC values</p>
+
+<h2 id="heading2">SYNTAX
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="51%"></col>
+<col width="38%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">char * XSetICValues(XIC
+<i>ic</i>, ...);</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">char * XGetICValues(XIC
+<i>ic</i>, ...);</p></td>
+<td>
+</td></tr>
+</table>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="4%"></col>
+<col width="11%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+<td></td>
+<td></td>
+<td></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>ic</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the input context.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>...</p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the variable length argument list&nbsp;to set
+or get XIC values.</p></td></tr>
+</table>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XSetICValues</i> function returns NULL if no error
+occurred; otherwise, it returns the name of the first
+argument that could not be set. An argument might not be set
+for any of the following reasons:</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="1%"></col>
+<col width="6%" class="center"></col>
+<col width="82%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">&bull;</p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">The argument is read-only (for
+example, <i>XNFilterEvents</i>).</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>&bull;</p></td>
+<td></td>
+<td>
+
+
+<p>The argument name is not recognized.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>&bull;</p></td>
+<td></td>
+<td>
+
+
+<p>An implementation-dependent error occurs.</p></td></tr>
+</table>
+
+<p style="margin-left:11%; margin-top: 1em">Each value to
+be set must be an appropriate datum, matching the data type
+imposed by the semantics of the argument.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XSetICValues</i> can generate <i>BadAtom</i>,
+<i>BadColor</i>, <i>BadCursor</i>, <i>BadPixmap</i>, and
+<i>BadWindow</i> errors.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XGetICValues</i> function returns NULL if no error
+occurred; otherwise, it returns the name of the first
+argument that could not be obtained. An argument could not
+be obtained for any of the following reasons:</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="1%"></col>
+<col width="6%" class="center"></col>
+<col width="82%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">&bull;</p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">The argument name is not
+recognized.</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>&bull;</p></td>
+<td></td>
+<td>
+
+
+<p>The input method encountered an implementation-dependent
+error.</p> </td></tr>
+</table>
+
+<p style="margin-left:11%; margin-top: 1em">Each IC
+attribute value argument (following a name) must point to a
+location where the IC value is to be stored. That is, if the
+IC value is of type T, the argument must be of type T*. If T
+itself is a pointer type, then <i>XGetICValues</i> allocates
+memory to store the actual data, and the client is
+responsible for freeing this data by calling <i>XFree</i>
+with the returned pointer. The exception to this rule is for
+an IC value of type <i>XNVaNestedList</i> (for preedit and
+status attributes). In this case, the argument must also be
+of type <i>XVaNestedList</i>. Then, the rule of changing
+type T to T* and freeing the allocated data applies to each
+element of the nested list.</p>
+
+<h2 id="heading5">DIAGNOSTICS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="14%"></col>
+<col width="1%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><i>BadAtom</i></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">A value for an Atom argument
+does not name a defined Atom.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>BadColor</i></p></td>
+<td></td>
+<td>
+
+
+<p>A value for a Colormap argument does not name a defined
+Colormap.</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>BadCursor</i></p></td>
+<td></td>
+<td>
+
+
+<p>A value for a Cursor argument does not name a defined
+Cursor.</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>BadPixmap</i></p></td>
+<td></td>
+<td>
+
+
+<p>A value for a Pixmap argument does not name a defined
+Pixmap.</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>BadWindow</i></p></td>
+<td></td>
+<td>
+
+
+<p>A value for a Window argument does not name a defined
+Window.</p> </td></tr>
+</table>
+
+<h2 id="heading6">SEE ALSO
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XCreateIC.3.xhtml"><em>XCreateIC</em>(3)</a>,
+<a href="../man3/XOpenIM.3.xhtml"><em>XOpenIM</em>(3)</a>, <a href="../man3/XSetICFocus.3.xhtml"><em>XSetICFocus</em>(3)</a>, <a href="../man3/XmbResetIC.3.xhtml"><em>XmbResetIC</em>(3)</a> <i><br/>
+<a href="../../libX11/libX11/libX11.html">Xlib &minus; C Language X Interface</a></i></p>
+<hr/>
+</body>
+</html>

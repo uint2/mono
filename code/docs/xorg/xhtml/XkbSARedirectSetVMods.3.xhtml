@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:37:20 2012 -->
+<title>XkbSARedirectSetVMods</title>
+
+</head>
+<body>
+
+<h1>XkbSARedirectSetVMods</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNOPSIS</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">STRUCTURES</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">XkbSARedirectSetVMods
+&minus; Sets the vmods0 and vmods1 of act from v</p>
+
+<h2 id="heading2">SYNOPSIS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="40%"></col>
+<col width="1%" class="center"></col>
+<col width="48%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>void
+XkbSARedirectSetVMods</b></p> </td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>(XkbRedirectKeyAction</b>
+<i>act</i><b>, unsigned int</b> <i>v</i><b>);</b></p></td></tr>
+</table>
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="7%"></col>
+<col width="4%" class="center"></col>
+<col width="47%"></col>
+<col width="31%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b><i>&minus; act</i></b></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">action in which to set vmods</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>&minus; v</i></p></td>
+<td></td>
+<td>
+
+
+<p>new value for virtual modifiers</p></td>
+<td>
+</td></tr>
+</table>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Actions
+associated with the XkbRedirectKeyAction structure generate
+KeyPress and KeyRelease events containing a keycode
+different from the key that was pressed or released.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The <i>type</i>
+field for the XkbRedirectKeyAction structure should always
+be XkbSA_RedirectKey. Key presses cause a KeyPress event for
+the key specified by the <i>new_key</i> field instead of the
+actual key. The state reported in this event reports the
+current effective modifiers changed as follows: any real
+modifiers selected by the <i>mods_mask</i> field are set to
+corresponding values from the <i>mods</i> field. Any real
+modifiers bound to the virtual modifiers specified by the
+<i>vmods_mask0</i> and <i>vmods_mask1</i> fields are either
+set or cleared, depending on the corresponding values in the
+<i>vmods0</i> and <i>vmods1</i> fields. If the real and
+virtual modifier definitions specify conflicting values for
+a single modifier, the real modifier definition has
+priority.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Key releases
+cause a KeyRelease event for the key specified by the
+<i>new_key</i> field instead of the actual key. The state
+for this event consists of the effective keyboard modifiers
+at the time of the release, changed as described
+previously.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+XkbSA_RedirectKey action normally redirects to another key
+on the same device as the key that caused the event, unless
+that device does not belong to the input extension KeyClass,
+in which case this action causes an event on the core
+keyboard device. (The input extension categorizes devices by
+breaking them into classes. Keyboards, and other input
+devices with keys, are classified as KeyClass devices by the
+input extension.)</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>vmods_mask0</i> and <i>vmods_mask1</i> fields actually
+represent one <i>vmods_mask</i> value. Xkb provides macros
+to convert between the two formats.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XkbSARedirectSetVModsMask</i>
+sets the <i>vmods0</i> and <i>vmods1</i> of <i>act</i> from
+<i>v.</i></p>
+
+<h2 id="heading5">STRUCTURES
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">typedef
+struct_XkbRedirectKeyAction { <br/>
+unsigned char type; /&lowast; XkbSA_RedirectKey */ <br/>
+unsigned char new_key; /&lowast; keycode to be put in event
+*/ <br/>
+unsigned char mods_mask; /&lowast; mask of real mods to be
+reset */ <br/>
+unsigned char mods; /&lowast; mask of real mods to take
+values from */ <br/>
+unsigned char vmods_mask0; /&lowast; first half of mask of
+virtual mods to be reset */ <br/>
+unsigned char vmods_mask1; /&lowast; other half of mask of
+virtual mods to be reset */ <br/>
+unsigned char vmods0; /&lowast; first half of mask of
+virtual mods to take values from */ <br/>
+unsigned char vmods1; /&lowast; other half of mask of
+virtual mods to take values from */ <br/>
+} XkbRedirectKeyAction;</p>
+<hr/>
+</body>
+</html>

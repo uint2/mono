@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:34:23 2012 -->
+<title>XkbGetDeviceInfoChanges</title>
+
+</head>
+<body>
+
+<h1>XkbGetDeviceInfoChanges</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNOPSIS</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">XkbGetDeviceInfoChanges
+&minus; Query the changes that have occurred in the button
+actions or indicator names and indicator maps associated
+with an input extension device</p>
+
+<h2 id="heading2">SYNOPSIS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="51%"></col>
+<col width="4%" class="center"></col>
+<col width="34%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>Status
+XkbGetDeviceInfoChanges</b></p> </td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>(Display *</b><i>dpy</i><b>,
+XkbDeviceInfoPtr</b></p> </td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>device_info</i><b>,
+XkbDeviceChangesPtr</b> <i>changes</i><b>);</b></p>
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="7%"></col>
+<col width="4%" class="center"></col>
+<col width="33%"></col>
+<col width="45%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b><i>&minus; dpy</i></b></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">connection to X server</p></td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>&minus; device_info</i></p>
+
+<p style="margin-left:22%;">structure to update with
+results</p>
+
+<p style="margin-left:11%;"><i>&minus; changes</i></p>
+
+<p style="margin-left:22%;">contains notes of changes that
+have occurred</p>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>changes-&gt;changed</i> field indicates which attributes
+of the device specified in <i>changes-&gt;device</i> have
+changed. The parameters describing the changes are contained
+in the other fields of <i>changes.
+XkbGetDeviceInfoChanges</i> uses that information to call
+<i>XkbGetDeviceInfo</i> to obtain the current status of
+those attributes that have changed. It then updates the
+local description of the device in <i>device_info</i> with
+the new information.</p>
+
+<h2 id="heading5">SEE ALSO
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XkbGetDeviceInfo.3.xhtml"><em>XkbGetDeviceInfo</em>(3)</a></p>
+<hr/>
+</body>
+</html>

@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:45:11 2012 -->
+<title>IsCursorKey</title>
+
+</head>
+<body>
+
+<h1>IsCursorKey</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNTAX</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">IsCursorKey,
+IsFunctionKey, IsKeypadKey, IsMiscFunctionKey,
+IsModifierKey, IsPFKey, IsPrivateKeypadKey &minus; keysym
+classification macros</p>
+
+<h2 id="heading2">SYNTAX
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">int
+IsCursorKey(KeySym <i>keysym</i>);</p>
+
+<p style="margin-left:11%; margin-top: 1em">int
+IsFunctionKey(KeySym <i>keysym</i>);</p>
+
+<p style="margin-left:11%; margin-top: 1em">int
+IsKeypadKey(KeySym <i>keysym</i>);</p>
+
+<p style="margin-left:11%; margin-top: 1em">int
+IsMiscFunctionKey(KeySym <i>keysym</i>);</p>
+
+<p style="margin-left:11%; margin-top: 1em">int
+IsModifierKey(KeySym <i>keysym</i>);</p>
+
+<p style="margin-left:11%; margin-top: 1em">int
+IsPFKey(KeySym <i>keysym</i>);</p>
+
+<p style="margin-left:11%; margin-top: 1em">int
+IsPrivateKeypadKey(KeySym <i>keysym</i>);</p>
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="9%"></col>
+<col width="6%" class="center"></col>
+<col width="65%"></col>
+<col width="9%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><i>keysym</i></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Specifies the KeySym that is to
+be tested.</p></td>
+<td>
+</td></tr>
+</table>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>IsCursorKey</i> macro returns <i>True</i> if the
+specified KeySym is a cursor key.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>IsFunctionKey</i> macro returns <i>True</i> if the KeySym
+is a function key.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>IsKeypadKey</i> macro returns <i>True</i> if the
+specified KeySym is a keypad key.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>IsMiscFunctionKey</i> macro returns <i>True</i> if the
+specified KeySym is a miscellaneous function key.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>IsModifierKey</i> macro returns <i>True</i> if the
+specified KeySym is a modifier key.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>IsPFKey</i> macro returns <i>True</i> if the specified
+KeySym is a PF key.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>IsPrivateKeypadKey</i> macro returns <i>True</i> if the
+specified KeySym is a vendor-private keypad key.</p>
+
+<h2 id="heading5">SEE ALSO
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XkbKeyTypesForCoreSymbols.3.xhtml"><em>XkbKeyTypesForCoreSymbols</em>(3)</a>,
+<a href="../man3/AllPlanes.3.xhtml"><em>AllPlanes</em>(3)</a>, <a href="../man3/BlackPixelOfScreen.3.xhtml"><em>BlackPixelOfScreen</em>(3)</a>, <a href="../man3/ImageByteOrder.3.xhtml"><em>ImageByteOrder</em>(3)</a>
+<i><br/>
+<a href="../../libX11/libX11/libX11.html">Xlib &minus; C Language X Interface</a></i></p>
+<hr/>
+</body>
+</html>

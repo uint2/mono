@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:42:08 2012 -->
+<title>XkbGetAutoRepeatRate</title>
+
+</head>
+<body>
+
+<h1>XkbGetAutoRepeatRate</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNOPSIS</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">RETURN VALUES</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">XkbGetAutoRepeatRate
+&minus; Gets the current attributes of the RepeatKeys
+control for a keyboard device</p>
+
+<h2 id="heading2">SYNOPSIS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="38%"></col>
+<col width="2%" class="center"></col>
+<col width="49%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>Bool
+XkbGetAutoRepeatRate</b></p> </td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>(Display
+*</b><i>display</i><b>, unsigned int</b>
+<i>device_spec</i><b>,</b></p> </td></tr>
+</table>
+
+<p style="margin-left:11%;"><b>unsigned int
+*</b><i>timeout_rtrn</i><b>, unsigned int
+*</b><i>interval_rtrn</i><b>);</b></p>
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b><i>&minus;
+display</i></b></p>
+
+<p style="margin-left:22%;">connection to X server</p>
+
+<p style="margin-left:11%;"><i>&minus; device_spec</i></p>
+
+<p style="margin-left:22%;">desired device ID, or
+XkbUseCoreKbd</p>
+
+<p style="margin-left:11%;"><i>&minus; timeout_rtrn</i></p>
+
+<p style="margin-left:22%;">backfilled with initial repeat
+delay, ms</p>
+
+<p style="margin-left:11%;"><i>&minus;
+interval_rtrn</i></p>
+
+<p style="margin-left:22%;">backfilled with subsequent
+repeat delay, ms</p>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The core
+protocol allows only control over whether or not the entire
+keyboard or individual keys should auto-repeat when held
+down. RepeatKeys is a boolean control that extends this
+capability by adding control over the delay until a key
+begins to repeat and the rate at which it repeats.
+RepeatKeys is coupled with the core auto-repeat control:
+when RepeatKeys is enabled or disabled, the core auto-repeat
+is enabled or disabled and vice versa.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Auto-repeating
+keys are controlled by two attributes. The first,
+<i>timeout,</i> is the delay after the initial press of an
+auto-repeating key and the first generated repeat event. The
+second, <i>interval,</i> is the delay between all subsequent
+generated repeat events. As with all boolean controls,
+configuring the attributes that determine how the control
+operates does not automatically enable the control as a
+whole.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XkbGetAutoRepeatRate</i>
+queries the server for the current values of the
+RepeatControls control attributes, backfills
+<i>timeout_rtrn</i> and <i>interval_rtrn</i> with them, and
+returns True. If a compatible version of the Xkb extension
+is not available in the server <i>XkbGetAutoRepeatRate</i>
+returns False.</p>
+
+<h2 id="heading5">RETURN VALUES
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="7%"></col>
+<col width="16%" class="center"></col>
+<col width="66%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">True</p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">The XkbGetAutoRepeatRate
+function returns True if a compatible version of the Xkb
+extension is available in the server.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>False</p></td>
+<td></td>
+<td>
+
+
+<p>The XkbGetAutoRepeatRate function returns False if a
+compatible version of the Xkb extension is not available in
+the server.</p></td></tr>
+ </table>
+<hr/>
+</body>
+</html>

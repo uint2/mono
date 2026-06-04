@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:30:55 2012 -->
+<title>XcmsSetWhitePoint</title>
+
+</head>
+<body>
+
+<h1>XcmsSetWhitePoint</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNTAX</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">XcmsSetWhitePoint,
+XcmsSetWhiteAdjustProc &minus; modifying CCC attributes</p>
+
+<h2 id="heading2">SYNTAX
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="89%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Status XcmsSetWhitePoint(XcmsCCC
+<i>ccc</i>, XcmsColor *<i>color</i>);</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">XcmsWhiteAdjustProc
+XcmsSetWhiteAdjustProc(XcmsCCC <i>ccc</i>,
+XcmsWhiteAdjustProc <i>white_adjust_proc</i>, XPointer
+<i>client_data</i>);</p> </td></tr>
+</table>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="4%"></col>
+<col width="11%" class="center"></col>
+<col width="28%"></col>
+<col width="46%"></col>
+</colgroup>
+<tr valign="top" align="left">
+
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+<td></td>
+<td></td>
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>ccc</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the CCC.</p></td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>client_data</i></p>
+
+<p style="margin-left:26%;">Specifies client data for the
+white point adjustment procedure or NULL.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="7%"></col>
+<col width="8%" class="center"></col>
+<col width="57%"></col>
+<col width="17%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>color</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the new Client White Point.</p></td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>white_adjust_proc</i></p>
+
+<p style="margin-left:26%;">Specifies the white point
+adjustment procedure.</p>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XcmsSetWhitePoint</i> function changes the Client White
+Point in the specified CCC. Note that the pixel member is
+ignored and that the color specification is left unchanged
+upon return. The format for the new white point must be
+<i>XcmsCIEXYZFormat</i>, <i>XcmsCIEuvYFormat</i>,
+<i>XcmsCIExyYFormat</i>, or <i>XcmsUndefinedFormat</i>. If
+the color argument is NULL, this function sets the format
+component of the Client White Point specification to
+<i>XcmsUndefinedFormat</i>, indicating that the Client White
+Point is assumed to be the same as the Screen White
+Point.</p>
+
+<p style="margin-left:11%; margin-top: 1em">This function
+returns nonzero status if the format for the new white point
+is valid; otherwise, it returns zero.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XcmsSetWhiteAdjustProc</i> function first sets the white
+point adjustment procedure and client data in the specified
+CCC with the newly specified procedure and client data and
+then returns the old procedure.</p>
+
+<h2 id="heading5">SEE ALSO
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/DisplayOfCCC.3.xhtml"><em>DisplayOfCCC</em>(3)</a>,
+<a href="../man3/XcmsCCCOfColormap.3.xhtml"><em>XcmsCCCOfColormap</em>(3)</a>, <a href="../man3/XcmsConvertColors.3.xhtml"><em>XcmsConvertColors</em>(3)</a>,
+<a href="../man3/XcmsCreateCCC.3.xhtml"><em>XcmsCreateCCC</em>(3)</a>, <a href="../man3/XcmsDefaultCCC.3.xhtml"><em>XcmsDefaultCCC</em>(3)</a> <i><br/>
+<a href="../../libX11/libX11/libX11.html">Xlib &minus; C Language X Interface</a></i></p>
+<hr/>
+</body>
+</html>

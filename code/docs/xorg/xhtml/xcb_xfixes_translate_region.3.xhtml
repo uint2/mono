@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:44:48 2012 -->
+<title>xcb_xfixes_translate_region</title>
+
+</head>
+<body>
+
+<h1>xcb_xfixes_translate_region</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNOPSIS</a><br/>
+<a href="#heading3">REQUEST ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">RETURN VALUE</a><br/>
+<a href="#heading6">ERRORS</a><br/>
+<a href="#heading7">SEE ALSO</a><br/>
+<a href="#heading8">AUTHOR</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">xcb_xfixes_translate_region
+&minus;</p>
+
+<h2 id="heading2">SYNOPSIS
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>#include
+&lt;xcb/xfixes.h&gt;</b></p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>Request
+function</b></p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="89%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>xcb_void_cookie_t
+<b>xcb_xfixes_translate_region</b>(xcb_connection_t&nbsp;*<i>conn</i>,
+xcb_xfixes_region_t&nbsp;<i>region</i>,
+int16_t&nbsp;<i>dx</i>, int16_t&nbsp;<i>dy</i>);</p></td></tr>
+</table>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="9%"></col>
+<col width="6%" class="center"></col>
+<col width="40%"></col>
+<col width="34%"></col>
+</colgroup>
+<tr valign="top" align="left">
+
+
+<h2 id="heading3">REQUEST ARGUMENTS
+</h2>
+<td></td>
+<td></td>
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>conn</i></p></td>
+<td></td>
+<td>
+
+
+<p>The XCB connection to X11.</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>region</i></p></td>
+<td></td>
+<td>
+
+
+<p>TODO: NOT YET DOCUMENTED.</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>dx</i></p></td>
+<td></td>
+<td>
+
+
+<p>TODO: NOT YET DOCUMENTED.</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>dy</i></p></td>
+<td></td>
+<td>
+
+
+<p>TODO: NOT YET DOCUMENTED.</p></td>
+<td>
+</td></tr>
+</table>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<h2 id="heading5">RETURN VALUE
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Returns an
+<i>xcb_void_cookie_t</i>. Errors (if any) have to be handled
+in the event loop.</p>
+
+<p style="margin-left:11%; margin-top: 1em">If you want to
+handle errors directly with <i>xcb_request_check</i>
+instead, use <i>xcb_xfixes_translate_region_checked</i>. See
+<b>xcb-<a href="../man3/requests.3.xhtml"><em>requests</em>(3)</a></b> for details.</p>
+
+<h2 id="heading6">ERRORS
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">This request
+does never generate any errors.</p>
+
+<h2 id="heading7">SEE ALSO
+</h2>
+
+
+<h2 id="heading8">AUTHOR
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Generated from
+xfixes.xml. Contact xcb@lists.freedesktop.org for
+corrections and improvements.</p>
+<hr/>
+</body>
+</html>

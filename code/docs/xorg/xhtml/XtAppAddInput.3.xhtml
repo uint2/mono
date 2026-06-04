@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:35:12 2012 -->
+<title>XtAppAddInput</title>
+
+</head>
+<body>
+
+<h1>XtAppAddInput</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNTAX</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">SEE ALSO</a><br/>
+<a href="#heading6">BUGS</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">XtAppAddInput,
+XtRemoveInput &minus; register and remove an input
+source</p>
+
+<h2 id="heading2">SYNTAX
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="89%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">XtInputId
+XtAppAddInput(XtAppContext <i>app_context</i>, int
+<i>source</i>, XtPointer <i>condition</i>,
+XtInputCallbackProc <i>proc</i>, XtPointer
+<i>client_data</i>);</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">void XtRemoveInput(XtInputId
+<i>id</i>);</p> </td></tr>
+</table>
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>app_context</i></p>
+
+<p style="margin-left:26%;">Specifies the application
+context that identifies the application.</p>
+
+<p style="margin-left:11%;"><i>client_data</i></p>
+
+<p style="margin-left:26%;">Specifies the argument that is
+to be passed to the specified procedure when input is
+available.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="14%"></col>
+<col width="1%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>condition</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the mask that indicates a read, write, or
+exception condition or some operating system dependent
+condition.</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>id</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the ID returned from the corresponding
+<i>XtAppAddInput</i> call.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>proc</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the procedure that is&nbsp;to be called when
+input is available.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>source</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the source file descriptor on a UNIX-based
+system or other operating system dependent device
+specification.</p> </td></tr>
+</table>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XtAppAddInput</i> function registers with the Intrinsics
+read routine a new source of events, which is usually file
+input but can also be file output. Note that file should be
+loosely interpreted to mean any sink or source of data.
+<i>XtAppAddInput</i> also specifies the conditions under
+which the source can generate events. When input is pending
+on this source, the callback procedure is called.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The legal
+values for the condition argument are operating-system
+dependent. On a UNIX-based system, the condition is some
+union of <i>XtInputReadMask</i>, <i>XtInputWriteMask</i>,
+and <i>XtInputExceptMask</i>. The <i>XtRemoveInput</i>
+function causes the Intrinsics read routine to stop watching
+for input from the input source.</p>
+
+<h2 id="heading5">SEE ALSO
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XtAppAddTimeOut.3.xhtml"><em>XtAppAddTimeOut</em>(3)</a>,<a href="../man3/XtAppAddSignal.3.xhtml"><em>XtAppAddSignal</em>(3)</a>
+<i><br/>
+X Toolkit Intrinsics &minus; C Language Interface <br/>
+<a href="../../libX11/libX11/libX11.html">Xlib &minus; C Language X Interface</a></i></p>
+
+<h2 id="heading6">BUGS
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">In ANSI C it is
+necessary to cast the condition to an XtPointer, e.g.:</p>
+
+<p style="margin-left:17%;">XtAppAddInput(app_context,</p>
+
+<p style="margin-left:23%;">source, <b><br/>
+(XtPointer)</b> (XtInputReadMask | XtInputWriteMask), <br/>
+proc, <br/>
+ client_data);</p>
+<hr/>
+</body>
+</html>

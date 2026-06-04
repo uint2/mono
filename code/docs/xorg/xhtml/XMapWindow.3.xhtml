@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:43:35 2012 -->
+<title>XMapWindow</title>
+
+</head>
+<body>
+
+<h1>XMapWindow</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNTAX</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">DIAGNOSTICS</a><br/>
+<a href="#heading6">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">XMapWindow,
+XMapRaised, XMapSubwindows &minus; map windows</p>
+
+<h2 id="heading2">SYNTAX
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="72%"></col>
+<col width="17%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">int XMapWindow(Display
+*<i>display</i>, Window <i>w</i>);</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">int XMapRaised(Display
+*<i>display</i>, Window <i>w</i>);</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">int XMapSubwindows(Display
+*<i>display</i>, Window <i>w</i>);</p></td>
+<td>
+</td></tr>
+</table>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="11%"></col>
+<col width="4%" class="center"></col>
+<col width="63%"></col>
+<col width="11%"></col>
+</colgroup>
+<tr valign="top" align="left">
+
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+<td></td>
+<td></td>
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>display</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the connection to the X server.</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>w</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the window.</p></td>
+<td>
+</td></tr>
+</table>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XMapWindow</i> function maps the window and all of its
+subwindows that have had map requests. Mapping a window that
+has an unmapped ancestor does not display the window but
+marks it as eligible for display when the ancestor becomes
+mapped. Such a window is called unviewable. When all its
+ancestors are mapped, the window becomes viewable and will
+be visible on the screen if it is not obscured by another
+window. This function has no effect if the window is already
+mapped.</p>
+
+<p style="margin-left:11%; margin-top: 1em">If the
+override-redirect of the window is <i>False</i> and if some
+other client has selected <i>SubstructureRedirectMask</i> on
+the parent window, then the X server generates a
+<i>MapRequest</i> event, and the <i>XMapWindow</i> function
+does not map the window. Otherwise, the window is mapped,
+and the X server generates a <i>MapNotify</i> event.</p>
+
+<p style="margin-left:11%; margin-top: 1em">If the window
+becomes viewable and no earlier contents for it are
+remembered, the X server tiles the window with its
+background. If the window&rsquo;s background is undefined,
+the existing screen contents are not altered, and the X
+server generates zero or more <i>Expose</i> events. If
+backing-store was maintained while the window was unmapped,
+no <i>Expose</i> events are generated. If backing-store will
+now be maintained, a full-window exposure is always
+generated. Otherwise, only visible regions may be reported.
+Similar tiling and exposure take place for any newly
+viewable inferiors.</p>
+
+<p style="margin-left:11%; margin-top: 1em">If the window
+is an <i>InputOutput</i> window, <i>XMapWindow</i> generates
+<i>Expose</i> events on each <i>InputOutput</i> window that
+it causes to be displayed. If the client maps and paints the
+window and if the client begins processing events, the
+window is painted twice. To avoid this, first ask for
+<i>Expose</i> events and then map the window, so the client
+processes input events as usual. The event list will include
+<i>Expose</i> for each window that has appeared on the
+screen. The client&rsquo;s normal response to an
+<i>Expose</i> event should be to repaint the window. This
+method usually leads to simpler programs and to proper
+interaction with window managers.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XMapWindow</i>
+can generate a <i>BadWindow</i> error.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XMapRaised</i> function essentially is similar to
+<i>XMapWindow</i> in that it maps the window and all of its
+subwindows that have had map requests. However, it also
+raises the specified window to the top of the stack.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XMapRaised</i>
+can generate a <i>BadWindow</i> error.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XMapSubwindows</i> function maps all subwindows for a
+specified window in top-to-bottom stacking order. The X
+server generates <i>Expose</i> events on each newly
+displayed window. This may be much more efficient than
+mapping many windows one at a time because the server needs
+to perform much of the work only once, for all of the
+windows, rather than for each window.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XMapSubwindows</i>
+can generate a <i>BadWindow</i> error.</p>
+
+<h2 id="heading5">DIAGNOSTICS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="14%"></col>
+<col width="1%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><i>BadWindow</i></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">A value for a Window argument
+does not name a defined Window.</p></td></tr>
+</table>
+
+<h2 id="heading6">SEE ALSO
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XChangeWindowAttributes.3.xhtml"><em>XChangeWindowAttributes</em>(3)</a>,
+<a href="../man3/XConfigureWindow.3.xhtml"><em>XConfigureWindow</em>(3)</a>, <a href="../man3/XCreateWindow.3.xhtml"><em>XCreateWindow</em>(3)</a>, <a href="../man3/XDestroyWindow.3.xhtml"><em>XDestroyWindow</em>(3)</a>,
+<a href="../man3/XRaiseWindow.3.xhtml"><em>XRaiseWindow</em>(3)</a>, <a href="../man3/XUnmapWindow.3.xhtml"><em>XUnmapWindow</em>(3)</a> <i><br/>
+<a href="../../libX11/libX11/libX11.html">Xlib &minus; C Language X Interface</a></i></p>
+<hr/>
+</body>
+</html>

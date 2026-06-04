@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:24:31 2012 -->
+<title>DMXDesktopAttributes</title>
+
+</head>
+<body>
+
+<h1>DMXDesktopAttributes</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNOPSIS</a><br/>
+<a href="#heading3">DESCRIPTION</a><br/>
+<a href="#heading4">RETURN VALUE</a><br/>
+<a href="#heading5">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">DMXGetDesktopAttributes
+&minus; determine global bounding box</p>
+
+<h2 id="heading2">SYNOPSIS
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>#include
+&lt;X11/extensions/dmxext.h&gt;</b></p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>Bool
+DMXGetDesktopAttributes(Display</b> <i>*dpy</i><b>, <br/>
+DMXDesktopAttributes</b> <i>*attr</i><b>);</b></p>
+
+<h2 id="heading3">DESCRIPTION
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>DMXGetDesktopAttributes()</b>
+returns information about the desktop in
+<b>DMXDesktopAttributes</b>:</p>
+
+<p style="margin-left:11%; margin-top: 1em">typedef struct
+{ <br/>
+unsigned int width; <br/>
+unsigned int height; <br/>
+int shiftX; <br/>
+int shiftY; <br/>
+} DMXDesktopAttributes;</p>
+
+<p style="margin-left:11%; margin-top: 1em">The size of the
+global bounding box is given in <i>width</i>, and
+<i>height</i>. The <i>shiftX</i> and <i>shiftY</i> values
+will always be 0. The global bounding box is computed
+whether or not Xinerama is active, but it is only useful
+when using Xinerama.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The global
+bounding box used by <a href="../man1/Xdmx.1.xhtml"><em>Xdmx</em>(1)</a> may be larger than the
+Xinerama screen size because of information in the
+configuration file.</p>
+
+<h2 id="heading4">RETURN VALUE
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>DMXGetDesktopAttributes()</b>
+returns <b>True</b> unless there is a protocol error.</p>
+
+<h2 id="heading5">SEE ALSO
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/DMXChangeDesktopAttributes.3.xhtml"><em>DMXChangeDesktopAttributes</em>(3)</a>,
+<a href="../man3/DMX.3.xhtml"><em>DMX</em>(3)</a>, <a href="../man1/Xdmx.1.xhtml"><em>Xdmx</em>(1)</a></p>
+<hr/>
+</body>
+</html>

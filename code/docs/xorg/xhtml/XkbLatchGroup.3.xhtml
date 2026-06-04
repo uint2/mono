@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:31:50 2012 -->
+<title>XkbLatchGroup</title>
+
+</head>
+<body>
+
+<h1>XkbLatchGroup</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNOPSIS</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">RETURN VALUES</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">XkbLatchGroup
+&minus; Latches the keysym group</p>
+
+<h2 id="heading2">SYNOPSIS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="31%"></col>
+<col width="4%" class="center"></col>
+<col width="54%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>Bool XkbLatchGroup</b></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>(Display
+*</b><i>display</i><b>, unsigned int</b>
+<i>device_spec</i><b>,</b></p> </td></tr>
+</table>
+
+<p style="margin-left:11%;"><b>unsigned int</b>
+<i>group</i><b>);</b></p>
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b><i>display</i></b></p>
+
+<p style="margin-left:22%;">connection to the X server</p>
+
+<p style="margin-left:11%;"><i>device_spec</i></p>
+
+<p style="margin-left:22%;">device ID, or XkbUseCoreKbd</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="7%"></col>
+<col width="4%" class="center"></col>
+<col width="52%"></col>
+<col width="26%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>group</i></p></td>
+<td></td>
+<td>
+
+
+<p>index of the keysym group to latch</p></td>
+<td>
+</td></tr>
+</table>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XkbLatchGroup</i>
+sends a request to the server to latch the specified
+<i>group</i> and does not wait for a reply. It returns True
+if the request was sent and False otherwise.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Reference the
+keysym group indices with these symbolic constants:</p>
+
+
+<p class="center" style="margin-top: 1em"><img src="grohtml-215861.png" alt="Image grohtml-215861.png"></img></p>
+
+<h2 id="heading5">RETURN VALUES
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="7%"></col>
+<col width="16%" class="center"></col>
+<col width="66%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">True</p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">The <i>XkbLatchGroup</i>
+function returns True if a request was sent to the server to
+latch the specified <i>group.</i></p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>False</p></td>
+<td></td>
+<td>
+
+
+<p>The <i>XkbLatchGroup</i> function returns False if the
+request was not sent.</p></td></tr>
+ </table>
+<hr/>
+</body>
+</html>

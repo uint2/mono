@@ -1,0 +1,401 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:31:23 2012 -->
+<title>XDrawArc</title>
+
+</head>
+<body>
+
+<h1>XDrawArc</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNTAX</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">STRUCTURES</a><br/>
+<a href="#heading6">DIAGNOSTICS</a><br/>
+<a href="#heading7">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">XDrawArc,
+XDrawArcs, XArc &minus; draw arcs and arc structure</p>
+
+<h2 id="heading2">SYNTAX
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="89%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">int XDrawArc(Display
+*<i>display</i>, Drawable <i>d</i>, GC <i>gc</i>, int
+<i>x</i>, int <i>y</i>, unsigned int <i>width</i>, unsigned
+int <i>height</i>, int <i>angle1</i>, int
+<i>angle2</i>);</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">int XDrawArcs(Display
+*<i>display</i>, Drawable <i>d</i>, GC <i>gc</i>, XArc
+*<i>arcs</i>, int <i>narcs</i>);</p></td></tr>
+</table>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="11%"></col>
+<col width="4%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+<td></td>
+<td></td>
+<td></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>angle1</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the start of the arc relative to the
+three-o&rsquo;clock position from the center, in units of
+degrees * 64.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>angle2</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the path and extent of the arc relative to the
+start of the arc, in units of degrees * 64.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>arcs</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies an array of arcs.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>d</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the drawable.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>display</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the connection to the X server.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>gc</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the GC.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>narcs</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the number of arcs in the array.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>width</i></p></td>
+<td></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>height</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specify the width and height, which are the major and
+minor axes of the arc.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>x</i></p></td>
+<td></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>y</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specify the x and y coordinates, which are relative to
+the origin of the drawable and specify the upper-left corner
+of the bounding rectangle.</p></td></tr>
+</table>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XDrawArc</i>
+draws a single circular or elliptical arc, and
+<i>XDrawArcs</i> draws multiple circular or elliptical arcs.
+Each arc is specified by a rectangle and two angles. The
+center of the circle or ellipse is the center of the
+rectangle, and the major and minor axes are specified by the
+width and height. Positive angles indicate counterclockwise
+motion, and negative angles indicate clockwise motion. If
+the magnitude of angle2 is greater than 360 degrees,
+<i>XDrawArc</i> or <i>XDrawArcs</i> truncates it to 360
+degrees.</p>
+
+<p style="margin-left:11%; margin-top: 1em">For an arc
+specified
+as<math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo>[</mo><mtext>&ensp;</mtext><mi>x</mi><mo>,</mo><mtext>&ensp;</mtext><mi>y</mi><mo>,</mo><mtext>&ensp;</mtext><mi>w</mi><mi>i</mi><mi>d</mi><mi>t</mi><mi>h</mi><mo>,</mo><mtext>&ensp;</mtext><mi>h</mi><mi>e</mi><mi>i</mi><mi>g</mi><mi>h</mi><mi>t</mi><mo>,</mo><mtext>&ensp;</mtext><mi>a</mi><mi>n</mi><mi>g</mi><mi>l</mi><mi>e</mi><mn>1</mn><mo>,</mo><mtext>&ensp;</mtext><mi>a</mi><mi>n</mi><mi>g</mi><mi>l</mi><mi>e</mi><mn>2</mn><mo>]</mo></mrow></math>
+, the origin of the major and minor axes is
+at<math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo>[</mo><mi>x</mi><mo>&plus;</mo><mtext>&ThinSpace;</mtext><mfrac><mrow><mi>w</mi><mi>i</mi><mi>d</mi><mi>t</mi><mi>h</mi></mrow><mn>2</mn></mfrac><mo>,</mo><mtext>&ensp;</mtext><mi>y</mi><mo>&plus;</mo><mtext>&ThinSpace;</mtext><mfrac><mrow><mi>h</mi><mi>e</mi><mi>i</mi><mi>g</mi><mi>h</mi><mi>t</mi></mrow><mn>2</mn></mfrac><mo>]</mo></mrow></math>
+, and the infinitely thin path describing the entire circle
+or ellipse intersects the horizontal axis
+at<math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo>[</mo><mi>x</mi><mo>,</mo><mtext>&ensp;</mtext><mi>y</mi><mo>&plus;</mo><mtext>&ThinSpace;</mtext><mfrac><mrow><mi>h</mi><mi>e</mi><mi>i</mi><mi>g</mi><mi>h</mi><mi>t</mi></mrow><mn>2</mn></mfrac><mo>]</mo></mrow></math>
+and<math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo>[</mo><mi>x</mi><mo>&plus;</mo><mtext>&ThinSpace;</mtext><mi>w</mi><mi>i</mi><mi>d</mi><mi>t</mi><mi>h</mi><mo>,</mo><mtext>&ensp;</mtext><mi>y</mi><mo>&plus;</mo><mtext>&ThinSpace;</mtext><mfrac><mrow><mi>h</mi><mi>e</mi><mi>i</mi><mi>g</mi><mi>h</mi><mi>t</mi></mrow><mn>2</mn></mfrac><mo>]</mo></mrow></math>
+and intersects the vertical axis
+at<math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo>[</mo><mi>x</mi><mo>&plus;</mo><mtext>&ThinSpace;</mtext><mfrac><mrow><mi>w</mi><mi>i</mi><mi>d</mi><mi>t</mi><mi>h</mi></mrow><mn>2</mn></mfrac><mo>,</mo><mtext>&ensp;</mtext><mi>y</mi><mo>]</mo></mrow></math>
+and<math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo>[</mo><mi>x</mi><mo>&plus;</mo><mtext>&ThinSpace;</mtext><mfrac><mrow><mi>w</mi><mi>i</mi><mi>d</mi><mi>t</mi><mi>h</mi></mrow><mn>2</mn></mfrac><mo>,</mo><mtext>&ensp;</mtext><mi>y</mi><mo>&plus;</mo><mtext>&ThinSpace;</mtext><mi>h</mi><mi>e</mi><mi>i</mi><mi>g</mi><mi>h</mi><mi>t</mi><mo>]</mo></mrow></math>
+These coordinates can be fractional and so are not truncated
+to discrete coordinates. The path should be defined by the
+ideal mathematical path. For a wide line with line-width lw,
+the bounding outlines for filling are given by the two
+infinitely thin paths consisting of all points whose
+perpendicular distance from the path of the circle/ellipse
+is equal to lw/2 (which may be a fractional value). The
+cap-style and join-style are applied the same as for a line
+corresponding to the tangent of the circle/ellipse at the
+endpoint.</p>
+
+<p style="margin-left:11%; margin-top: 1em">For an arc
+specified
+as<math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo>[</mo><mtext>&ensp;</mtext><mi>x</mi><mo>,</mo><mtext>&ensp;</mtext><mi>y</mi><mo>,</mo><mtext>&ensp;</mtext><mi>w</mi><mi>i</mi><mi>d</mi><mi>t</mi><mi>h</mi><mo>,</mo><mtext>&ensp;</mtext><mi>h</mi><mi>e</mi><mi>i</mi><mi>g</mi><mi>h</mi><mi>t</mi><mo>,</mo><mtext>&ensp;</mtext><mi>a</mi><mi>n</mi><mi>g</mi><mi>l</mi><mi>e</mi><mn>1</mn><mo>,</mo><mtext>&ensp;</mtext><mi>a</mi><mi>n</mi><mi>g</mi><mi>l</mi><mi>e</mi><mn>2</mn><mo>]</mo></mrow></math>
+, the angles must be specified in the effectively skewed
+coordinate system of the ellipse (for a circle, the angles
+and coordinate systems are identical). The relationship
+between these angles and angles expressed in the normal
+coordinate system of the screen (as measured with a
+protractor) is as follows:</p><math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mstyle mathvariant='normal'><mtext>skewed-angle</mtext></mstyle><mtext>&ensp;</mtext><mo>&equals;</mo><mtext>&ensp;</mtext><mi>a</mi><mi>t</mi><mi>a</mi><mi>n</mi><mrow><mo>(</mo><mrow><mstyle mathvariant='normal'><mtext>tan</mtext></mstyle><mo>(</mo><mstyle mathvariant='normal'><mtext>normal-angle</mtext></mstyle><mo>)</mo><mo>*</mo><mfrac><mrow><mi>w</mi><mi>i</mi><mi>d</mi><mi>t</mi><mi>h</mi></mrow><mrow><mi>h</mi><mi>e</mi><mi>i</mi><mi>g</mi><mi>h</mi><mi>t</mi></mrow></mfrac></mrow><mo>)</mo></mrow><mo>&plus;</mo><mtext>&ThinSpace;</mtext><mi>a</mi><mi>d</mi><mi>j</mi><mi>u</mi><mi>s</mi><mi>t</mi></mrow></math>
+
+<p style="margin-top: 1em">The skewed-angle and
+normal-angle are expressed in radians (rather than in
+degrees scaled by 64) in the
+range<math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo>[</mo><mn>0</mn><mo>,</mo><mtext>&ensp;</mtext><mn>2</mn><mo>&pi;</mo><mo>]</mo></mrow></math>
+and where atan returns a value in the
+range<math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo>[</mo><mo>&minus;</mo><mfrac><mo>&pi;</mo><mn>2</mn></mfrac><mo>,</mo><mtext>&ensp;</mtext><mfrac><mo>&pi;</mo><mn>2</mn></mfrac><mo>]</mo></mrow></math>
+and adjust is:</p>
+
+
+<p class="center" style="margin-top: 1em"><img src="grohtml-206642.png" alt="Image grohtml-206642.png"></img></p>
+
+<p style="margin-left:11%; margin-top: 1em">For any given
+arc, <i>XDrawArc</i> and <i>XDrawArcs</i> do not draw a
+pixel more than once. If two arcs join correctly and if the
+line-width is greater than zero and the arcs intersect,
+<i>XDrawArc</i> and <i>XDrawArcs</i> do not draw a pixel
+more than once. Otherwise, the intersecting pixels of
+intersecting arcs are drawn multiple times. Specifying an
+arc with one endpoint and a clockwise extent draws the same
+pixels as specifying the other endpoint and an equivalent
+counterclockwise extent, except as it affects joins.</p>
+
+<p style="margin-left:11%; margin-top: 1em">If the last
+point in one arc coincides with the first point in the
+following arc, the two arcs will join correctly. If the
+first point in the first arc coincides with the last point
+in the last arc, the two arcs will join correctly. By
+specifying one axis to be zero, a horizontal or vertical
+line can be drawn. Angles are computed based solely on the
+coordinate system and ignore the aspect ratio.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Both functions
+use these GC components: function, plane-mask, line-width,
+line-style, cap-style, join-style, fill-style,
+subwindow-mode, clip-x-origin, clip-y-origin, and clip-mask.
+They also use these GC mode-dependent components:
+foreground, background, tile, stipple,
+tile-stipple-x-origin, tile-stipple-y-origin, dash-offset,
+and dash-list.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XDrawArc</i>
+and <i>XDrawArcs</i> can generate <i>BadDrawable</i>,
+<i>BadGC</i>, and <i>BadMatch</i> errors.</p>
+
+<h2 id="heading5">STRUCTURES
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The <i>XArc</i>
+structure contains:</p>
+
+<pre style="margin-left:11%; margin-top: 1em">typedef struct {
+ short x, y;
+ unsigned short width, height;
+ short angle1, angle2;             /* Degrees * 64 */
+} XArc;</pre>
+
+
+<p style="margin-left:11%; margin-top: 1em">All x and y
+members are signed integers. The width and height members
+are 16-bit unsigned integers. You should be careful not to
+generate coordinates and sizes out of the 16-bit ranges,
+because the protocol only has 16-bit fields for these
+values.</p>
+
+<h2 id="heading6">DIAGNOSTICS
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>BadDrawable</i></p>
+
+<p style="margin-left:26%;">A value for a Drawable argument
+does not name a defined Window or Pixmap.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="12%"></col>
+<col width="3%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>BadGC</i></p></td>
+<td></td>
+<td>
+
+
+<p>A value for a GContext argument does not name a defined
+GContext.</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>BadMatch</i></p></td>
+<td></td>
+<td>
+
+
+<p>An <i>InputOnly</i> window is used as a Drawable.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>BadMatch</i></p></td>
+<td></td>
+<td>
+
+
+<p>Some argument or pair of arguments has the correct type
+and range but fails to match in some other way required by
+the request.</p></td></tr>
+</table>
+
+<h2 id="heading7">SEE ALSO
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XDrawLine.3.xhtml"><em>XDrawLine</em>(3)</a>,
+<a href="../man3/XDrawPoint.3.xhtml"><em>XDrawPoint</em>(3)</a>, <a href="../man3/XDrawRectangle.3.xhtml"><em>XDrawRectangle</em>(3)</a> <i><br/>
+<a href="../../libX11/libX11/libX11.html">Xlib &minus; C Language X Interface</a></i></p>
+<hr/>
+</body>
+</html>

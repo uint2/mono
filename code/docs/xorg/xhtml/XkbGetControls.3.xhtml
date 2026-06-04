@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:32:03 2012 -->
+<title>XkbGetControls</title>
+
+</head>
+<body>
+
+<h1>XkbGetControls</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNOPSIS</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">RETURN VALUES</a><br/>
+<a href="#heading6">DIAGNOSTICS</a><br/>
+<a href="#heading7">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">XkbGetControls
+&minus; Finds the current state of Xkb server controls</p>
+
+<h2 id="heading2">SYNOPSIS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="35%"></col>
+<col width="5%" class="center"></col>
+<col width="49%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>Status XkbGetControls</b></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>(Display
+*</b><i>display</i><b>, unsigned long</b>
+<i>which</i><b>,</b></p> </td></tr>
+</table>
+
+<p style="margin-left:11%;"><b>XkbDescPtr</b>
+<i>xkb</i><b>);</b></p>
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b><i>&minus;
+display</i></b></p>
+
+<p style="margin-left:22%;">connection to X server</p>
+
+<p style="margin-left:11%;"><i>&minus; which</i></p>
+
+<p style="margin-left:22%;">mask of controls requested</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="7%"></col>
+<col width="4%" class="center"></col>
+<col width="69%"></col>
+<col width="9%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>&minus; xkb</i></p></td>
+<td></td>
+<td>
+
+
+<p>keyboard description for controls information</p></td>
+<td>
+</td></tr>
+</table>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XkbGetControls</i>
+queries the server for the requested control information,
+waits for a reply, and then copies the server&rsquo;s values
+for the requested information into the <i>ctrls</i>
+structure of the <i>xkb</i> argument. Only those components
+specified by the <i>which</i> parameter are copied. Valid
+values for <i>which</i> are any combination of the masks
+listed in Table 1 that have &quot;ok&quot; in the
+<i>which</i> column.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Table 1 shows
+the actual values for the individual mask bits used to
+select controls for modification and to enable and disable
+the control. Note that the same mask bit is used to specify
+general modifications to the parameters used to configure
+the control (which), and to enable and disable the control
+(enabled_ctrls). The anomalies in Table 1 (no &quot;ok&quot;
+in column) are for controls that have no configurable
+attributes; and for controls that are not boolean controls
+and therefore cannot be enabled or disabled.</p>
+
+
+<p class="center" style="margin-top: 1em"><img src="grohtml-219951.png" alt="Image grohtml-219951.png"></img></p>
+
+<p style="margin-left:11%; margin-top: 1em">If
+<i>xkb-&gt;ctrls</i> is NULL, <i>XkbGetControls</i>
+allocates and initializes it before obtaining the values
+specified by <i>which.</i> If <i>xkb-&gt;ctrls</i> is not
+NULL, <i>XkbGetControls</i> modifies only those portions of
+<i>xkb-&gt;ctrls</i> corresponding to the values specified
+by <i>which.</i></p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XkbGetControls</i>
+returns Success if successful; otherwise, it returns
+BadAlloc if it cannot obtain sufficient storage, BadMatch if
+<i>xkb</i> is NULL or <i>which</i> is empty, or
+BadImplementation.</p>
+
+<p style="margin-left:11%; margin-top: 1em">To free the
+<i>ctrls</i> member of a keyboard description, use
+<i>XkbFreeControls.</i></p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>num_groups</i> field in the <i>ctrls</i> structure is
+always filled in by <i>XkbGetControls,</i> regardless of
+which bits are selected by <i>which.</i></p>
+
+<h2 id="heading5">RETURN VALUES
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="11%"></col>
+<col width="12%" class="center"></col>
+<col width="66%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Success</p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">The <i>XkbGetControls</i>
+function returns Success if successful.</p></td></tr>
+</table>
+
+<h2 id="heading6">DIAGNOSTICS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="12%"></col>
+<col width="11%" class="center"></col>
+<col width="40%"></col>
+<col width="26%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>BadAlloc</b></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Unable to allocate storage</p></td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:11%;"><b>BadImplementation</b></p>
+
+<p style="margin-left:34%;">Invalid reply from server</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="12%"></col>
+<col width="11%" class="center"></col>
+<col width="66%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><b>BadMatch</b></p></td>
+<td></td>
+<td>
+
+
+<p>A compatible version of Xkb was not available in the
+server or an argument has correct type and range, but is
+otherwise invalid</p></td></tr>
+</table>
+
+<h2 id="heading7">SEE ALSO
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XkbFreeControls.3.xhtml"><em>XkbFreeControls</em>(3)</a></p>
+<hr/>
+</body>
+</html>

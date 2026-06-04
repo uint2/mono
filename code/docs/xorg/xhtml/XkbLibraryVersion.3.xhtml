@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:43:54 2012 -->
+<title>XkbLibraryVersion</title>
+
+</head>
+<body>
+
+<h1>XkbLibraryVersion</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNOPSIS</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">RETURN VALUES</a><br/>
+<a href="#heading6">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">XkbLibraryVersion
+&minus; Determines the compatibility of a library at
+runtime.</p>
+
+<h2 id="heading2">SYNOPSIS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="34%"></col>
+<col width="1%" class="center"></col>
+<col width="54%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>Bool
+XkbLibraryVersion</b></p> </td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>(int
+*</b><i>lib_major_in_out</i><b>, int
+*</b><i>lib_minor_in_out</i><b>);</b></p> </td></tr>
+</table>
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b><i>lib_major_in_out</i></b></p>
+
+<p style="margin-left:22%;">Specifies and returns the major
+Xkb library version.</p>
+
+<p style="margin-left:11%;"><i>lib_minor_in_out</i></p>
+
+<p style="margin-left:22%;">Specifies and returns the minor
+Xkb library version.</p>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">If an
+application is dynamically linked, both the X server and the
+client-side X library must contain the Xkb extension in
+order for the client to use the Xkb extension capabilities.
+Therefore a dynamically linked application must check both
+the library and the server for compatibility before using
+Xkb function calls. A properly written program must check
+for compatibility between the version of the Xkb library
+that is dynamically loaded and the one used when the
+application was built. It must then check the server version
+for compatibility with the version of Xkb in the
+library.</p>
+
+<p style="margin-left:11%; margin-top: 1em">If your
+application is statically linked, you must still check for
+server compatibility and may check library compatibility.
+(It is possible to compile against one set of header files
+and link against a different, incompatible, version of the
+library, although this should not normally occur.)</p>
+
+<p style="margin-left:11%; margin-top: 1em">Pass the
+symbolic value XkbMajorVersion in <i>lib_major_in_out</i>
+and XkbMinorVersion in <i>lib_minor_in_out.</i> These
+arguments represent the version of the library used at
+compile time. The <i>XkbLibraryVersion</i> function
+backfills the major and minor version numbers of the library
+used at run time in <i>lib_major_in_out and
+lib_minor_in_out.</i> If the versions of the compile time
+and run time libraries are compatible,
+<i>XkbLibraryVersion</i> returns True, otherwise, it returns
+False.</p>
+
+<p style="margin-left:11%; margin-top: 1em">In addition, in
+order to use the Xkb extension, you must ensure that the
+extension is present in the server and that the server
+supports the version of the extension expected by the
+client. Use <i>XkbQueryExtension</i> to do this, as
+described in the next section.</p>
+
+<h2 id="heading5">RETURN VALUES
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="7%"></col>
+<col width="16%" class="center"></col>
+<col width="66%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">True</p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">The <i>XkbLibraryVersion</i>
+returns True if the versions of the compile time and run
+time libraries are compatible.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>False</p></td>
+<td></td>
+<td>
+
+
+<p>The <i>XkbLibraryVersion</i> returns False if the
+versions of the compile time and run time libraries are not
+compatible.</p> </td></tr>
+</table>
+
+<h2 id="heading6">SEE ALSO
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XkbMajorVersion.3.xhtml"><em>XkbMajorVersion</em>(3)</a>,
+<a href="../man3/XkbMinorVersion.3.xhtml"><em>XkbMinorVersion</em>(3)</a>, <a href="../man3/XkbQueryExtension.3.xhtml"><em>XkbQueryExtension</em>(3)</a></p>
+<hr/>
+</body>
+</html>

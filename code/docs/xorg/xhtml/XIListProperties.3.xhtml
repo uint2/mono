@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:32:58 2012 -->
+<title>XILISTPROPERTIES</title>
+
+</head>
+<body>
+
+<h1>XILISTPROPERTIES</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNOPSIS</a><br/>
+<a href="#heading3">DESCRIPTION</a><br/>
+<a href="#heading4">DIAGNOSTICS</a><br/>
+<a href="#heading5">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">XIListProperties
+&minus; List a device&acute;s properties.</p>
+
+<h2 id="heading2">SYNOPSIS
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">#include
+&lt;X11/extensions/XInput2.h&gt;</p>
+
+<p style="margin-left:11%; margin-top: 1em">Atom*
+XListProperties( Display *display, <br/>
+int deviceid, <br/>
+int *nprops_return);</p>
+
+<p style="margin-left:11%; margin-top: 1em">display <br/>
+Specifies the connection to the X server.</p>
+
+<p style="margin-left:11%; margin-top: 1em">deviceid <br/>
+The device to list the properties for.</p>
+
+<p style="margin-left:11%; margin-top: 1em">nprops_return
+<br/>
+Specifies the number of Atoms returned.</p>
+
+<h2 id="heading3">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The
+XIListProperties function returns a list of the properties
+associated with the input device specified with deviceid.
+Each device may have an arbitrary number of properties
+attached, some of which were created by the driver and/or
+server, others created by clients at runtime.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The client is
+expected to free the list of properties using XFree.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em">XIListProperties
+can generate a BadDevice error.</p>
+
+<h2 id="heading4">DIAGNOSTICS
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">BadDevice An
+invalid device was specified. The device does not exist.</p>
+
+<h2 id="heading5">SEE ALSO
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XIChangeProperty.3.xhtml"><em>XIChangeProperty</em>(3)</a>,
+<a href="../man3/XIGetProperty.3.xhtml"><em>XIGetProperty</em>(3)</a>, <a href="../man3/XIDeleteProperty.3.xhtml"><em>XIDeleteProperty</em>(3)</a></p>
+<hr/>
+</body>
+</html>

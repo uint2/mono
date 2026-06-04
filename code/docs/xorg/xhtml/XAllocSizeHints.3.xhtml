@@ -1,0 +1,603 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:31:34 2012 -->
+<title>XAllocSizeHints</title>
+
+</head>
+<body>
+
+<h1>XAllocSizeHints</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNTAX</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">PROPERTIES</a><br/>
+<a href="#heading6">STRUCTURES</a><br/>
+<a href="#heading7">DIAGNOSTICS</a><br/>
+<a href="#heading8">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">XAllocSizeHints,
+XSetWMNormalHints, XGetWMNormalHints, XSetWMSizeHints,
+XGetWMSizeHints, XSizeHints &minus; allocate size hints
+structure and set or read a window&rsquo;s WM_NORMAL_HINTS
+property</p>
+
+<h2 id="heading2">SYNTAX
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="89%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">XSizeHints
+*XAllocSizeHints(void);</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">void XSetWMNormalHints(Display
+*<i>display</i>, Window <i>w</i>, XSizeHints
+*<i>hints</i>);</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Status XGetWMNormalHints(Display
+*<i>display</i>, Window <i>w</i>, XSizeHints
+*<i>hints_return</i>, long *<i>supplied_return</i>);</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">void XSetWMSizeHints(Display
+*<i>display</i>, Window <i>w</i>, XSizeHints *<i>hints</i>,
+Atom <i>property</i>);</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Status XGetWMSizeHints(Display
+*<i>display</i>, Window <i>w</i>, XSizeHints
+*<i>hints_return</i>, long *<i>supplied_return</i>, Atom
+<i>property</i>);</p> </td></tr>
+</table>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="11%"></col>
+<col width="4%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+<td></td>
+<td></td>
+<td></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>display</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the connection to the X server.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>hints</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the size hints for the window in its normal
+state.</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>hints</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the <i>XSizeHints</i> structure to be
+used.</p> </td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>hints_return</i></p>
+
+<p style="margin-left:26%;">Returns the size hints for the
+window in its normal state.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="12%"></col>
+<col width="3%" class="center"></col>
+<col width="43%"></col>
+<col width="31%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>property</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the property name.</p></td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>supplied_return</i></p>
+
+<p style="margin-left:26%;">Returns the hints that were
+supplied by the user.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="1%"></col>
+<col width="14%" class="center"></col>
+<col width="32%"></col>
+<col width="42%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>w</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the window.</p></td>
+<td>
+</td></tr>
+</table>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XAllocSizeHints</i> function allocates and returns a
+pointer to a <i>XSizeHints</i> structure. Note that all
+fields in the <i>XSizeHints</i> structure are initially set
+to zero. If insufficient memory is available,
+<i>XAllocSizeHints</i> returns NULL. To free the memory
+allocated to this structure, use <i>XFree</i>.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XSetWMNormalHints</i> function replaces the size hints
+for the WM_NORMAL_HINTS property on the specified window. If
+the property does not already exist,
+<i>XSetWMNormalHints</i> sets the size hints for the
+WM_NORMAL_HINTS property on the specified window. The
+property is stored with a type of WM_SIZE_HINTS and a format
+of 32.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XSetWMNormalHints</i>
+can generate <i>BadAlloc</i> and <i>BadWindow</i>
+errors.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XGetWMNormalHints</i> function returns the size hints
+stored in the WM_NORMAL_HINTS property on the specified
+window. If the property is of type WM_SIZE_HINTS, is of
+format 32, and is long enough to contain either an old
+(pre-ICCCM) or new size hints structure,
+<i>XGetWMNormalHints</i> sets the various fields of the
+<i>XSizeHints</i> structure, sets the supplied_return
+argument to the list of fields that were supplied by the
+user (whether or not they contained defined values), and
+returns a nonzero status. Otherwise, it returns a zero
+status.</p>
+
+<p style="margin-left:11%; margin-top: 1em">If
+<i>XGetWMNormalHints</i> returns successfully and a
+pre-ICCCM size hints property is read, the supplied_return
+argument will contain the following bits:</p>
+
+
+<p style="margin-left:11%; margin-top: 1em">(USPosition|USSize|PPosition|PSize|PMinSize|
+<br/>
+PMaxSize|PResizeInc|PAspect)</p>
+
+<p style="margin-left:11%; margin-top: 1em">If the property
+is large enough to contain the base size and window gravity
+fields as well, the supplied_return argument will also
+contain the following bits:</p>
+
+
+<p style="margin-left:11%; margin-top: 1em">PBaseSize|PWinGravity</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XGetWMNormalHints</i>
+can generate a PN BadWindow error.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XSetWMSizeHints</i> function replaces the size hints for
+the specified property on the named window. If the specified
+property does not already exist, <i>XSetWMSizeHints</i> sets
+the size hints for the specified property on the named
+window. The property is stored with a type of WM_SIZE_HINTS
+and a format of 32. To set a window&rsquo;s normal size
+hints, you can use the <i>XSetWMNormalHints</i>
+function.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XSetWMSizeHints</i>
+can generate <i>BadAlloc</i>, <i>BadAtom</i>, and
+<i>BadWindow</i> errors.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XGetWMSizeHints</i> function returns the size hints
+stored in the specified property on the named window. If the
+property is of type WM_SIZE_HINTS, is of format 32, and is
+long enough to contain either an old (pre-ICCCM) or new size
+hints structure, <i>XGetWMSizeHints</i> sets the various
+fields of the <i>XSizeHints</i> structure, sets the
+supplied_return argument to the list of fields that were
+supplied by the user (whether or not they contained defined
+values), and returns a nonzero status. Otherwise, it returns
+a zero status. To get a window&rsquo;s normal size hints,
+you can use the <i>XGetWMNormalHints</i> function.</p>
+
+<p style="margin-left:11%; margin-top: 1em">If
+<i>XGetWMSizeHints</i> returns successfully and a pre-ICCCM
+size hints property is read, the supplied_return argument
+will contain the following bits:</p>
+
+
+<p style="margin-left:11%; margin-top: 1em">(USPosition|USSize|PPosition|PSize|PMinSize|
+<br/>
+PMaxSize|PResizeInc|PAspect)</p>
+
+<p style="margin-left:11%; margin-top: 1em">If the property
+is large enough to contain the base size and window gravity
+fields as well, the supplied_return argument will also
+contain the following bits:</p>
+
+
+<p style="margin-left:11%; margin-top: 1em">PBaseSize|PWinGravity</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XGetWMSizeHints</i>
+can generate <i>BadAtom</i> and <i>BadWindow</i> errors.</p>
+
+<h2 id="heading5">PROPERTIES
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><small>WM_NORMAL_HINTS</small></p>
+
+<p style="margin-left:26%;">Size hints for a window in its
+normal state. The C type of this property is
+<i>XSizeHints</i>.</p>
+
+<h2 id="heading6">STRUCTURES
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XSizeHints</i> structure contains:</p>
+
+<p style="margin-left:11%; margin-top: 1em">/* Size hints
+mask bits */</p>
+
+
+<p class="center" style="margin-top: 1em"><img src="grohtml-210571.png" alt="Image grohtml-210571.png"></img></p>
+
+<p style="margin-left:11%;">/* Values */</p>
+
+<p style="margin-left:11%; margin-top: 1em">typedef struct
+{</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="8%"></col>
+<col width="30%"></col>
+<col width="62%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>long flags;</p></td>
+<td>
+
+
+<p>/* marks which fields in this structure are defined
+*/</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>int x, y;</p></td>
+<td>
+
+
+<p>/* Obsolete */</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>int width, height;</p></td>
+<td>
+
+
+<p>/* Obsolete */</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>int min_width, min_height;</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>int max_width, max_height;</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>int width_inc, height_inc;</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>struct {</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>int x;</p></td>
+<td>
+
+
+<p>/* numerator */</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>int y;</p></td>
+<td>
+
+
+<p>/* denominator */</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>} min_aspect, max_aspect;</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>int base_width, base_height;</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>int win_gravity;</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>/* this structure may be extended in the future */</p></td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:11%;">} XSizeHints;</p>
+
+<p style="margin-left:11%; margin-top: 1em">The x, y,
+width, and height members are now obsolete and are left
+solely for compatibility reasons. The min_width and
+min_height members specify the minimum window size that
+still allows the application to be useful. The max_width and
+max_height members specify the maximum window size. The
+width_inc and height_inc members define an arithmetic
+progression of sizes (minimum to maximum) into which the
+window prefers to be resized. The min_aspect and max_aspect
+members are expressed as ratios of x and y, and they allow
+an application to specify the range of aspect ratios it
+prefers. The base_width and base_height members define the
+desired size of the window. The window manager will
+interpret the position of the window and its border width to
+position the point of the outer rectangle of the overall
+window specified by the win_gravity member. The outer
+rectangle of the window includes any borders or decorations
+supplied by the window manager. In other words, if the
+window manager decides to place the window where the client
+asked, the position on the parent window&rsquo;s border
+named by the win_gravity will be placed where the client
+window would have been placed in the absence of a window
+manager.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Note that use
+of the <i>PAllHints</i> macro is highly discouraged.</p>
+
+<h2 id="heading7">DIAGNOSTICS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="14%"></col>
+<col width="1%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><i>BadAlloc</i></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">The server failed to allocate
+the requested resource or server memory.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>BadAtom</i></p></td>
+<td></td>
+<td>
+
+
+<p>A value for an Atom argument does not name a defined
+Atom.</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>BadWindow</i></p></td>
+<td></td>
+<td>
+
+
+<p>A value for a Window argument does not name a defined
+Window.</p> </td></tr>
+</table>
+
+<h2 id="heading8">SEE ALSO
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XAllocClassHint.3.xhtml"><em>XAllocClassHint</em>(3)</a>,
+<a href="../man3/XAllocIconSize.3.xhtml"><em>XAllocIconSize</em>(3)</a>, <a href="../man3/XAllocWMHints.3.xhtml"><em>XAllocWMHints</em>(3)</a>, <a href="../man3/XFree.3.xhtml"><em>XFree</em>(3)</a>,
+<a href="../man3/XSetCommand.3.xhtml"><em>XSetCommand</em>(3)</a>, <a href="../man3/XSetTransientForHint.3.xhtml"><em>XSetTransientForHint</em>(3)</a>,
+<a href="../man3/XSetTextProperty.3.xhtml"><em>XSetTextProperty</em>(3)</a>, <a href="../man3/XSetWMClientMachine.3.xhtml"><em>XSetWMClientMachine</em>(3)</a>,
+<a href="../man3/XSetWMColormapWindows.3.xhtml"><em>XSetWMColormapWindows</em>(3)</a>, <a href="../man3/XSetWMIconName.3.xhtml"><em>XSetWMIconName</em>(3)</a>, <a href="../man3/XSetWMName.3.xhtml"><em>XSetWMName</em>(3)</a>,
+<a href="../man3/XSetWMProperties.3.xhtml"><em>XSetWMProperties</em>(3)</a>, <a href="../man3/XSetWMProtocols.3.xhtml"><em>XSetWMProtocols</em>(3)</a>,
+<a href="../man3/XStringListToTextProperty.3.xhtml"><em>XStringListToTextProperty</em>(3)</a> <i><br/>
+<a href="../../libX11/libX11/libX11.html">Xlib &minus; C Language X Interface</a>,</i> O&rsquo;Reilly and
+Associates,</p>
+<hr/>
+</body>
+</html>

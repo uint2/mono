@@ -1,0 +1,423 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:43:59 2012 -->
+<title>XCreateColormap</title>
+
+</head>
+<body>
+
+<h1>XCreateColormap</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNTAX</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">STRUCTURES</a><br/>
+<a href="#heading6">DIAGNOSTICS</a><br/>
+<a href="#heading7">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">XCreateColormap,
+XCopyColormapAndFree, XFreeColormap, XColor &minus; create,
+copy, or destroy colormaps and color structure</p>
+
+<h2 id="heading2">SYNTAX
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="89%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Colormap XCreateColormap(Display
+*<i>display</i>, Window <i>w</i>, Visual *<i>visual</i>, int
+<i>alloc</i>);</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Colormap
+XCopyColormapAndFree(Display *<i>display</i>, Colormap
+<i>colormap</i>);</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">int XFreeColormap(Display
+*<i>display</i>, Colormap <i>colormap</i>);</p></td></tr>
+</table>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="12%"></col>
+<col width="3%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+<td></td>
+<td></td>
+<td></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>alloc</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the colormap entries to be allocated. You can
+pass <i>AllocNone</i> or <i>AllocAll</i>.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>colormap</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the colormap that you want to create, copy,
+set, or destroy.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>display</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the connection to the X server.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>visual</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies a visual type supported on the screen. If the
+visual type is not one supported by the screen, a
+<i>BadMatch</i> error results.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>w</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the window on whose screen you want to create
+a colormap.</p></td></tr>
+</table>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XCreateColormap</i> function creates a colormap of the
+specified visual type for the screen on which the specified
+window resides and returns the colormap ID associated with
+it. Note that the specified window is only used to determine
+the screen.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The initial
+values of the colormap entries are undefined for the visual
+classes <i>GrayScale</i>, <i>PseudoColor</i>, and
+<i>DirectColor</i>. For <i>StaticGray</i>,
+<i>StaticColor</i>, and <i>TrueColor</i>, the entries have
+defined values, but those values are specific to the visual
+and are not defined by X. For <i>StaticGray</i>,
+<i>StaticColor</i>, and <i>TrueColor</i>, alloc must be
+<i>AllocNone</i>, or a <i>BadMatch</i> error results. For
+the other visual classes, if alloc is <i>AllocNone</i>, the
+colormap initially has no allocated entries, and clients can
+allocate them. For information about the visual types, see
+section 3.1.</p>
+
+<p style="margin-left:11%; margin-top: 1em">If alloc is
+<i>AllocAll</i>, the entire colormap is allocated writable.
+The initial values of all allocated entries are undefined.
+For <i>GrayScale</i> and <i>PseudoColor</i>, the effect is
+as if an <i>XAllocColorCells</i> call returned all pixel
+values from zero to N &minus; 1, where N is the colormap
+entries value in the specified visual. For
+<i>DirectColor</i>, the effect is as if an
+<i>XAllocColorPlanes</i> call returned a pixel value of zero
+and red_mask, green_mask, and blue_mask values containing
+the same bits as the corresponding masks in the specified
+visual. However, in all cases, none of these entries can be
+freed by using <i>XFreeColors</i>.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XCreateColormap</i>
+can generate <i>BadAlloc</i>, <i>BadMatch</i>,
+<i>BadValue</i>, and <i>BadWindow</i> errors.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XCopyColormapAndFree</i> function creates a colormap of
+the same visual type and for the same screen as the
+specified colormap and returns the new colormap ID. It also
+moves all of the client&rsquo;s existing allocation from the
+specified colormap to the new colormap with their color
+values intact and their read-only or writable
+characteristics intact and frees those entries in the
+specified colormap. Color values in other entries in the new
+colormap are undefined. If the specified colormap was
+created by the client with alloc set to <i>AllocAll</i>, the
+new colormap is also created with <i>AllocAll</i>, all color
+values for all entries are copied from the specified
+colormap, and then all entries in the specified colormap are
+freed. If the specified colormap was not created by the
+client with <i>AllocAll</i>, the allocations to be moved are
+all those pixels and planes that have been allocated by the
+client using <i>XAllocColor</i>, <i>XAllocNamedColor</i>,
+<i>XAllocColorCells</i>, or <i>XAllocColorPlanes</i> and
+that have not been freed since they were allocated.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XCopyColormapAndFree</i>
+can generate <i>BadAlloc</i> and <i>BadColor</i> errors.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XFreeColormap</i> function deletes the association
+between the colormap resource ID and the colormap and frees
+the colormap storage. However, this function has no effect
+on the default colormap for a screen. If the specified
+colormap is an installed map for a screen, it is uninstalled
+(see <i>XUninstallColormap</i>). If the specified colormap
+is defined as the colormap for a window (by
+<i>XCreateWindow</i>, <i>XSetWindowColormap</i>, or
+<i>XChangeWindowAttributes</i>), <i>XFreeColormap</i>
+changes the colormap associated with the window to
+<i>None</i> and generates a <i>ColormapNotify</i> event. X
+does not define the colors displayed for a window with a
+colormap of <i>None</i>.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XFreeColormap</i>
+can generate a <i>BadColor</i> error.</p>
+
+<h2 id="heading5">STRUCTURES
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XColor</i> structure contains:</p>
+
+<p style="margin-left:11%; margin-top: 1em">typedef struct
+{</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="8%"></col>
+<col width="30%"></col>
+<col width="62%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>unsigned long pixel;/* pixel value */</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>unsigned short red, green, blue;/* rgb values */</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>char flags;</p></td>
+<td>
+
+
+<p>/* DoRed, DoGreen, DoBlue */</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>char pad;</p></td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:11%;">} XColor;</p>
+
+<p style="margin-left:11%; margin-top: 1em">The red, green,
+and blue values are always in the range 0 to 65535
+inclusive, independent of the number of bits actually used
+in the display hardware. The server scales these values down
+to the range used by the hardware. Black is represented by
+(0,0,0), and white is represented by (65535,65535,65535). In
+some functions, the flags member controls which of the red,
+green, and blue members is used and can be the inclusive OR
+of zero or more of <i>DoRed</i>, <i>DoGreen</i>, and
+<i>DoBlue</i>.</p>
+
+<h2 id="heading6">DIAGNOSTICS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="14%"></col>
+<col width="1%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><i>BadAlloc</i></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">The server failed to allocate
+the requested resource or server memory.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>BadColor</i></p></td>
+<td></td>
+<td>
+
+
+<p>A value for a Colormap argument does not name a defined
+Colormap.</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>BadMatch</i></p></td>
+<td></td>
+<td>
+
+
+<p>An <i>InputOnly</i> window is used as a Drawable.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>BadMatch</i></p></td>
+<td></td>
+<td>
+
+
+<p>Some argument or pair of arguments has the correct type
+and range but fails to match in some other way required by
+the request.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>BadValue</i></p></td>
+<td></td>
+<td>
+
+
+<p>Some numeric value falls outside the range of values
+accepted by the request. Unless a specific range is
+specified for an argument, the full range defined by the
+argument&rsquo;s type is accepted. Any argument defined as a
+set of alternatives can generate this error.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>BadWindow</i></p></td>
+<td></td>
+<td>
+
+
+<p>A value for a Window argument does not name a defined
+Window.</p> </td></tr>
+</table>
+
+<h2 id="heading7">SEE ALSO
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XAllocColor.3.xhtml"><em>XAllocColor</em>(3)</a>,
+<a href="../man3/XChangeWindowAttributes.3.xhtml"><em>XChangeWindowAttributes</em>(3)</a>, <a href="../man3/XCreateWindow.3.xhtml"><em>XCreateWindow</em>(3)</a>,
+<a href="../man3/XQueryColor.3.xhtml"><em>XQueryColor</em>(3)</a>, <a href="../man3/XStoreColors.3.xhtml"><em>XStoreColors</em>(3)</a> <i><br/>
+<a href="../../libX11/libX11/libX11.html">Xlib &minus; C Language X Interface</a></i></p>
+<hr/>
+</body>
+</html>

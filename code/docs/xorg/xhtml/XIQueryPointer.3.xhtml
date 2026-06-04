@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:26:13 2012 -->
+<title>XIQUERYPOINTER</title>
+
+</head>
+<body>
+
+<h1>XIQUERYPOINTER</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNOPSIS</a><br/>
+<a href="#heading3">DESCRIPTION</a><br/>
+<a href="#heading4">DIAGNOSTICS</a><br/>
+<a href="#heading5">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">XIQueryPointer
+&minus; get device pointer coordinates.</p>
+
+<h2 id="heading2">SYNOPSIS
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">#include
+&lt;X11/extensions/XInput2.h&gt;</p>
+
+<p style="margin-left:11%; margin-top: 1em">Bool
+XIQueryPointer( Display *display, <br/>
+int deviceid, <br/>
+Window win, <br/>
+Window *root_return, <br/>
+Window *child_return, <br/>
+double *root_x_return, <br/>
+double *root_y_return, <br/>
+double *win_x_return, <br/>
+double *win_y_return, <br/>
+XIButtonState *buttons_return, <br/>
+XIModifierState *modifiers_return, <br/>
+XIGroupState *group_return);</p>
+
+<p style="margin-left:11%; margin-top: 1em">buttons_return
+<br/>
+Returns the current button state.</p>
+
+<p style="margin-left:11%; margin-top: 1em">child_return
+<br/>
+Returns the child window that the pointer is located in,
+<br/>
+if any.</p>
+
+<p style="margin-left:11%; margin-top: 1em">deviceid <br/>
+Specifies the device to query.</p>
+
+<p style="margin-left:11%; margin-top: 1em">display <br/>
+Specifies the connection to the X server.</p>
+
+<p style="margin-left:11%; margin-top: 1em">group_return
+<br/>
+Returns the current group state.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em">modifiers_return
+<br/>
+Returns the current state of the modifier keys.</p>
+
+<p style="margin-left:11%; margin-top: 1em">root_return
+<br/>
+Returns the root window that the pointer is in.</p>
+
+<p style="margin-left:11%; margin-top: 1em">root_x_return,
+root_y_return <br/>
+Return the pointer coordinates relative to the root <br/>
+window&acute;s origin.</p>
+
+<p style="margin-left:11%; margin-top: 1em">win <br/>
+Specifies the window.</p>
+
+<p style="margin-left:11%; margin-top: 1em">win_x_return,
+win_y_return <br/>
+Return the pointer coordinates relative to the specified
+<br/>
+window.</p>
+
+<h2 id="heading3">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:17%; margin-top: 1em">The
+XIQueryPointer function returns the root window the <br/>
+device&acute;s pointer is logically on and the pointer
+coordinates <br/>
+relative to the root window&acute;s origin. If
+XIQueryPointer returns <br/>
+False, the pointer is not on the same screen as the
+specified <br/>
+window, and XIQueryPointer returns None to child_return and
+<br/>
+zero to win_x_return and win_y_return. If XIQueryPointer
+<br/>
+returns True, the pointer coordinates returned to
+win_x_return <br/>
+and win_y_return are relative to the origin of the specified
+<br/>
+window. In this case, XIQueryPointer returns the child that
+<br/>
+contains the pointer, if any, or else None to
+child_return.</p>
+
+<p style="margin-left:17%; margin-top: 1em">XIQueryPointer
+returns the current logical state of the buttons <br/>
+buttons_return. The keyboard paired with the master pointer
+is <br/>
+selected to obtain the data for modifiers_return and <br/>
+group_return.</p>
+
+<p style="margin-left:17%; margin-top: 1em">The mask field
+in buttons_return is dynamically allocated and <br/>
+must be freed by the caller.</p>
+
+<p style="margin-left:17%; margin-top: 1em">XIQueryPointer
+is identical to XQueryPointer but specifies the <br/>
+device explicitly.</p>
+
+<p style="margin-left:17%; margin-top: 1em">XIQueryPointer
+can generate a BadDevice and a BadWindow error.</p>
+
+<h2 id="heading4">DIAGNOSTICS
+</h2>
+
+
+<p style="margin-left:17%; margin-top: 1em">BadDevice <br/>
+An invalid device was specified. The device does not <br/>
+exist or is not a pointer device.</p>
+
+<p style="margin-left:17%; margin-top: 1em">BadWindow <br/>
+A value for a Window argument does not name a defined <br/>
+window.</p>
+
+<h2 id="heading5">SEE ALSO
+</h2>
+
+
+
+<p style="margin-left:17%; margin-top: 1em"><a href="../man3/XQueryPointer.3.xhtml"><em>XQueryPointer</em>(3)</a></p>
+<hr/>
+</body>
+</html>

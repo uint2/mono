@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:31:39 2012 -->
+<title>DMXQueryVersion</title>
+
+</head>
+<body>
+
+<h1>DMXQueryVersion</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNOPSIS</a><br/>
+<a href="#heading3">DESCRIPTION</a><br/>
+<a href="#heading4">RETURN VALUE</a><br/>
+<a href="#heading5">NOTES</a><br/>
+<a href="#heading6">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">DMXQueryVersion
+&minus; determine DMX extension version</p>
+
+<h2 id="heading2">SYNOPSIS
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>#include
+&lt;X11/extensions/dmxext.h&gt;</b></p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>Bool
+DMXQueryVersion(Display</b> <i>*dpy</i><b>, <br/>
+int</b> <i>*major_version</i><b>, <br/>
+int</b> <i>*minor_version</i><b>, <br/>
+int</b> <i>*patch_version</i><b>);</b></p>
+
+<h2 id="heading3">DESCRIPTION
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>DMXQueryVersion()</b>
+returns version information about the DMX protocol
+extension.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Any
+incompatible changes to the protocol will be indicated by a
+change in <i>major_version</i>. Small, upward-compatible
+changes will be indicated by a change in
+<i>minor_version</i>. In general, <i>patch_version</i> is
+for informational purposes and will encode the date of the
+last protocol revision (e.g., 20040604).</p>
+
+<h2 id="heading4">RETURN VALUE
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">If the DMX
+protocol extension is available, <i>major_version</i>,
+<i>minor_version</i>, and <i>patch_version</i> will be set,
+and <b>True</b> will be returned. Otherwise, <b>False</b>
+will be returned.</p>
+
+<h2 id="heading5">NOTES
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">At the time of
+this writing, the DMX protocol is at version 2.2.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Version 2.2 was
+the final development version, and code supporting this
+version was submitted to upstream X server repositories in
+the summer of 2004.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Version 1.5 was
+the last of the 1.x series, which was used for development
+before screen and input addition and removal were supported.
+Version 2.0 and 2.1 were development versions that partially
+supported screen and input addition and removal.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Since we do not
+expect development versions to be widely used, we recommend
+that any software that uses the DMX protocol extension to
+support only versions 2.2 and above (although they should
+detect earlier versions and either reduce functionality or
+fail gracefully).</p>
+
+<h2 id="heading6">SEE ALSO
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/DMXQueryExtension.3.xhtml"><em>DMXQueryExtension</em>(3)</a>,
+<a href="../man3/DMX.3.xhtml"><em>DMX</em>(3)</a>, <a href="../man1/Xdmx.1.xhtml"><em>Xdmx</em>(1)</a></p>
+<hr/>
+</body>
+</html>

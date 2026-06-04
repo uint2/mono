@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:39:20 2012 -->
+<title>XtAllocateGC</title>
+
+</head>
+<body>
+
+<h1>XtAllocateGC</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNTAX</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">XtAllocateGC
+&minus; obtain a sharable GC with modifiable fields</p>
+
+<h2 id="heading2">SYNTAX
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="89%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">GC XtAllocateGC(Widget <i>w</i>,
+Cardinal <i>depth</i>, XtGCMask <i>value_mask</i>, XGCValues
+*<i>values</i>, XtGCMask <i>dynamic_mask</i>, XtGCMask
+<i>unused_mask</i>);</p> </td></tr>
+</table>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="9%"></col>
+<col width="6%" class="center"></col>
+<col width="62%"></col>
+<col width="12%"></col>
+</colgroup>
+<tr valign="top" align="left">
+
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+<td></td>
+<td></td>
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>values</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the actual values for this GC.</p></td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>value_mask</i></p>
+
+<p style="margin-left:26%;">Specifies which fields of the
+values are specified.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="7%"></col>
+<col width="8%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>w</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the widget.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>depth</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the depth for which the returned GC is valid,
+or 0.</p></td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>dynamic_mask</i></p>
+
+<p style="margin-left:26%;">Specifies the fields of the GC
+that will be modified by the caller.</p>
+
+<p style="margin-left:11%;"><i>unused_mask</i></p>
+
+<p style="margin-left:26%;">Specifies the fields of the GC
+that will not be needed by the caller.</p>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XtAllocateGC</i> function returns a sharable GC that may
+be modified by the client. The <i>screen</i> field of the
+specified widget or of the nearest widget ancestor of the
+specified object and the specified <i>depth</i> argument
+supply the root and drawable depths for which the GC is to
+be valid. If <i>depth</i> is zero the depth is taken from
+the <i>depth</i> field of the specified widget or of the
+nearest widget ancestor of the specified object.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>value_mask</i> argument specifies the fields of the GC
+that will be initialized with the respective members of the
+<i>values</i> structure. The <i>dynamic_mask</i> argument
+specifies fields that the caller intends to modify during
+program execution. The caller must ensure that the
+corresponding GC field is set prior to each use of the GC.
+The <i>unused_mask</i> argument specifies fields of the GC
+that are of no interest to the caller. The caller may make
+no assumptions about the contents of any fields specified in
+<i>unused_mask</i>. The caller may assume that at all times
+all fields not specified in either <i>dynamic_mask</i> or
+<i>unused_mask</i> have their default value if not specified
+in <i>value_mask</i> or the value specified by
+<i>values</i>. If a field is specified in both
+<i>value_mask</i> and <i>dynamic_mask</i>, the effect is as
+if it were specified only in <i>dynamic_mask</i> and then
+immediately set to the value in <i>values</i>. If a field is
+set in <i>unused_mask</i> and also in either
+<i>value_mask</i> or <i>dynamic_mask</i>, the specification
+in <i>unused_mask</i> is ignored.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XtAllocateGC</i>
+tries to minimize the number of unique GCs created by
+comparing the arguments with those of previous calls and
+returning an existing GC when there are no conflicts.
+<i>XtAllocateGC</i> may modify and return an existing GC if
+it was allocated with a nonzero <i>unused_mask</i>.</p>
+
+<h2 id="heading5">SEE ALSO
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XtGetGC
+<br/>
+X Toolkit Intrinsics &minus; C Language Interface <br/>
+<a href="../../libX11/libX11/libX11.html">Xlib &minus; C Language X Interface</a></i></p>
+<hr/>
+</body>
+</html>

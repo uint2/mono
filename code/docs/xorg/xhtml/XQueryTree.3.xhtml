@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:34:52 2012 -->
+<title>XQueryTree</title>
+
+</head>
+<body>
+
+<h1>XQueryTree</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNTAX</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">BUGS</a><br/>
+<a href="#heading6">DIAGNOSTICS</a><br/>
+<a href="#heading7">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">XQueryTree
+&minus; query window tree information</p>
+
+<h2 id="heading2">SYNTAX
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="89%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Status XQueryTree(Display
+*<i>display</i>, Window <i>w</i>, Window
+*<i>root_return</i>, Window *<i>parent_return</i>, Window
+**<i>children_return</i>, unsigned int
+*<i>nchildren_return</i>);</p> </td></tr>
+</table>
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>children_return</i></p>
+
+<p style="margin-left:26%;">Returns the list of
+children.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="11%"></col>
+<col width="4%" class="center"></col>
+<col width="63%"></col>
+<col width="11%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>display</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the connection to the X server.</p></td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>nchildren_return</i></p>
+
+<p style="margin-left:26%;">Returns the number of
+children.</p>
+
+<p style="margin-left:11%;"><i>parent_return</i></p>
+
+<p style="margin-left:26%;">Returns the parent window.</p>
+
+<p style="margin-left:11%;"><i>root_return</i></p>
+
+<p style="margin-left:26%;">Returns the root window.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="1%"></col>
+<col width="14%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>w</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the window whose list of children, root,
+parent, and number of children you want to obtain.</p></td></tr>
+</table>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XQueryTree</i> function returns the root ID, the parent
+window ID, a pointer to the list of children windows (NULL
+when there are no children), and the number of children in
+the list for the specified window. The children are listed
+in current stacking order, from bottom-most (first) to
+top-most (last). <i>XQueryTree</i> returns zero if it fails
+and nonzero if it succeeds. To free a non-NULL children list
+when it is no longer needed, use <i>XFree</i>.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XQueryTree</i>
+can generate a <i>BadWindow</i> error.</p>
+
+<h2 id="heading5">BUGS
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">This really
+should return a screen *, not a root window ID.</p>
+
+<h2 id="heading6">DIAGNOSTICS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="14%"></col>
+<col width="1%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><i>BadWindow</i></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">A value for a Window argument
+does not name a defined Window.</p></td></tr>
+</table>
+
+<h2 id="heading7">SEE ALSO
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XFree.3.xhtml"><em>XFree</em>(3)</a>,
+<a href="../man3/XGetWindowAttributes.3.xhtml"><em>XGetWindowAttributes</em>(3)</a>, <a href="../man3/XQueryPointer.3.xhtml"><em>XQueryPointer</em>(3)</a> <i><br/>
+<a href="../../libX11/libX11/libX11.html">Xlib &minus; C Language X Interface</a></i></p>
+<hr/>
+</body>
+</html>

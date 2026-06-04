@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:31:36 2012 -->
+<title>XkbSASetGroup</title>
+
+</head>
+<body>
+
+<h1>XkbSASetGroup</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNTAX</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">STRUCTURE</a><br/>
+<a href="#heading6">WARNING</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">XkbSASetGroup
+&minus; Sets the group_XXX field of act from the group index
+grp</p>
+
+<h2 id="heading2">SYNTAX
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="27%"></col>
+<col width="2%" class="center"></col>
+<col width="38%"></col>
+<col width="22%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>void XkbSASetGroup</b></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>(XkbAction</b> <i>act</i><b>,
+int</b> <i>grp</i><b>);</b></p></td>
+<td>
+</td></tr>
+</table>
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="7%"></col>
+<col width="4%" class="center"></col>
+<col width="47%"></col>
+<col width="31%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b><i>&minus; act</i></b></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">action from which to set
+group</p> </td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>&minus; grp</i></p></td>
+<td></td>
+<td>
+
+
+<p>group index to set in group_XXX</p></td>
+<td>
+</td></tr>
+</table>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XkbSASetGroup</i>
+sets the <i>group_XXX</i> field of <i>act</i> from the group
+index <i>grp.</i></p>
+
+<h2 id="heading5">STRUCTURE
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Actions
+associated with the XkbGroupAction structure change the
+current group state when keys are pressed and released:</p>
+
+<p style="margin-left:11%; margin-top: 1em">typedef struct
+_XkbGroupAction { <br/>
+unsigned char type; /&lowast; XkbSA_{Set|Latch|Lock}Group */
+<br/>
+unsigned char flags; /&lowast; with type, controls the
+effect on groups */ <br/>
+char group_XXX; /&lowast; represents a group index or delta
+*/ <br/>
+} XkbGroupAction;</p>
+
+<h2 id="heading6">WARNING
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">This manpage
+seems to be incomplete</p>
+<hr/>
+</body>
+</html>

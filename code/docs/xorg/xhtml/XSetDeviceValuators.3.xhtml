@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:37:20 2012 -->
+<title>XSETDEVICEVALUATORS</title>
+
+</head>
+<body>
+
+<h1>XSETDEVICEVALUATORS</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNOPSIS</a><br/>
+<a href="#heading3">DESCRIPTION</a><br/>
+<a href="#heading4">DIAGNOSTICS</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">XSetDeviceValuators
+&minus; initialize the valuators on an extension input
+device</p>
+
+<h2 id="heading2">SYNOPSIS
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">#include
+&lt;X11/extensions/XInput.h&gt;</p>
+
+
+<p style="margin-left:11%; margin-top: 1em">XSetDeviceValuators(
+Display *display, <br/>
+XDevice *device, <br/>
+int *valuators, <br/>
+int first_valuator, <br/>
+int num_valuators);</p>
+
+<p style="margin-left:11%; margin-top: 1em">display <br/>
+Specifies the connection to the X server.</p>
+
+<p style="margin-left:11%; margin-top: 1em">device <br/>
+Specifies the device whose valuators are to be <br/>
+initialized.</p>
+
+<p style="margin-left:11%; margin-top: 1em">valuators <br/>
+Specifies a pointer to an array of integer values to be
+<br/>
+used to initialize thedevice valuators.</p>
+
+<p style="margin-left:11%; margin-top: 1em">first_valuator
+<br/>
+Specifies the first valuator to be set. Valuators are <br/>
+numbered beginning withzero.</p>
+
+<p style="margin-left:11%; margin-top: 1em">num_valuators
+<br/>
+Specifies the number of valuators to be set.</p>
+
+<h2 id="heading3">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:17%; margin-top: 1em">The
+XSetDeviceValuators request sets the current values of the
+<br/>
+valuators of an input device. The valuators in the range
+<br/>
+first_valuator to (first_valuator + num_valuators) are set
+to <br/>
+the specified values. Valuators are numbered beginning with
+0. <br/>
+Not all input devices support initialization of valuator
+<br/>
+values. If this request is made to a device that does not
+<br/>
+support valuators initialization, a BadMatch error will
+occur.</p>
+
+<p style="margin-left:17%; margin-top: 1em">If the request
+succeeds, a status of Success is returned. If <br/>
+another client has the device grabbed, a status of <br/>
+AlreadyGrabbed is returned.</p>
+
+
+<p style="margin-left:17%; margin-top: 1em">XSetDeviceValuators
+can generate a BadLength, BadDevice, <br/>
+BadMatch, or BadValue error.</p>
+
+<h2 id="heading4">DIAGNOSTICS
+</h2>
+
+
+<p style="margin-left:17%; margin-top: 1em">BadDevice <br/>
+An invalid device was specified. The specified device <br/>
+does not exist or has not been opened by this client via
+<br/>
+XOpenInputDevice.</p>
+
+<p style="margin-left:17%; margin-top: 1em">BadMatch <br/>
+This error may occur if an XSetDeviceValuators request <br/>
+is made specifying a device that has no valuators and <br/>
+reports no axes of motion, or if such a request is made
+<br/>
+specifying a device that does not support valuator <br/>
+initialization.</p>
+
+<p style="margin-left:17%; margin-top: 1em">BadValue <br/>
+An invalid first_valuator or num_valuators values was <br/>
+ specified.</p>
+<hr/>
+</body>
+</html>

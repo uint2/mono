@@ -1,0 +1,639 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:39:26 2012 -->
+<title>XMBUF</title>
+
+</head>
+<body>
+
+<h1>XMBUF</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNTAX</a><br/>
+<a href="#heading3">STRUCTURES</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">PREDEFINED VALUES</a><br/>
+<a href="#heading6">BUGS</a><br/>
+<a href="#heading7">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">XmbufQueryExtension,
+XmbufGetVersion, XmbufCreateBuffers, XmbufDestroyBuffers,
+XmbufDisplayBuffers, XmbufGetWindowAttributes,
+XmbufChangeWindowAttributes, XmbufGetBufferAttributes,
+XmbufChangeBufferAttributes, XmbufGetScreenInfo,
+XmbufCreateStereoWindow - X multibuffering functions</p>
+
+<h2 id="heading2">SYNTAX
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">#include
+&lt;X11/extensions/multibuf.h&gt;</p>
+
+<p style="margin-left:11%; margin-top: 1em">Bool
+XmbufQueryExtension( <br/>
+Display *dpy, <br/>
+Display *dpy, <br/>
+int *event_base_return, <br/>
+int *error_base_return);</p>
+
+<p style="margin-left:11%; margin-top: 1em">Status
+XmbufGetVersion( <br/>
+Display *dpy, <br/>
+int *major_version_return, <br/>
+int *minor_version_return);</p>
+
+<p style="margin-left:11%; margin-top: 1em">int
+XmbufCreateBuffers( <br/>
+Display *dpy, <br/>
+Window window, <br/>
+int count, <br/>
+int update_action, <br/>
+int update_hint, <br/>
+Multibuffer *buffers_update);</p>
+
+<p style="margin-left:11%; margin-top: 1em">void
+XmbufDestroyBuffers( <br/>
+Display *dpy, <br/>
+Window window);</p>
+
+<p style="margin-left:11%; margin-top: 1em">void
+XmbufDisplayBuffers( <br/>
+Display *dpy, <br/>
+int count, <br/>
+Multibuffer *buffers, <br/>
+int min_delay, <br/>
+int max_delay);</p>
+
+<p style="margin-left:11%; margin-top: 1em">Status
+XmbufGetWindowAttributes( <br/>
+Display *dpy, <br/>
+Window window, <br/>
+XmbufWindowAttributes *attributes);</p>
+
+<p style="margin-left:11%; margin-top: 1em">void
+XmbufChangeWindowAttributes( <br/>
+Display *dpy, <br/>
+Window window, <br/>
+unsigned long valuemask, <br/>
+XmbufSetWindowAttributes *attributes);</p>
+
+<p style="margin-left:11%; margin-top: 1em">Status
+XmbufGetBufferAttributes( <br/>
+Display *dpy, <br/>
+Multibuffer buffer, <br/>
+XmbufBufferAttributes *attributes);</p>
+
+<p style="margin-left:11%; margin-top: 1em">void
+XmbufChangeBufferAttributes( <br/>
+Display *dpy, <br/>
+Multibuffer buffer, <br/>
+unsigned long valuemask, <br/>
+XmbufSetBufferAttributes *attributes);</p>
+
+<p style="margin-left:11%; margin-top: 1em">Status
+XmbufGetScreenInfo( <br/>
+Display *dpy, <br/>
+Drawable drawable, <br/>
+int *nmono_return, <br/>
+XmbufBufferInfo **mono_info_return, <br/>
+int *nstereo_return, <br/>
+XmbufBufferInfo **stereo_info_return);</p>
+
+<p style="margin-left:11%; margin-top: 1em">Window
+XmbufCreateStereoWindow( <br/>
+Display *dpy, <br/>
+Window parent, <br/>
+int x, <br/>
+int y, <br/>
+unsigned int width, <br/>
+unsigned int height, <br/>
+unsigned int border_width, <br/>
+int depth, <br/>
+unsigned int class, /* InputOutput, InputOnly*/ <br/>
+Visual *visual, <br/>
+unsigned long valuemask, <br/>
+XSetWindowAttributes *attributes, <br/>
+Multibuffer *left_return, <br/>
+Multibuffer *right_return);</p>
+
+<h2 id="heading3">STRUCTURES
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>Events:</i>
+<br/>
+typedef struct {</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="17%"></col>
+<col width="29%"></col>
+<col width="54%"></col>
+</colgroup>
+<tr valign="top" align="left">
+
+
+<p>int type;</p><td></td>
+<td></td>
+<td>
+
+
+<p>/* of event */ <br/>
+unsigned long serial;</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td></td>
+<td>
+
+
+<p>/* # of last request processed by server */ <br/>
+int send_event;</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td></td>
+<td>
+
+
+<p>/* true if this came from a SendEvent request */ <br/>
+Display *display;</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td></td>
+<td>
+
+
+<p>/* Display the event was read from */ <br/>
+Multibuffer buffer;</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td></td>
+<td>
+
+
+<p>/* buffer of event */ <br/>
+int state;</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td></td>
+<td>
+
+
+<p>/* see Clobbered constants above */</p></td></tr>
+</table>
+
+<p style="margin-left:11%;">} XmbufClobberNotifyEvent;</p>
+
+<p style="margin-left:11%; margin-top: 1em">typedef struct
+{</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="17%"></col>
+<col width="29%"></col>
+<col width="54%"></col>
+</colgroup>
+<tr valign="top" align="left">
+
+
+<p>int type;</p><td></td>
+<td></td>
+<td>
+
+
+<p>/* of event */ <br/>
+unsigned long serial;</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td></td>
+<td>
+
+
+<p>/* # of last request processed by server */ <br/>
+int send_event;</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td></td>
+<td>
+
+
+<p>/* true if this came from a SendEvent request */ <br/>
+Display *display;</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td></td>
+<td>
+
+
+<p>/* Display the event was read from */ <br/>
+Multibuffer buffer;</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td></td>
+<td>
+
+
+<p>/* buffer of event */</p></td></tr>
+</table>
+
+<p style="margin-left:11%;">} XmbufUpdateNotifyEvent;</p>
+
+<p style="margin-left:11%; margin-top: 1em"><i>Per-window
+attributes that can be got:</i> <br/>
+typedef struct {</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="17%"></col>
+<col width="29%"></col>
+<col width="54%"></col>
+</colgroup>
+<tr valign="top" align="left">
+
+
+<p>int displayed_index;</p><td></td>
+<td></td>
+<td>
+
+
+<p>/* which buffer is being displayed */ <br/>
+int update_action;</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td></td>
+<td>
+
+
+<p>/* Undefined, Background, Untouched, Copied */ <br/>
+int update_hint;</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td></td>
+<td>
+
+
+<p>/* Frequent, Intermittent, Static */ <br/>
+int window_mode;</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td></td>
+<td>
+
+
+<p>/* Mono, Stereo */ <br/>
+int nbuffers;</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td></td>
+<td>
+
+
+<p>/* Number of buffers */ <br/>
+Multibuffer *buffers;</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td></td>
+<td>
+
+
+<p>/* Buffers */</p></td></tr>
+</table>
+
+<p style="margin-left:11%;">} XmbufWindowAttributes;</p>
+
+<p style="margin-left:11%; margin-top: 1em"><i>Per-window
+attributes that can be set:</i> <br/>
+typedef struct {</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="17%"></col>
+<col width="29%"></col>
+<col width="54%"></col>
+</colgroup>
+<tr valign="top" align="left">
+
+
+<p>int update_hint;</p><td></td>
+<td></td>
+<td>
+
+
+<p>/* Frequent, Intermittent, Static */</p></td></tr>
+</table>
+
+<p style="margin-left:11%;">} XmbufSetWindowAttributes;</p>
+
+<p style="margin-left:11%; margin-top: 1em"><i>Per-buffer
+attributes that can be got:</i> <br/>
+typedef struct {</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="17%"></col>
+<col width="29%"></col>
+<col width="54%"></col>
+</colgroup>
+<tr valign="top" align="left">
+
+
+<p>Window window;</p><td></td>
+<td></td>
+<td>
+
+
+<p>/* which window this belongs to */ <br/>
+unsigned long event_mask;</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td></td>
+<td>
+
+
+<p>/* events that have been selected */ <br/>
+int buffer_index;</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td></td>
+<td>
+
+
+<p>/* which buffer is this */ <br/>
+int side;</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td></td>
+<td>
+
+
+<p>/* Mono, Left, Right */</p></td></tr>
+</table>
+
+<p style="margin-left:11%;">} XmbufBufferAttributes;</p>
+
+<p style="margin-left:11%; margin-top: 1em"><i>Per-buffer
+attributes that can be set:</i> <br/>
+typedef struct {</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="17%"></col>
+<col width="29%"></col>
+<col width="54%"></col>
+</colgroup>
+<tr valign="top" align="left">
+
+
+<p>unsigned long event_mask;</p><td></td>
+<td></td>
+<td>
+
+
+<p>/* events that have been selected */</p></td></tr>
+</table>
+
+<p style="margin-left:11%;">} XmbufSetBufferAttributes;</p>
+
+<p style="margin-left:11%; margin-top: 1em"><i>Per-screen
+buffer info (there will be lists of them):</i> <br/>
+typedef struct {</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="17%"></col>
+<col width="29%"></col>
+<col width="54%"></col>
+</colgroup>
+<tr valign="top" align="left">
+
+
+<p>VisualID visualid;</p><td></td>
+<td></td>
+<td>
+
+
+<p>/* visual usable at this depth */ <br/>
+int max_buffers;</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td></td>
+<td>
+
+
+<p>/* most buffers for this visual */ <br/>
+int depth;</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td></td>
+<td>
+
+
+<p>/* depth of buffers to be created */</p></td></tr>
+</table>
+
+<p style="margin-left:11%;">} XmbufBufferInfo;</p>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The application
+programming library for the <i>X11 Double-Buffering,
+Multi-Buffering, and Stereo Extension</i> contains the
+interfaces described below. With the exception of
+<i>XmbufQueryExtension</i>, if any of these routines are
+called with a display that does not support the extension,
+the ExtensionErrorHandler (which can be set with
+<i>XSetExtensionErrorHandler</i> and functions the same way
+as <i>XSetErrorHandler</i>) will be called and the function
+will then return.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XmbufQueryExtension</i>
+returns <i>True</i> if the multibuffering/stereo extension
+is available on the given display. If the extension exists,
+the value of the first event code (which should be added to
+the event type constants <i>MultibufferClobberNotify</i> and
+<i>MultibufferUpdateNotify</i> to get the actual values) is
+stored into event_base_return and the value of the first
+error code (which should be added to the error type constant
+<i>MultibufferBadBuffer</i> to get the actual value) is
+stored into error_base_return.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XmbufGetVersion</i>
+gets the major and minor version numbers of the extension.
+The return value is zero if an error occurs or non-zero if
+no error happens.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XmbufCreateBuffers</i>
+requests that &quot;count&quot; buffers be created with the
+given update_action and update_hint and be associated with
+the indicated window. The number of buffers created is
+returned (zero if an error occurred) and buffers_update is
+filled in with that many Multibuffer identifiers.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XmbufDestroyBuffers</i>
+destroys the buffers associated with the given window.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XmbufDisplayBuffers</i>
+displays the indicated buffers their appropriate windows
+within max_delay milliseconds after min_delay milliseconds
+have passed. No two buffers may be associated with the same
+window or else a Match error is generated.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XmbufGetWindowAttributes</i>
+gets the multibuffering attributes that apply to all buffers
+associated with the given window. The list of buffers
+returns may be freed with <i>XFree</i>. Returns non-zero on
+success and zero if an error occurs.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XmbufChangeWindowAttributes</i>
+sets the multibuffering attributes that apply to all buffers
+associated with the given window. This is currently limited
+to the update_hint.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XmbufGetBufferAttributes</i>
+gets the attributes for the indicated buffer. Returns
+non-zero on success and zero if an error occurs.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XmbufChangeBufferAttributes</i>
+sets the attributes for the indicated buffer. This is
+currently limited to the event_mask.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XmbufGetScreenInfo</i>
+gets the parameters controlling how mono and stereo windows
+may be created on the screen of the given drawable. The
+numbers of sets of visual and depths are returned in
+nmono_return and nstereo_return. If nmono_return is greater
+than zero, then mono_info_return is set to the address of an
+array of <i>XmbufBufferInfo</i> structures describing the
+various visuals and depths that may be used. Otherwise,
+mono_info_return is set to NULL. Similarly,
+stereo_info_return is set according to nstereo_return. The
+storage returned in mono_info_return and stereo_info_return
+may be released by <i>XFree</i>. If no errors are encounted,
+non-zero will be returned.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XmbufCreateStereoWindow</i>
+creates a stereo window in the same way that
+<i>XCreateWindow</i> creates a mono window. The buffer ids
+for the left and right buffers are returned in left_return
+and right_return, respectively. If an extension error
+handler that returns is installed, <i>None</i> will be
+returned if the extension is not available on this
+display.</p>
+
+<h2 id="heading5">PREDEFINED VALUES
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Update_action
+field:</p>
+
+
+<p style="margin-left:18%;"><i>MultibufferUpdateActionUndefined
+<br/>
+MultibufferUpdateActionBackground <br/>
+MultibufferUpdateActionUntouched <br/>
+MultibufferUpdateActionCopied</i></p>
+
+<p style="margin-left:11%; margin-top: 1em">Update_hint
+field:</p>
+
+
+<p style="margin-left:18%;"><i>MultibufferUpdateHintFrequent
+<br/>
+MultibufferUpdateHintIntermittent <br/>
+MultibufferUpdateHintStatic</i></p>
+
+<p style="margin-left:11%; margin-top: 1em">Valuemask
+fields:</p>
+
+<p style="margin-left:18%;"><i>MultibufferWindowUpdateHint
+<br/>
+MultibufferBufferEventMask</i></p>
+
+<p style="margin-left:11%; margin-top: 1em">Mono vs. stereo
+and left vs. right:</p>
+
+<p style="margin-left:18%;"><i>MultibufferModeMono <br/>
+MultibufferModeStereo <br/>
+MultibufferSideMono <br/>
+MultibufferSideLeft <br/>
+MultibufferSideRight</i></p>
+
+<p style="margin-left:11%; margin-top: 1em">Clobber
+state:</p>
+
+<p style="margin-left:18%;"><i>MultibufferUnclobbered <br/>
+MultibufferPartiallyClobbered <br/>
+MultibufferFullyClobbered</i></p>
+
+<p style="margin-left:11%; margin-top: 1em">Event
+stuff:</p>
+
+
+<p style="margin-left:18%;"><i>MultibufferClobberNotifyMask
+<br/>
+MultibufferUpdateNotifyMask <br/>
+MultibufferClobberNotify <br/>
+MultibufferUpdateNotify <br/>
+MultibufferNumberEvents <br/>
+MultibufferBadBuffer <br/>
+MultibufferNumberErrors</i></p>
+
+<h2 id="heading6">BUGS
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">This manual
+page needs more work.</p>
+
+<h2 id="heading7">SEE ALSO
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>Extending X
+for Double Buffering, Multi-Buffering, and Stereo</i></p>
+<hr/>
+</body>
+</html>

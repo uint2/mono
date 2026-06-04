@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:44:49 2012 -->
+<title>XParseGeometry</title>
+
+</head>
+<body>
+
+<h1>XParseGeometry</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNTAX</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">XParseGeometry,
+XWMGeometry &minus; parse window geometry</p>
+
+<h2 id="heading2">SYNTAX
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="89%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">int XParseGeometry(char
+*<i>parsestring</i>, int *<i>x_return</i>, int
+*<i>y_return</i>, unsigned int *<i>width_return</i>,
+unsigned int *<i>height_return</i>);</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">int XWMGeometry(Display
+*<i>display</i>, int <i>screen</i>, char *<i>user_geom</i>,
+char *<i>def_geom</i>, unsigned int <i>bwidth</i>,
+XSizeHints *<i>hints</i>, int *<i>x_return</i>, int
+*<i>y_return</i>, int *<i>width_return</i>, int
+*<i>height_return</i>, int *<i>gravity_return</i>);</p></td></tr>
+</table>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="12%"></col>
+<col width="77%"></col>
+</colgroup>
+<tr valign="top" align="left">
+
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+<td></td>
+<td></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>position</i></p></td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>default_position</i></p>
+
+<p style="margin-left:26%;">Specify the geometry
+specifications.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="11%"></col>
+<col width="4%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>display</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the connection to the X server.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>fheight</i></p></td>
+<td></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>fwidth</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specify the font height and width in pixels (increment
+size).</p> </td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>parsestring</i></p>
+
+<p style="margin-left:26%;">Specifies the string you want
+to parse.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="9%"></col>
+<col width="6%" class="center"></col>
+<col width="32%"></col>
+<col width="42%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>screen</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the screen.</p></td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>width_return <br/>
+height_return</i></p>
+
+<p style="margin-left:26%;">Return the width and height
+determined.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="12%"></col>
+<col width="3%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>xadder</i></p></td>
+<td></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>yadder</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specify additional interior padding needed in the
+window.</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>x_return</i></p></td>
+<td></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>y_return</i></p></td>
+<td></td>
+<td>
+
+
+<p>Return the x and y offsets.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>bwidth</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the border width.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>hints</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the size hints for the window in its normal
+state.</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>def_geom</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the application&rsquo;s default geometry or
+NULL.</p> </td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>gravity_return</i></p>
+
+<p style="margin-left:26%;">Returns the window gravity.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="14%"></col>
+<col width="1%" class="center"></col>
+<col width="71%"></col>
+<col width="3%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>user_geom</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the user-specified geometry or NULL.</p></td>
+<td>
+</td></tr>
+</table>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">By convention,
+X applications use a standard string to indicate window size
+and placement. <i>XParseGeometry</i> makes it easier to
+conform to this standard because it allows you to parse the
+standard window geometry. Specifically, this function lets
+you parse strings of the form:</p>
+
+
+<p style="margin-left:11%; margin-top: 1em">[=][&lt;<i>width</i>&gt;{xX}&lt;<i>height</i>&gt;][{+-}&lt;<i>xoffset</i>&gt;{+-}&lt;<i>yoffset</i>&gt;]</p>
+
+<p style="margin-left:11%; margin-top: 1em">The fields map
+into the arguments associated with this function. (Items
+enclosed in &lt;&gt; are integers, items in [] are optional,
+and items enclosed in {} indicate &lsquo;&lsquo;choose one
+of.&rsquo;&rsquo; Note that the brackets should not appear
+in the actual string.) If the string is not in the Host
+Portable Character Encoding, the result is
+implementation-dependent.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XParseGeometry</i> function returns a bitmask that
+indicates which of the four values (width, height, xoffset,
+and yoffset) were actually found in the string and whether
+the x and y values are negative. By convention, &minus;0 is
+not equal to +0, because the user needs to be able to say
+&lsquo;&lsquo;position the window relative to the right or
+bottom edge.&rsquo;&rsquo; For each value found, the
+corresponding argument is updated. For each value not found,
+the argument is left unchanged. The bits are represented by
+<i>XValue</i>, <i>YValue</i>, <i>WidthValue</i>,
+<i>HeightValue</i>, <i>XNegative</i>, or <i>YNegative</i>
+and are defined in &lt;<i>X11/Xutil.h</i>&gt;. They will be
+set whenever one of the values is defined or one of the
+signs is set.</p>
+
+<p style="margin-left:11%; margin-top: 1em">If the function
+returns either the <i>XValue</i> or <i>YValue</i> flag, you
+should place the window at the requested position.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XWMGeometry</i> function combines any geometry
+information (given in the format used by
+<i>XParseGeometry</i>) specified by the user and by the
+calling program with size hints (usually the ones to be
+stored in WM_NORMAL_HINTS) and returns the position, size,
+and gravity (<i>NorthWestGravity</i>,
+<i>NorthEastGravity</i>, <i>SouthEastGravity</i>, or
+<i>SouthWestGravity</i>) that describe the window. If the
+base size is not set in the <i>XSizeHints</i> structure, the
+minimum size is used if set. Otherwise, a base size of zero
+is assumed. If no minimum size is set in the hints
+structure, the base size is used. A mask (in the form
+returned by <i>XParseGeometry</i>) that describes which
+values came from the user specification and whether or not
+the position coordinates are relative to the right and
+bottom edges is returned. Note that these coordinates will
+have already been accounted for in the x_return and y_return
+values.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Note that
+invalid geometry specifications can cause a width or height
+of zero to be returned. The caller may pass the address of
+the hints win_gravity field as gravity_return to update the
+hints directly.</p>
+
+<h2 id="heading5">SEE ALSO
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XSetWMProperties.3.xhtml"><em>XSetWMProperties</em>(3)</a>
+<i><br/>
+<a href="../../libX11/libX11/libX11.html">Xlib &minus; C Language X Interface</a></i></p>
+<hr/>
+</body>
+</html>

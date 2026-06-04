@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:42:40 2012 -->
+<title>XGrabKeyboard</title>
+
+</head>
+<body>
+
+<h1>XGrabKeyboard</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNTAX</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">DIAGNOSTICS</a><br/>
+<a href="#heading6">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">XGrabKeyboard,
+XUngrabKeyboard &minus; grab the keyboard</p>
+
+<h2 id="heading2">SYNTAX
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="89%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">int XGrabKeyboard(Display
+*<i>display</i>, Window <i>grab_window</i>, Bool
+<i>owner_events</i>, int <i>pointer_mode</i>, int
+<i>keyboard_mode</i>, Time <i>time</i>);</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">int XUngrabKeyboard(Display
+*<i>display</i>, Time <i>time</i>);</p></td></tr>
+</table>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="11%"></col>
+<col width="4%" class="center"></col>
+<col width="63%"></col>
+<col width="11%"></col>
+</colgroup>
+<tr valign="top" align="left">
+
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+<td></td>
+<td></td>
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>display</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the connection to the X server.</p></td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>grab_window</i></p>
+
+<p style="margin-left:26%;">Specifies the grab window.</p>
+
+<p style="margin-left:11%;"><i>keyboard_mode</i></p>
+
+<p style="margin-left:26%;">Specifies further processing of
+keyboard events. You can pass <i>GrabModeSync</i> or
+<i>GrabModeAsync</i>.</p>
+
+<p style="margin-left:11%;"><i>owner_events</i></p>
+
+<p style="margin-left:26%;">Specifies a Boolean value that
+indicates whether the keyboard events are to be reported as
+usual.</p>
+
+<p style="margin-left:11%;"><i>pointer_mode</i></p>
+
+<p style="margin-left:26%;">Specifies further processing of
+pointer events. You can pass <i>GrabModeSync</i> or
+<i>GrabModeAsync</i>.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="6%"></col>
+<col width="9%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>time</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the time. You can pass either a timestamp or
+<i>CurrentTime</i>.</p> </td></tr>
+</table>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XGrabKeyboard</i> function actively grabs control of the
+keyboard and generates <i>FocusIn</i> and <i>FocusOut</i>
+events. Further key events are reported only to the grabbing
+client. <i>XGrabKeyboard</i> overrides any active keyboard
+grab by this client. If owner_events is <i>False</i>, all
+generated key events are reported with respect to
+grab_window. If owner_events is <i>True</i> and if a
+generated key event would normally be reported to this
+client, it is reported normally; otherwise, the event is
+reported with respect to the grab_window. Both
+<i>KeyPress</i> and <i>KeyRelease</i> events are always
+reported, independent of any event selection made by the
+client.</p>
+
+<p style="margin-left:11%; margin-top: 1em">If the
+keyboard_mode argument is <i>GrabModeAsync</i>, keyboard
+event processing continues as usual. If the keyboard is
+currently frozen by this client, then processing of keyboard
+events is resumed. If the keyboard_mode argument is
+<i>GrabModeSync</i>, the state of the keyboard (as seen by
+client applications) appears to freeze, and the X server
+generates no further keyboard events until the grabbing
+client issues a releasing <i>XAllowEvents</i> call or until
+the keyboard grab is released. Actual keyboard changes are
+not lost while the keyboard is frozen; they are simply
+queued in the server for later processing.</p>
+
+<p style="margin-left:11%; margin-top: 1em">If pointer_mode
+is <i>GrabModeAsync</i>, pointer event processing is
+unaffected by activation of the grab. If pointer_mode is
+<i>GrabModeSync</i>, the state of the pointer (as seen by
+client applications) appears to freeze, and the X server
+generates no further pointer events until the grabbing
+client issues a releasing <i>XAllowEvents</i> call or until
+the keyboard grab is released. Actual pointer changes are
+not lost while the pointer is frozen; they are simply queued
+in the server for later processing.</p>
+
+<p style="margin-left:11%; margin-top: 1em">If the keyboard
+is actively grabbed by some other client,
+<i>XGrabKeyboard</i> fails and returns
+<i>AlreadyGrabbed</i>. If grab_window is not viewable, it
+fails and returns <i>GrabNotViewable</i>. If the keyboard is
+frozen by an active grab of another client, it fails and
+returns <i>GrabFrozen</i>. If the specified time is earlier
+than the last-keyboard-grab time or later than the current X
+server time, it fails and returns <i>GrabInvalidTime</i>.
+Otherwise, the last-keyboard-grab time is set to the
+specified time (<i>CurrentTime</i> is replaced by the
+current X server time).</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XGrabKeyboard</i>
+can generate <i>BadValue</i> and <i>BadWindow</i>
+errors.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XUngrabKeyboard</i> function releases the keyboard and
+any queued events if this client has it actively grabbed
+from either <i>XGrabKeyboard</i> or <i>XGrabKey</i>.
+<i>XUngrabKeyboard</i> does not release the keyboard and any
+queued events if the specified time is earlier than the
+last-keyboard-grab time or is later than the current X
+server time. It also generates <i>FocusIn</i> and
+<i>FocusOut</i> events. The X server automatically performs
+an <i>UngrabKeyboard</i> request if the event window for an
+active keyboard grab becomes not viewable.</p>
+
+<h2 id="heading5">DIAGNOSTICS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="14%"></col>
+<col width="1%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><i>BadValue</i></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Some numeric value falls outside
+the range of values accepted by the request. Unless a
+specific range is specified for an argument, the full range
+defined by the argument&rsquo;s type is accepted. Any
+argument defined as a set of alternatives can generate this
+error.</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>BadWindow</i></p></td>
+<td></td>
+<td>
+
+
+<p>A value for a Window argument does not name a defined
+Window.</p> </td></tr>
+</table>
+
+<h2 id="heading6">SEE ALSO
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XAllowEvents.3.xhtml"><em>XAllowEvents</em>(3)</a>,
+<a href="../man3/XGrabButton.3.xhtml"><em>XGrabButton</em>(3)</a>, <a href="../man3/XGrabKey.3.xhtml"><em>XGrabKey</em>(3)</a>, <a href="../man3/XGrabPointer.3.xhtml"><em>XGrabPointer</em>(3)</a> <i><br/>
+<a href="../../libX11/libX11/libX11.html">Xlib &minus; C Language X Interface</a></i></p>
+<hr/>
+</body>
+</html>

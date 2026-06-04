@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:28:29 2012 -->
+<title>XkbAllocClientMap</title>
+
+</head>
+<body>
+
+<h1>XkbAllocClientMap</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNOPSIS</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">DIAGNOSTICS</a><br/>
+<a href="#heading6">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">XkbAllocClientMap
+&minus; Allocate and initialize an empty client map
+description record</p>
+
+<h2 id="heading2">SYNOPSIS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="37%"></col>
+<col width="1%" class="center"></col>
+<col width="51%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>Status
+XkbAllocClientMap</b></p> </td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>(XkbDescPtr</b>
+<i>xkb</i><b>, unsigned int</b> <i>which</i><b>,
+unsigned</b></p> </td></tr>
+</table>
+
+<p style="margin-left:11%;"><b>int</b>
+<i>type_count</i><b>);</b></p>
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="7%"></col>
+<col width="4%" class="center"></col>
+<col width="78%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b><i>&minus; xkb</i></b></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">keyboard description in which to
+allocate client map</p></td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>&minus; which</i></p>
+
+<p style="margin-left:22%;">mask selecting map components
+to allocate</p>
+
+<p style="margin-left:11%;"><i>&minus; type_count</i></p>
+
+<p style="margin-left:22%;">value of num_types field in map
+to be allocated</p>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Calling
+<i>XkbGetMap</i> should be sufficient for most applications
+to get client and server maps. As a result, most
+applications do not need to directly allocate client and
+server maps.</p>
+
+<p style="margin-left:11%; margin-top: 1em">If you change
+the number of key types or construct map components without
+loading the necessary components from the X server, do not
+allocate any map components directly using <i>malloc</i> or
+<i>Xmalloc.</i> Instead, use the Xkb allocators,
+<i>XkbAllocClientMap,</i> and <i>XkbAllocServerMap.</i></p>
+
+<p style="margin-left:11%; margin-top: 1em">Similarly, use
+the Xkb destructors, <i>XkbFreeClientMap,</i> and
+<i>XkbFreeServerMap</i> instead of <i>free</i> or
+<i>Xfree.</i></p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XkbAllocClientMap</i>
+allocates and initializes an empty client map in the
+<i>map</i> field of the keyboard description specified by
+<i>xkb.</i> The <i>which</i> parameter specifies the
+particular components of the client map structure to
+allocate and is a mask composed by a bitwise inclusive OR of
+one or more of the masks shown in Table 1.</p>
+
+
+<p class="center" style="margin-top: 1em"><img src="grohtml-143431.png" alt="Image grohtml-143431.png"></img></p>
+
+<p style="margin-left:11%; margin-top: 1em">NOTE: The
+<i>min_key_code</i> and <i>max_key_code</i> fields of the
+<i>xkb</i> parameter must be legal values if the
+XkbKeySymsMask or XkbModifierMapMask masks are set in the
+<i>which</i> parameter. If they are not valid,
+<i>XkbAllocClientMap</i> returns BadValue.</p>
+
+<p style="margin-left:11%; margin-top: 1em">If the client
+map of the keyboard description is not NULL, and any fields
+are already allocated in the client map,
+<i>XkbAllocClientMap</i> does not overwrite the existing
+values; it simply ignores that part of the request. The only
+exception is the <i>types</i> array. If <i>type_count</i> is
+greater than the current <i>num_types</i> field of the
+client map,</p>
+
+<p><i>XkbAllocClientMap</i> resizes the <i>types</i> array
+and resets the <i>num_types</i> field accordingly.</p>
+
+<p style="margin-top: 1em">If <i>XkbAllocClientMap</i> is
+successful, it returns Success. Otherwise, it can return
+either BadMatch, BadAlloc, or BadValue errors.</p>
+
+<h2 id="heading5">DIAGNOSTICS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="12%"></col>
+<col width="11%" class="center"></col>
+<col width="66%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>BadAlloc</b></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Unable to allocate storage</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><b>BadMatch</b></p></td>
+<td></td>
+<td>
+
+
+<p>A compatible version of Xkb was not available in the
+server or an argument has correct type and range, but is
+otherwise invalid</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><b>BadValue</b></p></td>
+<td></td>
+<td>
+
+
+<p>An argument is out of range</p></td></tr>
+</table>
+
+<h2 id="heading6">SEE ALSO
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XkbAllocClientMap.3.xhtml"><em>XkbAllocClientMap</em>(3)</a>,
+<a href="../man3/XkbAllocServerMap.3.xhtml"><em>XkbAllocServerMap</em>(3)</a>, <a href="../man3/XkbFreeClientMap,.3.xhtml"><em>XkbFreeClientMap,</em>(3)</a>,
+<a href="../man3/XkbFreeServerMap.3.xhtml"><em>XkbFreeServerMap</em>(3)</a>, <a href="../man3/XkbGetMap.3.xhtml"><em>XkbGetMap</em>(3)</a></p>
+<hr/>
+</body>
+</html>

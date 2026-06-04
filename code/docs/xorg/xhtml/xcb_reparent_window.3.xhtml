@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:30:00 2012 -->
+<title>xcb_reparent_window</title>
+
+</head>
+<body>
+
+<h1>xcb_reparent_window</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNOPSIS</a><br/>
+<a href="#heading3">REQUEST ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">RETURN VALUE</a><br/>
+<a href="#heading6">ERRORS</a><br/>
+<a href="#heading7">SEE ALSO</a><br/>
+<a href="#heading8">AUTHOR</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">xcb_reparent_window
+&minus; Reparents a window</p>
+
+<h2 id="heading2">SYNOPSIS
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>#include
+&lt;xcb/xproto.h&gt;</b></p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>Request
+function</b></p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="89%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>xcb_void_cookie_t
+<b>xcb_reparent_window</b>(xcb_connection_t&nbsp;*<i>conn</i>,
+xcb_window_t&nbsp;<i>window</i>,
+xcb_window_t&nbsp;<i>parent</i>, int16_t&nbsp;<i>x</i>,
+int16_t&nbsp;<i>y</i>);</p> </td></tr>
+</table>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="9%"></col>
+<col width="6%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+
+
+<h2 id="heading3">REQUEST ARGUMENTS
+</h2>
+<td></td>
+<td></td>
+<td></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>conn</i></p></td>
+<td></td>
+<td>
+
+
+<p>The XCB connection to X11.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>window</i></p></td>
+<td></td>
+<td>
+
+
+<p>The window to reparent.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>parent</i></p></td>
+<td></td>
+<td>
+
+
+<p>The new parent of the window.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>x</i></p></td>
+<td></td>
+<td>
+
+
+<p>The X position of the window within its new parent.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>y</i></p></td>
+<td></td>
+<td>
+
+
+<p>The Y position of the window within its new parent.</p></td></tr>
+</table>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Makes the
+specified window a child of the specified parent window. If
+the window is mapped, it will automatically be unmapped
+before reparenting and re-mapped after reparenting. The
+window is placed in the stacking order on top with respect
+to sibling windows.</p>
+
+<p style="margin-left:11%; margin-top: 1em">After
+reparenting, a ReparentNotify event is generated.</p>
+
+<h2 id="heading5">RETURN VALUE
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Returns an
+<i>xcb_void_cookie_t</i>. Errors (if any) have to be handled
+in the event loop.</p>
+
+<p style="margin-left:11%; margin-top: 1em">If you want to
+handle errors directly with <i>xcb_request_check</i>
+instead, use <i>xcb_reparent_window_checked</i>. See
+<b>xcb-<a href="../man3/requests.3.xhtml"><em>requests</em>(3)</a></b> for details.</p>
+
+<h2 id="heading6">ERRORS
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>xcb_window_error_t</i></p>
+
+<p style="margin-left:26%;">The specified window does not
+exist.</p>
+
+<p style="margin-left:11%;"><i>xcb_match_error_t</i></p>
+
+<p style="margin-left:26%;">The new parent window is not on
+the same screen as the old parent window.</p>
+
+<p style="margin-left:26%; margin-top: 1em">The new parent
+window is the specified window or an inferior of the
+specified window.</p>
+
+<p style="margin-left:26%; margin-top: 1em">The new parent
+is InputOnly and the window is not.</p>
+
+<p style="margin-left:26%; margin-top: 1em">The specified
+window has a ParentRelative background and the new parent
+window is not the same depth as the specified window.</p>
+
+<h2 id="heading7">SEE ALSO
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/xcb-requests.3.xhtml"><em>xcb-requests</em>(3)</a>,
+<a href="../man3/xcb_unmap_window.3.xhtml"><em>xcb_unmap_window</em>(3)</a>,
+<a href="../man3/xcb_reparent_notify_event_t.3.xhtml"><em>xcb_reparent_notify_event_t</em>(3)</a>,
+<a href="../man3/xcb_map_window.3.xhtml"><em>xcb_map_window</em>(3)</a></p>
+
+<h2 id="heading8">AUTHOR
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Generated from
+xproto.xml. Contact xcb@lists.freedesktop.org for
+corrections and improvements.</p>
+<hr/>
+</body>
+</html>

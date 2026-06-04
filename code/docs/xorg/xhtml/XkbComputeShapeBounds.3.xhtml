@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:41:22 2012 -->
+<title>XkbComputeShapeBounds</title>
+
+</head>
+<body>
+
+<h1>XkbComputeShapeBounds</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNOPSIS</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">STRUCTURES</a><br/>
+<a href="#heading6">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">XkbComputeShapeBounds
+&minus; Updates the bounding box of a shape</p>
+
+<h2 id="heading2">SYNOPSIS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="40%"></col>
+<col width="1%" class="center"></col>
+<col width="31%"></col>
+<col width="17%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>Bool
+XkbComputeShapeBounds</b></p> </td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>(XkbShapePtr</b>
+<i>shape</i><b>);</b></p> </td>
+<td>
+</td></tr>
+</table>
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b><i>&minus;
+shape</i></b></p>
+
+<p style="margin-left:22%;">shape to be examined</p>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Xkb provides a
+number of convenience functions to help use a keyboard
+geometry. These include functions to return the bounding box
+of a shape&rsquo;s top surface and to update the bounding
+box of a shape row or section.</p>
+
+<p style="margin-left:11%; margin-top: 1em">A shape is made
+up of a number of outlines. Each outline is a polygon made
+up of a number of points. The bounding box of a shape is a
+rectangle that contains all the outlines of that shape.</p>
+
+<p style="margin-left:11%; margin-top: 1em">A ShapeRec
+contains a BoundsRec that describes the bounds of the shape.
+If you add or delete an outline to or from a shape, the
+bounding box must be updated.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XkbComputeShapeBounds</i>
+updates the BoundsRec contained in the <i>shape</i> by
+examining all the outlines of the shape and setting the
+BoundsRec to the minimum x and minimum y, and maximum x and
+maximum y values found in those outlines.
+<i>XkbComputeShapeBounds</i> returns False if <i>shape</i>
+is NULL or if there are no outlines for the shape;
+otherwise, it returns True.</p>
+
+<p style="margin-left:11%; margin-top: 1em">If you add or
+delete a key to or from a row, or if you update the shape of
+one of the keys in that row, you may need to update the
+bounding box of that row. To update the bounding box of a
+row, use <i>XkbComputeRowBounds.</i></p>
+
+<h2 id="heading5">STRUCTURES
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">typedef struct
+_XkbShape { <br/>
+Atom name; /&lowast; shape&rsquo;s name */ <br/>
+unsigned short num_outlines; /&lowast; number of outlines
+for the shape */ <br/>
+unsigned short sz_outlines; /&lowast; size of the outlines
+array */ <br/>
+XkbOutlinePtr outlines; /&lowast; array of outlines for the
+shape */ <br/>
+XkbOutlinePtr approx; /&lowast; pointer into the array to
+the approximating outline */ <br/>
+XkbOutlinePtr primary; /&lowast; pointer into the array to
+the primary outline */ <br/>
+XkbBoundsRec bounds; /&lowast; bounding box for the shape;
+encompasses all outlines */ <br/>
+} XkbShapeRec, *XkbShapePtr;</p>
+
+<p style="margin-left:11%; margin-top: 1em">typedef struct
+_XkbBounds {</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="17%"></col>
+<col width="-9%"></col>
+<col width="7%" class="center"></col>
+<col width="8%"></col>
+<col width="8%" class="center"></col>
+<col width="7%"></col>
+<col width="62%"></col>
+</colgroup>
+<tr valign="top" align="left">
+
+
+<p>short</p><td></td>
+<td></td>
+<td></td>
+<td>
+
+
+<p>x1,y1;</p></td>
+<td></td>
+<td></td>
+<td>
+
+
+<p>/&lowast; upper left corner of the bounds, in mm/10 */
+<br/>
+short</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td></td>
+<td></td>
+<td>
+
+
+<p>x2,y2;</p></td>
+<td></td>
+<td></td>
+<td>
+
+
+<p>/&lowast; lower right corner of the bounds, in mm/10
+*/</p> </td></tr>
+</table>
+
+<p style="margin-left:11%;">} XkbBoundsRec,
+*XkbBoundsPtr;</p>
+
+<h2 id="heading6">SEE ALSO
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XkbComputeRowBounds.3.xhtml"><em>XkbComputeRowBounds</em>(3)</a></p>
+<hr/>
+</body>
+</html>

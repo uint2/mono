@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:38:52 2012 -->
+<title>XdbeGetBackBufferAttributes</title>
+
+</head>
+<body>
+
+<h1>XdbeGetBackBufferAttributes</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNOPSIS</a><br/>
+<a href="#heading3">DESCRIPTION</a><br/>
+<a href="#heading4">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">XdbeGetBackBufferAttributes
+- returns attributes of a DBE buffer.</p>
+
+<h2 id="heading2">SYNOPSIS
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">#include
+&lt;X11/extensions/Xdbe.h&gt;</p>
+
+
+<p style="margin-left:11%; margin-top: 1em">XdbeBackBufferAttributes
+*XdbeGetBackBufferAttributes( <br/>
+Display *dpy, <br/>
+XdbeBackBuffer buffer)</p>
+
+<h2 id="heading3">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">This function
+returns the attributes associated with the specified
+buffer.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XdbeBackBufferAttributes</i> structure has the following
+fields:</p>
+
+<p style="margin-left:22%; margin-top: 1em">Window window
+window that buffer belongs to</p>
+
+<p style="margin-left:11%; margin-top: 1em">If buffer is
+not a valid <i>XdbeBackBuffer,</i> window returns None.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The returned
+<i>XdbeBackBufferAttributes</i> structure can be freed with
+the Xlib function <b>Xfree().</b></p>
+
+<h2 id="heading4">SEE ALSO
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">DBE,
+<i>XdbeAllocateBackBufferName(), XdbeBeginIdiom(),
+XdbeDeallocateBackBufferName(), XdbeEndIdiom(),
+XdbeFreeVisualInfo(), XdbeGetVisualInfo(),
+XdbeQueryExtension(), XdbeSwapBuffers().</i></p>
+<hr/>
+</body>
+</html>

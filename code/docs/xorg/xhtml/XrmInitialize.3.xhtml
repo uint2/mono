@@ -1,0 +1,480 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:24:27 2012 -->
+<title>XrmInitialize</title>
+
+</head>
+<body>
+
+<h1>XrmInitialize</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNTAX</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">STRUCTURES</a><br/>
+<a href="#heading6">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">XrmInitialize,
+XrmParseCommand, XrmValue, XrmOptionKind, XrmOptionDescRec
+&minus; initialize the Resource Manager, Resource Manager
+structures, and parse the command line</p>
+
+<h2 id="heading2">SYNTAX
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="89%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">void XrmInitialize(void);</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">void XrmParseCommand(XrmDatabase
+*<i>database</i>, XrmOptionDescList <i>table</i>, int
+<i>table_count</i>, char *<i>name</i>, int
+*<i>argc_in_out</i>, char **<i>argv_in_out</i>);</p></td></tr>
+</table>
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>argc_in_out</i></p>
+
+<p style="margin-left:26%;">Specifies the number of
+arguments and returns the number of remaining arguments.</p>
+
+<p style="margin-left:11%;"><i>argv_in_out</i></p>
+
+<p style="margin-left:26%;">Specifies the command line
+arguments and returns the remaining arguments.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="12%"></col>
+<col width="3%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>database</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the resource database.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>name</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the application name.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>table</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the table of command line arguments to be
+parsed.</p> </td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>table_count</i></p>
+
+<p style="margin-left:26%;">Specifies the number of entries
+in the table.</p>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XrmInitialize</i> function initialize the resource
+manager. It must be called before any other Xrm functions
+are used.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XrmParseCommand</i> function parses an (argc, argv) pair
+according to the specified option table, loads recognized
+options into the specified database with type
+&lsquo;&lsquo;String,&rsquo;&rsquo; and modifies the (argc,
+argv) pair to remove all recognized options. If database
+contains NULL, <i>XrmParseCommand</i> creates a new database
+and returns a pointer to it. Otherwise, entries are added to
+the database specified. If a database is created, it is
+created in the current locale.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The specified
+table is used to parse the command line. Recognized options
+in the table are removed from argv, and entries are added to
+the specified resource database in the order they occur in
+argv. The table entries contain information on the option
+string, the option name, the style of option, and a value to
+provide if the option kind is <i>XrmoptionNoArg</i>. The
+option names are compared byte-for-byte to arguments in
+argv, independent of any locale. The resource values given
+in the table are stored in the resource database without
+modification. All resource database entries are created
+using a &lsquo;&lsquo;String&rsquo;&rsquo; representation
+type. The argc argument specifies the number of arguments in
+argv and is set on return to the remaining number of
+arguments that were not parsed. The name argument should be
+the name of your application for use in building the
+database entry. The name argument is prefixed to the
+resourceName in the option table before storing a database
+entry. The name argument is treated as a single component,
+even if it has embedded periods. No separating (binding)
+character is inserted, so the table must contain either a
+period (.) or an asterisk (*) as the first character in each
+resourceName entry. To specify a more completely qualified
+resource name, the resourceName entry can contain multiple
+components. If the name argument and the resourceNames are
+not in the Host Portable Character Encoding, the result is
+implementation-dependent.</p>
+
+<h2 id="heading5">STRUCTURES
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XrmValue</i>, <i>XrmOptionKind</i>, and
+<i>XrmOptionDescRec</i> structures contain:</p>
+
+<p style="margin-left:11%; margin-top: 1em">typedef struct
+{</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="8%"></col>
+<col width="38%"></col>
+<col width="54%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>unsigned int size;</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>XPointer addr;</p></td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:11%;">} XrmValue, *XrmValuePtr;</p>
+
+<p style="margin-left:11%; margin-top: 1em">typedef enum
+{</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="8%"></col>
+<col width="30%"></col>
+<col width="62%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>XrmoptionNoArg,</p></td>
+<td>
+
+
+<p>/* Value is specified in XrmOptionDescRec.value */</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>XrmoptionIsArg,</p></td>
+<td>
+
+
+<p>/* Value is the option string itself */</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>XrmoptionStickyArg,</p></td>
+<td>
+
+
+<p>/* Value is characters immediately following option
+*/</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>XrmoptionSepArg,</p></td>
+<td>
+
+
+<p>/* Value is next argument in argv */</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>XrmoptionResArg,</p></td>
+<td>
+
+
+<p>/* Resource and value in next argument in argv */</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>XrmoptionSkipArg,</p></td>
+<td>
+
+
+<p>/* Ignore this option and the next argument in argv
+*/</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>XrmoptionSkipLine,</p></td>
+<td>
+
+
+<p>/* Ignore this option and the rest of argv */</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>XrmoptionSkipNArgs</p></td>
+<td>
+
+
+<p>/* Ignore this option and the next</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+</td>
+<td>
+
+
+<p>&nbsp;&nbsp;&nbsp;XrmOptionDescRec.value arguments in
+argv */</p></td></tr>
+</table>
+
+<p style="margin-left:11%;">} XrmOptionKind;</p>
+
+<p style="margin-left:11%; margin-top: 1em">typedef struct
+{</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="8%"></col>
+<col width="30%"></col>
+<col width="62%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>char *option;</p></td>
+<td>
+
+
+<p>/* Option specification string in argv */</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>char *specifier;</p></td>
+<td>
+
+
+<p>/* Binding and resource name (sans application name)
+*/</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>XrmOptionKind argKind;/* Which style of option it is
+*/</p> </td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>XPointer value;</p></td>
+<td>
+
+
+<p>/* Value to provide if XrmoptionNoArg or</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+</td>
+<td>
+
+
+<p>&nbsp;&nbsp;&nbsp;XrmoptionSkipNArgs */</p></td></tr>
+</table>
+
+<p style="margin-left:11%;">} XrmOptionDescRec,
+*XrmOptionDescList;</p>
+
+<h2 id="heading6">SEE ALSO
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XrmGetResource.3.xhtml"><em>XrmGetResource</em>(3)</a>,
+<a href="../man3/XrmMergeDatabases.3.xhtml"><em>XrmMergeDatabases</em>(3)</a>, <a href="../man3/XrmPutResource.3.xhtml"><em>XrmPutResource</em>(3)</a>, <a href="../man3/XrmUniqueQuark.3.xhtml"><em>XrmUniqueQuark</em>(3)</a>
+<i><br/>
+<a href="../../libX11/libX11/libX11.html">Xlib &minus; C Language X Interface</a></i></p>
+<hr/>
+</body>
+</html>

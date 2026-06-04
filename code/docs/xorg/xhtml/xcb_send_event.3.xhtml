@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:43:19 2012 -->
+<title>xcb_send_event</title>
+
+</head>
+<body>
+
+<h1>xcb_send_event</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNOPSIS</a><br/>
+<a href="#heading3">REQUEST ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">RETURN VALUE</a><br/>
+<a href="#heading6">ERRORS</a><br/>
+<a href="#heading7">EXAMPLE</a><br/>
+<a href="#heading8">SEE ALSO</a><br/>
+<a href="#heading9">AUTHOR</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">xcb_send_event
+&minus; send an event</p>
+
+<h2 id="heading2">SYNOPSIS
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>#include
+&lt;xcb/xproto.h&gt;</b></p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>Request
+function</b></p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="86%"></col>
+<col width="3%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>xcb_void_cookie_t
+<b>xcb_send_event</b>(xcb_connection_t&nbsp;*<i>conn</i>,
+uint8_t&nbsp;<i>propagate</i>,
+xcb_window_t&nbsp;<i>destination</i>,
+uint32_t&nbsp;<i>event_mask</i>, const
+char&nbsp;*<i>event</i>);</p> </td>
+<td>
+</td></tr>
+</table>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="14%"></col>
+<col width="1%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+
+
+<h2 id="heading3">REQUEST ARGUMENTS
+</h2>
+<td></td>
+<td></td>
+<td></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>conn</i></p></td>
+<td></td>
+<td>
+
+
+<p>The XCB connection to X11.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>propagate</i></p></td>
+<td></td>
+<td>
+
+
+<p>If <i>propagate</i> is true and no clients have selected
+any event on <i>destination</i>, the destination is replaced
+with the closest ancestor of <i>destination</i> for which
+some client has selected a type in <i>event_mask</i> and for
+which no intervening window has that type in its
+do-not-propagate-mask. If no such window exists or if the
+window is an ancestor of the focus window and
+<i>InputFocus</i> was originally specified as the
+destination, the event is not sent to any clients.
+Otherwise, the event is reported to every client selecting
+on the final destination any of the types specified in
+<i>event_mask</i>.</p> </td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>destination</i></p>
+
+<p style="margin-left:26%;">The window to send this event
+to. Every client which selects any event within
+<i>event_mask</i> on <i>destination</i> will get the
+event.</p>
+
+<p style="margin-left:26%; margin-top: 1em">The special
+value <i>XCB_SEND_EVENT_DEST_POINTER_WINDOW</i> refers to
+the window that contains the mouse pointer.</p>
+
+<p style="margin-left:26%; margin-top: 1em">The special
+value <i>XCB_SEND_EVENT_DEST_ITEM_FOCUS</i> refers to the
+window which has the keyboard focus.</p>
+
+<p style="margin-left:11%;"><i>event_mask</i></p>
+
+<p style="margin-left:26%;">Event_mask for determining
+which clients should receive the specified event. See
+<i>destination</i> and <i>propagate</i>.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="7%"></col>
+<col width="8%" class="center"></col>
+<col width="72%"></col>
+<col width="2%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>event</i></p></td>
+<td></td>
+<td>
+
+
+<p>The event to send to the specified
+<i>destination</i>.</p> </td>
+<td>
+</td></tr>
+</table>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Identifies the
+<i>destination</i> window, determines which clients should
+receive the specified event and ignores any active
+grabs.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>event</i> must be one of the core events or an event
+defined by an extension, so that the X server can correctly
+byte-swap the contents as necessary. The contents of
+<i>event</i> are otherwise unaltered and unchecked except
+for the <i>send_event</i> field which is forced to
+&rsquo;true&rsquo;.</p>
+
+<h2 id="heading5">RETURN VALUE
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Returns an
+<i>xcb_void_cookie_t</i>. Errors (if any) have to be handled
+in the event loop.</p>
+
+<p style="margin-left:11%; margin-top: 1em">If you want to
+handle errors directly with <i>xcb_request_check</i>
+instead, use <i>xcb_send_event_checked</i>. See
+<b>xcb-<a href="../man3/requests.3.xhtml"><em>requests</em>(3)</a></b> for details.</p>
+
+<h2 id="heading6">ERRORS
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>xcb_window_error_t</i></p>
+
+<p style="margin-left:26%;">The specified
+<i>destination</i> window does not exist.</p>
+
+<p style="margin-left:11%;"><i>xcb_value_error_t</i></p>
+
+<p style="margin-left:26%;">The given <i>event</i> is
+neither a core event nor an event defined by an
+extension.</p>
+
+<h2 id="heading7">EXAMPLE
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">/* <br/>
+* Tell the given window that it was configured to a size of
+800x600 pixels. <br/>
+* <br/>
+*/ <br/>
+void my_example(xcb_connection_t *conn, xcb_window_t window)
+{ <br/>
+/* Every X11 event is 32 bytes long. Therefore, XCB will
+copy 32 bytes. <br/>
+* In order to properly initialize these bytes, we allocate
+32 bytes even <br/>
+* though we only need less for an
+xcb_configure_notify_event_t */ <br/>
+xcb_configure_notify_event_t *event = calloc(32, 1);</p>
+
+
+<p style="margin-left:11%; margin-top: 1em">event-&gt;event
+= window; <br/>
+event-&gt;window = window; <br/>
+event-&gt;response_type = XCB_CONFIGURE_NOTIFY;</p>
+
+<p style="margin-left:11%; margin-top: 1em">event-&gt;x =
+0; <br/>
+event-&gt;y = 0; <br/>
+event-&gt;width = 800; <br/>
+event-&gt;height = 600;</p>
+
+
+<p style="margin-left:11%; margin-top: 1em">event-&gt;border_width
+= 0; <br/>
+event-&gt;above_sibling = XCB_NONE; <br/>
+event-&gt;override_redirect = false;</p>
+
+
+<p style="margin-left:11%; margin-top: 1em">xcb_send_event(conn,
+false, window, XCB_EVENT_MASK_STRUCTURE_NOTIFY, <br/>
+(char*)event); <br/>
+xcb_flush(conn); <br/>
+free(event); <br/>
+}</p>
+
+<h2 id="heading8">SEE ALSO
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/xcb-requests.3.xhtml"><em>xcb-requests</em>(3)</a>,
+<a href="../man3/xcb-examples.3.xhtml"><em>xcb-examples</em>(3)</a>,
+<a href="../man3/xcb_configure_notify_event_t.3.xhtml"><em>xcb_configure_notify_event_t</em>(3)</a></p>
+
+<h2 id="heading9">AUTHOR
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Generated from
+xproto.xml. Contact xcb@lists.freedesktop.org for
+corrections and improvements.</p>
+<hr/>
+</body>
+</html>

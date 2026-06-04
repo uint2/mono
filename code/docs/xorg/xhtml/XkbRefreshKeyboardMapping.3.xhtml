@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:33:15 2012 -->
+<title>XkbRefreshKeyboardMapping</title>
+
+</head>
+<body>
+
+<h1>XkbRefreshKeyboardMapping</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNOPSIS</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">RETURN VALUES</a><br/>
+<a href="#heading6">DIAGNOSTICS</a><br/>
+<a href="#heading7">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">XkbRefreshKeyboardMapping
+&minus; Update the keyboard description that is internal to
+the X library</p>
+
+<h2 id="heading2">SYNOPSIS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="49%"></col>
+<col width="2%" class="center"></col>
+<col width="38%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>Status
+XkbRefreshKeyboardMapping</b></p> </td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>(XkbMapNotifyEvent
+*</b><i>event</i><b>);</b></p> </td></tr>
+</table>
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b><i>&minus;
+event</i></b></p>
+
+<p style="margin-left:22%;">event initiating remapping</p>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XkbRefreshKeyboardMapping</i>
+is the Xkb equivalent of the core
+<i>XRefreshKeyboardMapping</i> function. It requests that
+the X server send the current key mapping information to
+this client. A client usually invokes
+<i>XkbRefreshKeyboardMapping</i> after receiving an
+XkbMapNotify event. <i>XkbRefreshKeyboardMapping</i> returns
+Success if it succeeds and BadMatch if the event is not an
+Xkb event.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+XkbMapNotify event can be generated when some client calls
+<i>XkbSetMap, XkbChangeMap, XkbGetKeyboardByName,</i> or any
+of the standard X library functions that change the keyboard
+mapping or modifier mapping.</p>
+
+<h2 id="heading5">RETURN VALUES
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="11%"></col>
+<col width="12%" class="center"></col>
+<col width="66%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Success</p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">The
+<i>XkbRefreshKeyboardMapping</i> function returns Success
+when the request that the X server send the current key
+mapping information to this client is successful.</p></td></tr>
+</table>
+
+<h2 id="heading6">DIAGNOSTICS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="12%"></col>
+<col width="11%" class="center"></col>
+<col width="66%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>BadMatch</b></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">A compatible version of Xkb was
+not available in the server or an argument has correct type
+and range, but is otherwise invalid</p></td></tr>
+</table>
+
+<h2 id="heading7">SEE ALSO
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XkbChangeMap.3.xhtml"><em>XkbChangeMap</em>(3)</a>,
+<a href="../man3/XkbGetKeyboardByName.3.xhtml"><em>XkbGetKeyboardByName</em>(3)</a>, <a href="../man3/XkbSetMap.3.xhtml"><em>XkbSetMap</em>(3)</a>,
+<a href="../man3/XRefreshKeyboardMapping.3.xhtml"><em>XRefreshKeyboardMapping</em>(3)</a></p>
+<hr/>
+</body>
+</html>

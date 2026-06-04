@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:26:39 2012 -->
+<title>XkbChangeDeviceInfo</title>
+
+</head>
+<body>
+
+<h1>XkbChangeDeviceInfo</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNOPSIS</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">STRUCTURES</a><br/>
+<a href="#heading6">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">XkbChangeDeviceInfo
+&minus; Update the server&rsquo;s description of a device
+with the changes noted in an XkbDeviceChangesRec</p>
+
+<h2 id="heading2">SYNOPSIS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="37%"></col>
+<col width="1%" class="center"></col>
+<col width="51%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>Bool
+XkbChangeDeviceInfo</b></p> </td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>(Display *</b><i>dpy</i><b>,
+XkbDeviceInfoPtr</b> <i>device_info</i><b>,</b></p></td></tr>
+</table>
+
+<p style="margin-left:11%;"><b>XkbDeviceChangesPtr</b>
+<i>changes</i><b>);</b></p>
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="7%"></col>
+<col width="4%" class="center"></col>
+<col width="33%"></col>
+<col width="45%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b><i>&minus; dpy</i></b></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">connection to X server</p></td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>&minus; device_info</i></p>
+
+<p style="margin-left:22%;">local copy of device state and
+configuration</p>
+
+<p style="margin-left:11%;"><i>&minus; changes</i></p>
+
+<p style="margin-left:22%;">note specifying changes in
+device_info</p>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XkbChangeDeviceInfo</i>
+updates the server&rsquo;s description of the device
+specified in <i>device_info-&gt;device_spec</i> with the
+changes specified in <i>changes</i> and contained in
+<i>device_info.</i> The update is made by an
+<i>XkbSetDeviceInfo</i> request.</p>
+
+<h2 id="heading5">STRUCTURES
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Changes to an
+Xkb extension device may be tracked by listening to
+XkbDeviceExtensionNotify events and accumulating the changes
+in an XkbDeviceChangesRec structure. The changes noted in
+the structure may then be used in subsequent operations to
+update either a server configuration or a local copy of an
+Xkb extension device configuration. The changes structure is
+defined as follows:</p>
+
+<p style="margin-left:11%; margin-top: 1em">typedef struct
+_XkbDeviceChanges { <br/>
+unsigned int changed; /&lowast; bits indicating what has
+changed */ <br/>
+unsigned short first_btn; /&lowast; number of first button
+which changed, if any */ <br/>
+unsigned short num_btns; /&lowast; number of buttons that
+have changed */ <br/>
+XkbDeviceLedChangesRec leds; <br/>
+} XkbDeviceChangesRec,*XkbDeviceChangesPtr;</p>
+
+<h2 id="heading6">SEE ALSO
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XkbSetDeviceInfo.3.xhtml"><em>XkbSetDeviceInfo</em>(3)</a></p>
+<hr/>
+</body>
+</html>

@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:29:34 2012 -->
+<title>XkbSetXlibControls</title>
+
+</head>
+<body>
+
+<h1>XkbSetXlibControls</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNOPSIS</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">RETURN VALUES</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">XkbSetXlibControls
+&minus; Changes the state of the Library Controls</p>
+
+<h2 id="heading2">SYNOPSIS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="52%"></col>
+<col width="3%" class="center"></col>
+<col width="34%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>unsigned int
+XkbSetXlibControls</b></p> </td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>(Display
+*</b><i>display</i><b>, unsigned long</b></p></td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>bits_to_change</i><b>,
+unsigned long</b> <i>values_for_bits</i><b>);</b></p>
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b><i>&minus;
+display</i></b></p>
+
+<p style="margin-left:22%;">connection to X server</p>
+
+<p style="margin-left:11%;"><i>&minus;
+bits_to_change</i></p>
+
+<p style="margin-left:22%;">selects controls to be
+modified</p>
+
+<p style="margin-left:11%;"><i>&minus;
+values_for_bits</i></p>
+
+<p style="margin-left:22%;">turns selected controls on (1)
+or off (0)</p>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XkbSetXlibControls</i>
+modifies the state of the controls selected by
+<i>bits_to_change;</i> only the controls selected by
+<i>bits_to_change</i> are modified. If the bit corresponding
+to a control is on in <i>bits_to_change</i> and also on in
+<i>values_for_bits,</i> the control is enabled. If the bit
+corresponding to a control is on in <i>bits_to_change</i>
+but off in <i>values_for_bits,</i> the control is disabled.
+<i>bits_to_change</i> should be an inclusive OR of bits from
+Table 1.</p>
+
+
+<p class="center" style="margin-top: 1em"><img src="grohtml-166121.png" alt="Image grohtml-166121.png"></img></p>
+
+<h2 id="heading5">RETURN VALUES
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="18%"></col>
+<col width="5%" class="center"></col>
+<col width="48%"></col>
+<col width="18%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">(1 &lt;&lt; 0)</p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">XkbLC_ForceLatin1Lookup</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>(1 &lt;&lt; 1)</p></td>
+<td></td>
+<td>
+
+
+<p>XkbLC_ConsumeLookupMods</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>(1 &lt;&lt; 2)</p></td>
+<td></td>
+<td>
+
+
+<p>XkbLC_AlwaysConsumeShiftAndLock</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>(1 &lt;&lt; 3)</p></td>
+<td></td>
+<td>
+
+
+<p>XkbLC_IgnoreNewKeyboards</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>(1 &lt;&lt; 29)</p></td>
+<td></td>
+<td>
+
+
+<p>XkbLC_ConsumeKeysOnComposeFail</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>(1 &lt;&lt; 30)</p></td>
+<td></td>
+<td>
+
+
+<p>XkbLC_ComposeLED</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>(1 &lt;&lt; 31)</p></td>
+<td></td>
+<td>
+
+
+<p>XkbLC_BeepOnComposeFail</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>(0xc0000007)</p></td>
+<td></td>
+<td>
+
+
+<p>XkbLC_AllControls</p></td>
+<td>
+</td></tr>
+ </table>
+<hr/>
+</body>
+</html>

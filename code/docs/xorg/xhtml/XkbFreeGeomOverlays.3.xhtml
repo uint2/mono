@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:40:10 2012 -->
+<title>XkbFreeGeomOverlays</title>
+
+</head>
+<body>
+
+<h1>XkbFreeGeomOverlays</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNOPSIS</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">RETURN VALUES</a><br/>
+<a href="#heading6">DIAGNOSTICS</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">XkbFreeGeomOverlays
+&minus; Free rows in a section</p>
+
+<h2 id="heading2">SYNOPSIS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="38%"></col>
+<col width="2%" class="center"></col>
+<col width="49%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>void
+XkbFreeGeomOverlays</b></p> </td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>(XkbSectionPtr</b>
+<i>section</i><b>, int</b> <i>first</i><b>, int</b>
+<i>count</i><b>,</b></p> </td></tr>
+</table>
+
+<p style="margin-left:11%;"><b>Bool</b>
+<i>free_all</i><b>);</b></p>
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b><i>&minus;
+section</i></b></p>
+
+<p style="margin-left:22%;">section in which overlays
+should be freed</p>
+
+<p style="margin-left:11%;"><i>&minus; first</i></p>
+
+<p style="margin-left:22%;">first overlay to be freed</p>
+
+<p style="margin-left:11%;"><i>&minus; count</i></p>
+
+<p style="margin-left:22%;">number of overlays to be
+freed</p>
+
+<p style="margin-left:11%;"><i>&minus; free_all</i></p>
+
+<p style="margin-left:22%;">True =&gt; all overlays are
+freed</p>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Xkb provides a
+number of functions to allocate and free subcomponents of a
+keyboard geometry. Use these functions to create or modify
+keyboard geometries. Note that these functions merely
+allocate space for the new element(s), and it is up to you
+to fill in the values explicitly in your code. These
+allocation functions increase <i>sz_*</i> but never touch
+<i>num_*</i> (unless there is an allocation failure, in
+which case they reset both <i>sz_*</i> and <i>num_*</i> to
+zero). These functions return Success if they succeed,
+BadAlloc if they are not able to allocate space, or BadValue
+if a parameter is not as expected.</p>
+
+<p style="margin-left:11%; margin-top: 1em">If
+<i>free_all</i> is True, all overlays are freed regardless
+of the value of <i>first</i> and <i>count.</i> Otherwise,
+the number of overlays specified by <i>count</i> are freed,
+beginning with the overlay specified by <i>first</i> in the
+specified section.</p>
+
+<h2 id="heading5">RETURN VALUES
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="11%"></col>
+<col width="12%" class="center"></col>
+<col width="66%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Success</p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">The XkbFreeGeomOverlays
+functions returns Success if there are no allocation or
+argument errors.</p></td></tr>
+</table>
+
+<h2 id="heading6">DIAGNOSTICS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="12%"></col>
+<col width="11%" class="center"></col>
+<col width="41%"></col>
+<col width="25%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>BadAlloc</b></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Unable to allocate storage</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><b>BadValue</b></p></td>
+<td></td>
+<td>
+
+
+<p>An argument is out of range</p></td>
+<td>
+</td></tr>
+ </table>
+<hr/>
+</body>
+</html>

@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:23:47 2012 -->
+<title>XkbSAScreen</title>
+
+</head>
+<body>
+
+<h1>XkbSAScreen</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNOPSIS</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">STRUCTURES</a><br/>
+<a href="#heading6">NOTES</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">XkbSAScreen
+&minus; Returns the screenXXX field of act converted to a
+signed int</p>
+
+<h2 id="heading2">SYNOPSIS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="23%"></col>
+<col width="1%" class="center"></col>
+<col width="43%"></col>
+<col width="22%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>int XkbSAScreen</b></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>(XkbSwitchScreenAction</b>
+<i>act</i><b>);</b></p> </td>
+<td>
+</td></tr>
+</table>
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="7%"></col>
+<col width="4%" class="center"></col>
+<col width="53%"></col>
+<col width="25%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b><i>&minus; act</i></b></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">action from which to extract
+screen</p> </td>
+<td>
+</td></tr>
+</table>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Actions
+associated with the XkbSwitchScreen action structure change
+the active screen on a multiscreen display.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The <i>type</i>
+field of the XkbSwitchScreenAction structure should always
+be XkbSA_SwitchScreen.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>flags</i> field is composed of the bitwise inclusive OR
+of the masks shown in Table 1.</p>
+
+
+<p class="center" style="margin-top: 1em"><img src="grohtml-44451.png" alt="Image grohtml-44451.png"></img></p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>screenXXX</i> field is a signed character value that
+represents either the relative or absolute screen index,
+depending on the state of the XkbSA_SwitchAbsolute bit in
+the <i>flags</i> field. Xkb provides the following macros to
+convert between the integer and signed character value for
+screen numbers in XkbSwitchScreenAction structures.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XkbSAScreen</i>
+macro returns the <i>screenXXX</i> field of <i>act</i>
+converted to a signed int.</p>
+
+<h2 id="heading5">STRUCTURES
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">typedef struct
+_XkbSwitchScreenAction { <br/>
+unsigned char type; /&lowast; XkbSA_SwitchScreen */ <br/>
+unsigned char flags; /&lowast; controls screen switching */
+<br/>
+char screenXXX; /&lowast; screen number or delta */ <br/>
+} XkbSwitchScreenAction;</p>
+
+<h2 id="heading6">NOTES
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The
+XkbSwitchScreen action is optional. Servers are free to
+ignore the action or any of its flags if they do not support
+the requested behavior. If the action is ignored, it behaves
+like XkbSA_NoAction. Otherwise, key press and key release
+events do not generate an event.</p>
+<hr/>
+</body>
+</html>

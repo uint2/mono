@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:31:37 2012 -->
+<title>XtOffset</title>
+
+</head>
+<body>
+
+<h1>XtOffset</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNTAX</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">XtOffset,
+XtOffsetOf, XtNumber &minus; determine the byte offset or
+number of array elements</p>
+
+<h2 id="heading2">SYNTAX
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="89%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Cardinal XtOffset(Type
+<i>pointer_type</i>, Field <i>field_name</i>);</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Cardinal XtOffsetOf(Type
+<i>structure_type</i>, Field <i>field_name</i>);</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Cardinal XtNumber(ArrayVariable
+<i>array</i>);</p> </td></tr>
+</table>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="7%"></col>
+<col width="8%" class="center"></col>
+<col width="45%"></col>
+<col width="29%"></col>
+</colgroup>
+<tr valign="top" align="left">
+
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+<td></td>
+<td></td>
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>array</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies a fixed-size array.</p></td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>field_name</i></p>
+
+<p style="margin-left:26%;">Specifies the name of the field
+for which to calculate the byte offset.</p>
+
+<p style="margin-left:11%;"><i>pointer_type</i></p>
+
+<p style="margin-left:26%;">Specifies a type that is
+declared as a pointer to the structure.</p>
+
+<p style="margin-left:11%;"><i>structure_type</i></p>
+
+<p style="margin-left:26%;">Specifies a type that is
+declared as a structure.</p>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XtOffset</i> macro is usually used to determine the
+offset of various resource fields from the beginning of a
+widget and can be used at compile time in static
+initializations.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XtOffsetOf</i> macro expands to a constant expression
+that gives the offset in bytes to the specified structure
+member from the beginning of the structure. It is normally
+used to statically initialize resource lists and is more
+portable than <i>XtOffset</i>, which serves the same
+function.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XtNumber</i> macro returns the number of elements in the
+specified argument lists, resources lists, and other counted
+arrays.</p>
+
+<h2 id="heading5">SEE ALSO
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XtGetResourceList.3.xhtml"><em>XtGetResourceList</em>(3)</a>,
+<a href="../man3/XtSetArg.3.xhtml"><em>XtSetArg</em>(3)</a> <i><br/>
+X Toolkit Intrinsics &minus; C Language Interface <br/>
+<a href="../../libX11/libX11/libX11.html">Xlib &minus; C Language X Interface</a></i></p>
+<hr/>
+</body>
+</html>

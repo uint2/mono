@@ -1,0 +1,377 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:42:38 2012 -->
+<title>xcb_grab_button</title>
+
+</head>
+<body>
+
+<h1>xcb_grab_button</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNOPSIS</a><br/>
+<a href="#heading3">REQUEST ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">RETURN VALUE</a><br/>
+<a href="#heading6">ERRORS</a><br/>
+<a href="#heading7">SEE ALSO</a><br/>
+<a href="#heading8">AUTHOR</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">xcb_grab_button
+&minus; Grab pointer button(s)</p>
+
+<h2 id="heading2">SYNOPSIS
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>#include
+&lt;xcb/xproto.h&gt;</b></p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>Request
+function</b></p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="89%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>xcb_void_cookie_t
+<b>xcb_grab_button</b>(xcb_connection_t&nbsp;*<i>conn</i>,
+uint8_t&nbsp;<i>owner_events</i>,
+xcb_window_t&nbsp;<i>grab_window</i>,
+uint16_t&nbsp;<i>event_mask</i>,
+uint8_t&nbsp;<i>pointer_mode</i>,
+uint8_t&nbsp;<i>keyboard_mode</i>,
+xcb_window_t&nbsp;<i>confine_to</i>,
+xcb_cursor_t&nbsp;<i>cursor</i>, uint8_t&nbsp;<i>button</i>,
+uint16_t&nbsp;<i>modifiers</i>);</p> </td></tr>
+</table>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="6%"></col>
+<col width="9%" class="center"></col>
+<col width="40%"></col>
+<col width="34%"></col>
+</colgroup>
+<tr valign="top" align="left">
+
+
+<h2 id="heading3">REQUEST ARGUMENTS
+</h2>
+<td></td>
+<td></td>
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>conn</i></p></td>
+<td></td>
+<td>
+
+
+<p>The XCB connection to X11.</p></td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>owner_events</i></p>
+
+<p style="margin-left:26%;">If 1, the <i>grab_window</i>
+will still get the pointer events. If 0, events are not
+reported to the <i>grab_window</i>.</p>
+
+<p style="margin-left:11%;"><i>grab_window</i></p>
+
+<p style="margin-left:26%;">Specifies the window on which
+the pointer should be grabbed.</p>
+
+<p style="margin-left:11%;"><i>event_mask</i></p>
+
+<p style="margin-left:26%;">Specifies which pointer events
+are reported to the client.</p>
+
+<p style="margin-left:26%; margin-top: 1em">TODO: which
+values?</p>
+
+<p style="margin-left:11%;"><i>pointer_mode</i></p>
+
+<p style="margin-left:26%;">One of the following values:
+<i><br/>
+XCB_GRAB_MODE_SYNC</i></p>
+
+<p style="margin-left:42%;">The state of the keyboard
+appears to freeze: No further keyboard events are generated
+by the server until the grabbing client issues a releasing
+<i>AllowEvents</i> request or until the keyboard grab is
+released.</p>
+
+<p style="margin-left:26%;"><i>XCB_GRAB_MODE_ASYNC</i></p>
+
+<p style="margin-left:42%;">Keyboard event processing
+continues normally.</p>
+
+<p style="margin-left:11%;"><i>keyboard_mode</i></p>
+
+<p style="margin-left:26%;">One of the following values:
+<i><br/>
+XCB_GRAB_MODE_SYNC</i></p>
+
+<p style="margin-left:42%;">The state of the keyboard
+appears to freeze: No further keyboard events are generated
+by the server until the grabbing client issues a releasing
+<i>AllowEvents</i> request or until the keyboard grab is
+released.</p>
+
+<p style="margin-left:26%;"><i>XCB_GRAB_MODE_ASYNC</i></p>
+
+<p style="margin-left:42%;">Keyboard event processing
+continues normally.</p>
+
+<p style="margin-left:11%;"><i>confine_to</i></p>
+
+<p style="margin-left:26%;">Specifies the window to confine
+the pointer in (the user will not be able to move the
+pointer out of that window).</p>
+
+<p style="margin-left:26%; margin-top: 1em">The special
+value <i>XCB_NONE</i> means don&rsquo;t confine the
+pointer.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="9%"></col>
+<col width="6%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>cursor</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the cursor that should be displayed or
+<i>XCB_NONE</i> to not change the cursor.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>button</i></p></td>
+<td></td>
+<td>
+
+
+<p>One of the following values:</p></td></tr>
+</table>
+
+
+<p style="margin-left:26%;"><i>XCB_BUTTON_INDEX_ANY</i></p>
+
+<p style="margin-left:42%;">Any of the following (or
+none):</p>
+
+<p style="margin-left:26%;"><i>XCB_BUTTON_INDEX_1</i></p>
+
+<p style="margin-left:42%;">The left mouse button.</p>
+
+<p style="margin-left:26%;"><i>XCB_BUTTON_INDEX_2</i></p>
+
+<p style="margin-left:42%;">The right mouse button.</p>
+
+<p style="margin-left:26%;"><i>XCB_BUTTON_INDEX_3</i></p>
+
+<p style="margin-left:42%;">The middle mouse button.</p>
+
+<p style="margin-left:26%;"><i>XCB_BUTTON_INDEX_4</i></p>
+
+<p style="margin-left:42%;">Scroll wheel. TODO:
+direction?</p>
+
+<p style="margin-left:26%;"><i>XCB_BUTTON_INDEX_5</i></p>
+
+<p style="margin-left:42%;">Scroll wheel. TODO:
+direction?</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="14%"></col>
+<col width="1%" class="center"></col>
+<col width="34%"></col>
+<col width="40%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>modifiers</i></p></td>
+<td></td>
+<td>
+
+
+<p>The modifiers to grab.</p></td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:26%; margin-top: 1em">Using the
+special value <i>XCB_MOD_MASK_ANY</i> means grab the pointer
+with all possible modifier combinations.</p>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">This request
+establishes a passive grab. The pointer is actively grabbed
+as described in GrabPointer, the last-pointer-grab time is
+set to the time at which the button was pressed (as
+transmitted in the ButtonPress event), and the ButtonPress
+event is reported if all of the following conditions are
+true:</p>
+
+<p style="margin-left:11%; margin-top: 1em">The pointer is
+not grabbed and the specified button is logically pressed
+when the specified modifier keys are logically down, and no
+other buttons or modifier keys are logically down.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The grab-window
+contains the pointer.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The confine-to
+window (if any) is viewable.</p>
+
+<p style="margin-left:11%; margin-top: 1em">A passive grab
+on the same button/key combination does not exist on any
+ancestor of grab-window.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+interpretation of the remaining arguments is the same as for
+GrabPointer. The active grab is terminated automatically
+when the logical state of the pointer has all buttons
+released, independent of the logical state of modifier keys.
+Note that the logical state of a device (as seen by means of
+the protocol) may lag the physical state if device event
+processing is frozen. This request overrides all previous
+passive grabs by the same client on the same button/key
+combinations on the same window. A modifier of AnyModifier
+is equivalent to issuing the request for all possible
+modifier combinations (including the combination of no
+modifiers). It is not required that all specified modifiers
+have currently assigned keycodes. A button of AnyButton is
+equivalent to issuing the request for all possible buttons.
+Otherwise, it is not required that the button specified
+currently be assigned to a physical button.</p>
+
+<p style="margin-left:11%; margin-top: 1em">An Access error
+is generated if some other client has already issued a
+GrabButton request with the same button/key combination on
+the same window. When using AnyModifier or AnyButton, the
+request fails completely (no grabs are established), and an
+Access error is generated if there is a conflicting grab for
+any combination. The request has no effect on an active
+grab.</p>
+
+<h2 id="heading5">RETURN VALUE
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Returns an
+<i>xcb_void_cookie_t</i>. Errors (if any) have to be handled
+in the event loop.</p>
+
+<p style="margin-left:11%; margin-top: 1em">If you want to
+handle errors directly with <i>xcb_request_check</i>
+instead, use <i>xcb_grab_button_checked</i>. See
+<b>xcb-<a href="../man3/requests.3.xhtml"><em>requests</em>(3)</a></b> for details.</p>
+
+<h2 id="heading6">ERRORS
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>xcb_access_error_t</i></p>
+
+<p style="margin-left:26%;">Another client has already
+issued a GrabButton with the same button/key combination on
+the same window.</p>
+
+<p style="margin-left:11%;"><i>xcb_cursor_error_t</i></p>
+
+<p style="margin-left:26%;">The specified <i>cursor</i>
+does not exist.</p>
+
+<p style="margin-left:11%;"><i>xcb_window_error_t</i></p>
+
+<p style="margin-left:26%;">The specified <i>window</i>
+does not exist.</p>
+
+<p style="margin-left:11%;"><i>xcb_value_error_t</i></p>
+
+<p style="margin-left:26%;">TODO: reasons?</p>
+
+<h2 id="heading7">SEE ALSO
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/xcb-requests.3.xhtml"><em>xcb-requests</em>(3)</a></p>
+
+<h2 id="heading8">AUTHOR
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Generated from
+xproto.xml. Contact xcb@lists.freedesktop.org for
+corrections and improvements.</p>
+<hr/>
+</body>
+</html>

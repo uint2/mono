@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:23:28 2012 -->
+<title>XvQueryPortAttributes</title>
+
+</head>
+<body>
+
+<h1>XvQueryPortAttributes</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNOPSIS</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">RETURN VALUES</a><br/>
+<a href="#heading6">DIAGNOSTICS</a><br/>
+<a href="#heading7">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">XvQueryPortAttributes
+&minus; return list of attributes of a video port</p>
+
+<h2 id="heading2">SYNOPSIS
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>#include
+&lt;X11/extensions/Xvlib.h&gt;</b></p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>XvAttribute*
+XvQueryPortAttributes(Display *</b><i>dpy</i><b>, <br/>
+XvPortID</b> <i>port</i><b>, int
+*</b><i>p_num_attributes</i><b>);</b></p>
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="6%"></col>
+<col width="6%" class="center"></col>
+<col width="77%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b><i>dpy</i></b></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Specifies the connection to the
+X server.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>port</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the port whose adaptor is to be queried for
+its list of attributes.</p></td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>p_num_attributes</i></p>
+
+<p style="margin-left:23%;">A pointer to where the number
+of attributes returned in the array is written.</p>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XvQueryPortAttributes.3.xhtml"><em>XvQueryPortAttributes</em>(3)</a><b>returns</b>the<b>number</b>of<b>attributes</b>
+and an array of XvAttributes valid for the given port. The
+array may be freed with <a href="../man3/XFree.3.xhtml"><em>XFree</em>(3)</a>.</p>
+
+<h2 id="heading5">RETURN VALUES
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">XvAttribute has
+the following structure:</p>
+
+<pre style="margin-left:11%; margin-top: 1em">    typedef struct {
+      int flags;
+      int min_value;
+      int max_value;
+      char *name;
+    } XvAttribute;</pre>
+
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="7%"></col>
+<col width="5%" class="center"></col>
+<col width="77%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>flags</i></p></td>
+<td></td>
+<td>
+
+
+<p>May be XvGettable or XvSettable or both OR&rsquo;d
+together indicating the particular attribute is readable,
+writeable or readable and writeable.</p></td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>min_value</i></p>
+
+<p style="margin-left:23%;">The minimum attribute values
+which are valid for the driver.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="6%"></col>
+<col width="6%" class="center"></col>
+<col width="77%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+</td>
+<td></td>
+<td>
+
+
+<p>The maximum attribute values which are valid for the
+driver.</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>name</i></p></td>
+<td></td>
+<td>
+
+
+<p>A string describing the name of the attribute that may
+be used to retrieve the Atom for the particular
+attribute.</p> </td></tr>
+</table>
+
+<h2 id="heading6">DIAGNOSTICS
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">[XvBadPort]</p>
+
+<p style="margin-left:23%;">Generated if the requested port
+does not exist.</p>
+
+<h2 id="heading7">SEE ALSO
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XvGetPortAttribute.3.xhtml"><em>XvGetPortAttribute</em>(3)</a>,
+<a href="../man3/XvSetPortAttribute.3.xhtml"><em>XvSetPortAttribute</em>(3)</a></p>
+<hr/>
+</body>
+</html>

@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:42:05 2012 -->
+<title>XkbPtrActionX</title>
+
+</head>
+<body>
+
+<h1>XkbPtrActionX</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNOPSIS</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">STRUCTURES</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">XkbPtrActionX
+&minus; Returns the high_XXX and low_XXX fields of act
+converted to a signed int</p>
+
+<h2 id="heading2">SYNOPSIS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="26%"></col>
+<col width="1%" class="center"></col>
+<col width="30%"></col>
+<col width="32%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>int XkbPtrActionX</b></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>(XkbPtrAction</b>
+<i>act</i><b>);</b></p> </td>
+<td>
+</td></tr>
+</table>
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="7%"></col>
+<col width="4%" class="center"></col>
+<col width="46%"></col>
+<col width="32%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b><i>&minus; act</i></b></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">action from which to extract
+X</p> </td>
+<td>
+</td></tr>
+</table>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Actions
+associated with the XkbPtrAction structure move the pointer
+when keys are pressed and released.</p>
+
+<p style="margin-left:11%; margin-top: 1em">If the
+MouseKeys control is not enabled, KeyPress and KeyRelease
+events are treated as though the action is
+XkbSA_NoAction.</p>
+
+<p style="margin-left:11%; margin-top: 1em">If the
+MouseKeys control is enabled, a server action of type
+XkbSA_MovePtr instructs the server to generate core pointer
+MotionNotify events rather than the usual KeyPress event,
+and the corresponding KeyRelease event disables any mouse
+keys timers that were created as a result of handling the
+XkbSA_MovePtr action.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The <i>type</i>
+field of the XkbPtrAction structure is always
+XkbSA_MovePtr.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>flags</i> field is a bitwise inclusive OR of the masks
+shown in Table 1.</p>
+
+
+<p class="center" style="margin-top: 1em"><img src="grohtml-98911.png" alt="Image grohtml-98911.png"></img></p>
+
+<p style="margin-left:11%; margin-top: 1em">Each of the X
+and Y coordinates of the XkbPtrAction structure is composed
+of two signed 16-bit values, that is, the X coordinate is
+composed of <i>high_XXX</i> and <i>low_XXX,</i> and
+similarly for the Y coordinate. Xkb provides the following
+macros, to convert between a signed integer and two signed
+16-bit values in XkbPtrAction structures.</p>
+
+<h2 id="heading5">STRUCTURES
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">typedef struct
+_XkbPtrAction { <br/>
+unsigned char type; /&lowast; XkbSA_MovePtr */ <br/>
+unsigned char flags; /&lowast; determines type of pointer
+motion */ <br/>
+unsigned char high_XXX; /&lowast; x coordinate, high bits*/
+<br/>
+unsigned char low_XXX; /&lowast; y coordinate, low bits */
+<br/>
+unsigned char high_YYY; /&lowast; x coordinate, high bits */
+<br/>
+unsigned char low_YYY; /&lowast; y coordinate, low bits */
+<br/>
+} XkbPtrAction;</p>
+<hr/>
+</body>
+</html>

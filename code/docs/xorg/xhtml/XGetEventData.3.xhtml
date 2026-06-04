@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:28:19 2012 -->
+<title>XGetEventData</title>
+
+</head>
+<body>
+
+<h1>XGetEventData</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNTAX</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">STRUCTURES</a><br/>
+<a href="#heading5">DESCRIPTION</a><br/>
+<a href="#heading6">EXAMPLE CODE</a><br/>
+<a href="#heading7">NOTES</a><br/>
+<a href="#heading8">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">XGetEventData,
+XFreeEventData, XGenericEventCookie &minus; retrieve and
+free additional event data through cookies.</p>
+
+<h2 id="heading2">SYNTAX
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="89%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Bool XGetEventData(Display
+*<i>display</i>, XGenericEventCookie *<i>cookie</i>);</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">void XFreeEventData(Display
+*<i>display</i>, XGenericEventCookie *<i>cookie</i>);</p></td></tr>
+</table>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="11%"></col>
+<col width="4%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+<td></td>
+<td></td>
+<td></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>display</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the connection to the X server.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>cookie</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the cookie to free or retrieve the data
+for.</p> </td></tr>
+</table>
+
+<h2 id="heading4">STRUCTURES
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">typedef struct
+{</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="8%"></col>
+<col width="38%"></col>
+<col width="54%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>int type;</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>unsigned long serial;</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>Bool send_event;</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>Display *display;</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>int extension;</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>int evtype;</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>unsigned int cookie;</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>void *data;</p></td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:11%;">} XGenericEventCookie;</p>
+
+<h2 id="heading5">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Some extension
+<i>XGenericEvents</i> require additional memory to store
+information. For these events, the library returns a
+<i>XGenericEventCookie</i> with a token
+(&rsquo;cookie&rsquo;) unique to this event. The
+<i>XGenericEventCookie</i>&rsquo;s data pointer is undefined
+until <i>XGetEventData</i> is called.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XGetEventData</i> function retrieves this extra data for
+the given cookie. No round-trip to the server is required.
+If the cookie is invalid or the event is not an event
+handled by cookie handlers, <i>False</i> is returned. If
+<i>XGetEventData</i> returns <i>True</i>, the cookie&rsquo;s
+data pointer points to the memory containing the event
+information. A client must call <i>XFreeEventData</i> to
+free this memory. <i>XGetEventData</i> returns <i>False</i>
+for multiple calls for the same event cookie.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XFreeEventData</i> function frees the data associated
+with a cookie. A client must call <i>XFreeEventData</i> for
+each cookie claimed with <i>XGetEventData</i>.</p>
+
+<h2 id="heading6">EXAMPLE CODE
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">XEvent event;
+<br/>
+XGenericEventCookie *cookie = &amp;ev;</p>
+
+
+<p style="margin-left:11%; margin-top: 1em">XNextEvent(display,
+&amp;event); <br/>
+if (XGetEventData(display, cookie)) { <br/>
+handle_cookie_event(cookie-&gt;data); <br/>
+} else <br/>
+handle_event(&amp;event); <br/>
+} <br/>
+XFreeEventData(display, cookie);</p>
+
+<h2 id="heading7">NOTES
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">A cookie is
+defined as unclaimed if it has been returned to the client
+through <i>XNextEvent</i> but its data has not been
+retrieved via <i>XGetEventData</i>. Subsequent calls to
+<i>XNextEvent</i> may free memory associated with unclaimed
+cookies. Multi-threaded X clients must ensure that
+<i>XGetEventData</i> is called before the next call to
+<i>XNextEvent</i>.</p>
+
+<h2 id="heading8">SEE ALSO
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XNextEvent.3.xhtml"><em>XNextEvent</em>(3)</a>,
+<i><br/>
+<a href="../../libX11/libX11/libX11.html">Xlib &minus; C Language X Interface</a></i></p>
+<hr/>
+</body>
+</html>

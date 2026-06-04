@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:26:06 2012 -->
+<title>XQUERYDEVICESTATE</title>
+
+</head>
+<body>
+
+<h1>XQUERYDEVICESTATE</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNOPSIS</a><br/>
+<a href="#heading3">DESCRIPTION</a><br/>
+<a href="#heading4">DIAGNOSTICS</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">XQueryDeviceState
+&minus; query the state of an extension input device.</p>
+
+<h2 id="heading2">SYNOPSIS
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">#include
+&lt;X11/extensions/XInput.h&gt;</p>
+
+<p style="margin-left:11%; margin-top: 1em">XDeviceState*
+XQueryDeviceState( Display *display, <br/>
+XDevice *device);</p>
+
+<p style="margin-left:11%; margin-top: 1em">display <br/>
+Specifies the connection to the X server.</p>
+
+<p style="margin-left:11%; margin-top: 1em">device <br/>
+Specifies the device whose state is to be queried.</p>
+
+<h2 id="heading3">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:17%; margin-top: 1em">The
+XQueryDeviceState request queries the state of an input
+<br/>
+device. The current state of keys and buttons (up or down),
+and <br/>
+valuators (current value) on the device is reported by this
+<br/>
+request. Each key or button is represented by a bit in the
+<br/>
+XDeviceState structure that is returned. Valuators on the
+<br/>
+device report 0 if they are reporting relative information,
+and <br/>
+the current value if they are reporting absolute
+information.</p>
+
+
+<p style="margin-left:17%; margin-top: 1em">XQueryDeviceState
+can generate a BadDevice error.</p>
+
+
+<p style="margin-left:17%; margin-top: 1em">Structures:</p>
+
+<p style="margin-left:17%; margin-top: 1em">The
+XDeviceState structure contains:</p>
+
+<p style="margin-left:17%; margin-top: 1em">typedef struct
+{ <br/>
+XID device_id; <br/>
+int num_classes; <br/>
+XInputClass *data; <br/>
+} XDeviceState;</p>
+
+<p style="margin-left:17%; margin-top: 1em">The
+XValuatorState structure contains:</p>
+
+<p style="margin-left:17%; margin-top: 1em">typedef struct
+{ <br/>
+unsigned char class; <br/>
+unsigned char length; <br/>
+unsigned char num_valuators; <br/>
+unsigned char mode; <br/>
+int *valuators; <br/>
+} XValuatorState;</p>
+
+<p style="margin-left:17%; margin-top: 1em">The XKeyState
+structure contains:</p>
+
+<p style="margin-left:17%; margin-top: 1em">typedef struct
+{ <br/>
+unsigned char class; <br/>
+unsigned char length; <br/>
+short num_keys; <br/>
+char keys[32]; <br/>
+} XKeyState;</p>
+
+<p style="margin-left:17%; margin-top: 1em">The
+XButtonState structure contains:</p>
+
+<p style="margin-left:17%; margin-top: 1em">typedef struct
+{ <br/>
+unsigned char class; <br/>
+unsigned char length; <br/>
+short num_buttons; <br/>
+char buttons[32]; <br/>
+} XButtonState;</p>
+
+<h2 id="heading4">DIAGNOSTICS
+</h2>
+
+
+<p style="margin-left:17%; margin-top: 1em">BadDevice <br/>
+An invalid device was specified. The specified device <br/>
+does not exist or has not been opened by this client via
+<br/>
+XOpenInputDevice. This error may also occur if some <br/>
+other client has caused the specified device to become <br/>
+the X keyboard or X pointer device via the <br/>
+XChangeKeyboardDevice or XChangePointerDevice requests.</p>
+<hr/>
+</body>
+</html>

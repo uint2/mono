@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:35:47 2012 -->
+<title>XSetWMProtocols</title>
+
+</head>
+<body>
+
+<h1>XSetWMProtocols</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNTAX</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">PROPERTIES</a><br/>
+<a href="#heading6">DIAGNOSTICS</a><br/>
+<a href="#heading7">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">XSetWMProtocols,
+XGetWMProtocols &minus; set or read a window&rsquo;s
+WM_PROTOCOLS property</p>
+
+<h2 id="heading2">SYNTAX
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="89%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Status XSetWMProtocols(Display
+*<i>display</i>, Window <i>w</i>, Atom *<i>protocols</i>,
+int <i>count</i>);</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Status XGetWMProtocols(Display
+*<i>display</i>, Window <i>w</i>, Atom
+**<i>protocols_return</i>, int *<i>count_return</i>);</p></td></tr>
+</table>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="11%"></col>
+<col width="4%" class="center"></col>
+<col width="71%"></col>
+<col width="3%"></col>
+</colgroup>
+<tr valign="top" align="left">
+
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+<td></td>
+<td></td>
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>display</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the connection to the X server.</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>count</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the number of protocols in the list.</p></td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>count_return</i></p>
+
+<p style="margin-left:26%;">Returns the number of protocols
+in the list.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="14%"></col>
+<col width="1%" class="center"></col>
+<col width="49%"></col>
+<col width="25%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>protocols</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the list of protocols.</p></td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>protocols_return</i></p>
+
+<p style="margin-left:26%;">Returns the list of
+protocols.</p>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XSetWMProtocols</i> function replaces the WM_PROTOCOLS
+property on the specified window with the list of atoms
+specified by the protocols argument. If the property does
+not already exist, <i>XSetWMProtocols</i> sets the
+WM_PROTOCOLS property on the specified window to the list of
+atoms specified by the protocols argument. The property is
+stored with a type of ATOM and a format of 32. If it cannot
+intern the WM_PROTOCOLS atom, <i>XSetWMProtocols</i> returns
+a zero status. Otherwise, it returns a nonzero status.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XSetWMProtocols</i>
+can generate <i>BadAlloc</i> and <i>BadWindow</i>
+errors.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XGetWMProtocols</i> function returns the list of atoms
+stored in the WM_PROTOCOLS property on the specified window.
+These atoms describe window manager protocols in which the
+owner of this window is willing to participate. If the
+property exists, is of type ATOM, is of format 32, and the
+atom WM_PROTOCOLS can be interned, <i>XGetWMProtocols</i>
+sets the protocols_return argument to a list of atoms, sets
+the count_return argument to the number of elements in the
+list, and returns a nonzero status. Otherwise, it sets
+neither of the return arguments and returns a zero status.
+To release the list of atoms, use <i>XFree</i>.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XGetWMProtocols</i>
+can generate a <i>BadWindow</i> error.</p>
+
+<h2 id="heading5">PROPERTIES
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><small>WM_PROTOCOLS</small></p>
+
+<p style="margin-left:26%;">List of atoms that identify the
+communications protocols between the client and window
+manager in which the client is willing to participate.</p>
+
+<h2 id="heading6">DIAGNOSTICS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="14%"></col>
+<col width="1%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><i>BadAlloc</i></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">The server failed to allocate
+the requested resource or server memory.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>BadWindow</i></p></td>
+<td></td>
+<td>
+
+
+<p>A value for a Window argument does not name a defined
+Window.</p> </td></tr>
+</table>
+
+<h2 id="heading7">SEE ALSO
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XAllocClassHint.3.xhtml"><em>XAllocClassHint</em>(3)</a>,
+<a href="../man3/XAllocIconSize.3.xhtml"><em>XAllocIconSize</em>(3)</a>, <a href="../man3/XAllocSizeHints.3.xhtml"><em>XAllocSizeHints</em>(3)</a>, <a href="../man3/XAllocWMHints.3.xhtml"><em>XAllocWMHints</em>(3)</a>,
+<a href="../man3/XFree.3.xhtml"><em>XFree</em>(3)</a>, <a href="../man3/XSetCommand.3.xhtml"><em>XSetCommand</em>(3)</a>, <a href="../man3/XSetTransientForHint.3.xhtml"><em>XSetTransientForHint</em>(3)</a>,
+<a href="../man3/XSetTextProperty.3.xhtml"><em>XSetTextProperty</em>(3)</a>, <a href="../man3/XSetWMClientMachine.3.xhtml"><em>XSetWMClientMachine</em>(3)</a>,
+<a href="../man3/XSetWMColormapWindows.3.xhtml"><em>XSetWMColormapWindows</em>(3)</a>, <a href="../man3/XSetWMIconName.3.xhtml"><em>XSetWMIconName</em>(3)</a>, <a href="../man3/XSetWMName.3.xhtml"><em>XSetWMName</em>(3)</a>,
+<a href="../man3/XSetWMProperties.3.xhtml"><em>XSetWMProperties</em>(3)</a>, <a href="../man3/XStringListToTextProperty.3.xhtml"><em>XStringListToTextProperty</em>(3)</a> <i><br/>
+<a href="../../libX11/libX11/libX11.html">Xlib &minus; C Language X Interface</a></i></p>
+<hr/>
+</body>
+</html>

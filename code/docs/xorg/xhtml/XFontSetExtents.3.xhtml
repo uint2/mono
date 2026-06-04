@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:40:27 2012 -->
+<title>XFontSetExtents</title>
+
+</head>
+<body>
+
+<h1>XFontSetExtents</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">STRUCTURES</a><br/>
+<a href="#heading3">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">XFontSetExtents
+&minus; XFontSetExtents structure</p>
+
+<h2 id="heading2">STRUCTURES
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XFontSetExtents</i> structure contains:</p>
+
+<p style="margin-left:11%; margin-top: 1em">typedef struct
+{</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="8%"></col>
+<col width="38%"></col>
+<col width="54%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>XRectangle max_ink_extent;/* over all drawable
+characters */</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>XRectangle max_logical_extent;/* over all drawable
+characters */</p></td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:11%;">} XFontSetExtents;</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XRectangle</i> structures used to return font set metrics
+are the usual Xlib screen-oriented rectangles with x, y
+giving the upper left corner, and width and height always
+positive.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+max_ink_extent member gives the maximum extent, over all
+drawable characters, of the rectangles that bound the
+character glyph image drawn in the foreground color,
+relative to a constant origin. See <i>XmbTextExtents</i> and
+<i>XwcTextExtents</i> for detailed semantics.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+max_logical_extent member gives the maximum extent, over all
+drawable characters, of the rectangles that specify minimum
+spacing to other graphical features, relative to a constant
+origin. Other graphical features drawn by the client, for
+example, a border surrounding the text, should not intersect
+this rectangle. The max_logical_extent member should be used
+to compute minimum interline spacing and the minimum area
+that must be allowed in a text field to draw a given number
+of arbitrary characters.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Due to
+context-dependent rendering, appending a given character to
+a string may change the string&rsquo;s extent by an amount
+other than that character&rsquo;s individual extent.</p>
+
+<h2 id="heading3">SEE ALSO
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XCreateFontSet.3.xhtml"><em>XCreateFontSet</em>(3)</a>,
+<a href="../man3/XExtentsOfFontSet.3.xhtml"><em>XExtentsOfFontSet</em>(3)</a>, <a href="../man3/XFontsOfFontSet.3.xhtml"><em>XFontsOfFontSet</em>(3)</a> <i><br/>
+<a href="../../libX11/libX11/libX11.html">Xlib &minus; C Language X Interface</a></i></p>
+<hr/>
+</body>
+</html>

@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:43:11 2012 -->
+<title>XCHANGEKEYBOARDDEVIC</title>
+
+</head>
+<body>
+
+<h1>XCHANGEKEYBOARDDEVIC</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNOPSIS</a><br/>
+<a href="#heading3">DESCRIPTION</a><br/>
+<a href="#heading4">DIAGNOSTICS</a><br/>
+<a href="#heading5">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">XChangeKeyboardDevice
+&minus; change which device is used as the X keyboard</p>
+
+<h2 id="heading2">SYNOPSIS
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">#include
+&lt;X11/extensions/XInput.h&gt;</p>
+
+<p style="margin-left:11%; margin-top: 1em">Status
+XChangeKeyboardDevice( Display *display, <br/>
+XDevice *device);</p>
+
+<p style="margin-left:11%; margin-top: 1em">display <br/>
+Specifies the connection to the X server.</p>
+
+<p style="margin-left:11%; margin-top: 1em">device <br/>
+Specifies the device to be used as the X keyboard.</p>
+
+<h2 id="heading3">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:17%; margin-top: 1em">The
+XChangeKeyboardDevice request causes the server to use the
+<br/>
+specified device as the X keyboard. The device must have
+been <br/>
+previously opened by the requesting client via XOpenDevice
+or a <br/>
+BadDevice error will result. The device must support input
+<br/>
+class Keys, or a BadMatch error will result. If the server
+<br/>
+implementation does not support using the requested device
+as <br/>
+the X keyboard, a BadDevice error will result.</p>
+
+<p style="margin-left:17%; margin-top: 1em">If the
+specified device is grabbed by another client, <br/>
+AlreadyGrabbed is returned. If the specified device is
+frozen <br/>
+by a grab on another device, GrabFrozen is returned. If the
+<br/>
+request is successful, Success is returned.</p>
+
+<p style="margin-left:17%; margin-top: 1em">If the request
+succeeds, a ChangeDeviceNotify event is sent to <br/>
+all clients that have selected that event. A MappingNotify
+<br/>
+event with request = MappingKeyboard is sent to all clients.
+<br/>
+The specified device becomes the X keyboard and the old X
+<br/>
+keyboard becomes accessible through the input extension
+<br/>
+protocol requests.</p>
+
+
+<p style="margin-left:17%; margin-top: 1em">XChangeKeyboardDevice
+can generate a BadDevice or a BadMatch <br/>
+error.</p>
+
+<h2 id="heading4">DIAGNOSTICS
+</h2>
+
+
+<p style="margin-left:17%; margin-top: 1em">BadDevice <br/>
+An invalid device was specified. The specified device <br/>
+does not exist, has not been opened by this client via <br/>
+XOpenInputDevice, or is already one of the core X device
+<br/>
+(pointer or keyboard). This error may also occur if the
+<br/>
+server implementation does not support using the <br/>
+specified device as the X keyboard.</p>
+
+<p style="margin-left:17%; margin-top: 1em">BadMatch <br/>
+This error may occur if an XChangeKeyboardDevice request
+<br/>
+was made specifying a device that has no keys.</p>
+
+<h2 id="heading5">SEE ALSO
+</h2>
+
+
+
+<p style="margin-left:17%; margin-top: 1em"><a href="../man3/XChangePointerDevice.3.xhtml"><em>XChangePointerDevice</em>(3)</a></p>
+<hr/>
+</body>
+</html>

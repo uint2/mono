@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:33:27 2012 -->
+<title>DPMSForceLevel</title>
+
+</head>
+<body>
+
+<h1>DPMSForceLevel</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNOPSIS</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">RETURN VALUES</a><br/>
+<a href="#heading6">ERRORS</a><br/>
+<a href="#heading7">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">DPMSForceLevel
+&minus; forces a DPMS capable display into the specified
+power level</p>
+
+<h2 id="heading2">SYNOPSIS
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>cc</b> [
+<i>flag</i> ... ] <i>file</i> ... -<b>lXext</b> [
+<i>library</i> ... ] <br/>
+#include &lt;X11/extensions/dpms.h&gt;</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="87%"></col>
+<col width="2%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>Status DPMSForceLevel</b> (
+Display <i>*display</i>, CARD16 <i>level</i> );</p></td>
+<td>
+</td></tr>
+</table>
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>display</i></p>
+
+<p style="margin-left:22%;">Specifies the connection to the
+X server</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="7%"></col>
+<col width="4%" class="center"></col>
+<col width="56%"></col>
+<col width="22%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>level</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the level to force power to</p></td>
+<td>
+</td></tr>
+</table>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>DPMSForceLevel</i> function forces a DPMS capable display
+into the specified power level. The <i>level</i> must be one
+of following four states: DPMSModeOn, DPMSModeStandby,
+DPMSModeSuspend, or DPMSModeOff. Values other than these
+will result in a BadValue error. If DPMS is disabled on the
+display, trying to set the power level on the display will
+result in a BadMatch protocol error.</p>
+
+<h2 id="heading5">RETURN VALUES
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="6%"></col>
+<col width="17%" class="center"></col>
+<col width="66%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">TRUE</p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">The <i>DPMSForceLevel</i>
+function always returns TRUE.</p></td></tr>
+</table>
+
+<h2 id="heading6">ERRORS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="12%"></col>
+<col width="11%" class="center"></col>
+<col width="66%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">BadValue</p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">A level other than DPMSModeOn,
+DPMSModeStandby, DPMSModeSuspend, or DPMSModeOff was
+specified.</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><small>BadMatch</small></p></td>
+<td></td>
+<td>
+
+
+<p>DPMS is disabled on the specified display.</p></td></tr>
+</table>
+
+<h2 id="heading7">SEE ALSO
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/DPMSCapable.3.xhtml"><em>DPMSCapable</em>(3)</a>,
+<a href="../man3/DPMSInfo.3.xhtml"><em>DPMSInfo</em>(3)</a>, <a href="../man3/DPMSGetTimeouts.3.xhtml"><em>DPMSGetTimeouts</em>(3)</a>,
+<a href="../man3/DPMSSetTimeouts.3.xhtml"><em>DPMSSetTimeouts</em>(3)</a></p>
+<hr/>
+</body>
+</html>

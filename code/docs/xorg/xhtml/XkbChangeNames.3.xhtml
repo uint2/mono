@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:31:55 2012 -->
+<title>XkbChangeNames</title>
+
+</head>
+<body>
+
+<h1>XkbChangeNames</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNOPSIS</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">STRUCTURES</a><br/>
+<a href="#heading6">DIAGNOSTICS</a><br/>
+<a href="#heading7">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">XkbChangeNames
+&minus; _summary-line_</p>
+
+<h2 id="heading2">SYNOPSIS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="29%"></col>
+<col width="2%" class="center"></col>
+<col width="58%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>Bool XkbChangeNames</b></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>(Display *</b><i>dpy</i><b>,
+unsigned int</b> <i>which</i><b>, XkbDescPtr</b>
+<i>Xkb</i><b>);</b></p> </td></tr>
+</table>
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="7%"></col>
+<col width="4%" class="center"></col>
+<col width="40%"></col>
+<col width="38%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b><i>&minus; dpy</i></b></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">connection to the X server</p></td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>&minus; which</i></p>
+
+<p style="margin-left:22%;">mask of names or map components
+to be updated</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="7%"></col>
+<col width="4%" class="center"></col>
+<col width="52%"></col>
+<col width="26%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>&minus; Xkb</i></p></td>
+<td></td>
+<td>
+
+
+<p>keyboard description to be updated</p></td>
+<td>
+</td></tr>
+</table>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XkbChangeNames</i>
+provides a more flexible method for changing symbolic names
+than <i>XkbSetNames</i> and requires the use of an
+XkbNameChangesRec structure.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XkbChangeNames</i>
+copies any names specified by <i>changes</i> from the
+keyboard description, <i>xkb,</i> to the X server specified
+by <i>dpy. XkbChangeNames</i> aborts and returns False if
+any illegal type names or type shift level names are
+specified by changes.</p>
+
+<p style="margin-left:11%; margin-top: 1em">To change the
+symbolic names in the server, first modify a local copy of
+the keyboard description and then use either
+<i>XkbSetNames,</i> or, to save network traffic, use a
+XkbNameChangesRec structure and call <i>XkbChangeNames</i>
+to download the changes to the server. <i>XkbSetNames</i>
+and <i>XkbChangeNames</i> can generate BadAlloc, BadAtom,
+BadLength, BadMatch, and BadImplementation errors.</p>
+
+<h2 id="heading5">STRUCTURES
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The
+XkbNameChangesRec allows applications to identify small
+modifications to the symbolic names and effectively reduces
+the amount of traffic sent to the server:</p>
+
+<p style="margin-left:11%; margin-top: 1em">typedef struct
+_XkbNameChanges { <br/>
+unsigned int changed; /&lowast; name components that have
+changed <br/>
+*/ <br/>
+unsigned char first_type; /&lowast; first key type with a
+new name */ <br/>
+unsigned char num_types; /&lowast; number of types with new
+names */ <br/>
+unsigned char first_lvl; /&lowast; first key type with new
+level <br/>
+names */ <br/>
+unsigned char num_lvls; /&lowast; number of key types with
+new level <br/>
+names */ <br/>
+unsigned char num_aliases; /&lowast; if key aliases changed,
+total <br/>
+number of key aliases */ <br/>
+unsigned char num_rg; /&lowast; if radio groups changed,
+total <br/>
+number of radio groups */ <br/>
+unsigned char first_key; /&lowast; first key with a new name
+*/ <br/>
+unsigned char num_keys; /&lowast; number of keys with new
+names */ <br/>
+unsigned short changed_vmods; /&lowast; mask of virtual
+modifiers for <br/>
+which names have changed */ <br/>
+unsigned long changed_indicators; /&lowast; mask of
+indicators for which names <br/>
+were changed */ <br/>
+unsigned char changed_groups; /&lowast; mask of groups for
+which names <br/>
+were changed */ <br/>
+} XkbNameChangesRec, *XkbNameChangesPtr</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>changed</i> field specifies the name components that have
+changed and is the bitwise inclusive OR of the valid names
+mask bits defined in Table 1. The rest of the fields in the
+structure specify the ranges that have changed for the
+various kinds of symbolic names, as shown in Table 2.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Xkb provides
+several functions that work with symbolic names. Each of
+these functions uses a mask to specify individual fields of
+the structures described above. These masks and their
+relationships to the fields in a keyboard description are
+shown in Table 1.</p>
+
+
+<p class="center" style="margin-top: 1em"><img src="grohtml-217361.png" alt="Image grohtml-217361.png"></img></p>
+
+
+<p class="center" style="margin-top: 1em"><img src="grohtml-217362.png" alt="Image grohtml-217362.png"></img></p>
+
+<h2 id="heading6">DIAGNOSTICS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="12%"></col>
+<col width="11%" class="center"></col>
+<col width="58%"></col>
+<col width="8%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>BadAlloc</b></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Unable to allocate storage</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><b>BadAtom</b></p></td>
+<td></td>
+<td>
+
+
+<p>A name is neither a valid Atom or None</p></td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:11%;"><b>BadImplementation</b></p>
+
+<p style="margin-left:34%;">Invalid reply from server</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="14%"></col>
+<col width="9%" class="center"></col>
+<col width="66%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><b>BadLength</b></p></td>
+<td></td>
+<td>
+
+
+<p>The length of a request is shorter or longer than that
+required to minimally contain the arguments</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><b>BadMatch</b></p></td>
+<td></td>
+<td>
+
+
+<p>A compatible version of Xkb was not available in the
+server or an argument has correct type and range, but is
+otherwise invalid</p></td></tr>
+</table>
+
+<h2 id="heading7">SEE ALSO
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XkbSetNames.3.xhtml"><em>XkbSetNames</em>(3)</a></p>
+<hr/>
+</body>
+</html>

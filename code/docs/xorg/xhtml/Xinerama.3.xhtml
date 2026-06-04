@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:27:58 2012 -->
+<title>XINERAMA</title>
+
+</head>
+<body>
+
+<h1>XINERAMA</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNOPSIS</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">FUNCTIONS</a><br/>
+<a href="#heading6">NOTE</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Xinerama
+&minus; API for Xinerama extension to X11 Protocol</p>
+
+<h2 id="heading2">SYNOPSIS
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">#include
+&lt;X11/extensions/Xinerama.h&gt;</p>
+
+<p style="margin-left:11%; margin-top: 1em">Bool
+XineramaQueryExtension (Display *<i>dpy</i>,</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="8%"></col>
+<col width="7%"></col>
+<col width="85%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td></td>
+<td>
+
+
+<p>int *<i>event_base_return</i>, int
+*<i>error_base_return</i>);</p> </td></tr>
+</table>
+
+<p style="margin-left:11%; margin-top: 1em">Status
+XineramaQueryVersion (Display *<i>dpy</i>,</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="8%"></col>
+<col width="92%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>int *<i>major_version_return</i>,</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>int *<i>minor_version_return</i>);</p></td></tr>
+</table>
+
+<p style="margin-left:11%; margin-top: 1em">Bool
+XineramaIsActive (Display *<i>dpy</i>);</p>
+
+
+<p style="margin-left:11%; margin-top: 1em">XineramaScreenInfo
+* XineramaQueryScreens (Display *<i>dpy</i>,</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="8%"></col>
+<col width="92%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>int *<i>number</i>);</p></td></tr>
+</table>
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="11%"></col>
+<col width="4%" class="center"></col>
+<col width="63%"></col>
+<col width="11%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><i>display</i></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Specifies the connection to the
+X server.</p></td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>event_base_return</i></p>
+
+<p style="margin-left:26%;">Specifies the return location
+for the assigned base event code</p>
+
+<p style="margin-left:11%;"><i>error_base_return</i></p>
+
+<p style="margin-left:26%;">Specifies the return location
+for the assigned base error code</p>
+
+
+<p style="margin-left:11%;"><i>major_version_return</i></p>
+
+<p style="margin-left:26%;">Returns the major version
+supported by the server</p>
+
+
+<p style="margin-left:11%;"><i>minor_version_return</i></p>
+
+<p style="margin-left:26%;">Returns the minor version
+supported by the server</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="9%"></col>
+<col width="6%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>number</i></p></td>
+<td></td>
+<td>
+
+
+<p>Returns the number of entries in the returned
+XineramaScreenInfo array.</p></td></tr>
+</table>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>Xinerama</b>
+is a simple library designed to interface the Xinerama
+Extension for retrieving information about physical output
+devices which may be combined into a single logical X
+screen.</p>
+
+<h2 id="heading5">FUNCTIONS
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>XineramaQueryExtension()</b>
+<br/>
+The XineramaQueryExtension function queries the Xserver to
+determine the availability of the Xinerama Extension. If the
+extension is available, the return value is True, and
+event_base_return and error_base_return are set to the base
+event number and base error number for the extension,
+respectively. Otherwise, the return value is False, and the
+values of event_base_return and error_base_return are
+undefined.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>XineramaQueryVersion()</b>
+<br/>
+The XineramaQueryVersion function returns the version of the
+Xinerama extension implemented by the Xserver. The version
+is returned in major_version_return and
+minor_version_return. The major version will be incremented
+for protocol incompatible changes, and the minor version
+will be incremented for small, upwardly compatible
+changes.</p>
+
+<p style="margin-left:11%; margin-top: 1em">If the Xinerama
+library is compatible with the version returned by the
+server, it returns nonzero. If the server does not support
+the XINERAMA extension, or if there was an error during
+communications with the server, or if the server and library
+protocol versions are incompatible, it returns zero.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>XineramaIsActive()</b>
+<br/>
+The XineramaIsActive function returns a Boolean operator
+used to determine if Xinerama is activated on the screen.
+Returns True for active and False for not active.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>XineramaQueryScreens()</b>
+<br/>
+The <b>XineramaQueryScreens()</b> function returns info
+about each individual output device within the Xinerama
+Screen. The integer pointed to by the <i>number</i> argument
+is updated to the number of output devices listed in the
+returned array of <i>XineramaScreenInfo</i> structures.
+<b>XineramaQueryScreens()</b> returns NULL and sets
+<i>number</i> to 0 if Xinerama is not active.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The pointer
+returned should be released with <a href="../man3/XFree.3.xhtml"><em>XFree</em>(3)</a> when no longer
+needed.</p>
+
+<h2 id="heading6">NOTE
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The original
+API provided for interacting with the XINERAMA extension
+used function names beginning with <i>XPanoramiX</i>. That
+API is now deprecated and this API should be used instead in
+new software.</p>
+<hr/>
+</body>
+</html>

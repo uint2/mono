@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:24:32 2012 -->
+<title>XQueryBestSize</title>
+
+</head>
+<body>
+
+<h1>XQueryBestSize</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNTAX</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">DIAGNOSTICS</a><br/>
+<a href="#heading6">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">XQueryBestSize,
+XQueryBestTile, XQueryBestStipple &minus; determine
+efficient sizes</p>
+
+<h2 id="heading2">SYNTAX
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="89%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Status XQueryBestSize(Display
+*<i>display</i>, int <i>class</i>, Drawable
+<i>which_screen</i>, unsigned int <i>width</i>, unsigned int
+<i>height</i>, unsigned int *<i>width_return</i>, unsigned
+int *<i>height_return</i>);</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Status XQueryBestTile(Display
+*<i>display</i>, Drawable <i>which_screen</i>, unsigned int
+<i>width</i>, unsigned int <i>height</i>, unsigned int
+*<i>width_return</i>, unsigned int
+*<i>height_return</i>);</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Status XQueryBestStipple(Display
+*<i>display</i>, Drawable <i>which_screen</i>, unsigned int
+<i>width</i>, unsigned int <i>height</i>, unsigned int
+*<i>width_return</i>, unsigned int
+*<i>height_return</i>);</p> </td></tr>
+</table>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="11%"></col>
+<col width="4%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+<td></td>
+<td></td>
+<td></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>class</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the class that you are interested in. You can
+pass <i>TileShape</i>, <i>CursorShape</i>, or
+<i>StippleShape</i>.</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>display</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the connection to the X server.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>width</i></p></td>
+<td></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>height</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specify the width and height.</p></td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>which_screen</i></p>
+
+<p style="margin-left:26%;">Specifies any drawable on the
+screen.</p>
+
+<p style="margin-left:11%;"><i>width_return <br/>
+height_return</i></p>
+
+<p style="margin-left:26%;">Return the width and height of
+the object best supported by the display hardware.</p>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XQueryBestSize</i> function returns the best or closest
+size to the specified size. For <i>CursorShape</i>, this is
+the largest size that can be fully displayed on the screen
+specified by which_screen. For <i>TileShape</i>, this is the
+size that can be tiled fastest. For <i>StippleShape</i>,
+this is the size that can be stippled fastest. For
+<i>CursorShape</i>, the drawable indicates the desired
+screen. For <i>TileShape</i> and <i>StippleShape</i>, the
+drawable indicates the screen and possibly the window class
+and depth. An <i>InputOnly</i> window cannot be used as the
+drawable for <i>TileShape</i> or <i>StippleShape</i>, or a
+<i>BadMatch</i> error results.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XQueryBestSize</i>
+can generate <i>BadDrawable</i>, <i>BadMatch</i>, and
+<i>BadValue</i> errors.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XQueryBestTile</i> function returns the best or closest
+size, that is, the size that can be tiled fastest on the
+screen specified by which_screen. The drawable indicates the
+screen and possibly the window class and depth. If an
+<i>InputOnly</i> window is used as the drawable, a
+<i>BadMatch</i> error results.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XQueryBestTile</i>
+can generate <i>BadDrawable</i> and <i>BadMatch</i>
+errors.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XQueryBestStipple</i> function returns the best or
+closest size, that is, the size that can be stippled fastest
+on the screen specified by which_screen. The drawable
+indicates the screen and possibly the window class and
+depth. If an <i>InputOnly</i> window is used as the
+drawable, a <i>BadMatch</i> error results.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XQueryBestStipple</i>
+can generate <i>BadDrawable</i> and <i>BadMatch</i>
+errors.</p>
+
+<h2 id="heading5">DIAGNOSTICS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="12%"></col>
+<col width="3%" class="center"></col>
+<col width="65%"></col>
+<col width="9%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><i>BadMatch</i></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">An <i>InputOnly</i> window is
+used as a Drawable.</p></td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>BadDrawable</i></p>
+
+<p style="margin-left:26%;">A value for a Drawable argument
+does not name a defined Window or Pixmap.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="12%"></col>
+<col width="3%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>BadMatch</i></p></td>
+<td></td>
+<td>
+
+
+<p>The values do not exist for an <i>InputOnly</i>
+window.</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>BadValue</i></p></td>
+<td></td>
+<td>
+
+
+<p>Some numeric value falls outside the range of values
+accepted by the request. Unless a specific range is
+specified for an argument, the full range defined by the
+argument&rsquo;s type is accepted. Any argument defined as a
+set of alternatives can generate this error.</p></td></tr>
+</table>
+
+<h2 id="heading6">SEE ALSO
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XCreateGC.3.xhtml"><em>XCreateGC</em>(3)</a>,
+<a href="../man3/XSetArcMode.3.xhtml"><em>XSetArcMode</em>(3)</a>, <a href="../man3/XSetClipOrigin.3.xhtml"><em>XSetClipOrigin</em>(3)</a>, <a href="../man3/XSetFillStyle.3.xhtml"><em>XSetFillStyle</em>(3)</a>,
+<a href="../man3/XSetFont.3.xhtml"><em>XSetFont</em>(3)</a>, <a href="../man3/XSetLineAttributes.3.xhtml"><em>XSetLineAttributes</em>(3)</a>, <a href="../man3/XSetState.3.xhtml"><em>XSetState</em>(3)</a>,
+<a href="../man3/XSetTile.3.xhtml"><em>XSetTile</em>(3)</a> <i><br/>
+<a href="../../libX11/libX11/libX11.html">Xlib &minus; C Language X Interface</a></i></p>
+<hr/>
+</body>
+</html>

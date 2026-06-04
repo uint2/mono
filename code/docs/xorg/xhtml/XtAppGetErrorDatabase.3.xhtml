@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:29:13 2012 -->
+<title>XtAppGetErrorDatabase</title>
+
+</head>
+<body>
+
+<h1>XtAppGetErrorDatabase</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNTAX</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">XtAppGetErrorDatabase,
+XtAppGetErrorDatabaseText &minus; obtain error database</p>
+
+<h2 id="heading2">SYNTAX
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="89%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">XrmDatabase
+*XtAppGetErrorDatabase(XtAppContext <i>app_context</i>);</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">void
+XtAppGetErrorDatabaseText(XtAppContext <i>app_context</i>,
+char *<i>name</i>, char *<i>type</i>, char *<i>class</i>,
+char *<i>default</i>, char *<i>buffer_return</i>, int
+<i>nbytes</i>, XrmDatabase <i>database</i>);</p></td></tr>
+</table>
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>app_context</i></p>
+
+<p style="margin-left:26%;">Specifies the application
+context.</p>
+
+<p style="margin-left:11%;"><i>buffer_return</i></p>
+
+<p style="margin-left:26%;">Specifies the buffer into which
+the error message is to be returned.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="12%"></col>
+<col width="3%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>class</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the resource class&nbsp;of the error
+message.</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>database</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the name of the alternative database that is
+to be used or NULL if the application&rsquo;s database is to
+be used.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>default</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the default message to use.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>name</i></p></td>
+<td></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>type</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the name and type that are concatenated to
+form the resource name of the error message.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>nbytes</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the size of the buffer in bytes.</p></td></tr>
+</table>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XtAppGetErrorDatabase</i> function returns the address of
+the error database. The Intrinsics do a lazy binding of the
+error database and do not merge in the database file until
+the first call to <i>XtAppGetErrorDatbaseText</i>.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XtAppGetErrorDatabaseText</i> returns the appropriate
+message from the error database or returns the specified
+default message if one is not found in the error
+database.</p>
+
+<h2 id="heading5">SEE ALSO
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XtAppError.3.xhtml"><em>XtAppError</em>(3)</a>,
+<a href="../man3/XtAppErrorMsg.3.xhtml"><em>XtAppErrorMsg</em>(3)</a> <i><br/>
+X Toolkit Intrinsics &minus; C Language Interface <br/>
+<a href="../../libX11/libX11/libX11.html">Xlib &minus; C Language X Interface</a></i></p>
+<hr/>
+</body>
+</html>

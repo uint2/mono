@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:41:28 2012 -->
+<title>XkbResizeKeyType</title>
+
+</head>
+<body>
+
+<h1>XkbResizeKeyType</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNOPSIS</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">RETURN VALUES</a><br/>
+<a href="#heading6">DIAGNOSTICS</a><br/>
+<a href="#heading7">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">XkbResizeKeyType
+&minus; Change the number of levels in a key type</p>
+
+<h2 id="heading2">SYNOPSIS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="37%"></col>
+<col width="3%" class="center"></col>
+<col width="49%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>Status
+XkbResizeKeyType</b></p> </td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>(XkbDescPtr</b>
+<i>xkb</i><b>, int</b> <i>type_ndx</i><b>, int</b>
+<i>map_count</i><b>,</b></p> </td></tr>
+</table>
+
+<p style="margin-left:11%;"><b>Bool</b>
+<i>want_preserve</i><b>, int</b>
+<i>new_num_lvls</i><b>);</b></p>
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="7%"></col>
+<col width="4%" class="center"></col>
+<col width="78%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b><i>&minus; xkb</i></b></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">keyboard description containing
+client map to update</p></td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>&minus; type_ndx</i></p>
+
+<p style="margin-left:22%;">index in xkb-&gt;map-&gt;types
+of type to change</p>
+
+<p style="margin-left:11%;"><i>&minus; map_count</i></p>
+
+<p style="margin-left:22%;">total # of map entries needed
+for the type</p>
+
+<p style="margin-left:11%;"><i>&minus;
+want_preserve</i></p>
+
+<p style="margin-left:22%;">True =&gt; list of preserved
+modifiers is necessary</p>
+
+<p style="margin-left:11%;"><i>&minus; new_num_lvls</i></p>
+
+<p style="margin-left:22%;">new max # of levels for
+type</p>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XkbResizeKeyType</i>
+changes the type specified by
+<i>xkb-&gt;map-&gt;types[type_ndx],</i> and reallocates the
+symbols and actions bound to all keys that use the type, if
+necessary. <i>XkbResizeKeyType</i> updates only the local
+copy of the types in <i>xkb;</i> to update the
+server&rsquo;s copy for the physical device, use
+<i>XkbSetMap</i> or <i>XkbChangeMap</i> after calling
+<i>XkbResizeKeyType.</i></p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>map_count</i> parameter specifies the total number of map
+entries needed for the type, and can be zero or greater. If
+<i>map_count</i> is zero, <i>XkbResizeKeyType</i> frees the
+existing <i>map</i> and <i>preserve</i> entries for the type
+if they exist and sets them to NULL.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>want_preserve</i> parameter specifies whether a
+<i>preserve</i> list for the key should be created. If
+<i>want_preserve</i> is True, the <i>preserve</i> list with
+<i>map_count</i> entries is allocated or reallocated if it
+already exists. Otherwise, if <i>want_preserve</i> is False,
+the <i>preserve</i> field is freed if necessary and set to
+NULL.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>new_num_lvls</i> parameter specifies the new maximum
+number of shift levels for the type and is used to calculate
+and resize the symbols and actions bound to all keys that
+use the type.</p>
+
+<p style="margin-left:11%; margin-top: 1em">If
+<i>type_ndx</i> does not specify a legal type,
+<i>new_num_lvls</i> is less than 1, or the <i>map_count</i>
+is less than zero, <i>XkbResizeKeyType</i> returns BadValue.
+If <i>XkbResizeKeyType</i> encounters any problems with
+allocation, it returns BadAlloc. Otherwise, it returns
+Success.</p>
+
+<h2 id="heading5">RETURN VALUES
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="11%"></col>
+<col width="12%" class="center"></col>
+<col width="66%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Success</p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">The <i>XkbResizeKeyType</i>
+function returns Success if <i>type_ndx</i> specifies a
+legal type, <i>new_num_lvls</i> is greater than zero and
+<i>map_count</i> is positive.</p></td></tr>
+</table>
+
+<h2 id="heading6">DIAGNOSTICS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="12%"></col>
+<col width="11%" class="center"></col>
+<col width="41%"></col>
+<col width="25%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>BadAlloc</b></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Unable to allocate storage</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><b>BadValue</b></p></td>
+<td></td>
+<td>
+
+
+<p>An argument is out of range</p></td>
+<td>
+</td></tr>
+</table>
+
+<h2 id="heading7">SEE ALSO
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XkbChangeMap.3.xhtml"><em>XkbChangeMap</em>(3)</a>,
+<a href="../man3/XkbSetMap.3.xhtml"><em>XkbSetMap</em>(3)</a></p>
+<hr/>
+</body>
+</html>

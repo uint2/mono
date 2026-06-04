@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:28:18 2012 -->
+<title>XNextEvent</title>
+
+</head>
+<body>
+
+<h1>XNextEvent</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNTAX</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">XNextEvent,
+XPeekEvent, XWindowEvent, XCheckWindowEvent, XMaskEvent,
+XCheckMaskEvent, XCheckTypedEvent, XCheckTypedWindowEvent
+&minus; select events by type</p>
+
+<h2 id="heading2">SYNTAX
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="89%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">int XNextEvent(Display
+*<i>display</i>, XEvent *<i>event_return</i>);</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">int XPeekEvent(Display
+*<i>display</i>, XEvent *<i>event_return</i>);</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">int XWindowEvent(Display
+*<i>display</i>, Window <i>w</i>, long <i>event_mask</i>,
+XEvent *<i>event_return</i>);</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Bool XCheckWindowEvent(Display
+*<i>display</i>, Window <i>w</i>, long <i>event_mask</i>,
+XEvent *<i>event_return</i>);</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">int XMaskEvent(Display
+*<i>display</i>, long <i>event_mask</i>, XEvent
+*<i>event_return</i>);</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Bool XCheckMaskEvent(Display
+*<i>display</i>, long <i>event_mask</i>, XEvent
+*<i>event_return</i>);</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Bool XCheckTypedEvent(Display
+*<i>display</i>, int <i>event_type</i>, XEvent
+*<i>event_return</i>);</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Bool
+XCheckTypedWindowEvent(Display *<i>display</i>, Window
+<i>w</i>, int <i>event_type</i>, XEvent
+*<i>event_return</i>);</p> </td></tr>
+</table>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="11%"></col>
+<col width="4%" class="center"></col>
+<col width="63%"></col>
+<col width="11%"></col>
+</colgroup>
+<tr valign="top" align="left">
+
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+<td></td>
+<td></td>
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>display</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the connection to the X server.</p></td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>event_mask</i></p>
+
+<p style="margin-left:26%;">Specifies the event mask.</p>
+
+<p style="margin-left:11%;"><i>event_return</i></p>
+
+<p style="margin-left:26%;">Returns the matched
+event&rsquo;s associated structure.</p>
+
+<p style="margin-left:11%;"><i>event_return</i></p>
+
+<p style="margin-left:26%;">Returns the next event in the
+queue.</p>
+
+<p style="margin-left:11%;"><i>event_return</i></p>
+
+<p style="margin-left:26%;">Returns a copy of the matched
+event&rsquo;s associated structure.</p>
+
+<p style="margin-left:11%;"><i>event_type</i></p>
+
+<p style="margin-left:26%;">Specifies the event type to be
+compared.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="1%"></col>
+<col width="14%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>w</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the window &nbsp;whose event uou are
+interested in.</p></td></tr>
+</table>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XNextEvent</i> function copies the first event from the
+event queue into the specified <i>XEvent</i> structure and
+then removes it from the queue. If the event queue is empty,
+<i>XNextEvent</i> flushes the output buffer and blocks until
+an event is received.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XPeekEvent</i> function returns the first event from the
+event queue, but it does not remove the event from the
+queue. If the queue is empty, <i>XPeekEvent</i> flushes the
+output buffer and blocks until an event is received. It then
+copies the event into the client-supplied <i>XEvent</i>
+structure without removing it from the event queue.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XWindowEvent</i> function searches the event queue for an
+event that matches both the specified window and event mask.
+When it finds a match, <i>XWindowEvent</i> removes that
+event from the queue and copies it into the specified
+<i>XEvent</i> structure. The other events stored in the
+queue are not discarded. If a matching event is not in the
+queue, <i>XWindowEvent</i> flushes the output buffer and
+blocks until one is received.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XCheckWindowEvent</i> function searches the event queue
+and then the events available on the server connection for
+the first event that matches the specified window and event
+mask. If it finds a match, <i>XCheckWindowEvent</i> removes
+that event, copies it into the specified <i>XEvent</i>
+structure, and returns <i>True</i>. The other events stored
+in the queue are not discarded. If the event you requested
+is not available, <i>XCheckWindowEvent</i> returns
+<i>False</i>, and the output buffer will have been
+flushed.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XMaskEvent</i> function searches the event queue for the
+events associated with the specified mask. When it finds a
+match, <i>XMaskEvent</i> removes that event and copies it
+into the specified <i>XEvent</i> structure. The other events
+stored in the queue are not discarded. If the event you
+requested is not in the queue, <i>XMaskEvent</i> flushes the
+output buffer and blocks until one is received.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XCheckMaskEvent</i> function searches the event queue and
+then any events available on the server connection for the
+first event that matches the specified mask. If it finds a
+match, <i>XCheckMaskEvent</i> removes that event, copies it
+into the specified <i>XEvent</i> structure, and returns
+<i>True</i>. The other events stored in the queue are not
+discarded. If the event you requested is not available,
+<i>XCheckMaskEvent</i> returns <i>False</i>, and the output
+buffer will have been flushed.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XCheckTypedEvent</i> function searches the event queue
+and then any events available on the server connection for
+the first event that matches the specified type. If it finds
+a match, <i>XCheckTypedEvent</i> removes that event, copies
+it into the specified <i>XEvent</i> structure, and returns
+<i>True</i>. The other events in the queue are not
+discarded. If the event is not available,
+<i>XCheckTypedEvent</i> returns <i>False</i>, and the output
+buffer will have been flushed.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XCheckTypedWindowEvent</i> function searches the event
+queue and then any events available on the server connection
+for the first event that matches the specified type and
+window. If it finds a match, <i>XCheckTypedWindowEvent</i>
+removes the event from the queue, copies it into the
+specified <i>XEvent</i> structure, and returns <i>True</i>.
+The other events in the queue are not discarded. If the
+event is not available, <i>XCheckTypedWindowEvent</i>
+returns <i>False</i>, and the output buffer will have been
+flushed.</p>
+
+<h2 id="heading5">SEE ALSO
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XAnyEvent.3.xhtml"><em>XAnyEvent</em>(3)</a>,
+<a href="../man3/XIfEvent.3.xhtml"><em>XIfEvent</em>(3)</a>, <a href="../man3/XPutBackEvent.3.xhtml"><em>XPutBackEvent</em>(3)</a>, <a href="../man3/XSendEvent.3.xhtml"><em>XSendEvent</em>(3)</a> <i><br/>
+<a href="../../libX11/libX11/libX11.html">Xlib &minus; C Language X Interface</a></i></p>
+<hr/>
+</body>
+</html>

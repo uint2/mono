@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:31:19 2012 -->
+<title>XkbLatchModifiers</title>
+
+</head>
+<body>
+
+<h1>XkbLatchModifiers</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNOPSIS</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">RETURN VALUES</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">XkbLatchModifiers
+&minus; Latches and unlatches any of the eight real keyboard
+modifiers</p>
+
+<h2 id="heading2">SYNOPSIS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="34%"></col>
+<col width="1%" class="center"></col>
+<col width="54%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>Bool
+XkbLatchModifiers</b></p> </td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>(Display
+*</b><i>display</i><b>, unsigned int</b>
+<i>device_spec</i><b>,</b></p> </td></tr>
+</table>
+
+<p style="margin-left:11%;"><b>unsigned int</b>
+<i>affect</i><b>, unsigned int</b>
+<i>values</i><b>);</b></p>
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b><i>display</i></b></p>
+
+<p style="margin-left:22%;">connection to the X server</p>
+
+<p style="margin-left:11%;"><i>device_spec</i></p>
+
+<p style="margin-left:22%;">device ID, or XkbUseCoreKbd</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="9%"></col>
+<col width="2%" class="center"></col>
+<col width="78%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>affect</i></p></td>
+<td></td>
+<td>
+
+
+<p>mask of real modifiers whose lock state is to change</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>values</i></p></td>
+<td></td>
+<td>
+
+
+<p>1 =&gt; lock, 0 =&gt; unlock; only for modifiers
+selected by affect</p></td></tr>
+</table>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XkbLatchModifiers</i>
+sends a request to the server to latch the real modifiers
+selected by both <i>affect</i> and <i>values</i> and to
+unlatch the real modifiers selected by <i>affect</i> , but
+not selected by <i>values.</i></p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XkbLatchModifiers</i>
+does not wait for a reply from the server. It returns True
+if the request was sent, and False otherwise.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The functions
+in this section that change the use of modifiers use a mask
+in the parameter affect. It is a bitwise inclusive OR of the
+legal modifier masks:</p>
+
+
+<p class="center" style="margin-top: 1em"><img src="grohtml-205521.png" alt="Image grohtml-205521.png"></img></p>
+
+<h2 id="heading5">RETURN VALUES
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="7%"></col>
+<col width="16%" class="center"></col>
+<col width="66%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">True</p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">The <i>XkbLatchModifiers</i>
+function returns True if a request was sent to the server to
+latch the real modifiers selected by both <i>affect</i> and
+<i>values</i> and to unlatch the real modifiers selected by
+<i>affect</i> , but not selected by <i>values.</i></p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>False</p></td>
+<td></td>
+<td>
+
+
+<p>The <i>XkbLatchModifiers</i> function returns False if
+the request was not sent.</p></td></tr>
+ </table>
+<hr/>
+</body>
+</html>

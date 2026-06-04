@@ -1,0 +1,487 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:28:18 2012 -->
+<title>Xau</title>
+
+</head>
+<body>
+
+<h1>Xau</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNOPSIS</a><br/>
+<a href="#heading3">DESCRIPTION</a><br/>
+<a href="#heading4">SEE ALSO</a><br/>
+<a href="#heading5">AUTHOR</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Xau library:
+XauFileName, XauReadAuth, XauLockAuth, XauUnlockAuth,
+XauWriteAuth, XauDisposeAuth, XauGetAuthByAddr,
+XauGetBestAuthByAddr &minus; X authority database
+routines</p>
+
+<h2 id="heading2">SYNOPSIS
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>#include
+&lt;X11/Xauth.h&gt;</b></p>
+
+<p style="margin-left:11%; margin-top: 1em">typedef struct
+xauth {</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="8%"></col>
+<col width="23%"></col>
+<col width="69%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>unsigned short</p></td>
+<td>
+
+
+<p>family;</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>unsigned short</p></td>
+<td>
+
+
+<p>address_length;</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>char</p></td>
+<td>
+
+
+<p>*address;</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>unsigned short</p></td>
+<td>
+
+
+<p>number_length;</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>char</p></td>
+<td>
+
+
+<p>*number;</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>unsigned short</p></td>
+<td>
+
+
+<p>name_length;</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>char</p></td>
+<td>
+
+
+<p>*name;</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>unsigned short</p></td>
+<td>
+
+
+<p>data_length;</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>char</p></td>
+<td>
+
+
+<p>*data;</p></td></tr>
+</table>
+
+<p style="margin-left:11%;">} Xauth;</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="89%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">char *XauFileName (void);</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Xauth *XauReadAuth (FILE
+*<i>auth_file</i>);</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">int XauWriteAuth (FILE
+*<i>auth_file</i>, Xauth *<i>auth</i>);</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Xauth *XauGetAuthByAddr
+(unsigned short <i>family</i>, unsigned short</p></td></tr>
+</table>
+
+<p style="margin-left:22%;"><i>address_length</i>, const
+char *<i>address</i>, unsigned short <i><br/>
+number_length</i>, const char *<i>number</i>, unsigned short
+<i><br/>
+name_length</i>, const char *<i>name</i>);</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="89%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Xauth *XauGetBestAuthByAddr
+(unsigned short <i>family</i>, unsigned short</p></td></tr>
+</table>
+
+<p style="margin-left:22%;"><i>address_length</i>, const
+char *<i>address</i>, unsigned short <i><br/>
+number_length</i>, const char *<i>number</i>, int
+<i>types_length</i>, <br/>
+char **<i>types</i>, const int *<i>type_lengths</i>);</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="86%"></col>
+<col width="3%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">int XauLockAuth (const char
+*<i>file_name</i>, int <i>retries</i>, int</p></td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:22%;"><i>timeout</i>, long
+<i>dead</i>);</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="64%"></col>
+<col width="25%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">int XauUnlockAuth (const char
+*<i>file_name</i>);</p> </td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">int XauDisposeAuth (Xauth
+*<i>auth</i>);</p> </td>
+<td>
+</td></tr>
+</table>
+
+<h2 id="heading3">DESCRIPTION
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>XauFileName</b>
+generates the default authorization file name by first
+checking the XAUTHORITY environment variable if set, else it
+returns $HOME/.Xauthority. This name is statically allocated
+and should not be freed.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>XauReadAuth</b>
+reads the next entry from <i>auth_file</i>. The entry is
+<b>not</b> statically allocated and should be freed by
+calling <i>XauDisposeAuth</i>.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>XauWriteAuth</b>
+writes an authorization entry to <i>auth_file</i>. It
+returns 1 on success, 0 on failure.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>XauGetAuthByAddr</b>
+searches for an entry which matches the given network
+address/display number pair. The entry is <b>not</b>
+statically allocated and should be freed by calling
+<i>XauDisposeAuth</i>.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>XauGetBestAuthByAddr</b>
+is similar to <b>XauGetAuthByAddr</b>, except that a list of
+acceptable authentication methods is specified. Xau will
+choose the file entry which matches the earliest entry in
+this list (e.g., the most secure authentication method). The
+<i>types</i> argument is an array of strings, one string for
+each authentication method. <i>types_length</i> specifies
+how many elements are in the <i>types</i> array.
+<i>types_lengths</i> is an array of integers representing
+the length of each string.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>XauLockAuth</b>
+does the work necessary to synchronously update an
+authorization file. First it makes two file names, one with
+&lsquo;&lsquo;-c&rsquo;&rsquo; appended to <i>file_name</i>,
+the other with &lsquo;&lsquo;-l&rsquo;&rsquo; appended. If
+the &lsquo;&lsquo;-c&rsquo;&rsquo; file already exists and
+is more than <i>dead</i> seconds old, <i>XauLockAuth</i>
+removes it and the associated &lsquo;&lsquo;-l&rsquo;&rsquo;
+file. To prevent possible synchronization troubles with NFS,
+a <i>dead</i> value of zero forces the files to be removed.
+<i>XauLockAuth</i> makes <i>retries</i> attempts to create
+and link the file names, pausing <i>timeout</i> seconds
+between each attempt. <i>XauLockAuth</i> returns a
+collection of values depending on the results:</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="8%"></col>
+<col width="23%"></col>
+<col width="69%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>LOCK_ERROR</p></td>
+<td>
+
+
+<p>A system error occurred, either a file_name</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+</td>
+<td>
+
+
+<p>which is too long, or an unexpected failure from</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+</td>
+<td>
+
+
+<p>a system call. errno may prove useful.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>LOCK_TIMEOUT</p></td>
+<td>
+
+
+<p><i>retries</i> attempts failed</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>LOCK_SUCCESS</p></td>
+<td>
+
+
+<p>The lock succeeded.</p></td></tr>
+</table>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>XauUnlockAuth</b>
+undoes the work of <i>XauLockAuth</i> by unlinking both the
+&lsquo;&lsquo;-c&rsquo;&rsquo; and
+&lsquo;&lsquo;-l&rsquo;&rsquo; file names.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>XauDisposeAuth</b>
+frees storage allocated to hold an authorization entry.</p>
+
+<h2 id="heading4">SEE ALSO
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man1/xauth.1.xhtml"><em>xauth</em>(1)</a>,
+<a href="../man1/xdm.1.xhtml"><em>xdm</em>(1)</a></p>
+
+<h2 id="heading5">AUTHOR
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Keith Packard,
+MIT X Consortium</p>
+<hr/>
+</body>
+</html>

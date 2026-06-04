@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:28:29 2012 -->
+<title>xcb_xv_query_extension</title>
+
+</head>
+<body>
+
+<h1>xcb_xv_query_extension</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNOPSIS</a><br/>
+<a href="#heading3">REQUEST ARGUMENTS</a><br/>
+<a href="#heading4">REPLY FIELDS</a><br/>
+<a href="#heading5">DESCRIPTION</a><br/>
+<a href="#heading6">RETURN VALUE</a><br/>
+<a href="#heading7">ERRORS</a><br/>
+<a href="#heading8">SEE ALSO</a><br/>
+<a href="#heading9">AUTHOR</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">xcb_xv_query_extension
+&minus;</p>
+
+<h2 id="heading2">SYNOPSIS
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>#include
+&lt;xcb/xv.h&gt;</b></p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>Request
+function</b></p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="81%"></col>
+<col width="8%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>xcb_xv_query_extension_cookie_t
+<b>xcb_xv_query_extension</b>(xcb_connection_t&nbsp;*<i>conn</i>,</p> </td>
+<td>
+</td></tr>
+</table>
+
+<p><b>Reply datastructure</b></p></table>
+
+<p style="margin-left:11%;">typedef struct
+xcb_xv_query_extension_reply_t { <br/>
+uint8_t <i>response_type</i>; <br/>
+uint8_t <i>pad0</i>; <br/>
+uint16_t <i>sequence</i>; <br/>
+uint32_t <i>length</i>; <br/>
+uint16_t <i>major</i>; <br/>
+uint16_t <i>minor</i>; <br/>
+} <b>xcb_xv_query_extension_reply_t</b>;</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>Reply
+function</b></p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="89%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>xcb_xv_query_extension_reply_t
+*<b>xcb_xv_query_extension_reply</b>(xcb_connection_t&nbsp;*<i>conn</i>,
+xcb_xv_query_extension_cookie_t&nbsp;<i>cookie</i>,
+xcb_generic_error_t&nbsp;**<i>e</i>);</p> </td></tr>
+</table>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="6%"></col>
+<col width="9%" class="center"></col>
+<col width="40%"></col>
+<col width="34%"></col>
+</colgroup>
+<tr valign="top" align="left">
+
+
+<h2 id="heading3">REQUEST ARGUMENTS
+</h2>
+<td></td>
+<td></td>
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>conn</i></p></td>
+<td></td>
+<td>
+
+
+<p>The XCB connection to X11.</p></td>
+<td>
+</td></tr>
+</table>
+
+<h2 id="heading4">REPLY FIELDS
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>response_type</i></p>
+
+<p style="margin-left:26%;">The type of this reply, in this
+case <i>XCB_XV_QUERY_EXTENSION</i>. This field is also
+present in the <i>xcb_generic_reply_t</i> and can be used to
+tell replies apart from each other.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="12%"></col>
+<col width="3%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>sequence</i></p></td>
+<td></td>
+<td>
+
+
+<p>The sequence number of the last request processed by the
+X11 server.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>length</i></p></td>
+<td></td>
+<td>
+
+
+<p>The length of the reply, in words (a word is 4
+bytes).</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>major</i></p></td>
+<td></td>
+<td>
+
+
+<p>TODO: NOT YET DOCUMENTED.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>minor</i></p></td>
+<td></td>
+<td>
+
+
+<p>TODO: NOT YET DOCUMENTED.</p></td></tr>
+</table>
+
+<h2 id="heading5">DESCRIPTION
+</h2>
+
+
+<h2 id="heading6">RETURN VALUE
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Returns an
+<i>xcb_xv_query_extension_cookie_t</i>. Errors have to be
+handled when calling the reply function
+<i>xcb_xv_query_extension_reply</i>.</p>
+
+<p style="margin-left:11%; margin-top: 1em">If you want to
+handle errors in the event loop instead, use
+<i>xcb_xv_query_extension_unchecked</i>. See
+<b>xcb-<a href="../man3/requests.3.xhtml"><em>requests</em>(3)</a></b> for details.</p>
+
+<h2 id="heading7">ERRORS
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">This request
+does never generate any errors.</p>
+
+<h2 id="heading8">SEE ALSO
+</h2>
+
+
+<h2 id="heading9">AUTHOR
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Generated from
+xv.xml. Contact xcb@lists.freedesktop.org for corrections
+and improvements.</p>
+<hr/>
+</body>
+</html>

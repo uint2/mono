@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:29:52 2012 -->
+<title>XStoreColors</title>
+
+</head>
+<body>
+
+<h1>XStoreColors</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNTAX</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">DIAGNOSTICS</a><br/>
+<a href="#heading6">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">XStoreColors,
+XStoreColor, XStoreNamedColor &minus; set colors</p>
+
+<h2 id="heading2">SYNTAX
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="89%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">int XStoreColors(Display
+*<i>display</i>, Colormap <i>colormap</i>, XColor
+<i>color</i>[], int <i>ncolors</i>);</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">int XStoreColor(Display
+*<i>display</i>, Colormap <i>colormap</i>, XColor
+*<i>color</i>);</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">int XStoreNamedColor(Display
+*<i>display</i>, Colormap <i>colormap</i>, char
+*<i>color</i>, unsigned long <i>pixel</i>, int
+<i>flags</i>);</p> </td></tr>
+</table>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="12%"></col>
+<col width="3%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+<td></td>
+<td></td>
+<td></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>color</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the pixel and RGB values or the color name
+string (for example, red).</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>color</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies an array of color definition structures to be
+stored.</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>colormap</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the colormap.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>display</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the connection to the X server.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>flags</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies which red, green, and blue components are
+set.</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>ncolors</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the number of <i>XColor</i> structures in the
+color definition array.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>pixel</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the entry in the colormap.</p></td></tr>
+</table>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XStoreColors</i> function changes the colormap entries of
+the pixel values specified in the pixel members of the
+<i>XColor</i> structures. You specify which color components
+are to be changed by setting <i>DoRed</i>, <i>DoGreen</i>,
+and/or <i>DoBlue</i> in the flags member of the
+<i>XColor</i> structures. If the colormap is an installed
+map for its screen, the changes are visible immediately.
+<i>XStoreColors</i> changes the specified pixels if they are
+allocated writable in the colormap by any client, even if
+one or more pixels generates an error. If a specified pixel
+is not a valid index into the colormap, a <i>BadValue</i>
+error results. If a specified pixel either is unallocated or
+is allocated read-only, a <i>BadAccess</i> error results. If
+more than one pixel is in error, the one that gets reported
+is arbitrary.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XStoreColors</i>
+can generate <i>BadAccess</i>, <i>BadColor</i>, and
+<i>BadValue</i> errors.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XStoreColor</i> function changes the colormap entry of
+the pixel value specified in the pixel member of the
+<i>XColor</i> structure. You specified this value in the
+pixel member of the <i>XColor</i> structure. This pixel
+value must be a read/write cell and a valid index into the
+colormap. If a specified pixel is not a valid index into the
+colormap, a <i>BadValue</i> error results.
+<i>XStoreColor</i> also changes the red, green, and/or blue
+color components. You specify which color components are to
+be changed by setting <i>DoRed</i>, <i>DoGreen</i>, and/or
+<i>DoBlue</i> in the flags member of the <i>XColor</i>
+structure. If the colormap is an installed map for its
+screen, the changes are visible immediately.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XStoreColor</i>
+can generate <i>BadAccess</i>, <i>BadColor</i>, and
+<i>BadValue</i> errors.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XStoreNamedColor</i> function looks up the named color
+with respect to the screen associated with the colormap and
+stores the result in the specified colormap. The pixel
+argument determines the entry in the colormap. The flags
+argument determines which of the red, green, and blue
+components are set. You can set this member to the bitwise
+inclusive OR of the bits <i>DoRed</i>, <i>DoGreen</i>, and
+<i>DoBlue</i>. If the color name is not in the Host Portable
+Character Encoding, the result is implementation-dependent.
+Use of uppercase or lowercase does not matter. If the
+specified pixel is not a valid index into the colormap, a
+<i>BadValue</i> error results. If the specified pixel either
+is unallocated or is allocated read-only, a <i>BadAccess</i>
+error results.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XStoreNamedColor</i>
+can generate <i>BadAccess</i>, <i>BadColor</i>,
+<i>BadName</i>, and <i>BadValue</i> errors.</p>
+
+<h2 id="heading5">DIAGNOSTICS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="14%"></col>
+<col width="1%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><i>BadAccess</i></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">A client attempted to free a
+color map entry that it did not already allocate.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>BadAccess</i></p></td>
+<td></td>
+<td>
+
+
+<p>A client attempted to store into a read-only color map
+entry.</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>BadColor</i></p></td>
+<td></td>
+<td>
+
+
+<p>A value for a Colormap argument does not name a defined
+Colormap.</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>BadName</i></p></td>
+<td></td>
+<td>
+
+
+<p>A font or color of the specified name does not
+exist.</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>BadValue</i></p></td>
+<td></td>
+<td>
+
+
+<p>Some numeric value falls outside the range of values
+accepted by the request. Unless a specific range is
+specified for an argument, the full range defined by the
+argument&rsquo;s type is accepted. Any argument defined as a
+set of alternatives can generate this error.</p></td></tr>
+</table>
+
+<h2 id="heading6">SEE ALSO
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XAllocColor.3.xhtml"><em>XAllocColor</em>(3)</a>,
+<a href="../man3/XCreateColormap.3.xhtml"><em>XCreateColormap</em>(3)</a>, <a href="../man3/XQueryColor.3.xhtml"><em>XQueryColor</em>(3)</a> <i><br/>
+<a href="../../libX11/libX11/libX11.html">Xlib &minus; C Language X Interface</a></i></p>
+<hr/>
+</body>
+</html>

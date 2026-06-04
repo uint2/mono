@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:29:26 2012 -->
+<title>XkbGetUpdatedMap</title>
+
+</head>
+<body>
+
+<h1>XkbGetUpdatedMap</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNOPSIS</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">RETURN VALUES</a><br/>
+<a href="#heading6">STRUCTURES</a><br/>
+<a href="#heading7">DIAGNOSTICS</a><br/>
+<a href="#heading8">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">XkbGetUpdatedMap
+&minus; Update the client or server map information in an
+existing keyboard description</p>
+
+<h2 id="heading2">SYNOPSIS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="37%"></col>
+<col width="3%" class="center"></col>
+<col width="49%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>Status
+XkbGetUpdatedMap</b></p> </td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>(Display
+*</b><i>display</i><b>, unsigned int</b>
+<i>which</i><b>,</b></p> </td></tr>
+</table>
+
+<p style="margin-left:11%;"><b>XkbDescPtr</b>
+<i>xkb</i><b>);</b></p>
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b><i>&minus;
+display</i></b></p>
+
+<p style="margin-left:22%;">connection to X server</p>
+
+<p style="margin-left:11%;"><i>&minus; which</i></p>
+
+<p style="margin-left:22%;">mask selecting subcomponents to
+populate</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="7%"></col>
+<col width="4%" class="center"></col>
+<col width="52%"></col>
+<col width="26%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>&minus; xkb</i></p></td>
+<td></td>
+<td>
+
+
+<p>keyboard description to be updated</p></td>
+<td>
+</td></tr>
+</table>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>which</i> parameter is a bitwise inclusive OR of the
+masks in Table 1. If the needed components of the <i>xkb</i>
+structure are not already allocated, <i>XkbGetUpdatedMap</i>
+allocates them. <i>XkbGetUpdatedMap</i> fetches the
+requested information for the device specified in the
+XkbDescRec passed in the <i>xkb</i> parameter.</p>
+
+
+<p class="center" style="margin-top: 1em"><img src="grohtml-163101.png" alt="Image grohtml-163101.png"></img></p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XkbGetUpdatedMap</i>
+is synchronous; it queries the server for the desired
+information, waits for a reply, and then returns. If
+successful, <i>XkbGetUpdatedMap</i> returns Success. If
+unsuccessful, <i>XkbGetUpdatedMap</i> returns one of the
+following: BadAlloc (unable to allocate a component in the
+XkbDescRec structure), BadValue (some mask bits in
+<i>which</i> are undefined), BadImplementation (a compatible
+version of the Xkb extension is not available in the server
+or the reply from the server was invalid).</p>
+
+<h2 id="heading5">RETURN VALUES
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="11%"></col>
+<col width="12%" class="center"></col>
+<col width="66%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Success</p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">The <i>XkbGetUpdatedMap</i>
+function returns Success if a reply is received to the
+server query for the desired information.</p></td></tr>
+</table>
+
+<h2 id="heading6">STRUCTURES
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The complete
+description of an Xkb keyboard is given by an XkbDescRec.
+The component structures in the XkbDescRec represent the
+major Xkb components.</p>
+
+<p style="margin-left:11%; margin-top: 1em">typedef struct
+{ <br/>
+struct _XDisplay * display; /&lowast; connection to X server
+*/ <br/>
+unsigned short flags; /&lowast; private to Xkb, do not
+modify */ <br/>
+unsigned short device_spec; /&lowast; device of interest */
+<br/>
+KeyCode min_key_code; /&lowast; minimum keycode for device
+*/ <br/>
+KeyCode max_key_code; /&lowast; maximum keycode for device
+*/ <br/>
+XkbControlsPtr ctrls; /&lowast; controls */ <br/>
+XkbServerMapPtr server; /&lowast; server keymap */ <br/>
+XkbClientMapPtr map; /&lowast; client keymap */ <br/>
+XkbIndicatorPtr indicators; /&lowast; indicator map */ <br/>
+XkbNamesPtr names; /&lowast; names for all components */
+<br/>
+XkbCompatMapPtr compat; /&lowast; compatibility map */ <br/>
+XkbGeometryPtr geom; /&lowast; physical geometry of keyboard
+*/ <br/>
+} XkbDescRec, *XkbDescPtr;</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>display</i> field points to an X display structure. The
+<i>flags</i> field is private to the library: modifying
+<i>flags</i> may yield unpredictable results. The
+<i>device_spec</i> field specifies the device identifier of
+the keyboard input device, or XkbUseCoreKeyboard, which
+specifies the core keyboard device. The <i>min_key_code</i>
+and <i>max_key_code</i> fields specify the least and
+greatest keycode that can be returned by the keyboard.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Each structure
+component has a corresponding mask bit that is used in
+function calls to indicate that the structure should be
+manipulated in some manner, such as allocating it or freeing
+it. These masks and their relationships to the fields in the
+XkbDescRec are shown in Table 2.</p>
+
+
+<p class="center" style="margin-top: 1em"><img src="grohtml-163102.png" alt="Image grohtml-163102.png"></img></p>
+
+<h2 id="heading7">DIAGNOSTICS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="12%"></col>
+<col width="11%" class="center"></col>
+<col width="40%"></col>
+<col width="26%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>BadAlloc</b></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Unable to allocate storage</p></td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:11%;"><b>BadImplementation</b></p>
+
+<p style="margin-left:34%;">Invalid reply from server</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="12%"></col>
+<col width="11%" class="center"></col>
+<col width="41%"></col>
+<col width="25%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><b>BadValue</b></p></td>
+<td></td>
+<td>
+
+
+<p>An argument is out of range</p></td>
+<td>
+</td></tr>
+</table>
+
+<h2 id="heading8">SEE ALSO
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XkbChangeTypesOfKey.3.xhtml"><em>XkbChangeTypesOfKey</em>(3)</a>,
+<a href="../man3/XkbCopyKeyType.3.xhtml"><em>XkbCopyKeyType</em>(3)</a>, <a href="../man3/XkbCopyKeyTypes.3.xhtml"><em>XkbCopyKeyTypes</em>(3)</a>,
+<a href="../man3/XkbGetKeyActions.3.xhtml"><em>XkbGetKeyActions</em>(3)</a>, <a href="../man3/XkbGetKeyBehaviors.3.xhtml"><em>XkbGetKeyBehaviors</em>(3)</a>,
+<a href="../man3/XkbGetKeyExplicitComponents.3.xhtml"><em>XkbGetKeyExplicitComponents</em>(3)</a>,
+<a href="../man3/XkbGetKeyModifierMap.3.xhtml"><em>XkbGetKeyModifierMap</em>(3)</a>, <a href="../man3/XkbGetKeySyms.3.xhtml"><em>XkbGetKeySyms</em>(3)</a>,
+<a href="../man3/XkbGetKeyTypes.3.xhtml"><em>XkbGetKeyTypes</em>(3)</a>, <a href="../man3/XkbResizeKeyActions.3.xhtml"><em>XkbResizeKeyActions</em>(3)</a>,
+<a href="../man3/XkbResizeKeySyms.3.xhtml"><em>XkbResizeKeySyms</em>(3)</a>, <a href="../man3/XkbResizeKeyType.3.xhtml"><em>XkbResizeKeyType</em>(3)</a>,
+<a href="../man3/XkbGetVirtualModMap.3.xhtml"><em>XkbGetVirtualModMap</em>(3)</a>,
+<a href="../man3/XkbGetVirtualMods.3.xhtml"><em>XkbGetVirtualMods</em>(3)</a></p>
+<hr/>
+</body>
+</html>

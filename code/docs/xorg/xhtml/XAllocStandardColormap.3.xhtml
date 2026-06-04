@@ -1,0 +1,613 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:36:12 2012 -->
+<title>XAllocStandardColormap</title>
+
+</head>
+<body>
+
+<h1>XAllocStandardColormap</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNTAX</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">STRUCTURES</a><br/>
+<a href="#heading6">DIAGNOSTICS</a><br/>
+<a href="#heading7">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">XAllocStandardColormap,
+XSetRGBColormaps, XGetRGBColormaps, XStandardColormap
+&minus; allocate, set, or read a standard colormap
+structure</p>
+
+<h2 id="heading2">SYNTAX
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="89%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">XStandardColormap
+*XAllocStandardColormap(void);</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">void XSetRGBColormaps(Display
+*<i>display</i>, Window <i>w</i>, XStandardColormap
+*<i>std_colormap</i>, int <i>count</i>, Atom
+<i>property</i>);</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Status XGetRGBColormaps(Display
+*<i>display</i>, Window <i>w</i>, XStandardColormap
+**<i>std_colormap_return</i>, int *<i>count_return</i>, Atom
+<i>property</i>);</p> </td></tr>
+</table>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="11%"></col>
+<col width="4%" class="center"></col>
+<col width="63%"></col>
+<col width="11%"></col>
+</colgroup>
+<tr valign="top" align="left">
+
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+<td></td>
+<td></td>
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>display</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the connection to the X server.</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>count</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the number of colormaps.</p></td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>count_return</i></p>
+
+<p style="margin-left:26%;">Returns the number of
+colormaps.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="12%"></col>
+<col width="3%" class="center"></col>
+<col width="43%"></col>
+<col width="31%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>property</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the property name.</p></td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>std_colormap</i></p>
+
+<p style="margin-left:26%;">Specifies the
+<i>XStandardColormap</i> structure to be used.</p>
+
+<p style="margin-left:11%;"><i>std_colormap_return</i></p>
+
+<p style="margin-left:26%;">Returns the
+<i>XStandardColormap</i> structure.</p>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XAllocStandardColormap</i> function allocates and returns
+a pointer to a <i>XStandardColormap</i> structure. Note that
+all fields in the <i>XStandardColormap</i> structure are
+initially set to zero. If insufficient memory is available,
+<i>XAllocStandardColormap</i> returns NULL. To free the
+memory allocated to this structure, use <i>XFree</i>.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XSetRGBColormaps</i> function replaces the RGB colormap
+definition in the specified property on the named window. If
+the property does not already exist, <i>XSetRGBColormaps</i>
+sets the RGB colormap definition in the specified property
+on the named window. The property is stored with a type of
+RGB_COLOR_MAP and a format of 32. Note that it is the
+caller&rsquo;s responsibility to honor the ICCCM restriction
+that only RGB_DEFAULT_MAP contain more than one
+definition.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XSetRGBColormaps</i> function usually is only used by
+window or session managers. To create a standard colormap,
+follow this procedure:</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="3%"></col>
+<col width="4%" class="center"></col>
+<col width="82%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>1.</p></td>
+<td></td>
+<td>
+
+
+<p>Open a new connection to the same server.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>2.</p></td>
+<td></td>
+<td>
+
+
+<p>Grab the server.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>3.</p></td>
+<td></td>
+<td>
+
+
+<p>See if the property is on the property list of the root
+window for the screen.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>4.</p></td>
+<td></td>
+<td>
+
+
+<p>If the desired property is not present:</p></td></tr>
+</table>
+
+<p style="margin-left:18%;">&bull;</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="9%"></col>
+<col width="6%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Create a colormap (unless you
+are using the default colormap of the screen).</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>&bull;</p></td>
+<td></td>
+<td>
+
+
+<p>Determine the color characteristics of the visual.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>&bull;</p></td>
+<td></td>
+<td>
+
+
+<p>Allocate cells in the colormap (or create it with
+<i>AllocAll</i>).</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>&bull;</p></td>
+<td></td>
+<td>
+
+
+<p>Call <i>XStoreColors</i> to store appropriate color
+values in the colormap.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>&bull;</p></td>
+<td></td>
+<td>
+
+
+<p>Fill in the descriptive members in the
+<i>XStandardColormap</i> structure.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>&bull;</p></td>
+<td></td>
+<td>
+
+
+<p>Attach the property to the root window.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>&bull;</p></td>
+<td></td>
+<td>
+
+
+<p>Use <i>XSetCloseDownMode</i> to make the resource
+permanent.</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>5.</p></td>
+<td></td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:18%; margin-top: 1em">Ungrab the
+server.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XSetRGBColormaps</i>
+can generate <i>BadAlloc</i>, <i>BadAtom</i>, and
+<i>BadWindow</i> errors.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XGetRGBColormaps</i> function returns the RGB colormap
+definitions stored in the specified property on the named
+window. If the property exists, is of type RGB_COLOR_MAP, is
+of format 32, and is long enough to contain a colormap
+definition, <i>XGetRGBColormaps</i> allocates and fills in
+space for the returned colormaps and returns a nonzero
+status. If the visualid is not present,
+<i>XGetRGBColormaps</i> assumes the default visual for the
+screen on which the window is located; if the killid is not
+present, <i>None</i> is assumed, which indicates that the
+resources cannot be released. Otherwise, none of the fields
+are set, and <i>XGetRGBColormaps</i> returns a zero status.
+Note that it is the caller&rsquo;s responsibility to honor
+the ICCCM restriction that only RGB_DEFAULT_MAP contain more
+than one definition.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XGetRGBColormaps</i>
+can generate <i>BadAtom</i> and <i>BadWindow</i> errors.</p>
+
+<h2 id="heading5">STRUCTURES
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XStandardColormap</i> structure contains:</p>
+
+<p style="margin-left:11%; margin-top: 1em">/* Hints */</p>
+
+
+<p class="center" style="margin-top: 1em"><img src="grohtml-307941.png" alt="Image grohtml-307941.png"></img></p>
+
+<p style="margin-left:11%;">/* Values */ <br/>
+typedef struct {</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="8%"></col>
+<col width="30%"></col>
+<col width="62%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>Colormap colormap;</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>unsigned long red_max;</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>unsigned long red_mult;</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>unsigned long green_max;</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>unsigned long green_mult;</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>unsigned long blue_max;</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>unsigned long blue_mult;</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>unsigned long base_pixel;</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>VisualID visualid;</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>XID killid;</p></td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:11%;">} XStandardColormap;</p>
+
+<p style="margin-left:11%; margin-top: 1em">The colormap
+member is the colormap created by the <i>XCreateColormap</i>
+function. The red_max, green_max, and blue_max members give
+the maximum red, green, and blue values, respectively. Each
+color coefficient ranges from zero to its max, inclusive.
+For example, a common colormap allocation is 3/3/2 (3 planes
+for red, 3 planes for green, and 2 planes for blue). This
+colormap would have red_max = 7, green_max = 7, and blue_max
+= 3. An alternate allocation that uses only 216 colors is
+red_max = 5, green_max = 5, and blue_max = 5.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The red_mult,
+green_mult, and blue_mult members give the scale factors
+used to compose a full pixel value. (See the discussion of
+the base_pixel members for further information.) For a 3/3/2
+allocation, red_mult might be 32, green_mult might be 4, and
+blue_mult might be 1. For a 6-colors-each allocation,
+red_mult might be 36, green_mult might be 6, and blue_mult
+might be 1.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The base_pixel
+member gives the base pixel value used to compose a full
+pixel value. Usually, the base_pixel is obtained from a call
+to the <i>XAllocColorPlanes</i> function. Given integer red,
+green, and blue coefficients in their appropriate ranges,
+one then can compute a corresponding pixel value by using
+the following expression:</p>
+
+<p style="margin-left:11%; margin-top: 1em">(r * red_mult +
+g * green_mult + b * blue_mult + base_pixel) &amp;
+0xFFFFFFFF</p>
+
+<p style="margin-left:11%; margin-top: 1em">For
+<i>GrayScale</i> colormaps, only the colormap, red_max,
+red_mult, and base_pixel members are defined. The other
+members are ignored. To compute a <i>GrayScale</i> pixel
+value, use the following expression:</p>
+
+<p style="margin-left:11%; margin-top: 1em">(gray *
+red_mult + base_pixel) &amp; 0xFFFFFFFF</p>
+
+<p style="margin-left:11%; margin-top: 1em">Negative
+multipliers can be represented by converting the 2&rsquo;s
+complement representation of the multiplier into an unsigned
+long and storing the result in the appropriate _mult field.
+The step of masking by 0xFFFFFFFF effectively converts the
+resulting positive multiplier into a negative one. The
+masking step will take place automatically on many machine
+architectures, depending on the size of the integer type
+used to do the computation,</p>
+
+<p style="margin-left:11%; margin-top: 1em">The visualid
+member gives the ID number of the visual from which the
+colormap was created. The killid member gives a resource ID
+that indicates whether the cells held by this standard
+colormap are to be released by freeing the colormap ID or by
+calling the <i>XKillClient</i> function on the indicated
+resource. (Note that this method is necessary for allocating
+out of an existing colormap.)</p>
+
+<p style="margin-left:11%; margin-top: 1em">The properties
+containing the <i>XStandardColormap</i> information have the
+type RGB_COLOR_MAP.</p>
+
+<h2 id="heading6">DIAGNOSTICS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="14%"></col>
+<col width="1%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><i>BadAlloc</i></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">The server failed to allocate
+the requested resource or server memory.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>BadAtom</i></p></td>
+<td></td>
+<td>
+
+
+<p>A value for an Atom argument does not name a defined
+Atom.</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>BadWindow</i></p></td>
+<td></td>
+<td>
+
+
+<p>A value for a Window argument does not name a defined
+Window.</p> </td></tr>
+</table>
+
+<h2 id="heading7">SEE ALSO
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XAllocColor.3.xhtml"><em>XAllocColor</em>(3)</a>,
+<a href="../man3/XCreateColormap.3.xhtml"><em>XCreateColormap</em>(3)</a>, <a href="../man3/XFree.3.xhtml"><em>XFree</em>(3)</a>, <a href="../man3/XSetCloseDownMode.3.xhtml"><em>XSetCloseDownMode</em>(3)</a> <i><br/>
+<a href="../../libX11/libX11/libX11.html">Xlib &minus; C Language X Interface</a></i></p>
+<hr/>
+</body>
+</html>

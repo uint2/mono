@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:30:57 2012 -->
+<title>XtNameToWidget</title>
+
+</head>
+<body>
+
+<h1>XtNameToWidget</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNTAX</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">XtNameToWidget,
+XtWindowToWidget &minus; translating strings to widgets or
+widgets to windows</p>
+
+<h2 id="heading2">SYNTAX
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="87%"></col>
+<col width="2%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Widget XtNameToWidget(Widget
+<i>reference</i>, String <i>names</i>);</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Widget XtWindowToWidget(Display
+*<i>display</i>, Window <i>window</i>);</p></td>
+<td>
+</td></tr>
+</table>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="14%"></col>
+<col width="1%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+<td></td>
+<td></td>
+<td></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>display</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the display&nbsp;on which the window is
+defined.</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>names</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the fully qualified name of the desired
+widget.</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>reference</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the widget from which the search is to
+start.</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>window</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specify the window for which you want the widget.</p></td></tr>
+</table>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XtNameToWidget</i> function looks for a widget whose name
+is the first component in the specified names and that is a
+pop-up child of reference (or a normal child if reference is
+a subclass of <i>compositeWidgetClass</i>). It then uses
+that widget as the new reference and repeats the search
+after deleting the first component from the specified names.
+If it cannot find the specified widget,
+<i>XtNameToWidget</i> returns NULL.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Note that the
+names argument contains the name of a widget with respect to
+the specified reference widget and can contain more than one
+widget name (separated by periods) for widgets that are not
+direct children of the specified reference widget.</p>
+
+<p style="margin-left:11%; margin-top: 1em">If more than
+one child of the reference widget matches the name,
+<i>XtNameToWidget</i> can return any of the children. The
+Intrinsics do not require that all children of a widget have
+unique names. If the specified names contain more than one
+component and if more than one child matches the first
+component, <i>XtNameToWidget</i> can return NULL if the
+single branch that it follows does not contain the named
+widget. That is, <i>XtNameToWidget</i> does not back up and
+follow other matching branches of the widget tree.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XtWindowToWidget</i> function translates the specified
+window and display pointer into the appropriate widget
+instance.</p>
+
+<h2 id="heading5">SEE ALSO
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>X Toolkit
+Intrinsics &minus; C Language Interface <br/>
+<a href="../../libX11/libX11/libX11.html">Xlib &minus; C Language X Interface</a></i></p>
+<hr/>
+</body>
+</html>

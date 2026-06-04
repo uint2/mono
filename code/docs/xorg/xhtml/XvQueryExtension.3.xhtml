@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:25:02 2012 -->
+<title>XvQueryExtension</title>
+
+</head>
+<body>
+
+<h1>XvQueryExtension</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNOPSIS</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">RETURN VALUES</a><br/>
+<a href="#heading6">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">XvQueryExtension
+&minus; return version and release of extension</p>
+
+<h2 id="heading2">SYNOPSIS
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>#include
+&lt;X11/extensions/Xvlib.h&gt;</b></p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>int
+XvQueryExtension(Display *</b><i>dpy</i><b>, unsigned int
+*</b><i>p_version</i><b>, <br/>
+unsigned int *</b><i>p_revision</i><b>, <br/>
+unsigned int *</b><i>p_request_base</i><b>, <br/>
+unsigned int *</b><i>p_event_base</i><b>, <br/>
+unsigned int *</b><i>p_error_base</i><b>);</b></p>
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="21%"></col>
+<col width="2%" class="center"></col>
+<col width="66%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b><i>dpy</i></b></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Specifies the connection to the
+X server.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>p_version</i></p></td>
+<td></td>
+<td>
+
+
+<p>Pointer to where the current version number of the
+<i>Xv</i> video extension is written.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>p_revision</i></p></td>
+<td></td>
+<td>
+
+
+<p>Pointer to where the revision number of the <i>Xv</i>
+video extension is written.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>p_request_base</i></p></td>
+<td></td>
+<td>
+
+
+<p>Pointer to where the extension major request number is
+returned</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>p_event_base</i></p></td>
+<td></td>
+<td>
+
+
+<p>Pointer to where the extension event base is
+returned</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>p_error_base</i></p></td>
+<td></td>
+<td>
+
+
+<p>Pointer to where the extension error base is
+returned</p> </td></tr>
+</table>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XvQueryExtension.3.xhtml"><em>XvQueryExtension</em>(3)</a>
+returns the version and release numbers for the Xv video
+extension currently loaded on the system. The extension
+major request number, event base, and error base are also
+returned.</p>
+
+<h2 id="heading5">RETURN VALUES
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">[Success]</p>
+
+<p style="margin-left:23%;">Returned if
+<a href="../man3/XvQueryExtension.3.xhtml"><em>XvQueryExtension</em>(3)</a> completed successfully.</p>
+
+<p style="margin-left:11%;">[XvBadExtension]</p>
+
+<p style="margin-left:23%;">Returned if the Xv video
+extension is not available for the named display.</p>
+
+<h2 id="heading6">SEE ALSO
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/Xv.3.xhtml"><em>Xv</em>(3)</a></p>
+<hr/>
+</body>
+</html>

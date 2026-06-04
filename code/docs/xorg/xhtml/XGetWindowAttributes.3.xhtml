@@ -1,0 +1,686 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:37:05 2012 -->
+<title>XGetWindowAttributes</title>
+
+</head>
+<body>
+
+<h1>XGetWindowAttributes</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNTAX</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">STRUCTURES</a><br/>
+<a href="#heading6">DIAGNOSTICS</a><br/>
+<a href="#heading7">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">XGetWindowAttributes,
+XGetGeometry, XWindowAttributes &minus; get current window
+attribute or geometry and current window attributes
+structure</p>
+
+<h2 id="heading2">SYNTAX
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="89%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Status
+XGetWindowAttributes(Display *<i>display</i>, Window
+<i>w</i>, XWindowAttributes
+*<i>window_attributes_return</i>);</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Status XGetGeometry(Display
+*<i>display</i>, Drawable <i>d</i>, Window
+*<i>root_return</i>, int *<i>x_return</i>, int
+*<i>y_return</i>, unsigned int *<i>width_return</i>,
+unsigned int *<i>height_return</i>, unsigned int
+*<i>border_width_return</i>, unsigned int
+*<i>depth_return</i>);</p> </td></tr>
+</table>
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>border_width_return</i></p>
+
+<p style="margin-left:26%;">Returns the border width in
+pixels.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="1%"></col>
+<col width="14%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>d</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the drawable, which can be a window or a
+pixmap.</p> </td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>depth_return</i></p>
+
+<p style="margin-left:26%;">Returns the depth of the
+drawable (bits per pixel for the object).</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="11%"></col>
+<col width="4%" class="center"></col>
+<col width="63%"></col>
+<col width="11%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>display</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the connection to the X server.</p></td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>root_return</i></p>
+
+<p style="margin-left:26%;">Returns the root window.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="1%"></col>
+<col width="14%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>w</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the window whose current attributes you want
+to obtain.</p></td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>width_return <br/>
+height_return</i></p>
+
+<p style="margin-left:26%;">Return the drawable&rsquo;s
+dimensions (width and height).</p>
+
+
+<p style="margin-left:11%;"><i>window_attributes_return</i></p>
+
+<p style="margin-left:26%;">Returns the specified
+window&rsquo;s attributes in the <i>XWindowAttributes</i>
+structure.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="12%"></col>
+<col width="3%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>x_return</i></p></td>
+<td></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>y_return</i></p></td>
+<td></td>
+<td>
+
+
+<p>Return the x and y coordinates that define the location
+of the drawable. For a window, these coordinates specify the
+upper-left outer corner relative to its parent&rsquo;s
+origin. For pixmaps, these coordinates are always zero.</p></td></tr>
+</table>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XGetWindowAttributes</i> function returns the current
+attributes for the specified window to an
+<i>XWindowAttributes</i> structure. It returns a nonzero
+status on success; otherwise, it returns a zero status.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XGetWindowAttributes</i>
+can generate <i>BadDrawable</i> and <i>BadWindow</i>
+errors.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XGetGeometry</i> function returns the root window and the
+current geometry of the drawable. The geometry of the
+drawable includes the x and y coordinates, width and height,
+border width, and depth. These are described in the argument
+list. It is legal to pass to this function a window whose
+class is <i>InputOnly</i>. It returns a nonzero status on
+success; otherwise, it returns a zero status.</p>
+
+<h2 id="heading5">STRUCTURES
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XWindowAttributes</i> structure contains:</p>
+
+<p style="margin-left:11%; margin-top: 1em">typedef struct
+{</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="8%"></col>
+<col width="38%"></col>
+<col width="54%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>int x, y;</p></td>
+<td>
+
+
+<p>/* location of window */</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>int width, height;</p></td>
+<td>
+
+
+<p>/* width and height of window */</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>int border_width;</p></td>
+<td>
+
+
+<p>/* border width of window */</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>int depth;</p></td>
+<td>
+
+
+<p>/* depth of window */</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>Visual *visual;</p></td>
+<td>
+
+
+<p>/* the associated visual structure */</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>Window root;</p></td>
+<td>
+
+
+<p>/* root of screen containing window */</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>int class;</p></td>
+<td>
+
+
+<p>/* InputOutput, InputOnly*/</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>int bit_gravity;</p></td>
+<td>
+
+
+<p>/* one of the bit gravity values */</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>int win_gravity;</p></td>
+<td>
+
+
+<p>/* one of the window gravity values */</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>int backing_store;</p></td>
+<td>
+
+
+<p>/* NotUseful, WhenMapped, Always */</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>unsigned long backing_planes;/* planes to be preserved
+if possible */</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>unsigned long backing_pixel;/* value to be used when
+restoring planes */</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>Bool save_under;</p></td>
+<td>
+
+
+<p>/* boolean, should bits under be saved? */</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>Colormap colormap;</p></td>
+<td>
+
+
+<p>/* color map to be associated with window */</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>Bool map_installed;</p></td>
+<td>
+
+
+<p>/* boolean, is color map currently installed*/</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>int map_state;</p></td>
+<td>
+
+
+<p>/* IsUnmapped, IsUnviewable, IsViewable */</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>long all_event_masks;</p></td>
+<td>
+
+
+<p>/* set of events all people have interest in*/</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>long your_event_mask;</p></td>
+<td>
+
+
+<p>/* my event mask */</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>long do_not_propagate_mask;/* set of events that should
+not propagate */</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>Bool override_redirect;</p></td>
+<td>
+
+
+<p>/* boolean value for override-redirect */</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>Screen *screen;</p></td>
+<td>
+
+
+<p>/* back pointer to correct screen */</p></td></tr>
+</table>
+
+<p style="margin-left:11%;">} XWindowAttributes;</p>
+
+<p style="margin-left:11%; margin-top: 1em">The x and y
+members are set to the upper-left outer corner relative to
+the parent window&rsquo;s origin. The width and height
+members are set to the inside size of the window, not
+including the border. The border_width member is set to the
+window&rsquo;s border width in pixels. The depth member is
+set to the depth of the window (that is, bits per pixel for
+the object). The visual member is a pointer to the
+screen&rsquo;s associated <i>Visual</i> structure. The root
+member is set to the root window of the screen containing
+the window. The class member is set to the window&rsquo;s
+class and can be either <i>InputOutput</i> or
+<i>InputOnly</i>.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The bit_gravity
+member is set to the window&rsquo;s bit gravity and can be
+one of the following:</p>
+
+
+<p class="center" style="margin-top: 1em"><img src="grohtml-325301.png" alt="Image grohtml-325301.png"></img></p>
+
+<p style="margin-left:11%; margin-top: 1em">The win_gravity
+member is set to the window&rsquo;s window gravity and can
+be one of the following:</p>
+
+
+<p class="center" style="margin-top: 1em"><img src="grohtml-325302.png" alt="Image grohtml-325302.png"></img></p>
+
+<p style="margin-left:11%; margin-top: 1em">For additional
+information on gravity, see section 3.3.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+backing_store member is set to indicate how the X server
+should maintain the contents of a window and can be
+<i>WhenMapped</i>, <i>Always</i>, or <i>NotUseful</i>. The
+backing_planes member is set to indicate (with bits set to
+1) which bit planes of the window hold dynamic data that
+must be preserved in backing_stores and during save_unders.
+The backing_pixel member is set to indicate what values to
+use for planes not set in backing_planes.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The save_under
+member is set to <i>True</i> or <i>False</i>. The colormap
+member is set to the colormap for the specified window and
+can be a colormap ID or <i>None</i>. The map_installed
+member is set to indicate whether the colormap is currently
+installed and can be <i>True</i> or <i>False</i>. The
+map_state member is set to indicate the state of the window
+and can be <i>IsUnmapped</i>, <i>IsUnviewable</i>, or
+<i>IsViewable</i>. <i>IsUnviewable</i> is used if the window
+is mapped but some ancestor is unmapped.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+all_event_masks member is set to the bitwise inclusive OR of
+all event masks selected on the window by all clients. The
+your_event_mask member is set to the bitwise inclusive OR of
+all event masks selected by the querying client. The
+do_not_propagate_mask member is set to the bitwise inclusive
+OR of the set of events that should not propagate.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+override_redirect member is set to indicate whether this
+window overrides structure control facilities and can be
+<i>True</i> or <i>False</i>. Window manager clients should
+ignore the window if this member is <i>True</i>.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The screen
+member is set to a screen pointer that gives you a back
+pointer to the correct screen. This makes it easier to
+obtain the screen information without having to loop over
+the root window fields to see which field matches.</p>
+
+<h2 id="heading6">DIAGNOSTICS
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>BadDrawable</i></p>
+
+<p style="margin-left:26%;">A value for a Drawable argument
+does not name a defined Window or Pixmap.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="14%"></col>
+<col width="1%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>BadWindow</i></p></td>
+<td></td>
+<td>
+
+
+<p>A value for a Window argument does not name a defined
+Window.</p> </td></tr>
+</table>
+
+<h2 id="heading7">SEE ALSO
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XQueryPointer.3.xhtml"><em>XQueryPointer</em>(3)</a>,
+<a href="../man3/XQueryTree.3.xhtml"><em>XQueryTree</em>(3)</a> <i><br/>
+<a href="../../libX11/libX11/libX11.html">Xlib &minus; C Language X Interface</a></i></p>
+<hr/>
+</body>
+</html>

@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:42:14 2012 -->
+<title>XtOwnSelection</title>
+
+</head>
+<body>
+
+<h1>XtOwnSelection</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNTAX</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">XtOwnSelection,
+XtOwnSelectionIncremental, XtDisownSelection &minus; set
+selection owner</p>
+
+<h2 id="heading2">SYNTAX
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="89%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Boolean XtOwnSelection(Widget
+<i>w</i>, Atom <i>selection</i>, Time <i>time</i>,
+XtConvertSelectionProc <i>convert_proc</i>,
+XtLoseSelectionProc <i>lose_selection</i>,
+XtSelectionDoneProc <i>done_proc</i>);</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Boolean
+XtOwnSelectionIncremental(Widget <i>w</i>, Atom
+<i>selection</i>, Time <i>time</i>,
+XtConvertSelectionIncrProc <i>convert_callback</i>,
+XtLoseSelectionIncrProc <i>lose_callback</i>,
+XtSelectionDoneIncrProc <i>done_callback</i>,
+XtCancelConvertSelectionProc <i>cancel_callback</i>,
+XtPointer <i>client_data</i>);</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">void XtDisownSelection(Widget
+<i>w</i>, Atom <i>selection</i>, Time <i>time</i>);</p></td></tr>
+</table>
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>convert_proc</i></p>
+
+<p style="margin-left:26%;">Specifies the procedure that is
+to be called whenever someone requests the current value of
+the selection.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="14%"></col>
+<col width="1%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>done_proc</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the procedure that is called after the
+requestor has received the selection or NULL if the owner is
+not interested in being called back.</p></td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>lose_selection</i></p>
+
+<p style="margin-left:26%;">Specifies the procedure that is
+to be called whenever the widget has lost selection
+ownership or NULL if the owner is not interested in being
+called back.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="14%"></col>
+<col width="1%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>selection</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies an atom that describes the type of the
+selection (for example, <i>XA_PRIMARY</i>,
+<i>XA_SECONDARY</i>, or <i>XA_CLIPBOARD</i>).</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>time</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the timestamp that indicates when the
+selection ownership should commence or is to be
+relinquished.</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>w</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the widget that wishes to become the owner or
+to relinquish ownership.</p></td></tr>
+</table>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XtOwnSelection</i> function informs the Intrinsics
+selection mechanism that a widget believes it owns a
+selection. It returns <i>True</i> if the widget has
+successfully become the owner and <i>False</i> otherwise.
+The widget may fail to become the owner if some other widget
+has asserted ownership at a time later than this widget.
+Note that widgets can lose selection ownership either
+because someone else asserted later ownership of the
+selection or because the widget voluntarily gave up
+ownership of the selection. Also note that the
+lose_selection procedure is not called if the widget fails
+to obtain selection ownership in the first place.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XtOwnSelectionIncremental</i> procedure informs the
+Intrinsics incremental selection mechanism that the
+specified widget wishes to own the selection. It returns
+<i>True</i> if the specified widget successfully becomes the
+selection owner or <i>False</i> otherwise. For more
+information about <i>selection</i>, <i>target</i>, and
+<i>time</i>, see Section 2.6 of the <i>Inter-Client
+Communication Conventions Manual</i>.</p>
+
+<p style="margin-left:11%; margin-top: 1em">A widget that
+becomes the selection owner using
+<i>XtOwnSelectionIncremental</i> may use
+<i>XtDisownSelection</i> to relinquish selection
+ownership.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XtDisownSelection</i> function informs the Intrinsics
+selection mechanism that the specified widget is to lose
+ownership of the selection. If the widget does not currently
+own the selection either because it lost the selection or
+because it never had the selection to begin with,
+<i>XtDisownSelection</i> does nothing.</p>
+
+<p style="margin-left:11%; margin-top: 1em">After a widget
+has called <i>XtDisownSelection</i>, its convert procedure
+is not called even if a request arrives later with a
+timestamp during the period that this widget owned the
+selection. However, its done procedure will be called if a
+conversion that started before the call to
+<i>XtDisownSelection</i> finishes after the call to
+<i>XtDisownSelection</i>.</p>
+
+<h2 id="heading5">SEE ALSO
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XtAppGetSelectionTimeout.3.xhtml"><em>XtAppGetSelectionTimeout</em>(3)</a>,
+<a href="../man3/XtGetSelectionValue.3.xhtml"><em>XtGetSelectionValue</em>(3)</a> <i><br/>
+X Toolkit Intrinsics &minus; C Language Interface <br/>
+<a href="../../libX11/libX11/libX11.html">Xlib &minus; C Language X Interface</a></i></p>
+<hr/>
+</body>
+</html>

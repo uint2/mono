@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:30:30 2012 -->
+<title>XSetPointerMapping</title>
+
+</head>
+<body>
+
+<h1>XSetPointerMapping</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNTAX</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">DIAGNOSTICS</a><br/>
+<a href="#heading6">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">XSetPointerMapping,
+XGetPointerMapping &minus; manipulate pointer settings</p>
+
+<h2 id="heading2">SYNTAX
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="89%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">int XSetPointerMapping(Display
+*<i>display</i>, unsigned char <i>map</i>[], int
+<i>nmap</i>);</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">int XGetPointerMapping(Display
+*<i>display</i>, unsigned char <i>map_return</i>[], int
+<i>nmap</i>);</p> </td></tr>
+</table>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="11%"></col>
+<col width="4%" class="center"></col>
+<col width="63%"></col>
+<col width="11%"></col>
+</colgroup>
+<tr valign="top" align="left">
+
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+<td></td>
+<td></td>
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>display</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the connection to the X server.</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>map</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the mapping list.</p></td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>map_return</i></p>
+
+<p style="margin-left:26%;">Returns the mapping list.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="6%"></col>
+<col width="9%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>nmap</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the number of items in the mapping list.</p></td></tr>
+</table>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XSetPointerMapping</i> function sets the mapping of the
+pointer. If it succeeds, the X server generates a
+<i>MappingNotify</i> event, and <i>XSetPointerMapping</i>
+returns <i>MappingSuccess</i>. Element map[i] defines the
+logical button number for the physical button i+1. The
+length of the list must be the same as
+<i>XGetPointerMapping</i> would return, or a <i>BadValue</i>
+error results. A zero element disables a button, and
+elements are not restricted in value by the number of
+physical buttons. However, no two elements can have the same
+nonzero value, or a <i>BadValue</i> error results. If any of
+the buttons to be altered are logically in the down state,
+<i>XSetPointerMapping</i> returns <i>MappingBusy</i>, and
+the mapping is not changed.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XSetPointerMapping</i>
+can generate a <i>BadValue</i> error.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XGetPointerMapping</i> function returns the current
+mapping of the pointer. Pointer buttons are numbered
+starting from one. <i>XGetPointerMapping</i> returns the
+number of physical buttons actually on the pointer. The
+nominal mapping for a pointer is map[i]=i+1. The nmap
+argument specifies the length of the array where the pointer
+mapping is returned, and only the first nmap elements are
+returned in map_return.</p>
+
+<h2 id="heading5">DIAGNOSTICS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="12%"></col>
+<col width="3%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><i>BadValue</i></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Some numeric value falls outside
+the range of values accepted by the request. Unless a
+specific range is specified for an argument, the full range
+defined by the argument&rsquo;s type is accepted. Any
+argument defined as a set of alternatives can generate this
+error.</p> </td></tr>
+</table>
+
+<h2 id="heading6">SEE ALSO
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XChangeKeyboardControl.3.xhtml"><em>XChangeKeyboardControl</em>(3)</a>,
+<a href="../man3/XChangeKeyboardMapping.3.xhtml"><em>XChangeKeyboardMapping</em>(3)</a> <i><br/>
+<a href="../../libX11/libX11/libX11.html">Xlib &minus; C Language X Interface</a></i></p>
+<hr/>
+</body>
+</html>

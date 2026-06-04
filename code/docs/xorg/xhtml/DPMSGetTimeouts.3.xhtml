@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:27:20 2012 -->
+<title>DPMSGetTimeouts</title>
+
+</head>
+<body>
+
+<h1>DPMSGetTimeouts</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNOPSIS</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">RETURN VALUES</a><br/>
+<a href="#heading6">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">DPMSGetTimeouts
+&minus; retrieves the timeout values used by the X server
+for DPMS timings</p>
+
+<h2 id="heading2">SYNOPSIS
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>cc</b> [
+<i>flag</i> ... ] <i>file</i> ... -<b>lXext</b> [
+<i>library</i> ... ] <br/>
+#include &lt;X11/extensions/dpms.h&gt;</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="31%"></col>
+<col width="58%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>Bool DPMSGetTimeouts</b></p></td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:22%;">( <br/>
+Display *<i>display</i>, <br/>
+CARD16 *<i>standby</i>, <br/>
+CARD16 *<i>suspend</i>, <br/>
+CARD16 *<i>off</i> <br/>
+);</p>
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>display</i></p>
+
+<p style="margin-left:22%;">Specifies the connection to the
+X server</p>
+
+<p style="margin-left:11%;"><i>standby</i></p>
+
+<p style="margin-left:22%;">Specifies the current standby
+timeout in seconds</p>
+
+<p style="margin-left:11%;"><i>suspend</i></p>
+
+<p style="margin-left:22%;">Specifies the current suspend
+timeout in seconds</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="4%"></col>
+<col width="7%" class="center"></col>
+<col width="67%"></col>
+<col width="11%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>off</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the current off timeout in seconds</p></td>
+<td>
+</td></tr>
+</table>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>DPMSGetTimeouts</i> function retrieves the timeout values
+used by the X server for DPMS timings.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The value
+<i>standby</i> is the amount of time of inactivity in
+seconds before standby mode is invoked. A value of zero
+indicates that this mode has been disabled.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The value
+<i>suspend</i> is the amount of time of inactivity in
+seconds before the second level of power savings is invoked.
+A value of zero indicates that this mode has been
+disabled.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The value
+<i>off</i> is the amount of time of inactivity in seconds
+before the third and final level of power savings is
+invoked. A value of zero indicates that this mode has been
+disabled.</p>
+
+<h2 id="heading5">RETURN VALUES
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="7%"></col>
+<col width="16%" class="center"></col>
+<col width="66%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">TRUE</p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">The <i>DPMSGetTimeouts</i>
+function returns TRUE when values are returned.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>FALSE</p></td>
+<td></td>
+<td>
+
+
+<p>The <i>DPMSGetTimeouts</i> function returns FALSE when
+no values returned.</p></td></tr>
+</table>
+
+<h2 id="heading6">SEE ALSO
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/DPMSCapable.3.xhtml"><em>DPMSCapable</em>(3)</a>,
+<a href="../man3/DPMSInfo.3.xhtml"><em>DPMSInfo</em>(3)</a>, <a href="../man3/DPMSSetTimeouts.3.xhtml"><em>DPMSSetTimeouts</em>(3)</a></p>
+<hr/>
+</body>
+</html>

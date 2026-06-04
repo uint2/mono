@@ -1,0 +1,343 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:38:13 2012 -->
+<title>XGrabKey</title>
+
+</head>
+<body>
+
+<h1>XGrabKey</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNTAX</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">DIAGNOSTICS</a><br/>
+<a href="#heading6">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">XGrabKey,
+XUngrabKey &minus; grab keyboard keys</p>
+
+<h2 id="heading2">SYNTAX
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="89%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">int XGrabKey(Display
+*<i>display</i>, int <i>keycode</i>, unsigned int
+<i>modifiers</i>, Window <i>grab_window</i>, Bool
+<i>owner_events</i>, int <i>pointer_mode</i>, int
+<i>keyboard_mode</i>);</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">int XUngrabKey(Display
+*<i>display</i>, int <i>keycode</i>, unsigned int
+<i>modifiers</i>, Window <i>grab_window</i>);</p></td></tr>
+</table>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="11%"></col>
+<col width="4%" class="center"></col>
+<col width="63%"></col>
+<col width="11%"></col>
+</colgroup>
+<tr valign="top" align="left">
+
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+<td></td>
+<td></td>
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>display</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the connection to the X server.</p></td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>grab_window</i></p>
+
+<p style="margin-left:26%;">Specifies the grab window.</p>
+
+<p style="margin-left:11%;"><i>keyboard_mode</i></p>
+
+<p style="margin-left:26%;">Specifies further processing of
+keyboard events. You can pass <i>GrabModeSync</i> or
+<i>GrabModeAsync</i>.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="14%"></col>
+<col width="1%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>keycode</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the KeyCode or <i>AnyKey</i>.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>modifiers</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the set of keymasks or <i>AnyModifier</i>. The
+mask is the bitwise inclusive OR of the valid keymask
+bits.</p> </td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>owner_events</i></p>
+
+<p style="margin-left:26%;">Specifies a Boolean value that
+indicates whether the keyboard events are to be reported as
+usual.</p>
+
+<p style="margin-left:11%;"><i>pointer_mode</i></p>
+
+<p style="margin-left:26%;">Specifies further processing of
+pointer events. You can pass <i>GrabModeSync</i> or
+<i>GrabModeAsync</i>.</p>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XGrabKey</i> function establishes a passive grab on the
+keyboard. In the future, the keyboard is actively grabbed
+(as for <i>XGrabKeyboard</i>), the last-keyboard-grab time
+is set to the time at which the key was pressed (as
+transmitted in the <i>KeyPress</i> event), and the
+<i>KeyPress</i> event is reported if all of the following
+conditions are true:</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="1%"></col>
+<col width="6%" class="center"></col>
+<col width="82%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>&bull;</p></td>
+<td></td>
+<td>
+
+
+<p>The keyboard is not grabbed and the specified key (which
+can itself be a modifier key) is logically pressed when the
+specified modifier keys are logically down, and no other
+modifier keys are logically down.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>&bull;</p></td>
+<td></td>
+<td>
+
+
+<p>Either the grab_window is an ancestor of (or is) the
+focus window, or the grab_window is a descendant of the
+focus window and contains the pointer.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>&bull;</p></td>
+<td></td>
+<td>
+
+
+<p>A passive grab on the same key combination does not
+exist on any ancestor of grab_window.</p></td></tr>
+</table>
+
+<p style="margin-left:11%; margin-top: 1em">The
+interpretation of the remaining arguments is as for
+<i>XGrabKeyboard</i>. The active grab is terminated
+automatically when the logical state of the keyboard has the
+specified key released (independent of the logical state of
+the modifier keys), at which point a <i>KeyRelease</i> event
+is reported to the grabbing window.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Note that the
+logical state of a device (as seen by client applications)
+may lag the physical state if device event processing is
+frozen.</p>
+
+<p style="margin-left:11%; margin-top: 1em">A modifiers
+argument of <i>AnyModifier</i> is equivalent to issuing the
+request for all possible modifier combinations (including
+the combination of no modifiers). It is not required that
+all modifiers specified have currently assigned KeyCodes. A
+keycode argument of <i>AnyKey</i> is equivalent to issuing
+the request for all possible KeyCodes. Otherwise, the
+specified keycode must be in the range specified by
+min_keycode and max_keycode in the connection setup, or a
+<i>BadValue</i> error results.</p>
+
+<p style="margin-left:11%; margin-top: 1em">If some other
+client has issued a <i>XGrabKey</i> with the same key
+combination on the same window, a <i>BadAccess</i> error
+results. When using <i>AnyModifier</i> or <i>AnyKey</i>, the
+request fails completely, and a <i>BadAccess</i> error
+results (no grabs are established) if there is a conflicting
+grab for any combination.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XGrabKey</i>
+can generate <i>BadAccess</i>, <i>BadValue</i>, and
+<i>BadWindow</i> errors.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XUngrabKey</i> function releases the key combination on
+the specified window if it was grabbed by this client. It
+has no effect on an active grab. A modifiers of
+<i>AnyModifier</i> is equivalent to issuing the request for
+all possible modifier combinations (including the
+combination of no modifiers). A keycode argument of
+<i>AnyKey</i> is equivalent to issuing the request for all
+possible key codes.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XUngrabKey</i>
+can generate <i>BadValue</i> and <i>BadWindow</i> error.</p>
+
+<h2 id="heading5">DIAGNOSTICS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="14%"></col>
+<col width="1%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><i>BadAccess</i></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">A client attempted to grab a
+key/button combination already grabbed by another
+client.</p> </td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>BadValue</i></p></td>
+<td></td>
+<td>
+
+
+<p>Some numeric value falls outside the range of values
+accepted by the request. Unless a specific range is
+specified for an argument, the full range defined by the
+argument&rsquo;s type is accepted. Any argument defined as a
+set of alternatives can generate this error.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>BadWindow</i></p></td>
+<td></td>
+<td>
+
+
+<p>A value for a Window argument does not name a defined
+Window.</p> </td></tr>
+</table>
+
+<h2 id="heading6">SEE ALSO
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XAllowEvents.3.xhtml"><em>XAllowEvents</em>(3)</a>,
+<a href="../man3/XGrabButton.3.xhtml"><em>XGrabButton</em>(3)</a>, <a href="../man3/XGrabKeyboard.3.xhtml"><em>XGrabKeyboard</em>(3)</a>, <a href="../man3/XGrabPointer.3.xhtml"><em>XGrabPointer</em>(3)</a> <i><br/>
+<a href="../../libX11/libX11/libX11.html">Xlib &minus; C Language X Interface</a></i></p>
+<hr/>
+</body>
+</html>

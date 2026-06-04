@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:26:01 2012 -->
+<title>XkbSetAutoRepeatRate</title>
+
+</head>
+<body>
+
+<h1>XkbSetAutoRepeatRate</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNOPSIS</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">RETURN VALUES</a><br/>
+<a href="#heading6">DIAGNOSTICS</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">XkbSetAutoRepeatRate
+&minus; Sets the attributes of the RepeatKeys control for a
+keyboard device</p>
+
+<h2 id="heading2">SYNOPSIS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="38%"></col>
+<col width="2%" class="center"></col>
+<col width="49%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>Bool
+XkbSetAutoRepeatRate</b></p> </td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>(Display
+*</b><i>display</i><b>, unsigned int</b>
+<i>device_spec</i><b>,</b></p> </td></tr>
+</table>
+
+<p style="margin-left:11%;"><b>unsigned int</b>
+<i>timeout</i><b>, unsigned int</b>
+<i>interval</i><b>);</b></p>
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b><i>&minus;
+display</i></b></p>
+
+<p style="margin-left:22%;">connection to X server</p>
+
+<p style="margin-left:11%;"><i>&minus; device_spec</i></p>
+
+<p style="margin-left:22%;">device to configure, or
+XkbUseCoreKbd</p>
+
+<p style="margin-left:11%;"><i>&minus; timeout</i></p>
+
+<p style="margin-left:22%;">initial delay, ms</p>
+
+<p style="margin-left:11%;"><i>&minus; interval</i></p>
+
+<p style="margin-left:22%;">delay between repeats, ms</p>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The core
+protocol allows only control over whether or not the entire
+keyboard or individual keys should auto-repeat when held
+down. RepeatKeys is a boolean control that extends this
+capability by adding control over the delay until a key
+begins to repeat and the rate at which it repeats.
+RepeatKeys is coupled with the core auto-repeat control:
+when RepeatKeys is enabled or disabled, the core auto-repeat
+is enabled or disabled and vice versa.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Auto-repeating
+keys are controlled by two attributes. The first,
+<i>timeout,</i> is the delay after the initial press of an
+auto-repeating key and the first generated repeat event. The
+second, <i>interval,</i> is the delay between all subsequent
+generated repeat events. As with all boolean controls,
+configuring the attributes that determine how the control
+operates does not automatically enable the control as a
+whole.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XkbSetAutoRepeatRate</i>
+sends a request to the X server to configure the AutoRepeat
+control attributes to the values specified in <i>timeout</i>
+and <i>interval.</i></p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>XkbSetAutoRepeatRate</i>
+does not wait for a reply; it normally returns True.
+Specifying a zero value for either <i>timeout</i> or
+<i>interval</i> causes the server to generate a BadValue
+protocol error. If a compatible version of the Xkb extension
+is not available in the server, <i>XkbSetAutoRepeatRate</i>
+returns False.</p>
+
+<h2 id="heading5">RETURN VALUES
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="7%"></col>
+<col width="16%" class="center"></col>
+<col width="66%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">True</p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">The <i>XkbSetAutoRepeatRate</i>
+function returns True normally.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>False</p></td>
+<td></td>
+<td>
+
+
+<p>The <i>XkbSetAutoRepeatRate</i> function returns False
+if a compatible version of the Xkb extension is not
+available in the server.</p></td></tr>
+</table>
+
+<h2 id="heading6">DIAGNOSTICS
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="12%"></col>
+<col width="11%" class="center"></col>
+<col width="41%"></col>
+<col width="25%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>BadValue</b></p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">An argument is out of range</p></td>
+<td>
+</td></tr>
+ </table>
+<hr/>
+</body>
+</html>

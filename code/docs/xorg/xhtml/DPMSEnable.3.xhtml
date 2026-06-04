@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:41:16 2012 -->
+<title>DPMSEnable</title>
+
+</head>
+<body>
+
+<h1>DPMSEnable</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNOPSIS</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">RETURN VALUES</a><br/>
+<a href="#heading6">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">DPMSEnable
+&minus; enables DPMS on the specified display</p>
+
+<h2 id="heading2">SYNOPSIS
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>cc</b> [
+<i>flag</i> ... ] <i>file</i> ... -<b>lXext</b> [
+<i>library</i> ... ] <br/>
+#include &lt;X11/extensions/dpms.h&gt;</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="60%"></col>
+<col width="29%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em"><b>Status DPMSEnable</b> (
+Display *<i>display</i> );</p></td>
+<td>
+</td></tr>
+</table>
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>display</i></p>
+
+<p style="margin-left:22%;">Specifies the connection to the
+X server</p>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>DPMSEnable</i> function enables Display Power Management
+Signaling (DPMS) on the specified <i>display.</i> When DPMS
+is enabled, DPMS will use the currently saved timeout
+values. It will trigger the appropriate DPMS power level
+based on the timeout values. Refer to
+<i>DPMSSetTimeouts.</i> All physical screens are affected by
+<i>DPMSEnable</i> at the same time.</p>
+
+<p style="margin-left:11%; margin-top: 1em">If
+<i>DPMSEnable</i> is invoked on a display which has DPMS
+already enabled, or on a display which does not support
+DPMS, no change is made and no error is returned.</p>
+
+<h2 id="heading5">RETURN VALUES
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="6%"></col>
+<col width="17%" class="center"></col>
+<col width="66%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">TRUE</p></td>
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">The <i>DPMSEnable</i> function
+always returns TRUE.</p></td></tr>
+</table>
+
+<h2 id="heading6">SEE ALSO
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/DPMSCapable.3.xhtml"><em>DPMSCapable</em>(3)</a>,
+<a href="../man3/DPMSDisable.3.xhtml"><em>DPMSDisable</em>(3)</a>, <a href="../man3/DPMSGetTimeouts.3.xhtml"><em>DPMSGetTimeouts</em>(3)</a>,
+<a href="../man3/DPMSSetTimeouts.3.xhtml"><em>DPMSSetTimeouts</em>(3)</a></p>
+<hr/>
+</body>
+</html>

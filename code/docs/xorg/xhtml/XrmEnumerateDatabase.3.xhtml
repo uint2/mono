@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:42:24 2012 -->
+<title>XrmEnumerateDatabase</title>
+
+</head>
+<body>
+
+<h1>XrmEnumerateDatabase</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">SYNTAX</a><br/>
+<a href="#heading3">ARGUMENTS</a><br/>
+<a href="#heading4">DESCRIPTION</a><br/>
+<a href="#heading5">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">XrmEnumerateDatabase
+&minus; enumerate resource database entries</p>
+
+<h2 id="heading2">SYNTAX
+</h2>
+
+
+
+<p class="center" style="margin-top: 1em"><b><img src="grohtml-106141.png" alt="Image grohtml-106141.png"></img></b></p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="89%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p style="margin-top: 1em">Bool
+XrmEnumerateDatabase(XrmDatabase <i>database</i>,
+XrmNameList <i>name_prefix</i>, XrmClassList
+<i>class_prefix</i>, int <i>mode</i>, Bool (*<i>proc</i>)(),
+XPointer <i>arg</i>);</p></td></tr>
+</table>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="12%"></col>
+<col width="3%" class="center"></col>
+<col width="49%"></col>
+<col width="25%"></col>
+</colgroup>
+<tr valign="top" align="left">
+
+
+<h2 id="heading3">ARGUMENTS
+</h2>
+<td></td>
+<td></td>
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>database</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the resource database.</p></td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>name_prefix</i></p>
+
+<p style="margin-left:26%;">Specifies the resource name
+prefix.</p>
+
+<p style="margin-left:11%;"><i>class_prefix</i></p>
+
+<p style="margin-left:26%;">Specifies the resource class
+prefix.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="11%"></col>
+<col width="6%"></col>
+<col width="9%" class="center"></col>
+<col width="74%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>mode</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the number of levels to enumerate.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>proc</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the procedure that is to be called for each
+matching entry.</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p><i>arg</i></p></td>
+<td></td>
+<td>
+
+
+<p>Specifies the user-supplied argument that will be passed
+to the procedure.</p></td></tr>
+</table>
+
+<h2 id="heading4">DESCRIPTION
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>XrmEnumerateDatabase</i> function calls the specified
+procedure for each resource in the database that would match
+some completion of the given name/class resource prefix. The
+order in which resources are found is
+implementation-dependent. If mode is <i>XrmEnumOneLevel</i>,
+a resource must match the given name/class prefix with just
+a single name and class appended. If mode is
+<i>XrmEnumAllLevels</i>, the resource must match the given
+name/class prefix with one or more names and classes
+appended. If the procedure returns <i>True</i>, the
+enumeration terminates and the function returns <i>True</i>.
+If the procedure always returns <i>False</i>, all matching
+resources are enumerated and the function returns
+<i>False</i>.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The procedure
+is called with the following arguments:</p>
+
+
+<p style="margin-left:11%; margin-top: 1em">(*<i>proc</i>)(<i>database</i>,
+<i>bindings</i>, <i>quarks</i>, <i>type</i>, <i>value</i>,
+<i>arg</i>)</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="8%"></col>
+<col width="38%"></col>
+<col width="54%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>XrmDatabase *<i>database</i>;</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>XrmBindingList <i>bindings</i>;</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>XrmQuarkList <i>quarks</i>;</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>XrmRepresentation *<i>type</i>;</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>XrmValue *<i>value</i>;</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>XPointer <i>arg</i>;</p></td>
+<td>
+</td></tr>
+</table>
+
+<p style="margin-left:11%; margin-top: 1em">The bindings
+and quarks lists are terminated by <i>NULLQUARK</i>. Note
+that pointers to the database and type are passed, but these
+values should not be modified.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The procedure
+must not modify the database. If Xlib has been initialized
+for threads, the procedure is called with the database
+locked and the result of a call by the procedure to any Xlib
+function using the same database is not defined.</p>
+
+<h2 id="heading5">SEE ALSO
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XrmGetResource.3.xhtml"><em>XrmGetResource</em>(3)</a>,
+<a href="../man3/XrmInitialize.3.xhtml"><em>XrmInitialize</em>(3)</a>, <a href="../man3/XrmPutResource.3.xhtml"><em>XrmPutResource</em>(3)</a> <i><br/>
+<a href="../../libX11/libX11/libX11.html">Xlib &minus; C Language X Interface</a></i></p>
+<hr/>
+</body>
+</html>

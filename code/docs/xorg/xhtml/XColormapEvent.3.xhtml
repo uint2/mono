@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+ "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+ [<!ENTITY mathml "http://www.w3.org/1998/Math/MathML">]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link href="http://www.x.org/" rel="home" />
+<link href="index.xhtml" rel="up" />
+<link rel="SHORTCUT ICON" href="../../../favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../../xorg.css" />
+<meta name="generator" content="groff -Txhtml, see www.gnu.org"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="Content-Style" content="text/css"/>
+<style type="text/css">
+       .center { text-align: center }
+       .right  { text-align: right }
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<!-- Creator     : groff version 1.20.1 -->
+<!-- CreationDate: Sun Apr 15 13:26:07 2012 -->
+<title>XColormapEvent</title>
+
+</head>
+<body>
+
+<h1>XColormapEvent</h1>
+
+<p><a href="#heading1">NAME</a><br/>
+<a href="#heading2">STRUCTURES</a><br/>
+<a href="#heading3">SEE ALSO</a><br/>
+
+</p>
+<hr/>
+
+
+<h2 id="heading1">NAME
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">XColormapEvent
+&minus; ColormapNotify event structure</p>
+
+<h2 id="heading2">STRUCTURES
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The structure
+for <i>ColormapNotify</i> events contains:</p>
+
+<p style="margin-left:11%; margin-top: 1em">typedef struct
+{</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<colgroup><col width="8%"></col>
+<col width="38%"></col>
+<col width="54%"></col>
+</colgroup>
+<tr valign="top" align="left">
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>int type;</p></td>
+<td>
+
+
+<p>/* ColormapNotify */</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>unsigned long serial;</p></td>
+<td>
+
+
+<p>/* # of last request processed by server */</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>Bool send_event;</p></td>
+<td>
+
+
+<p>/* true if this came from a SendEvent request */</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>Display *display;</p></td>
+<td>
+
+
+<p>/* Display the event was read from */</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>Window window;</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>Colormap colormap;</p></td>
+<td>
+
+
+<p>/* colormap or None */</p></td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>Bool new;</p></td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+</td>
+<td>
+</td></tr>
+<tr valign="top" align="left">
+<td></td>
+<td>
+
+
+<p>int state;</p></td>
+<td>
+
+
+<p>/* ColormapInstalled, ColormapUninstalled */</p></td></tr>
+</table>
+
+<p style="margin-left:11%;">} XColormapEvent;</p>
+
+<p style="margin-left:11%; margin-top: 1em">When you
+receive this event, the structure members are set as
+follows.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The type member
+is set to the event type constant name that uniquely
+identifies it. For example, when the X server reports a
+<i>GraphicsExpose</i> event to a client application, it
+sends an <i>XGraphicsExposeEvent</i> structure with the type
+member set to <i>GraphicsExpose</i>. The display member is
+set to a pointer to the display the event was read on. The
+send_event member is set to <i>True</i> if the event came
+from a <i>SendEvent</i> protocol request. The serial member
+is set from the serial number reported in the protocol but
+expanded from the 16-bit least-significant bits to a full
+32-bit value. The window member is set to the window that is
+most useful to toolkit dispatchers.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The window
+member is set to the window whose associated colormap is
+changed, installed, or uninstalled. For a colormap that is
+changed, installed, or uninstalled, the colormap member is
+set to the colormap associated with the window. For a
+colormap that is changed by a call to <i>XFreeColormap</i>,
+the colormap member is set to <i>None</i>. The new member is
+set to indicate whether the colormap for the specified
+window was changed or installed or uninstalled and can be
+<i>True</i> or <i>False</i>. If it is <i>True</i>, the
+colormap was changed. If it is <i>False</i>, the colormap
+was installed or uninstalled. The state member is always set
+to indicate whether the colormap is installed or uninstalled
+and can be <i>ColormapInstalled</i> or
+<i>ColormapUninstalled</i>.</p>
+
+<h2 id="heading3">SEE ALSO
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="../man3/XAnyEvent.3.xhtml"><em>XAnyEvent</em>(3)</a>,
+<a href="../man3/XButtonEvent.3.xhtml"><em>XButtonEvent</em>(3)</a>, <a href="../man3/XCreateWindowEvent.3.xhtml"><em>XCreateWindowEvent</em>(3)</a>, <a href="../man3/XCirculateEvent.3.xhtml"><em>XCirculateEvent</em>(3)</a>,
+<a href="../man3/XCirculateRequestEvent.3.xhtml"><em>XCirculateRequestEvent</em>(3)</a>, <a href="../man3/XConfigureEvent.3.xhtml"><em>XConfigureEvent</em>(3)</a>,
+<a href="../man3/XConfigureRequestEvent.3.xhtml"><em>XConfigureRequestEvent</em>(3)</a>, <a href="../man3/XCreateColormap.3.xhtml"><em>XCreateColormap</em>(3)</a>,
+<a href="../man3/XCrossingEvent.3.xhtml"><em>XCrossingEvent</em>(3)</a>, <a href="../man3/XDestroyWindowEvent.3.xhtml"><em>XDestroyWindowEvent</em>(3)</a>, <a href="../man3/XErrorEvent.3.xhtml"><em>XErrorEvent</em>(3)</a>,
+<a href="../man3/XExposeEvent.3.xhtml"><em>XExposeEvent</em>(3)</a>, <a href="../man3/XFocusChangeEvent.3.xhtml"><em>XFocusChangeEvent</em>(3)</a>,
+<a href="../man3/XGraphicsExposeEvent.3.xhtml"><em>XGraphicsExposeEvent</em>(3)</a>, <a href="../man3/XGravityEvent.3.xhtml"><em>XGravityEvent</em>(3)</a>, <a href="../man3/XKeymapEvent.3.xhtml"><em>XKeymapEvent</em>(3)</a>,
+<a href="../man3/XMapEvent.3.xhtml"><em>XMapEvent</em>(3)</a>, <a href="../man3/XMapRequestEvent.3.xhtml"><em>XMapRequestEvent</em>(3)</a>, <a href="../man3/XPropertyEvent.3.xhtml"><em>XPropertyEvent</em>(3)</a>,
+<a href="../man3/XReparentEvent.3.xhtml"><em>XReparentEvent</em>(3)</a>, <a href="../man3/XResizeRequestEvent.3.xhtml"><em>XResizeRequestEvent</em>(3)</a>,
+<a href="../man3/XSelectionClearEvent.3.xhtml"><em>XSelectionClearEvent</em>(3)</a>, <a href="../man3/XSelectionEvent.3.xhtml"><em>XSelectionEvent</em>(3)</a>,
+<a href="../man3/XSelectionRequestEvent.3.xhtml"><em>XSelectionRequestEvent</em>(3)</a>, <a href="../man3/XUnmapEvent.3.xhtml"><em>XUnmapEvent</em>(3)</a>,
+<a href="../man3/XVisibilityEvent.3.xhtml"><em>XVisibilityEvent</em>(3)</a> <i><br/>
+<a href="../../libX11/libX11/libX11.html">Xlib &minus; C Language X Interface</a></i></p>
+<hr/>
+</body>
+</html>
