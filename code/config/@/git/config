@@ -30,6 +30,7 @@
 	detachedHead = false
 	statusHints = false
 [core]
+  pager = less
 	whitespace = cr-at-eol
 	compression = 0
 [pretty]
