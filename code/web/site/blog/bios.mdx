@@ -1,0 +1,27 @@
+---
+title: Updating BIOS
+description: Succinct notes for fellow bios updaters out there.
+pubDate: "2026-03-21"
+tags: []
+---
+
+I have a [B850M][B850M]. It has [Q-Flash][qflash]. Here's what I did.
+
+1. Format a USB stick to FAT32/16/12 (as per the Q-Flash website), and plugged
+   it into the BIOS-labelled USB port on the motherboard.
+2. Download a BIOS version from the [motherboard site][B850M] (look for
+   "Support" and "BIOS").
+3. Copied and extracted it onto the USB stick.
+4. Boot into BIOS.
+5. Go to the Q-Flash menu.
+6. Select the extracted BIOS file from the USB stick.
+7. Update.
+8. Reboot.
+
+After rebooting, the motherboard's main decorative LED was lit, but nothing else
+was happening. There was no display output, and none of the fans were spinning.
+10 minutes later, it's still in the exact same state, so I cut the power and
+rebooted again. This time, all was well.
+
+[B850M]: https://www.gigabyte.com/Motherboard/B850M-AORUS-ELITE-WIFI6E-ICE-rev-1x
+[qflash]: https://www.gigabyte.com/MicroSite/121/tech_qflash.htm

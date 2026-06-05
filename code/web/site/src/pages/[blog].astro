@@ -1,0 +1,53 @@
+---
+import "../styles/blog.css"
+
+import { SITE_TITLE } from "../consts"
+
+import Main from "../layouts/Main.astro"
+import Section from "../layouts/Section.astro"
+import Header from "../components/Header.astro"
+
+import { mdxComponents } from "../mdxComponents"
+import blogPosts from "../blog_posts"
+
+import { render } from "astro:content"
+
+export async function getStaticPaths() {
+  return blogPosts.getStaticPaths()
+}
+
+const blog = Astro.props
+const { Content } = await render(blog)
+const { title, description, pubDate } = blog.data
+---
+
+<Main>
+  <Section class="prose">
+    <a href="/#blog">{SITE_TITLE}</a>
+    <>
+      <span style="color:var(--color-fg1)">&nbsp;/&nbsp;</span>
+      <span>{title}</span>
+      <span style="color:var(--color-fg2)">
+        (<span style="color:var(--color-fg1)">{pubDate}</span>)
+      </span>
+    </>
+    <hr />
+    <div>
+      <!-- title -->
+      <div style="font-weight:600;font-size:24px;margin-bottom:2px">
+        {title}
+      </div>
+      <!-- publish date -->
+      <div style="color:var(--color-fg1)" class="font-mono">{pubDate}</div>
+    </div>
+    <!-- description -->
+    {
+      description ? (
+        <div style="color:var(--color-fg1);font-size:var(--text-sm)">
+          {description}
+        </div>
+      ) : null
+    }
+    <Content components={mdxComponents} />
+  </Section>
+</Main>

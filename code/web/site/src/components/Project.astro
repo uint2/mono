@@ -1,0 +1,10 @@
+---
+const { name, href, summary, text } = Astro.props
+---
+
+<a href={href}>{name}</a>
+<span style="color:var(--color-fg1)"> – </span>
+<slot name="summary" />
+<div style="color:var(--color-fg1);font-size:var(--text-sm)">
+  <slot name="description" />
+</div>

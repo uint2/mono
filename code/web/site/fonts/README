@@ -1,0 +1,5 @@
+1. Download the TTF font from a solid source.
+2. Use pyftsubset to strip out unused symbols, using the ".rust" project to get
+   the value for the "--unicodes" flag. This shakes down the entire repo's list
+   of chars and make sure the font can cover all of them.
+3. Use "github.com/google/woff2" repo to compress the subset file.

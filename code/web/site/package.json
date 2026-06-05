@@ -1,0 +1,40 @@
+{
+  "name": "personal-site",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "start": "astro preview",
+    "astro": "astro",
+    "format": "prettier -w **/*.{astro,mdx,js,ts,jsx,tsx,json}",
+    "update": "ncu --target semver --upgrade"
+  },
+  "dependencies": {
+    "@astrojs/mdx": "^5.0.4",
+    "@astrojs/solid-js": "^6.0.1",
+    "astro": "^6.2.1"
+  },
+  "devDependencies": {
+    "npm-check-updates": "^19.6.6",
+    "parse5": "^8.0.1",
+    "prettier-plugin-astro": "^0.14.1",
+    "typescript": "^5.9.3"
+  },
+  "prettier": {
+    "tabWidth": 2,
+    "semi": false,
+    "singleQuote": false,
+    "plugins": [
+      "prettier-plugin-astro"
+    ],
+    "overrides": [
+      {
+        "files": "*.astro",
+        "options": {
+          "parser": "astro"
+        }
+      }
+    ]
+  }
+}

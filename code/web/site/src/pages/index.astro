@@ -1,0 +1,167 @@
+---
+import * as c from "../consts"
+import ArticleCard from "../components/ArticleCard.astro"
+import Main from "../layouts/Main.astro"
+import Project from "../components/Project.astro"
+import Header from "../components/Header.astro"
+import Section from "../layouts/Section.astro"
+import CoolWebsites from "../cool-websites/CoolWebsites.astro"
+
+import blogPosts from "../blog_posts"
+
+const BLOG_POSTS = await blogPosts
+  .getCollection(true)
+  .then((blogPosts) => blogPosts.map((v) => v.data))
+---
+
+<Main>
+  <Section>
+    <Header />
+    <p>
+      Sleeps, codes, climbs, runs, and still trying to follow along <a
+        href="https://openlibrary.org/books/OL3689578M">Dummit & Foote</a
+      > with
+      <a href="https://lean-lang.org/">Lean</a>. Likes to build stuff (software,
+      PCs, mechanical keyboards, road bikes, and still counting). Favourite
+      dinosaur is the <a href="https://thedinosaurs.org/dinosaurs/brachiosaurus"
+        >brachiosaurus</a
+      >.
+    </p>
+    <p>
+      Life goal is to make fast, reliable, and secure software so that people
+      can enjoy modern software without needing modern hardware.
+    </p>
+    <p>
+      Keeps a <a href="#blog">small blog</a>, and a <a href="#sites"
+        >list of cool websites</a
+      >.
+    </p>
+
+    <!-- Projects part 1 -->
+    <p>
+      Does projects to solve daily-life problems and learn code in an applied
+      setting:
+    </p>
+    <ul>
+      <li>
+        <Project name="Gitnu" href="https://github.com/nguyenvukhang/gitnu/">
+          <span slot="summary">Enumerates git status</span>
+          <span slot="description">
+            {c.GITNU_DOWNLOADS} downloads on <a
+              href="https://crates.io/crates/gitnu">crates.io</a
+            >.
+          </span>
+        </Project>
+      </li>
+      <li>
+        <Project name="Rudin" href="https://github.com/libmath/Rudin">
+          <span slot="summary"
+            >A formal analysis of Rudin's Principles of Mathematical Analysis</span
+          >
+          <span slot="description"
+            >Implements Rudin's partition strucutre in Lean.</span
+          >
+        </Project>
+      </li>
+      <li>
+        <Project name="Wordle" href="https://github.com/nguyenvukhang/wordle/">
+          <span slot="summary">A fun application of Information Theory</span>
+          <span slot="description">Evaluates wordle algorithms in &lt;2s.</span>
+        </Project>
+      </li>
+    </ul>
+
+    <!-- Projects part 2 -->
+    <p>Explores other languages to keep an open perspective:</p>
+    <ul>
+      <li>
+        <Project name="Helium" href="https://github.com/nguyenvukhang/helium/">
+          <span slot="summary">
+            Wacom Tablet Driver extension for Precision Mode
+          </span>
+          <span slot="description">
+            Swift, XCode, macOS UI Application; also in daemon form.
+          </span>
+        </Project>
+      </li>
+      <li>
+        <Project
+          name="Canvas Sync"
+          href="https://github.com/nguyenvukhang/canvas-sync/"
+        >
+          <span slot="summary">Cross-platform GUI synchronization tool</span>
+          <span slot="description">
+            C++, Qt6 Framework, automated builds on GitHub.
+          </span>
+        </Project>
+      </li>
+      <li>
+        <Project
+          name="Nvim Toggler"
+          href="https://github.com/nguyenvukhang/nvim-toggler/"
+        >
+          <span slot="summary">Toggle words under your cursor</span>
+          <span slot="description">
+            Lua plugin for Neovim, {c.NVIM_TOGGLER_STARS}★ on GH.
+          </span>
+        </Project>
+      </li>
+      <li>
+        <Project
+          name="Aquarium"
+          href="https://github.com/nguyenvukhang/aquarium/"
+        >
+          <span slot="summary">
+            Backtracking solver for the <a href="https://puzzle-aquarium.com/"
+              >Aquarium</a
+            > puzzle
+          </span>
+          <span slot="description">Implemented in both Swift and Rust.</span>
+        </Project>
+      </li>
+    </ul>
+
+    <p>
+      Find me on <a href="https://github.com/nguyenvukhang/">GitHub</a>,
+      <a href="https://linkedin.com/in/nguyenvukhang/">LinkedIn</a>, and <a
+        href="https://instagram.com/chalk.hang/">Instagram</a
+      >.
+    </p>
+  </Section>
+
+  <!-- Blog -->
+  <Section class="prose">
+    <div><hr id="blog" /></div>
+    <h1>Blog</h1>
+    {
+      BLOG_POSTS.map(({ pubDate, title, description, slug, draft }) => (
+        <div style="margin-bottom:2px">
+          <ArticleCard
+            title={title}
+            pubDate={pubDate}
+            description={description}
+            draft={draft}
+            href={`/${slug}/`}
+          />
+        </div>
+      ))
+    }
+  </Section>
+
+  <!-- Cool websites -->
+  <Section class="prose">
+    <div><hr id="sites" /></div>
+    <h1>Cool websites</h1>
+    <CoolWebsites />
+  </Section>
+</Main>
+
+<style>
+  hr {
+    margin: 24px 0;
+  }
+  p:has(+ ul),
+  p:has(+ ol) {
+    margin-bottom: 12px;
+  }
+</style>

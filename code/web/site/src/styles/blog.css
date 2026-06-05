@@ -1,0 +1,55 @@
+@import "./global.css";
+
+/* Headings. We ban h3 and beyond because it adds too much reading complexity. */
+h1,
+h2 {
+  font-weight: 600; /* semibold */
+}
+h1 {
+  padding-top: 8px;
+  font-size: var(--text-xl);
+}
+h2 {
+  padding-top: 6px;
+  font-size: var(--text-lg);
+}
+
+/* (having some ### before the heading to indicate depth)
+h1::before, h2::before {
+  margin-right: 6px;
+  font-size: 16px;
+}
+h1::before { content: "#"; }
+h2::before { content: "##"; }
+*/
+
+kbd {
+  color: var(--color-fg0);
+  background: var(--color-fg3);
+  box-shadow: 0 2px var(--color-fg2);
+  border-radius: 3px;
+  padding: 0 2px 0;
+}
+
+blockquote {
+  margin: 0;
+  border: 0px solid var(--color-ac3);
+  border-left: 3px;
+  padding-left: 8px;
+  padding-right: 8px;
+  color: var(--color-fg1);
+}
+
+code {
+  background-color: var(--color-fg3);
+}
+
+pre {
+  line-height: 1.45em;
+  padding: 14px 8px;
+  border: 1px solid var(--color-fg1);
+}
+
+pre > code {
+  background-color: transparent;
+}

@@ -1,0 +1,51 @@
+@import "./sanitize.css";
+
+:root {
+  --text-sm: 14px;
+  --text-base: 16px;
+  --text-lg: 18px;
+  --text-xl: 20px;
+
+  /* Foregound colors. Different shades of neutral. */
+  --color-fg0: oklch(0 0 0);
+  --color-fg1: oklch(0.6 0 0);
+  --color-fg2: oklch(0.875 0 0);
+  --color-fg3: oklch(0.955 0 0);
+  --color-fg4: oklch(0.98 0 0); /* For code backgrounds */
+
+  /* Accent colors. */
+  --color-ac0: oklch(0.605 0.184 265);
+  --color-ac1: oklch(0.691 0.139 265);
+  --color-ac2: oklch(0.778 0.097 265);
+  --color-ac3: oklch(0.864 0.057 265);
+  --color-ac4: oklch(0.951 0.021 265);
+
+  /* Selection color. */
+  /* --color-selection: oklch(0.921 0.047 265); */
+
+  /* Visited colors. (for visited html links) */
+  --color-vs0: oklch(0.605 0.172 302);
+  --color-vs1: oklch(0.691 0.127 302);
+  --color-vs2: oklch(0.778 0.085 302);
+  --color-vs3: oklch(0.864 0.045 302);
+  --color-vs4: oklch(0.951 0.009 302);
+}
+
+/* Headers */
+h1 {
+  font-size: var(--text-xl);
+  font-weight: 600;
+}
+h2 {
+  font-size: var(--text-lg);
+  font-weight: 600;
+}
+
+/* Custom selection colors
+::selection {
+  bg-selection; // WebKit/Blink Browsers
+}
+::-moz-selection {
+  bg-selection; // Gecko Browsers
+}
+*/

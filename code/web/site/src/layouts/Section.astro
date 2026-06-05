@@ -1,0 +1,33 @@
+<div style="width:100%;display:flex;justify-content:center">
+  <div class:list={["section-container", Astro.props.class]}>
+    <slot />
+  </div>
+</div>
+
+<style>
+  /* smallest screen */
+  .section-container {
+    width: 100%;
+    padding: 0 16px;
+    overflow-x: hidden;
+  }
+  /* tailwindcss(sm) */
+  @media (width >= 40rem) {
+    .section-container {
+      padding: 0;
+      max-width: 34rem;
+    }
+  }
+  /* tailwindcss(md) */
+  @media (width >= 48rem) {
+    .section-container {
+      max-width: 40rem;
+    }
+  }
+  /* tailwindcss(lg) */
+  @media (width >= 64rem) {
+    .section-container {
+      max-width: 46rem;
+    }
+  }
+</style>

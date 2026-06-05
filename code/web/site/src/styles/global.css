@@ -1,0 +1,105 @@
+@import "./themeo.css";
+
+.font-mono {
+  font-family: var(--font-mono);
+}
+
+.prose > * {
+  margin-bottom: 16px;
+}
+
+ul li::marker,
+ol li::marker {
+  color: var(--color-fg1);
+}
+
+/* Table of contents */
+ul.toc li::marker {
+  color: var(--color-fg2);
+}
+
+/**===================================
+ * Core
+ ====================================*/
+body {
+  font-family: var(--font-sans);
+  font-variant-ligatures: none;
+  font-weight: 400;
+  line-height: 1.5;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+
+  /* forces scrollbar to always appear to prevent horizontal jerk */
+  overflow-y: scroll;
+
+  /* disable synthesis so that all we get are things downloaded from google fonts. */
+  font-synthesis: none;
+}
+code,
+pre {
+  font-family: var(--font-mono);
+}
+
+/**===================================
+ * Links.
+ ====================================*/
+a[href^="http"]:not([href^="https://nguyenvukhang.com/"], .hidden-link)::after {
+  position: absolute;
+  text-decoration: none;
+  content: "⌝" / ", external";
+}
+a[href^="http"]:not([href^="https://nguyenvukhang.com/"], .hidden-link) {
+  padding-right: 0.8ch;
+}
+a {
+  color: var(--color-ac0);
+  text-decoration-thickness: 1px;
+  text-decoration-color: var(--color-ac3);
+
+  /* On some devices, show a gray box when the link is clicked. */
+  -webkit-tap-highlight-color: var(--color-fg2);
+
+  /* use  "a:visited"  for visited links */
+}
+a:hover {
+  text-decoration-line: underline;
+}
+
+/**===================================
+ * Lists.
+ ====================================*/
+ul,
+ol {
+  /* So that each newline wrapped in the list is consistent. */
+  list-style-position: outside;
+  /* Distance of the bullet list indent. */
+  padding-left: calc(6px + 1ch);
+}
+ul > li,
+ol > li {
+  /* Spacing between bullet point and 1st word of the <li>. */
+  padding-left: 6px;
+  /* Each incremental indent distance. */
+  margin-left: 12px;
+}
+
+/**===================================
+ * Summary (disclosure blocks).
+ ====================================*/
+summary {
+  cursor: pointer;
+}
+
+/**===================================
+ * Horizontal lines.
+ ====================================*/
+hr {
+  border: solid 1px var(--color-fg3);
+}
+
+/**===================================
+ * Universal vertical spacing.
+ ====================================*/
+p {
+  margin-bottom: 16px;
+}

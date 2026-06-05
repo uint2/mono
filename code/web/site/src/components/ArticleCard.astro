@@ -1,0 +1,15 @@
+---
+const { pubDate, title, description, href, draft } = Astro.props
+const DEV = import.meta.env.DEV
+---
+
+<span
+  style="color:var(--color-fg1);white-space:nowrap;font-size:var(--text-sm)"
+  class="font-mono"
+>
+  {pubDate}
+</span>
+<a href={href}>{title}</a>
+<span style="color:var(--color-fg2)" hidden={!(DEV && draft)}>
+  (<span style="color:var(--color-fg1)">draft</span>)
+</span>

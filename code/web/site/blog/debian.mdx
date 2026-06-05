@@ -1,0 +1,96 @@
+---
+title: Installing Debian
+description: Gotchas encountered while installing Debian.
+pubDate: "2026-03-28"
+tags: []
+---
+
+For a while I've been encountering a bug on Ubuntu where
+[gdm](https://wiki.archlinux.org/title/GDM) fails to start. After starting up
+the PC, right where I expect to see gdm's list of login users, the whole screen
+is black with a GUI cursor that I can control with the mouse, but there is
+nothing to click. The fix is <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>F2</kbd> and
+continue from the console.
+
+The annoying thing about this bug is that it happens sporadically, so it's
+difficult to debug. I've tried various fixes over the last couple months but
+nothing seems to work permanently.
+
+I know the quickest fix is to just stop using gdm, or try another display
+manager, but since I have time on my hands right now, I thought it would be fun
+to try installing a brand new Linux distribution. I went with
+[Debian](https://www.debian.org/).
+
+## pkgsel
+
+I opted for the minimal Debian image, the one which requires a working internet
+connection during the installation phase. At some point during the install, it
+prompts you for which [subset of
+software](https://www.debian.org/releases/stable/amd64/ch06s03.en.html#pkgsel)
+to install. I selected none of those (I even unchecked "Standard system
+utilities") and I ended up with a working Debian installation.
+
+## picom
+
+After installing [X](https://www.x.org) and [AwesomeWM](https://awesomewm.org/),
+the window opacity setting was not cooperating. Translucent windows such as my
+terminal emulator were rendering as fully opaque.
+[Picom](https://github.com/yshui/picom) was misbehaving. I even resorted to
+compiling picom on my machine to get the latest version.
+
+Nothing I tried worked in the evening yesterday, but this morning I opened a
+terminal window, ran `picom --backend xrender`, and opened _another_ terminal
+window. That other terminal window was rendered properly. And that was all I
+needed to see. I integrated this into my AwesomeWM config, and all was well.
+
+In particular, here is my `.xinitrc` (as of 2026-05-11):
+
+```
+xset r rate 200 40
+
+picom --frame-opacity=1.0 --backend xrender &
+feh --bg-scale ~/.local/share/wall.jpg &
+exec /usr/local/bin/dwm
+```
+
+## N\*\*\*\*\* drivers
+
+I have a N\*\*\*\*\* GeForce RTX 5050. And so after keying that in to their
+website's driver search (a painfully slow process, since almost the whole page
+reloads for each field you enter), and I get a link to download a shell script.
+The url looks something like
+`https://us.download.n*****.com/XFree86/Linux-x86_64/595.71.05/N*****-Linux-x86_64-595.71.05.run`.
+As far as I can tell, they specifically chose **not** to pass the parameters
+from the search query to the download page in the url, so the user is forced to
+interface with that terrible GPU picker. Classic.
+
+Once I have that shell script downloaded, I ran it with `sh` and elevated
+permissions. It gives two choices: either `N***** Proprietary` or `MIT/GPL`. For
+some reason the proprietary one didn't work at all—it didn't even detect my GPU
+after installing. So I uninstalled that and went with the `MIT/GPL` version.
+That worked fine. I also proceeded to disable `nouveau` from loading at startup
+by creating a `/etc/modprobe.d/nouveau-blacklist.conf` containing
+
+```sh
+blacklist nouveau
+options nouveau modeset=0
+```
+
+and then updating `initramfs` with `update-initramfs -u`, and finally rebooting.
+
+## Emoji Support
+
+I followed [this GitHub
+gist](https://gist.github.com/SohamG/6b8830cc08a22bc5bc24c76ef799510a) and
+installed [Noto Color
+Emoji](https://github.com/googlefonts/noto-emoji?tab=readme-ov-file).
+
+## Audio
+
+I installed ALSA and PulseAudio with `apt install alsa-utils pulseaudio`. To be
+honest I'm unsure which one is responsible for the audio eventually working. Do
+note that I use a Focusrite Scarlett.
+
+## Conclusion
+
+That was pretty fun. Bye Ubuntu.
