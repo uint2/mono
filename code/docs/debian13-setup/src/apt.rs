@@ -71,7 +71,17 @@ pub fn install_apt_packages() {
         // Audio drivers.
         .args(["alsa-utils", "pulseaudio"])
         // Apps that I use.
-        .args(["zsh", "kitty", "rofi", "xclip", "flameshot", "feh", "eza", "zathura"]);
+        .args([
+            "zsh",
+            "kitty",
+            "rofi",
+            "xclip",
+            "flameshot",
+            "feh",
+            "eza",
+            "zathura",
+            "pcmanfm",
+        ]);
 
     // Wrap that up and send.
     apt.stdout("apt.stdout.txt").stderr("apt.stderr.txt").run().unwrap();
