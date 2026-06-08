@@ -4,7 +4,7 @@ on:
   push:
     paths:
       - "code/web/site/**/*"
-      - .github/workflows/personal-site.ci.yml
+      - .github/workflows/personal-site.yml
   workflow_dispatch:
 
 jobs:

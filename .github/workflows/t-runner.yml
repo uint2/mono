@@ -1,0 +1,38 @@
+# Let this workflow be a demonstrator of how a matrix can be read from a
+# preceding job, loaded from a JSON file.
+
+name: t-runner build
+
+on:
+  push:
+    paths:
+      - "code/tools/t-runner/**/*"
+      - .github/workflows/t-runner.yml
+  workflow_dispatch:
+
+jobs:
+  get-matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.M.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v6
+      - id: M
+        run: |
+          JSON=$(cat .github/workflows/os.json)
+          JSON="${JSON//$'\n'/}"
+          echo "matrix=${JSON}"
+          echo "matrix=${JSON}" >> $GITHUB_OUTPUT
+
+  build:
+    needs: get-matrix
+    strategy:
+      matrix:
+        os: ${{ fromJson(needs.get-matrix.outputs.matrix) }}
+      fail-fast: false
+    timeout-minutes: 5
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v6
+      - working-directory: code/tools/t-runner
+        run: make build

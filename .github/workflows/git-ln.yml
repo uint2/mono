@@ -4,7 +4,7 @@ on:
   push:
     paths:
       - "code/tools/ln/**/*"
-      - .github/workflows/git-ln.build.yml
+      - .github/workflows/git-ln.yml
   workflow_dispatch:
 
 jobs:

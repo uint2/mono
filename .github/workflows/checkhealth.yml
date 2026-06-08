@@ -1,11 +1,11 @@
 # Checks the health of the workflow YML files in this monorepo.
-name: validate CI
+name: checkhealth
 
 on:
   push:
 
 jobs:
-  validate:
+  checkhealth:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6

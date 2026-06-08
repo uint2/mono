@@ -1,0 +1,27 @@
+name: stats calc tests
+
+on:
+  push:
+    paths:
+      - "code/tools/diff-rs/**/*"
+      - .github/workflows/diff-rs.yml
+  workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+          - macos-latest
+          - ubuntu-24.04
+          - ubuntu-22.04
+          - macos-15
+          - macos-14
+      fail-fast: false
+    timeout-minutes: 5
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v6
+      - run: cargo build
+        working-directory: code/tools/diff-rs

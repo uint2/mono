@@ -83,6 +83,16 @@ fn main() {
             f2, workflow_yml_path,
             "The second path filter should be the path to the workflow itself."
         );
+
+        println!("{:?}", workflow_yml_path);
+        println!("name: {:?}", tree["name"].as_str());
+        if let Some(jobs) = tree["jobs"].as_vec() {
+            println!("jobs:");
+            for j in jobs {
+                println!("{:?}", j);
+            }
+        }
+        println!()
     }
 
     println!("All {n} workflow(s) validated.", n = workflow_yml_paths.len());

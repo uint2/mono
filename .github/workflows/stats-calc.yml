@@ -1,0 +1,32 @@
+name: stats calc tests
+
+on:
+  push:
+    paths:
+      - "code/tools/numerical-methods/**/*"
+      - .github/workflows/stats-calc.yml
+  workflow_dispatch:
+
+jobs:
+  test:
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+          - macos-latest
+          - ubuntu-24.04
+          - ubuntu-22.04
+          - macos-15
+          - macos-14
+      fail-fast: false
+    timeout-minutes: 5
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: code/tools/stats-calc
+    steps:
+      - uses: actions/checkout@v6
+      - name: build
+        run: cargo build --release
+      - name: run tests
+        run: cargo test --release
