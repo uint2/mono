@@ -28,7 +28,7 @@ install:
 run: debug-run log
 
 # Runs kopiwm in debug mode, and logs the stderr to a log file.
-debug-run: debug-install
+debug-run: install
 	mkdir -p $(LOG_DIR)
 	-XINITRC=./scripts/.xinitrc startx -- -keeptty \
 		>$(LOG_DIR)/Xorg.0.log \
