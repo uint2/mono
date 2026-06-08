@@ -4,6 +4,9 @@ MAKEFILE_DIR := $(realpath $(dir $(MAKEFILE_PATH)))
 ZIG_OUT := $(MAKEFILE_DIR)/zig-out
 LOG_DIR := $(ZIG_OUT)
 
+STARTX_ENV := XINITRC=./scripts/.xinitrc
+STARTX_ENV :=
+
 quick: x quick-make-command
 
 x:
@@ -30,7 +33,7 @@ run: debug-run log
 # Runs kopiwm in debug mode, and logs the stderr to a log file.
 debug-run: install
 	mkdir -p $(LOG_DIR)
-	-XINITRC=./scripts/.xinitrc startx -- -keeptty \
+	-$(STARTX_ENV) startx -- -keeptty \
 		>$(LOG_DIR)/Xorg.0.log \
 		2>$(LOG_DIR)/kopiwm.log
 
