@@ -4,7 +4,7 @@ xset r rate 220 40
 # of writing.
 picom --frame-opacity=1.0 --backend xrender &
 
-feh --bg-scale ~/.local/share/wall.jpg &
+feh --bg-fill ~/.local/share/wall.jpg &
 
 exec ~/.local/bin/kopiwm
 # exec /usr/local/bin/dwm
