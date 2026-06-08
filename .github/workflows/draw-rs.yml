@@ -1,10 +1,10 @@
-name: diff-rs build
+name: draw-rs
 
 on:
   push:
     paths:
-      - "code/tools/diff-rs/**/*"
-      - .github/workflows/diff-rs.yml
+      - "code/tools/draw-rs/**/*"
+      - .github/workflows/draw-rs.yml
   workflow_dispatch:
 
 jobs:
@@ -21,7 +21,9 @@ jobs:
       fail-fast: false
     timeout-minutes: 5
     runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: code/tools/draw-rs
     steps:
       - uses: actions/checkout@v6
       - run: cargo build
-        working-directory: code/tools/diff-rs

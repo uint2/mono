@@ -1,10 +1,10 @@
-name: diff-rs build
+name: heliumd
 
 on:
   push:
     paths:
-      - "code/tools/diff-rs/**/*"
-      - .github/workflows/diff-rs.yml
+      - "code/tools/wacom-macos-precision-mode-daemon/**/*"
+      - .github/workflows/heliumd.yml
   workflow_dispatch:
 
 jobs:
@@ -12,10 +12,7 @@ jobs:
     strategy:
       matrix:
         os:
-          - ubuntu-latest
           - macos-latest
-          - ubuntu-24.04
-          - ubuntu-22.04
           - macos-15
           - macos-14
       fail-fast: false
@@ -23,5 +20,5 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v6
-      - run: cargo build
-        working-directory: code/tools/diff-rs
+      - run: make build
+        working-directory: code/tools/wacom-macos-precision-mode-daemon

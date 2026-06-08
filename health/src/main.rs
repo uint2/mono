@@ -84,13 +84,10 @@ fn main() {
             "The second path filter should be the path to the workflow itself."
         );
 
-        println!("{:?}", workflow_yml_path);
-        println!("name: {:?}", tree["name"].as_str());
-        if let Some(jobs) = tree["jobs"].as_vec() {
-            println!("jobs:");
-            for j in jobs {
-                println!("{:?}", j);
-            }
+        println!("=={:=<78}", workflow_yml_path.display());
+        tree["name"].as_str().map(|v| println!("name: {v}"));
+        if let Some(jobs) = tree["jobs"].as_hash() {
+            jobs.keys().filter_map(|k| k.as_str()).for_each(|k| println!("  - {k}"));
         }
         println!()
     }
