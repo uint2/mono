@@ -5,6 +5,10 @@
 //! things, this script needs to be updated. (This script currently will also
 //! assert that we _only_ use path filters for the known purpose.)
 
+mod workflow;
+
+use workflow::GithubWorkflow;
+
 use std::fs;
 use std::path::{Path, PathBuf};
 
@@ -48,46 +52,21 @@ fn main() {
                 panic!("Failed to parse workflow: {}", workflow_yml_path.display());
             }
         };
-        let tree = &docs[0];
+        let wf = GithubWorkflow::from(&docs[0]);
+        wf.assert_subproject_link(workflow_yml_path);
+        wf.assert_uses_version("actions/checkout", "v6");
 
-        // First, we filter for the workflows with a on.push.paths value.
-        let path_filters = &tree["on"]["push"]["paths"];
-        if path_filters.is_badvalue() {
-            continue;
-        }
-
-        // Check that there are only two filters: one for the sub-project
-        // directory, and one for itself.
-        let path_filters = path_filters.as_vec().unwrap();
-        assert_eq!(path_filters.len(), 2);
-
-        let f1 = path_filters[0].as_str().unwrap();
-        let f2 = path_filters[1].as_str().unwrap();
-
-        assert!(f1.ends_with("**/*"), "The first path filter should be all-capturing.");
-        let project_subdir = {
-            let mut f1 = f1.strip_suffix("**/*").unwrap();
-            while f1.ends_with('/') {
-                f1 = &f1[..f1.len() - 1];
-            }
-            Path::new(f1)
-        };
-
-        let stat = fs::metadata(project_subdir).unwrap();
-        assert!(
-            stat.is_dir(),
-            "Subproject directory does not exist. Has it moved/been deleted?"
-        );
-
-        assert_eq!(
-            f2, workflow_yml_path,
-            "The second path filter should be the path to the workflow itself."
-        );
-
+        // Pretty-print the workflow
         println!("=={:=<78}", workflow_yml_path.display());
-        tree["name"].as_str().map(|v| println!("name: {v}"));
-        if let Some(jobs) = tree["jobs"].as_hash() {
-            jobs.keys().filter_map(|k| k.as_str()).for_each(|k| println!("  - {k}"));
+        if let Some(name) = wf.name {
+            println!("name: {name}");
+        }
+        for j in wf.jobs() {
+            match j.name {
+                Some(name) => println!("  - {} ({name})", j.yml_key),
+                None => println!("  - {}", j.yml_key),
+            }
+            // for step in &j.steps { println!("    - {:?}", step) }
         }
         println!()
     }
