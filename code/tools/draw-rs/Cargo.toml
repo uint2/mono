@@ -1,0 +1,19 @@
+[package]
+name = "draw"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+bitflags = "2"
+rwh_06 = { package = "raw-window-handle", version = "0.6", features = [ "std" ] }
+tracing = { version = "0.1.40", default-features = false }
+winit =  { git = "https://github.com/rust-windowing/winit.git", branch = "master", features = ["rwh_05"] }
+tracing-subscriber = { version = "0.3.18", features = ["env-filter"] }
+cursor-icon = "1.1.0"
+softbuffer = "0.4.2"
+pixels = "0.13.0"
+tiny-skia-path = "0.11.4"
+
+[workspace.dependencies]
+serde = { version = "1", features = ["serde_derive"] }
+mint = "0.5.6"
