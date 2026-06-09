@@ -1,0 +1,16 @@
+name: sudoku tests
+
+on:
+  push:
+    paths:
+      - "code/games/sudoku/**/*"
+      - .github/workflows/sudoku.yml
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - run: cargo run --release
+        working-directory: code/games/sudoku/rust
