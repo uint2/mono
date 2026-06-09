@@ -1,0 +1,53 @@
+name: git-checkout2 tests
+
+on:
+  push:
+    paths:
+      - "code/tools/git-checkout2/**/*"
+      - .github/workflows/git-checkout2.yml
+  workflow_dispatch:
+
+jobs:
+  build-and-test-c:
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+          - macos-latest
+          - ubuntu-24.04
+          - ubuntu-22.04
+          - macos-15
+          - macos-14
+      fail-fast: false
+    timeout-minutes: 5
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: code/tools/git-checkout2
+    steps:
+      - uses: actions/checkout@v6
+      - run: make configure-debug
+      - run: sudo make install
+      - run: make test
+
+  build-zig:
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+          - macos-latest
+          - ubuntu-24.04
+          - ubuntu-22.04
+          - macos-15
+          - macos-14
+      fail-fast: false
+    timeout-minutes: 5
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: code/tools/git-checkout2/zig
+    steps:
+      - uses: actions/checkout@v6
+      - run: cp build.zig.zon ${{ github.workspace }}
+      - uses: mlugg/setup-zig@v2
+      - run: zig build run
