@@ -1,0 +1,46 @@
+name: Deploy
+
+on:
+  push:
+    # branches:
+    #   - main
+    #   - dev
+    tags:
+      - "[0-9]+.[0-9]+.[0-9]+"
+
+env:
+  XPI_EXPORT: /knewtab-${{ github.ref_name }}.xpi
+
+jobs:
+  deploy:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - run: corepack enable && yarn
+      - run: |
+          yarn web-ext sign --ignore-files=Makefile tabs/**/* package.json yarn.lock \
+            --channel=unlisted \
+            --api-key=${{ secrets.AMO_JWT_ISSUER }} \
+            --api-secret=${{ secrets.AMO_JWT_SECRET }}
+
+      - name: Get the name of the output file.
+        run: |
+          XPI_OUTPUT=$(find * -name '*.xpi')
+          echo "$XPI_OUTPUT"
+          echo "XPI_OUTPUT=$XPI_OUTPUT" >> "$GITHUB_ENV"
+
+      - name: Obtain assets.
+        run: sudo cp $XPI_OUTPUT ${{ env.XPI_EXPORT }}
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: knewtab
+          path: ${{ env.XPI_EXPORT }}
+
+      - name: Create a release
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          tag_name: ${{ github.ref_name }}
+          files: ${{ env.XPI_EXPORT }}
+          token: ${{ secrets.MY_GITHUB_RELEASE_TOKEN }}

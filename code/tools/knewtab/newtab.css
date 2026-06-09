@@ -1,0 +1,68 @@
+@font-face {
+  font-family: Fira;
+  src: url("media/FiraCode-Regular.ttf");
+}
+
+#main {
+  /* Take up the whole page */
+  position: fixed;
+  top: 0px;
+  left: 0px;
+
+  color: #ececec;
+  font-size: 18px;
+  font-family: Fira;
+
+  height: 100%;
+  width: 100%;
+  background-color: #424242;
+  display: flex;
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+}
+
+#container {
+  display: grid;
+  /* background-color: #fca5a5; */
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  column-gap: 0px;
+  row-gap: 0px;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+}
+
+.link {
+  display: flex;
+  align-items: center;
+  height: 36px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
+}
+
+.link:hover {
+  text-decoration: underline;
+  text-decoration-color: #777;
+  border-color: #777;
+  border-style: solid;
+}
+
+.icon {
+  filter: invert(100%) brightness(75%);
+  width: 18px;
+  margin-right: 6px;
+}
+
+a {
+  color: #ececec;
+  text-decoration: none;
+  width: 138px;
+  padding-left: 6px;
+}
+
+a:hover {
+  text-decoration-color: #777;
+}

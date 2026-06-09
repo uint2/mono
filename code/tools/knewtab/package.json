@@ -1,0 +1,10 @@
+{
+  "name": "knewtab",
+  "scripts": {
+    "format": "prettier --write ."
+  },
+  "devDependencies": {
+    "prettier": "^3.8.3",
+    "web-ext": "^10.3.0"
+  }
+}
