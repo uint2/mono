@@ -1,0 +1,35 @@
+name: aquarium tests
+
+on:
+  push:
+    paths:
+      - "code/games/aquarium/**/*"
+      - .github/workflows/aquarium.yml
+  workflow_dispatch:
+
+jobs:
+  swift:
+    timeout-minutes: 5
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v6
+      - run: unzip problems.zip
+        working-directory: code/games/aquarium/problems/problem-db
+      - run: 	swift run -c release EngineCli
+        working-directory: code/games/aquarium/Aquarium/Engine
+
+  rust:
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+          - macos-latest
+      fail-fast: false
+    timeout-minutes: 5
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v6
+      - run: unzip problems.zip
+        working-directory: code/games/aquarium/problems/problem-db
+      - run: cargo run --release
+        working-directory: code/games/aquarium/rust
