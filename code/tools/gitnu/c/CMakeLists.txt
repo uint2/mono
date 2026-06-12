@@ -38,18 +38,12 @@ FetchContent_Declare(
   URL https://github.com/likle/cwalk/archive/f45a23a13abf39d94b347d7c83810eca26a5a8d0.zip # v1.2.9
 )
 FetchContent_Declare(
-  rxi-log
-  GIT_REPOSITORY https://github.com/nvkcc/log.c
-  GIT_TAG        a91f7ec797fc1f8c0cb4f29169d8284377fa430f
-  DOWNLOAD_EXTRACT_TIMESTAMP false
-)
-FetchContent_Declare(
   nk_test
   GIT_REPOSITORY https://github.com/nvkcc/nk_test
   GIT_TAG        9b5e86dee066dfce8db73f007f68946adadbe74b
   DOWNLOAD_EXTRACT_TIMESTAMP false
 )
-FetchContent_MakeAvailable(libgit2 cwalk rxi-log)
+FetchContent_MakeAvailable(libgit2 cwalk)
 # ==============================================================================
 
 set(GITNV_SOURCES
@@ -73,13 +67,11 @@ target_link_libraries(git-nv PRIVATE
   general libgit2package
   general libgit2
   general cwalk
-  debug   rxi-log
 )
 target_link_libraries(git-nv-lib PRIVATE
   general libgit2package
   general libgit2
   general cwalk
-  debug   rxi-log
 )
 
 if(BUILD_GITNV_TESTS)
