@@ -57,7 +57,7 @@ remove-cmake-binary-dir:
 
 reconfigure: remove-cmake-binary-dir configure
 
-build: build-record configure
+build: configure
 	cmake --build $(BUILD_DIR) --parallel 4
 
 install: build

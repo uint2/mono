@@ -40,6 +40,16 @@ int gather_aliases(git_config *config) {
     return 0;
 }
 
+/// It is on the user to guarantee that there is sufficient space on the buffer
+/// for this write. `len` is the number of digits of `number`.
+void write_number_to_buf(char *buf, int len, int number) {
+    buf += len - 1;
+    while (len-- > 0) {
+        *buf-- = '0' + (number % 10);
+        number /= 10;
+    }
+}
+
 /// The custom opinionated `git-nv status` output.
 int gitnv_status(GitnvState *z) {
     int fd[2];
@@ -71,7 +81,9 @@ int gitnv_status(GitnvState *z) {
     FILE *status_f = fdopen(fd[0], "rb");
     char status_buf[1024], *status_ptr;
     for (int i = 1, l;;) {
-        status_ptr = status_buf + (l = COUNT_DIGITS(i) + 1);
+        // Leave just enough space to print the required digits later.
+        status_ptr = status_buf + (l = COUNT_DIGITS(i));
+
         if (fgets(status_ptr, sizeof(status_buf) - l, status_f) == NULL) {
             break;
         }
@@ -87,7 +99,7 @@ int gitnv_status(GitnvState *z) {
             write(STDOUT_FILENO, status_ptr, n);
             continue;
         }
-        snprintf(status_buf, l, "%d", i);
+        write_number_to_buf(status_buf, l, i);
         write(STDOUT_FILENO, status_buf, n + l);
         n = uncolor(status_ptr, n);
         // Now, on to parsing the line.
