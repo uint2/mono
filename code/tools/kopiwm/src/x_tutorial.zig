@@ -7,7 +7,7 @@ const Coordinates = @import("enums.zig").Coordinates;
 const log = @import("std").log;
 
 // -----------------------------------------------------------------------------
-// XID aliases
+// ++ XID aliases
 // -----------------------------------------------------------------------------
 
 /// See the XC_* defines in X11. The usual cursor would be `XC_left_ptr`.
@@ -18,13 +18,13 @@ pub const KeySym = X.KeySym;
 pub const Window = X.Window;
 
 // -----------------------------------------------------------------------------
-// Integer type aliases
+// ++ Integer type aliases
 // -----------------------------------------------------------------------------
 
 pub const Time = X.Time;
 
 // -----------------------------------------------------------------------------
-// Structs
+// ++ Structs
 // -----------------------------------------------------------------------------
 
 /// The `Display` structure serves as the connection to the X server and that
@@ -274,7 +274,7 @@ pub const XftColor = X.XftColor;
 pub const XftFont = X.XftFont;
 
 // -----------------------------------------------------------------------------
-// Functions
+// ++ Functions
 // -----------------------------------------------------------------------------
 
 /// The XChangeProperty function alters the property for the specified window
@@ -1120,7 +1120,7 @@ pub inline fn XmbTextPropertyToTextList(
 }
 
 // -----------------------------------------------------------------------------
-// Enums
+// ++ Enums
 // -----------------------------------------------------------------------------
 
 /// At the conceptual level, atoms are unique names that clients can use to
@@ -1142,10 +1142,11 @@ pub inline fn XmbTextPropertyToTextList(
 /// source: https://x.org/releases/X11R7.7/doc/xorg-docs/icccm/icccm.html
 pub const Atom = X.Atom;
 
-pub const CurrentTime = X.CurrentTime;
 pub const ClientMessage = X.ClientMessage;
-pub const NoEventMask = X.NoEventMask;
 pub const ConfigureNotify = X.ConfigureNotify;
+pub const CurrentTime = X.CurrentTime;
+pub const LockMask = X.LockMask;
+pub const NoEventMask = X.NoEventMask;
 
 /// Specifies whether the data should be viewed as a list of 8-bit, 16-bit, or
 /// 32-bit quantities. Used in XGetWindowProperty, among other places.
@@ -1198,7 +1199,7 @@ pub const False = X.False;
 pub const True = X.True;
 
 // -----------------------------------------------------------------------------
-// Bitmasks
+// ++ Bitmasks
 // -----------------------------------------------------------------------------
 
 pub const masks = struct {
@@ -1216,7 +1217,7 @@ pub const masks = struct {
 };
 
 // -----------------------------------------------------------------------------
-// Keys and buttons
+// ++ Keys and buttons
 // -----------------------------------------------------------------------------
 
 pub const keys = struct {
@@ -1261,7 +1262,7 @@ pub const keys = struct {
 };
 
 // -----------------------------------------------------------------------------
-// Errors
+// ++ Errors
 // -----------------------------------------------------------------------------
 
 pub const err = struct {

@@ -43,7 +43,7 @@ pub const std_options: std.Options = .{
 
 /// (dwm) CLEANMASK
 fn CLEANMASK(mask: u32) u32 {
-    return (mask & ~(z.numlockmask | X.LockMask)) &
+    return (mask & ~(z.numlockmask | Xt.LockMask)) &
         (X.ShiftMask | X.ControlMask | X.Mod1Mask | X.Mod2Mask | X.Mod3Mask | X.Mod4Mask | X.Mod5Mask);
 }
 
@@ -1330,7 +1330,7 @@ fn drawbars(allocator: Allocator) void {
 /// (dwm) grabbuttons
 fn grabbuttons(c: *Client, focused: bool) void {
     updatenumlockmask();
-    const modifiers: [4]c_uint = .{ 0, X.LockMask, z.numlockmask, z.numlockmask | X.LockMask };
+    const modifiers: [4]c_uint = .{ 0, Xt.LockMask, z.numlockmask, z.numlockmask | Xt.LockMask };
     Xt.XUngrabButton(z.dpy, X.AnyButton, X.AnyModifier, c.win);
     if (!focused) {
         Xt.XGrabButton(
@@ -1369,7 +1369,7 @@ fn grabbuttons(c: *Client, focused: bool) void {
 /// (dwm) grabkeys
 fn grabkeys() void {
     updatenumlockmask();
-    const modifiers: [4]c_uint = .{ 0, X.LockMask, z.numlockmask, z.numlockmask | X.LockMask };
+    const modifiers: [4]c_uint = .{ 0, Xt.LockMask, z.numlockmask, z.numlockmask | Xt.LockMask };
 
     var start: c_int = undefined;
     var end: c_int = undefined;
