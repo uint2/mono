@@ -31,13 +31,19 @@ pub struct GithubWorkflowJob<'a> {
 #[derive(Debug)]
 pub struct GithubWorkflow<'a> {
     pub name: Option<&'a str>,
+    pub needs: Option<Vec<&'a str>>,
     pub jobs: Option<Vec<GithubWorkflowJob<'a>>>,
     pub on: &'a Yaml,
 }
 
 impl<'a> From<&'a Yaml> for GithubWorkflow<'a> {
     fn from(value: &'a Yaml) -> Self {
-        let mut z = Self { name: value["name"].as_str(), jobs: None, on: &value["on"] };
+        let mut z = Self {
+            name: value["name"].as_str(),
+            needs: None,
+            jobs: None,
+            on: &value["on"],
+        };
         if let Some(yml_jobs) = value["jobs"].as_hash() {
             let mut jobs = Vec::with_capacity(yml_jobs.len());
             for (key, value) in yml_jobs {
@@ -49,6 +55,15 @@ impl<'a> From<&'a Yaml> for GithubWorkflow<'a> {
                 });
             }
             z.jobs = Some(jobs);
+        }
+        if let Some(yml_need) = value["needs"].as_str() {
+            z.needs = Some(vec![yml_need])
+        } else if let Some(yml_needs) = value["needs"].as_vec() {
+            let mut needs = Vec::with_capacity(yml_needs.len());
+            for i in 0..needs.len() {
+                needs.push(yml_needs[i].as_str().unwrap());
+            }
+            z.needs = Some(needs)
         }
         z
     }

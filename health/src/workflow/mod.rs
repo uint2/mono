@@ -15,6 +15,7 @@ use std::path::{Path, PathBuf};
 use yaml_rust2::YamlLoader;
 
 const WORKFLOW_DIR: &str = ".github/workflows";
+const MAIN_CI_YML: &str = "ci.yml";
 
 fn get_yml_files_in_dir<P: AsRef<Path>>(dir: P) -> Vec<PathBuf> {
     let files = fs::read_dir(dir).unwrap();
@@ -27,6 +28,28 @@ fn get_yml_files_in_dir<P: AsRef<Path>>(dir: P) -> Vec<PathBuf> {
             if extension == "yml" || extension == "yaml" { Some(path) } else { None }
         })
         .collect()
+}
+
+fn check_main_ci_yml() {
+    let yml_path = Path::new(WORKFLOW_DIR).join(MAIN_CI_YML);
+    let raw_yml = match fs::read_to_string(&yml_path) {
+        Ok(v) => v,
+        Err(e) => {
+            eprintln!("{e:?}");
+            panic!("Failed to read workflow file: {}", yml_path.display());
+        }
+    };
+    let docs = match YamlLoader::load_from_str(&raw_yml) {
+        Ok(v) => v,
+        Err(e) => {
+            eprintln!("{e:?}");
+            panic!("Failed to parse workflow: {}", yml_path.display());
+        }
+    };
+    let wf = GithubWorkflow::from(&docs[0]);
+    for job in wf.jobs() {
+        println!("{:?}", job);
+    }
 }
 
 pub fn main() {
@@ -78,4 +101,6 @@ pub fn main() {
     }
 
     println!("All {n} workflow(s) validated.", n = workflow_yml_paths.len());
+
+    check_main_ci_yml();
 }
