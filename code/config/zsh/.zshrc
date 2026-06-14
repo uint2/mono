@@ -53,7 +53,7 @@ fi
 # install "n" npm package manager to ~/.local/n
 if [ -d "$HOME/.local/n" ]; then
   export N_PREFIX="$HOME/.local/n"
-  [[ :$PATH: == *":$N_PREFIX/bin:"* ]] || PATH+=":$N_PREFIX/bin"
+  [[ :$PATH: == *":$N_PREFIX/bin:"* ]] || PATH="$N_PREFIX/bin:$PATH"
 fi
 
 #  Setting $PATH
