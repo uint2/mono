@@ -73,6 +73,7 @@ impl Target for Apt {
                 "unzip",
                 "zip",
                 "libssl-dev", // for openssl.
+                "woff2",      // for compressing fonts.
             ])
             // CLI search tools.
             .args(["ripgrep", "fd-find", "fzf"])
