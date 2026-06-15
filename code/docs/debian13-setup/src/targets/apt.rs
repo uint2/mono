@@ -93,6 +93,7 @@ impl Target for Apt {
                 "nnn",
                 "git-crypt",
                 "clangd",
+                "network-manager", // to help to connect to WiFi in a pinch.
             ]);
 
         // Wrap that up and send.
