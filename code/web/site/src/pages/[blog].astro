@@ -18,7 +18,9 @@ export async function getStaticPaths() {
 
 const blog = Astro.props
 const { Content } = await render(blog)
-const { title, description, pubDate } = blog.data
+const { title, description, pubDate, slug } = blog.data
+
+const URL = Astro.url.pathname.replace(/\/$/, "")
 ---
 
 <Main>
@@ -49,5 +51,6 @@ const { title, description, pubDate } = blog.data
       ) : null
     }
     <Content components={mdxComponents} />
+    <a href={URL + ".sig"}>GPG Signature</a>
   </Section>
 </Main>

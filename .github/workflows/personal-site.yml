@@ -25,9 +25,13 @@ jobs:
       - name: Copy over blog posts
         run: |
           rm -rf             code/web/site/blog
-          mkdir              code/web/site/blog
+          mkdir -p           code/web/site/blog
           cp .git/blog/*.mdx code/web/site/blog || exit 0
           cp .git/blog/*.md  code/web/site/blog || exit 0
+      - name: Copy over the GPG signatures
+        run: |
+          mkdir -p           code/web/site/public
+          cp .git/blog/*.sig code/web/site/public || exit 0
 
       # Compress fonts with Woff2.
       - name: Checkout google/woff2
@@ -56,5 +60,5 @@ jobs:
         with:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           apiToken: ${{ secrets.CLOUDFLARE_NGUYENVUKHANGDOTCOM_API_TOKEN }}
-          command: pages deploy code/web/site/dist --project-name=nguyenvukhangdotcom
+          command: pages deploy code/web/site/dist --project-name=nguyenvukhangdotcom --branch production
           # gitHubToken: ${{ secrets.GITHUB_TOKEN }}
