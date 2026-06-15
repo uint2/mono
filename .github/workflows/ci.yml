@@ -565,61 +565,6 @@ jobs:
 
   # ----------------------------------------------------------------------------
 
-  personal-site:
-    needs: delta
-    if: ${{ fromJson(needs.delta.outputs.all).personal-site == 'true' }}
-    runs-on: ubuntu-latest
-    # permissions:
-    #   deployments: write
-    steps:
-      - uses: actions/checkout@v6
-
-      # Pull in the blog posts.
-      - name: Checkout blog posts repo (private)
-        uses: actions/checkout@v6
-        with:
-          path: .git/blog
-          repository: nguyenvukhang/blog
-          token: ${{ secrets.GH_BLOGPOSTS_TOKEN }}
-      - name: Copy over blog posts
-        run: |
-          rm -rf             code/web/site/blog
-          mkdir              code/web/site/blog
-          cp .git/blog/*.mdx code/web/site/blog || exit 0
-          cp .git/blog/*.md  code/web/site/blog || exit 0
-
-      # Compress fonts with Woff2.
-      - name: Checkout google/woff2
-        uses: actions/checkout@v6
-        with:
-          path: .git/woff2
-          repository: google/woff2
-          ref: 1c69169e9e1811dccd6c54c532fedda300233968
-          submodules: recursive
-      - name: Build woff2_compress
-        working-directory: .git/woff2
-        run: make clean all
-      - name: Compress fonts
-        working-directory: code/web/site/fonts
-        run: |
-          pip install fonttools==4.63.0
-          WOFF2_COMPRESS='${{ github.workspace }}/.git/woff2/woff2_compress' python3 build-fonts.py
-
-      # Build with Astro 6.
-      - uses: withastro/action@v6
-        with:
-          path: code/web/site
-
-      # Deploy to Cloudflare.
-      - uses: cloudflare/wrangler-action@v4
-        with:
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          apiToken: ${{ secrets.CLOUDFLARE_NGUYENVUKHANGDOTCOM_API_TOKEN }}
-          command: pages deploy code/web/site/dist --project-name=nguyenvukhangdotcom
-          # gitHubToken: ${{ secrets.GITHUB_TOKEN }}
-
-  # ----------------------------------------------------------------------------
-
   rofi-pdf-search-build:
     needs: delta
     if: ${{ fromJson(needs.delta.outputs.all).rofi-pdf-search == 'true' }}
