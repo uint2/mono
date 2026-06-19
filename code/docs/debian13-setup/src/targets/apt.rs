@@ -79,6 +79,13 @@ impl Target for Apt {
             .args(["ripgrep", "fd-find", "fzf"])
             // Audio drivers.
             .args(["alsa-utils", "pulseaudio"])
+            // for NTP (time sync with the internet).
+            // ```
+            // systemctl enable systemd-timesyncd
+            // timedatectl set-ntp true
+            // timedatectl set-timezone Asia/Singapore
+            // ```
+            .arg("systemd-timesyncd")
             // Apps that I use.
             .args([
                 "zsh",
