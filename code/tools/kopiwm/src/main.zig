@@ -415,7 +415,7 @@ fn restack(allocator: Allocator, m: *Monitor) void {
 
     Xt.XSync(z.dpy, false);
     var ev: Xt.XEvent = undefined;
-    while (X.XCheckMaskEvent(z.dpy, M.EnterWindowMask, &ev) != 0) {}
+    while (Xt.XCheckMaskEvent(z.dpy, M.EnterWindowMask, &ev)) {}
 }
 
 /// (dwm) arrange
@@ -1087,7 +1087,7 @@ pub fn resizeMouse(_: *const Arg) DwmError!void {
             @intCast(c.pos.now.h + c.bw.now - 1));
     }
     Xt.XUngrabPointer(z.dpy, Xt.CurrentTime);
-    while (X.XCheckMaskEvent(z.dpy, M.EnterWindowMask, &ev) != 0) {}
+    while (Xt.XCheckMaskEvent(z.dpy, M.EnterWindowMask, &ev)) {}
     const m_opt = c.pos.now.toMonitor(z.mons);
     if (m_opt != z.selmon) {
         if (m_opt) |m| {

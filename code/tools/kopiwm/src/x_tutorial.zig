@@ -657,6 +657,23 @@ pub inline fn XChangeWindowAttributes(
     _ = X.XChangeWindowAttributes(display, window, valuemask, attributes);
 }
 
+/// The XCheckMaskEvent function searches the event queue and then any events
+/// available on the server connection for the first event that matches the
+/// specified mask. If it finds a match, XCheckMaskEvent removes that event,
+/// copies it into the specified XEvent structure, and returns True. The other
+/// events stored in the queue are not discarded. If the event you requested is
+/// not available, XCheckMaskEvent returns False, and the output buffer will
+/// have been flushed.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XNextEvent.3.xhtml
+pub inline fn XCheckMaskEvent(
+    display: *Display,
+    event_mask: c_long,
+    event_return: *XEvent,
+) bool {
+    return X.XCheckMaskEvent(display, event_mask, event_return) != X.False;
+}
+
 /// The XCloseDisplay function closes the connection to the X server for the
 /// display specified in the Display structure and destroys all windows,
 /// resource IDs (Window, Font, Pixmap, Colormap, Cursor, and GContext), or
