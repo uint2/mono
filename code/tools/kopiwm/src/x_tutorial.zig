@@ -794,7 +794,7 @@ pub inline fn XCopyArea(
     dest_drw: Drawable,
     gc: GC,
     src: Rect,
-    dest: Coordinates(i32),
+    dest: Coordinates(c_int),
 ) void {
     // The meaning of the return value was not specified in documentation.
     _ = X.XCopyArea(
@@ -802,12 +802,12 @@ pub inline fn XCopyArea(
         src_drw,
         dest_drw,
         gc,
-        @intCast(src.x),
-        @intCast(src.y),
-        @intCast(src.w),
-        @intCast(src.h),
-        @intCast(dest.x),
-        @intCast(dest.y),
+        src.x,
+        src.y,
+        src.w,
+        src.h,
+        dest.x,
+        dest.y,
     );
 }
 
