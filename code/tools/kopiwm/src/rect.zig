@@ -89,10 +89,11 @@ pub fn Rect2(
         }
 
         /// (dwm) INTERSECT
-        /// Get the area of intersection.
+        /// Get the area of intersection. Always returns a non-negative value.
         fn intersect(lhs: *const Self, rhs: *const Self) C {
-            return @max(0, @min(lhs.r(), rhs.r()) - @max(lhs.x, rhs.x)) *
-                @max(0, @min(lhs.b(), rhs.b()) - @max(lhs.y, rhs.y));
+            const width = @min(lhs.r(), rhs.r()) - @max(lhs.x, rhs.x);
+            const height = @min(lhs.b(), rhs.b()) - @max(lhs.y, rhs.y);
+            return @max(0, width) * @max(0, height);
         }
     };
 }
