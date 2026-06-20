@@ -589,7 +589,7 @@ fn configureRequest(e: *Xt.XEvent) void {
 
 /// (dwm) configurenotify
 fn configureNotify(allocator: Allocator, e: *Xt.XEvent) error{OutOfMemory}!void {
-    const ev: X.XConfigureEvent = e.xconfigure;
+    const ev: Xt.XConfigureEvent = e.xconfigure;
     if (ev.window != z.root) return;
     const dirty = z.s.w != ev.width or z.s.h != ev.height;
     z.s.w = @intCast(ev.width);
