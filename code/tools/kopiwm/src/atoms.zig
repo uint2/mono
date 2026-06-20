@@ -65,3 +65,14 @@ pub const Net = enum {
         };
     }
 };
+
+pub var __WM: EnumArray(WM, Xt.Atom) = .empty;
+pub var __NET: EnumArray(Net, Xt.Atom) = .empty;
+
+pub inline fn net(key: Net) Xt.Atom {
+    return __NET.get(key);
+}
+
+pub inline fn wm(key: WM) Xt.Atom {
+    return __WM.get(key);
+}

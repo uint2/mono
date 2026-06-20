@@ -3,8 +3,6 @@ const std = @import("std");
 const log = std.log;
 const build_opts = @import("build_opts");
 const Xt = @import("x_tutorial.zig");
-const Net = @import("atoms.zig").Net;
-const WM = @import("atoms.zig").WM;
 const SchemeState = @import("enums.zig").SchemeState;
 const CursorState = @import("enums.zig").CursorState;
 const Size = @import("enums.zig").Size;
@@ -45,8 +43,6 @@ selmon: *Monitor = undefined,
 
 root: Xt.Window = 0,
 
-wmatom: EnumArray(WM, Xt.Atom) = .empty,
-netatom: EnumArray(Net, Xt.Atom) = .empty,
 cursors: EnumArray(CursorState, Xt.Cursor) = .empty,
 scheme: EnumArray(SchemeState, *ColorScheme) = .empty,
 

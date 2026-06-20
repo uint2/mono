@@ -230,7 +230,7 @@ fn winToClient(w: Xt.Window) ?*Client {
 fn getState(w: Xt.Window) @typeInfo(Xt.WindowState).@"enum".tag_type {
     const int_type = @typeInfo(Xt.WindowState).@"enum".tag_type;
     log.info("::getState", .{});
-    const atom = z.wmatom.get(.State);
+    const atom = atoms.wm(.State);
     const data = Xt.XGetWindowProperty(z.dpy, w, atom, 0, 2, false, atom) orelse return -1;
     defer data.deinit();
     if (data.value.len() == 0) return -1;
@@ -305,7 +305,7 @@ fn manage(allocator: Allocator, w: Xt.Window, wa: *Xt.XWindowAttributes) error{O
     Xt.XChangeProperty(
         z.dpy,
         z.root,
-        z.netatom.get(.ClientList),
+        atoms.net(.ClientList),
         Xt.XA_WINDOW,
         32,
         .Append,
@@ -364,7 +364,7 @@ fn updateClientList() void {
     var m_opt = z.mons;
     var c_opt: ?*Client = undefined;
     // Delete the existing list.
-    _ = X.XDeleteProperty(z.dpy, z.root, z.netatom.get(.ClientList));
+    _ = X.XDeleteProperty(z.dpy, z.root, atoms.net(.ClientList));
     // Rebuild the list.
     while (m_opt) |m| : (m_opt = m.next) {
         c_opt = m.clients;
@@ -372,7 +372,7 @@ fn updateClientList() void {
             Xt.XChangeProperty(
                 z.dpy,
                 z.root,
-                z.netatom.get(.ClientList),
+                atoms.net(.ClientList),
                 Xt.XA_WINDOW,
                 32,
                 .Append,
@@ -510,8 +510,8 @@ fn clientMessage(e: *Xt.XEvent) void {
     const ev: X.XClientMessageEvent = e.xclient;
     var c: *Client = winToClient(ev.window) orelse return;
 
-    if (ev.message_type == z.netatom.get(.WMState)) {
-        const fs_atom = z.netatom.get(.WMFullscreen);
+    if (ev.message_type == atoms.net(.WMState)) {
+        const fs_atom = atoms.net(.WMFullscreen);
         if (ev.data.l[1] == fs_atom or ev.data.l[2] == fs_atom) {
             c.setFullscreen(switch (ev.data.l[0]) {
                 1 => true, // _NET_WM_STATE_ADD
@@ -519,7 +519,7 @@ fn clientMessage(e: *Xt.XEvent) void {
                 else => false,
             });
         }
-    } else if (ev.message_type == z.netatom.get(.ActiveWindow)) {
+    } else if (ev.message_type == atoms.net(.ActiveWindow)) {
         if (c != z.selmon.sel and c.isurgent) {
             c.setUrgent(z.dpy, true);
         }
@@ -736,13 +736,13 @@ fn propertyNotify(allocator: Allocator, e: *Xt.XEvent) void {
             },
             else => {},
         }
-        if (ev.atom == Xt.XA_WM_NAME or ev.atom == z.netatom.get(.WMName)) {
+        if (ev.atom == Xt.XA_WM_NAME or ev.atom == atoms.net(.WMName)) {
             c.updateTitle();
             if (c == c.mon.sel) {
                 drawbar(allocator, c.mon);
             }
         }
-        if (ev.atom == z.netatom.get(.WMWindowType)) {
+        if (ev.atom == atoms.net(.WMWindowType)) {
             c.updateWindowType();
         }
     }
@@ -872,7 +872,7 @@ pub fn incNMaster(arg: *const Arg) void {
 pub fn killClient(_: *const Arg) void {
     const sel = z.selmon.sel orelse return;
     log.info("Trying to kill client {*}", .{sel});
-    if (!sel.sendEvent(z.wmatom.get(.Delete))) {
+    if (!sel.sendEvent(atoms.wm(.Delete))) {
         log.info("Kill effective", .{});
         _ = X.XGrabServer(z.dpy);
         _ = X.XSetErrorHandler(xerrordummy);
@@ -1204,8 +1204,8 @@ fn setup(allocator: Allocator, wmcheckwin: *Xt.Window) DwmError!void {
 
     // Initialize atoms.
     const utf8string = Xt.XInternAtom(z.dpy, "UTF8_STRING", false).?;
-    atoms.initializeAtomsForEnum(atoms.WM, Xt.Atom, &z.wmatom, z.dpy);
-    atoms.initializeAtomsForEnum(atoms.Net, Xt.Atom, &z.netatom, z.dpy);
+    atoms.initializeAtomsForEnum(atoms.WM, Xt.Atom, &atoms.__WM, z.dpy);
+    atoms.initializeAtomsForEnum(atoms.Net, Xt.Atom, &atoms.__NET, z.dpy);
 
     // Initialize cursors.
     z.cursors.set(.Normal, z.drw.curCreate(.Left_ptr));
@@ -1226,23 +1226,23 @@ fn setup(allocator: Allocator, wmcheckwin: *Xt.Window) DwmError!void {
     // Supporting window for NetWMCheck.
     wmcheckwin.* = X.XCreateSimpleWindow(z.dpy, z.root, 0, 0, 1, 1, 0, 0, 0);
     // The @ptrCast is hella sus from dwm. This is supposed to be a const char* in C.
-    Xt.XChangeProperty(z.dpy, wmcheckwin.*, z.netatom.get(.WMCheck), Xt.XA_WINDOW, 32, .Replace, @ptrCast(wmcheckwin), 1);
-    Xt.XChangeProperty(z.dpy, wmcheckwin.*, z.netatom.get(.WMName), utf8string, 8, .Replace, "dwm", 3);
-    Xt.XChangeProperty(z.dpy, z.root, z.netatom.get(.WMCheck), Xt.XA_WINDOW, 32, .Replace, @ptrCast(wmcheckwin), 1);
+    Xt.XChangeProperty(z.dpy, wmcheckwin.*, atoms.net(.WMCheck), Xt.XA_WINDOW, 32, .Replace, @ptrCast(wmcheckwin), 1);
+    Xt.XChangeProperty(z.dpy, wmcheckwin.*, atoms.net(.WMName), utf8string, 8, .Replace, "dwm", 3);
+    Xt.XChangeProperty(z.dpy, z.root, atoms.net(.WMCheck), Xt.XA_WINDOW, 32, .Replace, @ptrCast(wmcheckwin), 1);
 
     // EWMH support per view.
     // https://specifications.freedesktop.org/wm/latest/
     Xt.XChangeProperty(
         z.dpy,
         z.root,
-        z.netatom.get(.Supported),
+        atoms.net(.Supported),
         Xt.XA_ATOM,
         32,
         .Replace,
-        @ptrCast(&z.netatom.values),
-        @intCast(z.netatom.values.len),
+        @ptrCast(&atoms.__NET.values),
+        @intCast(atoms.__NET.values.len),
     );
-    _ = X.XDeleteProperty(z.dpy, z.root, z.netatom.get(.ClientList));
+    _ = X.XDeleteProperty(z.dpy, z.root, atoms.net(.ClientList));
 
     // Select events.
     {
@@ -1268,7 +1268,7 @@ fn unfocus(client: ?*Client, setfocus: bool) void {
     _ = X.XSetWindowBorder(z.dpy, c.win, z.scheme.get(.Normal).border.pixel);
     if (setfocus) {
         Xt.XSetInputFocus(z.dpy, z.root, .PointerRoot, Xt.CurrentTime);
-        _ = X.XDeleteProperty(z.dpy, z.root, z.netatom.get(.ActiveWindow));
+        _ = X.XDeleteProperty(z.dpy, z.root, atoms.net(.ActiveWindow));
     }
 }
 
@@ -1306,7 +1306,7 @@ fn focus(allocator: Allocator, client: ?*Client) void {
         c.setFocus();
     } else {
         Xt.XSetInputFocus(z.dpy, z.root, .PointerRoot, Xt.CurrentTime);
-        _ = X.XDeleteProperty(z.dpy, z.root, z.netatom.get(.ActiveWindow));
+        _ = X.XDeleteProperty(z.dpy, z.root, atoms.net(.ActiveWindow));
     }
     z.selmon.sel = c_opt;
     drawbars(allocator);
@@ -1436,7 +1436,7 @@ fn cleanup(allocator: Allocator, wmcheckwin: *Xt.Window) void {
     z.drw.deinit(allocator);
     Xt.XSync(z.dpy, false);
     Xt.XSetInputFocus(z.dpy, Xt.PointerRoot, .PointerRoot, Xt.CurrentTime);
-    _ = X.XDeleteProperty(z.dpy, z.root, z.netatom.get(.ActiveWindow));
+    _ = X.XDeleteProperty(z.dpy, z.root, atoms.net(.ActiveWindow));
 }
 
 /// (dwm) cleanupmon

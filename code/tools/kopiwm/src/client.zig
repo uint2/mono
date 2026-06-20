@@ -10,6 +10,7 @@ const cfg = @import("config.zig");
 const Size = @import("enums.zig").Size;
 const Xt = @import("x_tutorial.zig");
 const M = @import("x_tutorial.zig").masks;
+const atoms = @import("atoms.zig");
 
 const ClientSizes = struct {
     base: ?Size = null,
@@ -72,7 +73,7 @@ pub const Client = struct {
     /// (dwm) updatetitle
     pub fn updateTitle(self: *Self) void {
         const z = self.app;
-        if (z.getTextProp(self.win, z.netatom.get(.WMName), &self.name.buffer)) |len| {
+        if (z.getTextProp(self.win, atoms.net(.WMName), &self.name.buffer)) |len| {
             self.name.len = len;
         } else if (z.getTextProp(self.win, Xt.XA_WM_NAME, &self.name.buffer)) |len| {
             self.name.len = len;
@@ -160,14 +161,14 @@ pub const Client = struct {
         Xt.XChangeProperty(
             z.dpy,
             z.root,
-            z.netatom.get(.ActiveWindow),
+            atoms.net(.ActiveWindow),
             Xt.XA_WINDOW,
             32,
             .Replace,
             @ptrCast(&self.win),
             1,
         );
-        _ = self.sendEvent(z.wmatom.get(.TakeFocus));
+        _ = self.sendEvent(atoms.wm(.TakeFocus));
     }
 
     /// (dwm) sendevent
@@ -189,7 +190,7 @@ pub const Client = struct {
                 .xclient = .{
                     .type = Xt.ClientMessage,
                     .window = self.win,
-                    .message_type = z.wmatom.get(.Protocols),
+                    .message_type = atoms.wm(.Protocols),
                     .format = 32,
                 },
             };
@@ -250,11 +251,11 @@ pub const Client = struct {
             Xt.XChangeProperty(
                 z.dpy,
                 self.win,
-                z.netatom.get(.WMState),
+                atoms.net(.WMState),
                 Xt.XA_ATOM,
                 32,
                 .Replace,
-                @ptrCast(&z.netatom.get(.WMFullscreen)),
+                @ptrCast(&atoms.net(.WMFullscreen)),
                 1,
             );
             self.isfullscreen = true;
@@ -266,7 +267,7 @@ pub const Client = struct {
             Xt.XChangeProperty(
                 z.dpy,
                 self.win,
-                z.netatom.get(.WMState),
+                atoms.net(.WMState),
                 Xt.XA_ATOM,
                 32,
                 .Replace,
@@ -285,11 +286,10 @@ pub const Client = struct {
     /// (dwm) updatewindowtype
     pub fn updateWindowType(self: *Self) void {
         const z = self.app;
-        const net = z.netatom;
-        if (self.getAtomProp(z.dpy, net.get(.WMState)) == net.get(.WMFullscreen)) {
+        if (self.getAtomProp(z.dpy, atoms.net(.WMState)) == atoms.net(.WMFullscreen)) {
             self.setFullscreen(true);
         }
-        if (self.getAtomProp(z.dpy, net.get(.WMWindowType)) == net.get(.WMWindowTypeDialog)) {
+        if (self.getAtomProp(z.dpy, atoms.net(.WMWindowType)) == atoms.net(.WMWindowTypeDialog)) {
             self.is_floating.set(true);
         }
     }
@@ -537,8 +537,8 @@ pub const Client = struct {
         Xt.XChangeProperty(
             z.dpy,
             self.win,
-            z.wmatom.get(.State),
-            z.wmatom.get(.State),
+            atoms.wm(.State),
+            atoms.wm(.State),
             32,
             .Replace,
             @ptrCast(&data),
