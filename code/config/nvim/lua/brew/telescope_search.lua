@@ -68,12 +68,19 @@ end
 
 -- other custom searchers
 
-M.string.cursor = function()
+M.string.cursor_repo = function()
   local repo_dir = git_workspace_root()
   if repo_dir == nil then return end
   t.prompt_title, t.cwd, t.search = 'Word in Repo', repo_dir, nil
   builtin.grep_string(t)
 end
+
+M.string.cursor_cwd = function()
+  local cwd = vim.fn.getcwd():gsub(vim.env.HOME, '~')
+  t.prompt_title, t.cwd, t.search = 'Word in CWD', cwd, nil
+  builtin.grep_string(t)
+end
+
 
 M.files.dots = function()
   t.prompt_title, t.cwd, t.search = 'dotfiles', vim.env.DOTS, nil
