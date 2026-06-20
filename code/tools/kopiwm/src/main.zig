@@ -1255,7 +1255,7 @@ fn setup(allocator: Allocator, wmcheckwin: *Xt.Window) DwmError!void {
             | M.ButtonPressMask | M.PointerMotionMask | M.EnterWindowMask //
             | M.LeaveWindowMask | M.StructureNotifyMask | M.PropertyChangeMask,
         };
-        _ = X.XChangeWindowAttributes(z.dpy, z.root, M.CWEventMask | X.CWCursor, &wa);
+        Xt.XChangeWindowAttributes(z.dpy, z.root, M.CWEventMask | M.CWCursor, &wa);
         _ = X.XSelectInput(z.dpy, z.root, wa.event_mask);
     }
 

@@ -608,6 +608,55 @@ pub inline fn XChangeProperty(
     );
 }
 
+/// Depending on the valuemask, the XChangeWindowAttributes function uses the
+/// window attributes in the XSetWindowAttributes structure to change the
+/// specified window attributes. Changing the background does not cause the
+/// window contents to be changed. To repaint the window and its background,
+/// use XClearWindow. Setting the border or changing the background such that
+/// the border tile origin changes causes the border to be repainted. Changing
+/// the background of a root window to None or ParentRelative restores the
+/// default background pixmap. Changing the border of a root window to
+/// CopyFromParent restores the default border pixmap. Changing the win-gravity
+/// does not affect the current position of the window. Changing the
+/// backing-store of an obscured window to WhenMapped or Always, or changing
+/// the backing-planes, backing-pixel, or save-under of a mapped window may
+/// have no immediate effect. Changing the colormap of a window (that is,
+/// defining a new map, not changing the contents of the existing map)
+/// generates a ColormapNotify event. Changing the colormap of a visible window
+/// may have no immediate effect on the screen because the map may not be
+/// installed (see XInstallColormap). Changing the cursor of a root window to
+/// None restores the default cursor. Whenever possible, you are encouraged to
+/// share colormaps.
+///
+/// Multiple clients can select input on the same window. Their event masks are
+/// maintained separately. When an event is generated, it is reported to all
+/// interested clients. However, only one client at a time can select for
+/// SubstructureRedirectMask, ResizeRedirectMask, and ButtonPressMask. If a
+/// client attempts to select any of these event masks and some other client
+/// has already selected one, a BadAccess error results. There is only one
+/// do-not-propagate-mask for a window, not one per client.
+///
+/// XChangeWindowAttributes can generate BadAccess, BadColor, BadCursor,
+/// BadMatch, BadPixmap, BadValue, and BadWindow errors.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XChangeWindowAttributes.3.xhtml
+pub inline fn XChangeWindowAttributes(
+    display: *Display,
+    window: Window,
+    /// Specifies which window attributes are defined in the attributes
+    /// argument. This mask is the bitwise inclusive OR of the valid attribute
+    /// mask bits. If valuemask is zero, the attributes are ignored and are not
+    /// referenced.
+    valuemask: c_ulong,
+    /// Specifies the structure from which the values (as specified by the
+    /// value mask) are to be taken. The value mask should have the appropriate
+    /// bits set to indicate which attributes have been set in the structure.
+    attributes: *XSetWindowAttributes,
+) void {
+    // The meaning of the return value was not specified in documentation.
+    _ = X.XChangeWindowAttributes(display, window, valuemask, attributes);
+}
+
 /// The XCloseDisplay function closes the connection to the X server for the
 /// display specified in the Display structure and destroys all windows,
 /// resource IDs (Window, Font, Pixmap, Colormap, Cursor, and GContext), or
@@ -1879,6 +1928,7 @@ pub const masks = struct {
     pub const CWWidth = X.CWWidth;
     pub const CWHeight = X.CWHeight;
     pub const CWBorderWidth = X.CWBorderWidth;
+    pub const CWCursor = X.CWCursor;
     pub const CWEventMask = X.CWEventMask;
 
     // For XSelectInput
