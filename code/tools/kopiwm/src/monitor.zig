@@ -8,11 +8,9 @@ const Layout = lt.Layout;
 const Client = @import("client.zig").Client;
 const BarPosition = @import("enums.zig").BarPosition;
 
-const X = @import("c_lib.zig").X;
+const Xt = @import("x_tutorial.zig");
 const Allocator = std.mem.Allocator;
 const Rect = @import("rect.zig").Rect;
-
-const Window = X.Window;
 
 pub const Monitor = struct {
     const Self = @This();
@@ -41,7 +39,7 @@ pub const Monitor = struct {
     stack: ?*Client = null,
 
     next: ?*Self = null,
-    barwin: Window = 0,
+    barwin: Xt.Window = 0,
     lt: toggle(*const Layout),
 
     /// (dwm) createmon

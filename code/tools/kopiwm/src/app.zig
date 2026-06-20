@@ -2,7 +2,6 @@
 const std = @import("std");
 const log = std.log;
 const build_opts = @import("build_opts");
-const X = @import("c_lib.zig").X;
 const Xt = @import("x_tutorial.zig");
 const Net = @import("atoms.zig").Net;
 const WM = @import("atoms.zig").WM;
@@ -18,14 +17,12 @@ const EnumArray = @import("enum_array.zig").EnumArray;
 const Drw = @import("drw.zig").Drw;
 const ColorScheme = @import("drw.zig").ColorScheme;
 const Monitor = @import("monitor.zig").Monitor;
-const Window = X.Window;
-const Cursor = X.Cursor;
 
 const Self = @This();
 
 // Note to new Zig learners: if we try to deference this, we get "error:
 // cannot dereference undefined value."
-dpy: *X.Display = undefined,
+dpy: *Xt.Display = undefined,
 
 screen: c_int = 0,
 
@@ -46,11 +43,11 @@ mons: ?*Monitor = null,
 /// Selected monitor.
 selmon: *Monitor = undefined,
 
-root: Window = 0,
+root: Xt.Window = 0,
 
 wmatom: EnumArray(WM, Xt.Atom) = .empty,
 netatom: EnumArray(Net, Xt.Atom) = .empty,
-cursors: EnumArray(CursorState, Cursor) = .empty,
+cursors: EnumArray(CursorState, Xt.Cursor) = .empty,
 scheme: EnumArray(SchemeState, *ColorScheme) = .empty,
 
 /// The only purpose for this is to patch for `updatebars`.
@@ -80,7 +77,7 @@ pub fn setStatusText(self: *Self, text: []const u8) void {
     self.stext = self.stext_buf[0..n];
 }
 
-pub fn classHint(self: *Self) X.XClassHint {
+pub fn classHint(self: *Self) Xt.XClassHint {
     log.info("Class Hint: {s}", .{self.updatebars_buffer.get()});
     const slice = self.updatebars_buffer.cstr().?;
     return .{ .res_class = slice, .res_name = slice };
@@ -97,14 +94,14 @@ pub fn getRootPtr(self: *const Self) ?Coordinates(c_int) {
 /// Gets the property of a window in text form, and writes it to `buffer`.
 /// Returns the number of valid bytes written to the buffer.
 /// (dwm) gettextprop
-pub fn getTextProp(self: *const Self, w: Window, atom: Xt.Atom, buffer: []u8) ?usize {
+pub fn getTextProp(self: *const Self, w: Xt.Window, atom: Xt.Atom, buffer: []u8) ?usize {
     if (buffer.len == 0) return null;
     const text_property = Xt.XGetTextProperty(self.dpy, w, atom) orelse return null;
     if (text_property.nitems == 0) {
         return null;
     }
     var l: ?usize = null;
-    if (text_property.encoding == X.XA_STRING) {
+    if (text_property.encoding == Xt.XA_STRING) {
         const value: []const u8 = std.mem.span(text_property.value);
         l = @min(value.len, buffer.len);
         @memcpy(buffer[0..l.?], value[0..l.?]);

@@ -1,5 +1,4 @@
 const Monitor = @import("monitor.zig").Monitor;
-const X = @import("c_lib.zig").X;
 
 pub const Rect = struct {
     const Self = @This();

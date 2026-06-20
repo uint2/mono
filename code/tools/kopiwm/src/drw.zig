@@ -64,23 +64,20 @@ fn xfontCreate(
         // FcNameParse; using the latter results in the desired fallback
         // behaviour whereas the former just results in missing-character
         // rectangles being drawn, at least with some fonts.
-        xfont = X.XftFontOpenName(drw.dpy, drw.screen, @ptrCast(fontname));
-        if (xfont == null) {
+        xfont = X.XftFontOpenName(drw.dpy, drw.screen, @ptrCast(fontname)) orelse {
             std.debug.print("error, cannot load font from name: '{s}'\n", .{fontname});
             return error.FontCreateError;
-        }
-        pattern = X.FcNameParse(@ptrCast(fontname));
-        if (pattern == null) {
+        };
+        pattern = Xt.FcNameParse(fontname) orelse {
             std.debug.print("error, cannot parse font name to pattern: '{s}'\n", .{fontname});
             X.XftFontClose(drw.dpy, xfont);
             return error.FontCreateError;
-        }
+        };
     } else if (font_pattern) |fp| {
-        xfont = X.XftFontOpenPattern(drw.dpy, fp);
-        if (xfont == null) {
+        xfont = X.XftFontOpenPattern(drw.dpy, fp) orelse {
             std.debug.print("error, cannot load font from pattern\n", .{});
             return error.FontCreateError;
-        }
+        };
     } else {
         std.debug.print("No font specified.", .{});
         return error.FontCreateError;
@@ -99,7 +96,7 @@ fn xfontCreate(
 /// (dwm) xfont_free
 fn xfontFree(allocator: Allocator, font: *Fnt) void {
     if (font.pattern) |pattern| {
-        X.FcPatternDestroy(pattern);
+        Xt.FcPatternDestroy(pattern);
     }
     X.XftFontClose(font.dpy, font.xfont);
     log.warn("Deallocate font: {*}", .{font});
@@ -167,7 +164,7 @@ pub const Drw = struct {
     screen: c_int,
     root: Xt.Window,
     drawable: Xt.Drawable,
-    gc: X.GC,
+    gc: Xt.GC,
     scheme: ?*ColorScheme = null,
     /// A linked list of fonts. Guaranteed to have at least one after calling
     /// fontsetCreate.
@@ -191,11 +188,11 @@ pub const Drw = struct {
             .dpy = dpy,
             .screen = screen,
             .root = root,
-            .drawable = X.XCreatePixmap(dpy, root, w, h, @intCast(X.DefaultDepth(dpy, screen))),
+            .drawable = X.XCreatePixmap(dpy, root, w, h, @intCast(Xt.DefaultDepth(dpy, screen))),
             .gc = X.XCreateGC(dpy, root, 0, null),
             .fonts = undefined,
         };
-        _ = X.XSetLineAttributes(dpy, drw.gc, 1, X.LineSolid, X.CapButt, X.JoinMiter);
+        _ = X.XSetLineAttributes(dpy, drw.gc, 1, Xt.LineSolid, Xt.CapButt, Xt.JoinMiter);
         drw.fonts = try drw.fontsetCreate(allocator, fonts) orelse {
             // Empty linked list. No fonts loaded.
             std.debug.print("no fonts could be loaded.\n", .{});
@@ -224,7 +221,7 @@ pub const Drw = struct {
             self.root,
             w,
             h,
-            @intCast(X.DefaultDepth(self.dpy, self.screen)),
+            @intCast(Xt.DefaultDepth(self.dpy, self.screen)),
         );
     }
 
@@ -259,8 +256,8 @@ pub const Drw = struct {
     pub fn clrCreate(self: *Self, dest: *Xt.XftColor, color_name: []const u8) void {
         const result = X.XftColorAllocName(
             self.dpy,
-            X.DefaultVisual(self.dpy, self.screen),
-            X.DefaultColormap(self.dpy, self.screen),
+            Xt.DefaultVisual(self.dpy, self.screen),
+            Xt.DefaultColormap(self.dpy, self.screen),
             color_name.ptr,
             dest,
         );
@@ -275,8 +272,8 @@ pub const Drw = struct {
     pub fn clrFree(self: *Self, c: *Xt.XftColor) void {
         X.XftColorFree(
             self.dpy,
-            X.DefaultVisual(self.dpy, self.screen),
-            X.DefaultColormap(self.dpy, self.screen),
+            Xt.DefaultVisual(self.dpy, self.screen),
+            Xt.DefaultColormap(self.dpy, self.screen),
             c,
         );
     }
@@ -386,8 +383,8 @@ pub const Drw = struct {
             d = X.XftDrawCreate(
                 self.dpy,
                 self.drawable,
-                X.DefaultVisual(self.dpy, self.screen),
-                X.DefaultColormap(self.dpy, self.screen),
+                Xt.DefaultVisual(self.dpy, self.screen),
+                Xt.DefaultColormap(self.dpy, self.screen),
             );
             if (d == null) log.err("XftDrawCreate yielded a null", .{});
             x += @intCast(lpad);
@@ -521,24 +518,24 @@ pub const Drw = struct {
                     continue;
                 }
 
-                const fccharset = X.FcCharSetCreate();
-                _ = X.FcCharSetAddChar(fccharset, @intCast(utf8codepoint));
+                const fccharset = Xt.FcCharSetCreate() orelse unreachable;
+                _ = Xt.FcCharSetAddChar(fccharset, @intCast(utf8codepoint));
 
-                if (self.fonts.pattern == null) {
+                const self_fonts_pattern = self.fonts.pattern orelse {
                     // Refer to the comment in xfont_create for more information.
                     @panic("the first font in the cache must be loaded from a font string.");
-                }
+                };
 
-                const fcpattern = X.FcPatternDuplicate(self.fonts.pattern);
-                _ = X.FcPatternAddCharSet(fcpattern, X.FC_CHARSET, fccharset);
-                _ = X.FcPatternAddBool(fcpattern, X.FC_SCALABLE, X.FcTrue);
+                const fcpattern = Xt.FcPatternDuplicate(self_fonts_pattern) orelse unreachable;
+                _ = Xt.FcPatternAddCharSet(fcpattern, Xt.FC_CHARSET, fccharset);
+                _ = Xt.FcPatternAddBool(fcpattern, Xt.FC_SCALABLE, true);
 
-                _ = X.FcConfigSubstitute(null, fcpattern, X.FcMatchPattern);
-                X.FcDefaultSubstitute(fcpattern);
+                _ = Xt.FcConfigSubstitute(null, fcpattern, .Pattern);
+                Xt.FcDefaultSubstitute(fcpattern);
                 match_opt = X.XftFontMatch(self.dpy, self.screen, fcpattern, &result);
 
-                X.FcCharSetDestroy(fccharset);
-                X.FcPatternDestroy(fcpattern);
+                Xt.FcCharSetDestroy(fccharset);
+                Xt.FcPatternDestroy(fcpattern);
 
                 if (match_opt) |match| {
                     const j = if (state.nomatches[h0] > 0) h1 else h0;

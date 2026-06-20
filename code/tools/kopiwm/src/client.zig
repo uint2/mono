@@ -4,14 +4,13 @@ const mem = std.mem;
 const Monitor = @import("monitor.zig").Monitor;
 const App = @import("app.zig");
 const X = @import("c_lib.zig").X;
-const Window = X.Window;
 const fstr = @import("fstr.zig").fstr;
-const Display = X.Display;
 const Rect = @import("rect.zig").Rect;
 const toggle = @import("toggle.zig").toggle;
 const cfg = @import("config.zig");
 const Size = @import("enums.zig").Size;
 const Xt = @import("x_tutorial.zig");
+const M = @import("x_tutorial.zig").masks;
 
 const ClientSizes = struct {
     base: ?Size = null,
@@ -53,19 +52,19 @@ pub const Client = struct {
     snext: ?*Self = null,
     /// The parent monitor to this client.
     mon: *Monitor,
-    win: Window,
+    win: Xt.Window,
 
     pub fn init(
         app: *const App,
-        window: Window,
+        window: Xt.Window,
         monitor: *Monitor,
-        wa: *X.XWindowAttributes,
+        wa: *Xt.XWindowAttributes,
     ) Self {
         return Self{
             .app = app,
             .win = window,
             .mon = monitor,
-            .pos = .init(.fromX(X.XWindowAttributes, wa)),
+            .pos = .init(.fromX(Xt.XWindowAttributes, wa)),
             .bw = .init(@intCast(wa.border_width)),
             .is_floating = .init(false),
         };
@@ -76,7 +75,7 @@ pub const Client = struct {
         const z = self.app;
         if (z.getTextProp(self.win, z.netatom.get(.WMName), &self.name.buffer)) |len| {
             self.name.len = len;
-        } else if (z.getTextProp(self.win, X.XA_WM_NAME, &self.name.buffer)) |len| {
+        } else if (z.getTextProp(self.win, Xt.XA_WM_NAME, &self.name.buffer)) |len| {
             self.name.len = len;
         } else {
             self.name.set("broken");
@@ -90,10 +89,10 @@ pub const Client = struct {
 
     /// (dwm) seturgent
     /// Sets the client's urgent state to `urgent`.
-    pub fn setUrgent(self: *Self, dpy: ?*Display, urgent: bool) void {
+    pub fn setUrgent(self: *Self, dpy: ?*Xt.Display, urgent: bool) void {
         self.isurgent = urgent;
-        var wmh: *X.XWMHints = X.XGetWMHints(dpy, self.win) orelse return;
-        if (urgent) wmh.flags |= X.XUrgencyHint else wmh.flags &= ~X.XUrgencyHint;
+        var wmh: *Xt.XWMHints = X.XGetWMHints(dpy, self.win) orelse return;
+        if (urgent) wmh.flags |= Xt.XUrgencyHint else wmh.flags &= ~Xt.XUrgencyHint;
         _ = X.XSetWMHints(dpy, self.win, wmh);
         Xt.XFree(wmh);
     }
@@ -157,7 +156,7 @@ pub const Client = struct {
     pub fn setFocus(self: *Self) void {
         const z = self.app;
         if (!self.neverfocus) {
-            _ = X.XSetInputFocus(z.dpy, self.win, X.RevertToPointerRoot, X.CurrentTime);
+            _ = X.XSetInputFocus(z.dpy, self.win, M.RevertToPointerRoot, Xt.CurrentTime);
         }
         Xt.XChangeProperty(
             z.dpy,
@@ -197,8 +196,8 @@ pub const Client = struct {
                 },
             };
             ev.xclient.data.l[0] = @intCast(proto);
-            ev.xclient.data.l[1] = X.CurrentTime;
-            _ = X.XSendEvent(z.dpy, self.win, Xt.False, Xt.NoEventMask, &ev);
+            ev.xclient.data.l[1] = Xt.CurrentTime;
+            _ = X.XSendEvent(z.dpy, self.win, Xt.False, Xt.masks.NoEventMask, &ev);
         }
         return exists;
     }
@@ -214,7 +213,7 @@ pub const Client = struct {
     }
 
     /// (dwm) configure
-    pub fn configure(self: *const Self, dpy: ?*Display) void {
+    pub fn configure(self: *const Self, dpy: ?*Xt.Display) void {
         var xconf = self.pos.now.toX(Xt.XConfigureEvent);
         xconf.type = Xt.ConfigureNotify;
         xconf.display = dpy;
@@ -224,11 +223,11 @@ pub const Client = struct {
         xconf.above = Xt.None;
         xconf.override_redirect = Xt.False;
         var event = Xt.XEvent{ .xconfigure = xconf };
-        _ = X.XSendEvent(dpy, self.win, Xt.False, X.StructureNotifyMask, &event);
+        _ = X.XSendEvent(dpy, self.win, Xt.False, M.StructureNotifyMask, &event);
     }
 
     /// (dwm) getatomprop
-    fn getAtomProp(self: *Self, dpy: *Display, prop: Xt.Atom) ?Xt.Atom {
+    fn getAtomProp(self: *Self, dpy: *Xt.Display, prop: Xt.Atom) ?Xt.Atom {
         // var da: Xt.Atom = undefined; // dummy atom.
         // var atom: Xt.Atom = undefined;
         // var format: c_int = undefined;
@@ -437,14 +436,14 @@ pub const Client = struct {
         const z = self.app;
         const wmh: *X.XWMHints = X.XGetWMHints(z.dpy, self.win) orelse return;
         defer Xt.XFree(wmh);
-        const wmh_urg = wmh.flags & X.XUrgencyHint != 0;
+        const wmh_urg = wmh.flags & Xt.XUrgencyHint != 0;
         if (self == z.selmon.sel and wmh_urg) {
-            wmh.flags &= ~X.XUrgencyHint;
+            wmh.flags &= ~Xt.XUrgencyHint;
             _ = X.XSetWMHints(z.dpy, self.win, wmh);
         } else {
             self.isurgent = wmh_urg;
         }
-        if (wmh.flags & X.InputHint != 0) {
+        if (wmh.flags & Xt.masks.InputHint != 0) {
             self.neverfocus = wmh.input == 0;
         } else {
             self.neverfocus = false;
@@ -459,34 +458,34 @@ pub const Client = struct {
 
         if (X.XGetWMNormalHints(self.app.dpy, self.win, &hint, &msize) == 0) {
             // Size is uninitialized, ensure that size.flags aren't used.
-            hint.flags = X.PSize;
+            hint.flags = M.PSize;
         }
 
         // [base]
-        if (hint.flags & X.PBaseSize != 0) {
+        if (hint.flags & M.PBaseSize != 0) {
             sz.base = .{ .w = @intCast(hint.base_width), .h = @intCast(hint.base_height) };
-        } else if ((hint.flags & X.PMinSize) != 0) {
+        } else if ((hint.flags & M.PMinSize) != 0) {
             sz.base = .{ .w = @intCast(hint.min_width), .h = @intCast(hint.min_height) };
         } else sz.base = null;
 
         // [inc]
-        if ((hint.flags & X.PResizeInc) != 0) {
+        if ((hint.flags & M.PResizeInc) != 0) {
             sz.inc = .{ .w = @intCast(hint.width_inc), .h = @intCast(hint.height_inc) };
         } else sz.inc = null;
 
         // [max]
-        if ((hint.flags & X.PMaxSize) != 0) {
+        if ((hint.flags & M.PMaxSize) != 0) {
             sz.max = .{ .w = @intCast(hint.max_width), .h = @intCast(hint.max_height) };
         } else sz.max = null;
 
         // [min]
-        if ((hint.flags & X.PMinSize) != 0) {
+        if ((hint.flags & M.PMinSize) != 0) {
             sz.min = .{ .w = @intCast(hint.min_width), .h = @intCast(hint.min_height) };
-        } else if ((hint.flags & X.PBaseSize) != 0) {
+        } else if ((hint.flags & M.PBaseSize) != 0) {
             sz.min = .{ .w = @intCast(hint.base_width), .h = @intCast(hint.base_height) };
         } else sz.min = null;
 
-        if ((hint.flags & X.PAspect) != 0) {
+        if ((hint.flags & Xt.masks.PAspect) != 0) {
             if (hint.min_aspect.y > 0) {
                 sz.mina = @as(f32, @floatFromInt(hint.min_aspect.y)) / @as(f32, @floatFromInt(hint.min_aspect.x));
             }
@@ -510,7 +509,7 @@ pub const Client = struct {
         // Rule matching.
         self.is_floating.set(false);
         self.tags = 0;
-        var ch: X.XClassHint = undefined;
+        var ch: Xt.XClassHint = undefined;
         _ = X.XGetClassHint(self.app.dpy, self.win, &ch);
         const class: []const u8 = if (ch.res_class) |x| mem.span(x) else "<broken>";
         const instance: []const u8 = if (ch.res_name) |x| mem.span(x) else "<broken>";
@@ -536,7 +535,7 @@ pub const Client = struct {
 
     /// (dwm) setclientstate
     pub fn setState(self: *Self, state: u32) void {
-        const data: [2]u32 = .{ state, X.None };
+        const data: [2]u32 = .{ state, Xt.None };
         const z = self.app;
         Xt.XChangeProperty(
             z.dpy,

@@ -21,6 +21,7 @@ pub const Window = X.Window;
 // ++ Integer type aliases
 // -----------------------------------------------------------------------------
 
+pub const FcMatchKind = X.FcMatchKind;
 pub const Time = X.Time;
 
 // -----------------------------------------------------------------------------
@@ -33,8 +34,24 @@ pub const Time = X.Time;
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XOpenDisplay.3.xhtml
 pub const Display = X.Display;
 
+pub const FcCharSet = X.FcCharSet;
+pub const FcConfig = X.FcConfig;
 pub const FcPattern = X.FcPattern;
+/// X Graphics Context.
+pub const GC = X.GC;
 pub const Visual = X.Visual;
+
+/// The res_name member contains the application name, and the res_class member
+/// contains the application class. Note that the name set in this property may
+/// differ from the name set as WM_NAME. That is, WM_NAME specifies what should
+/// be displayed in the title bar and, therefore, can contain temporal
+/// information (for example, the name of a file currently in an editor's
+/// buffer). On the other hand, the name specified as part of WM_CLASS is the
+/// formal name of the application that should be used when retrieving the
+/// application's resources from the resource database.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XAllocClassHint.3.xhtml
+pub const XClassHint = X.XClassHint;
 
 /// When you receive this event, the structure members are set as follows.
 ///
@@ -219,6 +236,64 @@ pub const XTextProperty = X.XTextProperty;
 ///
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XGetWindowAttributes.3.xhtml
 pub const XWindowAttributes = X.XWindowAttributes;
+
+/// X Window Manager Hints.
+///
+/// ```c
+/// typedef struct {
+///     long flags; /* marks which fields in this structure are defined */
+///     Bool input; /* does this application rely on the window manager to get keyboard input? */
+///     int initial_state; /* see below */
+///     Pixmap icon_pixmap; /* pixmap to be used as icon */
+///     Window icon_window; /* window to be used as icon */
+///     int icon_x, icon_y; /* initial position of icon */
+///     Pixmap icon_mask; /* pixmap to be used as mask for icon_pixmap */
+///     XID window_group; /* id of related window group */
+///     /* this structure may be extended in the future */
+/// } XWMHints;
+/// ```
+///
+/// The input member is used to communicate to the window manager the input
+/// focus model used by the application. Applications that expect input but
+/// never explicitly set focus to any of their subwindows (that is, use the
+/// push model of focus management), such as X Version 10 style applications
+/// that use real-estate driven focus, should set this member to True.
+/// Similarly, applications that set input focus to their subwindows only when
+/// it is given to their top-level window by a window manager should also set
+/// this member to True. Applications that manage their own input focus by
+/// explicitly setting focus to one of their subwindows whenever they want
+/// keyboard input (that is, use the pull model of focus management) should set
+/// this member to False. Applications that never expect any keyboard input
+/// also should set this member to False.
+///
+/// Pull model window managers should make it possible for push model
+/// applications to get input by setting input focus to the top-level windows
+/// of applications whose input member is True. Push model window managers
+/// should make sure that pull model applications do not break them by
+/// resetting input focus to PointerRoot when it is appropriate (for example,
+/// whenever an application whose input member is False sets input focus to one
+/// of its subwindows).
+///
+/// The icon_mask specifies which pixels of the icon_pixmap should be used as
+/// the icon. This allows for nonrectangular icons. Both icon_pixmap and
+/// icon_mask must be bitmaps. The icon_window lets an application provide a
+/// window for use as an icon for window managers that support such use. The
+/// window_group lets you specify that this window belongs to a group of other
+/// windows. For example, if a single application manipulates multiple
+/// top-level windows, this allows you to provide enough information that a
+/// window manager can iconify all of the windows rather than just the one
+/// window.
+///
+/// The UrgencyHint flag, if set in the flags field, indicates that the client
+/// deems the window contents to be urgent, requiring the timely response of
+/// the user. The window manager will make some effort to draw the user’s
+/// attention to this window while this flag is set. The client must provide
+/// some means by which the user can cause the urgency flag to be cleared
+/// (either mitigating the condition that made the window urgent or merely
+/// shutting off the alarm) or the window to be withdrawn.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XAllocWMHints.3.xhtml
+pub const XWMHints = X.XWMHints;
 
 /// An XftColor object permits text and other items to be rendered in a
 /// particular color (or the closest approximation offered by the X visual in
@@ -469,6 +544,8 @@ pub inline fn XGetTextProperty(
 /// returns a zero status.
 ///
 /// XGetTransientForHint can generate a BadWindow error.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XSetTransientForHint.3.xhtml
 pub inline fn XGetTransientForHint(display: *Display, window: Window) ?Window {
     var prop_window_return: Window = X.None;
     if (X.XGetTransientForHint(display, window, &prop_window_return) == 0) return null;
@@ -492,7 +569,7 @@ pub const YGetWindowPropertyResult = struct {
     /// padded in the upper 4 bytes).
     value: FormattedData,
 
-    pub fn deinit(self: *const Self) void {
+    pub inline fn deinit(self: *const Self) void {
         self.value.deinit();
     }
 };
@@ -684,6 +761,69 @@ pub inline fn XGrabButton(
     );
 }
 
+/// The XGrabKey function establishes a passive grab on the keyboard. In the
+/// future, the keyboard is actively grabbed (as for XGrabKeyboard), the
+/// last-keyboard-grab time is set to the time at which the key was pressed (as
+/// transmitted in the KeyPress event), and the KeyPress event is reported if
+/// all of the following conditions are true:
+///
+/// * The keyboard is not grabbed and the specified key (which can itself be a
+///   modifier key) is logically pressed when the specified modifier keys are
+///   logically down, and no other modifier keys are logically down.
+///
+/// * Either the grab_window is an ancestor of (or is) the focus window, or the
+///   grab_window is a descendant of the focus window and contains the pointer.
+///
+/// * A passive grab on the same key combination does not exist on any ancestor of
+///   grab_window.
+///
+/// The interpretation of the remaining arguments is as for XGrabKeyboard. The
+/// active grab is terminated automatically when the logical state of the
+/// keyboard has the specified key released (independent of the logical state o
+/// the modifier keys), at which point a KeyRelease event is reported to the
+/// grabbing window.
+///
+/// Note that the logical state of a device (as seen by client applications)
+/// may lag the physical state if device event processing is frozen.
+///
+/// A modifiers argument of AnyModifier is equivalent to issuing the request
+/// for all possible modifier combinations (including the combination of no
+/// modifiers). It is not required that all modifiers specified have currently
+/// assigned KeyCodes. A keycode argument of AnyKey is equivalent to issuing
+/// the request for all possible KeyCodes. Otherwise, the specified keycode
+/// must be in the range specified by min_keycode and max_keycode in the
+/// connection setup, or a BadValue error results.
+///
+/// If some other client has issued a XGrabKey with the same key combination on
+/// the same window, a BadAccess error results. When using AnyModifier or
+/// AnyKey, the request fails completely, and a BadAccess error results (no
+/// grabs are established) if there is a conflicting grab for any combination.
+///
+/// XGrabKey can generate BadAccess, BadValue, and BadWindow errors.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XGrabKey.3.xhtml
+pub inline fn XGrabKey(
+    display: *Display,
+    /// Specifies the KeyCode or AnyKey.
+    keycode: c_int,
+    modifiers: c_uint,
+    grab_window: Window,
+    owner_events: bool,
+    pointer_mode: GrabMode,
+    keyboard_mode: GrabMode,
+) void {
+    // Meaning of return value is not specified in documentation.
+    _ = X.XGrabKey(
+        display,
+        keycode,
+        modifiers,
+        grab_window,
+        @intFromBool(owner_events),
+        @intFromEnum(pointer_mode),
+        @intFromEnum(keyboard_mode),
+    );
+}
+
 /// The XGrabPointer function actively grabs control of the pointer and returns
 /// true if the grab was successful. Further pointer events are reported only
 /// to the grabbing client. XGrabPointer overrides any active pointer grab by
@@ -857,6 +997,18 @@ pub inline fn XMoveWindow(
     // It is not specified in documentation what the return value of XMoveWindow
     // is, so we shall discard it.
     _ = X.XMoveWindow(display, window, x, y);
+}
+
+/// The XNextEvent function copies the first event from the event queue into
+/// the specified XEvent structure and then removes it from the queue. If the
+/// event queue is empty, XNextEvent flushes the output buffer and blocks until
+/// an event is received.
+///
+/// Returns true upon success.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XNextEvent.3.xhtml
+pub inline fn XNextEvent(display: *Display, event: *XEvent) bool {
+    return X.XNextEvent(display, event) == X.Success;
 }
 
 /// The XOpenDisplay function returns a Display structure that serves as the
@@ -1142,11 +1294,47 @@ pub inline fn XmbTextPropertyToTextList(
 /// source: https://x.org/releases/X11R7.7/doc/xorg-docs/icccm/icccm.html
 pub const Atom = X.Atom;
 
+pub const ParentRelative = X.ParentRelative;
+pub const PointerRoot = X.PointerRoot;
+pub const PropertyDelete = X.PropertyDelete;
+pub const ReplayPointer = X.ReplayPointer;
+pub const Below = X.Below;
+pub const NormalState = X.NormalState;
+pub const ButtonPress = X.ButtonPress;
+pub const CapButt = X.CapButt;
 pub const ClientMessage = X.ClientMessage;
 pub const ConfigureNotify = X.ConfigureNotify;
+pub const ConfigureRequest = X.ConfigureRequest;
+pub const CopyFromParent = X.CopyFromParent;
 pub const CurrentTime = X.CurrentTime;
+pub const DestroyAll = X.DestroyAll;
+pub const DestroyNotify = X.DestroyNotify;
+pub const EnterNotify = X.EnterNotify;
+pub const Expose = X.Expose;
+pub const FocusIn = X.FocusIn;
+pub const IconicState = X.IconicState;
+pub const IsViewable = X.IsViewable;
+pub const JoinMiter = X.JoinMiter;
+pub const KeyPress = X.KeyPress;
+pub const LineSolid = X.LineSolid;
 pub const LockMask = X.LockMask;
-pub const NoEventMask = X.NoEventMask;
+pub const MapRequest = X.MapRequest;
+pub const MappingKeyboard = X.MappingKeyboard;
+pub const MappingNotify = X.MappingNotify;
+pub const MotionNotify = X.MotionNotify;
+pub const PropertyNotify = X.PropertyNotify;
+pub const UnmapNotify = X.UnmapNotify;
+pub const XUrgencyHint = X.XUrgencyHint;
+
+pub const NotifyInferior = X.NotifyInferior;
+pub const NotifyNormal = X.NotifyNormal;
+
+pub const FC_CHARSET = X.FC_CHARSET;
+pub const FC_SCALABLE = X.FC_SCALABLE;
+
+pub const LASTEvent = X.LASTEvent;
+pub const XA_STRING = X.XA_STRING;
+pub const XA_WM_NAME = X.XA_WM_NAME;
 
 /// Specifies whether the data should be viewed as a list of 8-bit, 16-bit, or
 /// 32-bit quantities. Used in XGetWindowProperty, among other places.
@@ -1165,7 +1353,7 @@ pub const FormattedData = union(Format) {
     Fmt16: []u16,
     Fmt32: []u32,
 
-    pub fn len(self: *const Self) usize {
+    pub inline fn len(self: *const Self) usize {
         return switch (self.*) {
             .Fmt8 => |v| v.len,
             .Fmt16 => |v| v.len,
@@ -1173,7 +1361,7 @@ pub const FormattedData = union(Format) {
         };
     }
 
-    pub fn deinit(self: Self) void {
+    pub inline fn deinit(self: Self) void {
         switch (self) {
             .Fmt8 => |v| XFree(v.ptr),
             .Fmt16 => |v| XFree(v.ptr),
@@ -1193,6 +1381,12 @@ pub const PropMode = enum(c_int) {
     Append = X.PropModeAppend,
 };
 
+pub const FcMatch = enum(c_int) {
+    Pattern = X.FcMatchPattern,
+    Font = X.FcMatchFont,
+    Scan = X.FcMatchScan,
+};
+
 pub const None = X.None;
 
 pub const False = X.False;
@@ -1207,13 +1401,37 @@ pub const masks = struct {
     pub const ControlMask = X.ControlMask;
     pub const ButtonPressMask = X.ButtonPressMask;
     pub const ButtonReleaseMask = X.ButtonReleaseMask;
-    pub const PointerMotionMask = X.PointerMotionMask;
 
     pub const Mod1Mask = X.Mod1Mask;
     pub const Mod2Mask = X.Mod2Mask;
     pub const Mod3Mask = X.Mod3Mask;
     pub const Mod4Mask = X.Mod4Mask;
     pub const Mod5Mask = X.Mod5Mask;
+
+    pub const CWEventMask = X.CWEventMask;
+
+    // For XSelectInput
+    pub const EnterWindowMask = X.EnterWindowMask;
+    pub const FocusChangeMask = X.FocusChangeMask;
+    pub const PropertyChangeMask = X.PropertyChangeMask;
+    pub const StructureNotifyMask = X.StructureNotifyMask;
+
+    pub const ExposureMask = X.ExposureMask;
+    pub const LeaveWindowMask = X.LeaveWindowMask;
+    pub const PointerMotionMask = X.PointerMotionMask;
+    pub const SubstructureNotifyMask = X.SubstructureNotifyMask;
+    pub const SubstructureRedirectMask = X.SubstructureRedirectMask;
+    pub const NoEventMask = X.NoEventMask;
+
+    pub const PAspect = X.PAspect;
+    pub const PBaseSize = X.PBaseSize;
+    pub const PMaxSize = X.PMaxSize;
+    pub const PMinSize = X.PMinSize;
+    pub const PResizeInc = X.PResizeInc;
+    pub const PSize = X.PSize;
+    pub const InputHint = X.InputHint;
+
+    pub const RevertToPointerRoot = X.RevertToPointerRoot;
 };
 
 // -----------------------------------------------------------------------------
@@ -1262,6 +1480,20 @@ pub const keys = struct {
 };
 
 // -----------------------------------------------------------------------------
+// ++ Macros
+// -----------------------------------------------------------------------------
+
+pub const ConnectionNumber = X.ConnectionNumber;
+pub const DefaultColormap = X.DefaultColormap;
+pub const DefaultDepth = X.DefaultDepth;
+pub const DefaultRootWindow = X.DefaultRootWindow;
+pub const DefaultScreen = X.DefaultScreen;
+pub const DefaultVisual = X.DefaultVisual;
+pub const DisplayHeight = X.DisplayHeight;
+pub const DisplayWidth = X.DisplayWidth;
+pub const RootWindow = X.RootWindow;
+
+// -----------------------------------------------------------------------------
 // ++ Errors
 // -----------------------------------------------------------------------------
 
@@ -1272,7 +1504,106 @@ pub const err = struct {
     pub const BadMatch = X.BadMatch;
 };
 
+// -----------------------------------------------------------------------------
+// ++ FontConfig
+// -----------------------------------------------------------------------------
+
+/// Adds a single unicode char to the set, returning FcFalse on failure, either
+/// as a result of a constant set or from running out of memory.
+///
+/// source: https://xorg.freedesktop.org/archive/X11R7.0/doc/html/FcCharSetAddChar.3.html
+pub inline fn FcCharSetAddChar(fcs: *FcCharSet, ucs4: c_uint) bool {
+    return X.FcCharSetAddChar(fcs, ucs4) != X.FcFalse;
+}
+
+/// Allocates and initializes a new empty character set object.
+///
+/// source: https://xorg.freedesktop.org/archive/X11R7.0/doc/html/FcCharSetCreate.3.html
+pub inline fn FcCharSetCreate() ?*FcCharSet {
+    return X.FcCharSetCreate();
+}
+
+/// Destroy a character set. Decrements the reference count fcs. If the
+/// reference count becomes zero, all memory referenced is freed.
+///
+/// source: https://xorg.freedesktop.org/archive/X11R7.0/doc/html/FcCharSetDestroy.3.html
+pub inline fn FcCharSetDestroy(fcs: *FcCharSet) void {
+    X.FcCharSetDestroy(fcs);
+}
+
+/// Execute substitutions. Calls FcConfigSubstituteWithPat setting p_pat to NULL.
+///
+/// [FcConfigSubstituteWithPat] Performs the sequence of pattern modification
+/// operations, if kind is FcMatchPattern, then those tagged as pattern
+/// operations are applied, else if kind is FcMatchFont, those tagged as font
+/// operations are applied and p_pat is used for <test> elements with
+/// target=pattern.
+///
+/// source: https://xorg.freedesktop.org/archive/X11R7.0/doc/html/FcConfigSubstitute.3.html
+pub inline fn FcConfigSubstitute(config: ?*FcConfig, p: *FcPattern, kind: FcMatch) bool {
+    return X.FcConfigSubstitute(config, p, @intFromEnum(kind)) != X.FcFalse;
+}
+
+/// Perform default substitutions in a pattern.
+///
+/// Supplies default values for underspecified font patterns:
+///
+/// * Patterns without a specified style or weight are set to Medium.
+/// * Patterns without a specified style or slant are set to Roman.
+/// * Patterns without a specified pixel size are given one computed from any
+///   specified point size (default 12), dpi (default 75) and scale (default 1).
+///
+/// source: https://xorg.freedesktop.org/archive/X11R7.0/doc/html/FcDefaultSubstitute.3.html
+pub inline fn FcDefaultSubstitute(p: *FcPattern) void {
+    X.FcDefaultSubstitute(p);
+}
+
+/// Parse a pattern string.
+///
+/// Converts name from the standard text format described above into a pattern.
+///
+/// source: https://xorg.freedesktop.org/archive/X11R7.0/doc/html/FcNameParse.3.html
+pub inline fn FcNameParse(name: []const u8) ?*FcPattern {
+    return X.FcNameParse(@ptrCast(name));
+}
+
+/// [FcPatternAdd-Type] These are all convenience functions that insert objects
+/// of the specified type into the pattern. Use these in preference to
+/// FcPatternAdd as they will provide compile-time typechecking. These all
+/// append values to any existing list of values.
+///
+/// source: https://xorg.freedesktop.org/archive/X11R7.0/doc/html/FcPatternAdd-Type.3.html
+pub inline fn FcPatternAddBool(p: *FcPattern, object: [*c]const u8, value: bool) bool {
+    return X.FcPatternAddBool(p, object, @intFromBool(value)) != X.FcFalse;
+}
+
+/// [FcPatternAdd-Type] These are all convenience functions that insert objects
+/// of the specified type into the pattern. Use these in preference to
+/// FcPatternAdd as they will provide compile-time typechecking. These all
+/// append values to any existing list of values.
+///
+/// source: https://xorg.freedesktop.org/archive/X11R7.0/doc/html/FcPatternAdd-Type.3.html
+pub inline fn FcPatternAddCharSet(p: *FcPattern, object: [*c]const u8, charset: *FcCharSet) bool {
+    return X.FcPatternAddCharSet(p, object, charset) != X.FcFalse;
+}
+
+/// Destroys a pattern, in the process destroying all related values.
+///
+/// source: https://xorg.freedesktop.org/archive/X11R7.0/doc/html/FcPatternDestroy.3.html
+pub inline fn FcPatternDestroy(p: *FcPattern) void {
+    X.FcPatternDestroy(p);
+}
+
+/// Copy a pattern, returning a new pattern that matches p. Each pattern may be
+/// modified without affecting the other.
+///
+/// source: https://www.freedesktop.org/software/fontconfig/fontconfig-devel/fcpatternduplicate.html
+pub inline fn FcPatternDuplicate(p: *const FcPattern) ?*FcPattern {
+    return X.FcPatternDuplicate(p);
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // Resources
 // * https://x.org/releases/X11R7.7/doc/xproto/x11protocol.html
 // * https://x.org/releases/X11R7.7/doc/man/man3/
+// * https://xorg.freedesktop.org/archive/X11R7.0/doc/html/manindex3.html
