@@ -1481,6 +1481,40 @@ pub inline fn XQueryPointer(
     return r;
 }
 
+/// The XSelectInput function requests that the X server report the events
+/// associated with the specified event mask. Initially, X will not report any
+/// of these events. Events are reported relative to a window. If a window is
+/// not interested in a device event, it usually propagates to the closest
+/// ancestor that is interested, unless the do_not_propagate mask prohibits it.
+///
+/// Setting the event-mask attribute of a window overrides any previous call
+/// for the same window but not for other clients. Multiple clients can select
+/// for the same events on the same window with the following restrictions:
+///
+/// * Multiple clients can select events on the same window because their event
+///   masks are disjoint. When the X server generates an event, it reports it to all
+///   interested clients.
+///
+/// * Only one client at a time can select CirculateRequest, ConfigureRequest, or
+///   MapRequest events, which are associated with the event mask
+///   SubstructureRedirectMask.
+///
+/// * Only one client at a time can select a ResizeRequest event, which is
+///   associated with the event mask ResizeRedirectMask.
+///
+/// * Only one client at a time can select a ButtonPress event, which is associated
+///   with the event mask ButtonPressMask.
+///
+/// The server reports the event to all interested clients.
+///
+/// XSelectInput can generate a BadWindow error.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XSendEvent.3.xhtml
+pub inline fn XSelectInput(display: *Display, window: Window, event_mask: c_long) void {
+    // Meaning of return value is not specified in documentation.
+    _ = X.XSelectInput(display, window, event_mask);
+}
+
 /// The XSendEvent function identifies the destination window, determines which
 /// clients should receive the specified events, and ignores any active grabs.
 /// This function requires you to pass an event mask. For a discussion of the

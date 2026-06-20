@@ -98,7 +98,7 @@ var xerrorlib: ?*const fn (?*Xt.Display, [*c]Xt.XErrorEvent) callconv(.c) c_int 
 fn check_other_wm() void {
     xerrorlib = X.XSetErrorHandler(xerrorstart);
     // this causes an error if some other window manager is running
-    _ = X.XSelectInput(z.dpy, Xt.DefaultRootWindow(z.dpy), M.SubstructureRedirectMask);
+    Xt.XSelectInput(z.dpy, Xt.DefaultRootWindow(z.dpy), M.SubstructureRedirectMask);
     Xt.XSync(z.dpy, false);
     _ = X.XSetErrorHandler(xerror);
     Xt.XSync(z.dpy, false);
@@ -288,11 +288,8 @@ fn manage(allocator: Allocator, w: Xt.Window, wa: *Xt.XWindowAttributes) error{O
     c.updateSizeHints();
     c.updateWMHints();
 
-    _ = X.XSelectInput(
-        z.dpy,
-        w,
-        M.EnterWindowMask | M.FocusChangeMask | M.PropertyChangeMask | M.StructureNotifyMask,
-    );
+    const mask = M.EnterWindowMask | M.FocusChangeMask | M.PropertyChangeMask | M.StructureNotifyMask;
+    Xt.XSelectInput(z.dpy, w, mask);
 
     grabbuttons(c, false);
 
@@ -344,7 +341,7 @@ fn unmanage(allocator: Allocator, c: *Client, destroyed: bool) void {
     if (!destroyed) {
         _ = X.XGrabServer(z.dpy); // dwm: Avoid race conditions.
         _ = X.XSetErrorHandler(xerrordummy);
-        _ = X.XSelectInput(z.dpy, c.win, Xt.masks.NoEventMask);
+        Xt.XSelectInput(z.dpy, c.win, Xt.masks.NoEventMask);
         var wc = Xt.XWindowChanges{ .border_width = @intCast(c.bw.prev) };
         Xt.XConfigureWindow(z.dpy, c.win, X.CWBorderWidth, &wc); // restore border
         Xt.XUngrabButton(z.dpy, X.AnyButton, X.AnyModifier, c.win);
@@ -1256,7 +1253,7 @@ fn setup(allocator: Allocator, wmcheckwin: *Xt.Window) DwmError!void {
             | M.LeaveWindowMask | M.StructureNotifyMask | M.PropertyChangeMask,
         };
         Xt.XChangeWindowAttributes(z.dpy, z.root, M.CWEventMask | M.CWCursor, &wa);
-        _ = X.XSelectInput(z.dpy, z.root, wa.event_mask);
+        Xt.XSelectInput(z.dpy, z.root, wa.event_mask);
     }
 
     grabkeys();
