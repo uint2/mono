@@ -34,22 +34,6 @@ source_if_exists $HOME/.opam/opam-init/init.zsh # opam (OCaml)
 # special directories
 export REPOS=$HOME/repos DOTS=$HOME/mono/code/config
 
-export PYTHONPYCACHEPREFIX=/tmp/pycache        # bye __pycache__
-export LANGUAGE=en_US.UTF-8 LC_ALL=en_US.UTF-8 # locale standardize
-export LANG=en_US.UTF-8 LC_CTYPE=en_US.UTF-8   # locale standardize
-export SHELL_SESSIONS_DISABLE=1                # remove ~/.zsh_sessions
-export LESSCHARSET=utf-8                       # `less` to show unicode chars
-export GPG_TTY=$(tty)                          # fixes commit signing on git/linux
-
-export FZF_DEFAULT_OPTS="--height=7 +m --no-mouse --reverse --no-info --prompt='  ' --no-separator"
-
-if binary_exists nvim; then
-  export EDITOR=nvim
-  export MANPAGER="nvim +Man!" # use neovim as manpager
-else
-  export MANPAGER=
-fi
-
 # install "n" npm package manager to ~/.local/n
 if [ -d "$HOME/.local/n" ]; then
   export N_PREFIX="$HOME/.local/n"
@@ -81,6 +65,22 @@ if [ ! -z $HOME ]; then
   prepend_to_path_if_exists "$HOME/.local/bin"
 fi
 export PATH
+
+export PYTHONPYCACHEPREFIX=/tmp/pycache        # bye __pycache__
+export LANGUAGE=en_US.UTF-8 LC_ALL=en_US.UTF-8 # locale standardize
+export LANG=en_US.UTF-8 LC_CTYPE=en_US.UTF-8   # locale standardize
+export SHELL_SESSIONS_DISABLE=1                # remove ~/.zsh_sessions
+export LESSCHARSET=utf-8                       # `less` to show unicode chars
+export GPG_TTY=$(tty)                          # fixes commit signing on git/linux
+
+export FZF_DEFAULT_OPTS="--height=7 +m --no-mouse --reverse --no-info --prompt='  ' --no-separator"
+
+if binary_exists nvim; then
+  export EDITOR=nvim
+  export MANPAGER="nvim +Man!" # use neovim as manpager
+else
+  export MANPAGER=
+fi
 
 #  ///////////////////////////////////////////////////////////////////
 # // Shell options.
