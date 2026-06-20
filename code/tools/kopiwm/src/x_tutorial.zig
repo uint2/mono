@@ -131,6 +131,49 @@ pub const XButtonPressedEvent = XButtonEvent;
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XAllocClassHint.3.xhtml
 pub const XClassHint = X.XClassHint;
 
+/// The structure for ClientMessage events contains:
+///
+/// ```c
+/// typedef struct {
+///     int type;             /* ClientMessage */
+///     unsigned long serial; /* # of last request processed by server */
+///     Bool send_event;      /* true if this came from a SendEvent request */
+///     Display *display;     /* Display the event was read from */
+///     Window window;
+///     Atom message_type;
+///     int format;
+///     union {
+///         char b[20];
+///         short s[10];
+///         long l[5];
+///     } data;
+/// } XClientMessageEvent;
+/// ```
+///
+/// When you receive this event, the structure members are set as follows.
+///
+/// The type member is set to the event type constant name that uniquely
+/// identifies it. For example, when the X server reports a GraphicsExpose
+/// event to a client application, it sends an XGraphicsExposeEvent structure
+/// with the type member set to GraphicsExpose. The display member is set to a
+/// pointer to the display the event was read on. The send_event member is set
+/// to True if the event came from a SendEvent protocol request. The serial
+/// member is set from the serial number reported in the protocol but expanded
+/// from the 16-bit least-significant bits to a full 32-bit value. The window
+/// member is set to the window that is most useful to toolkit dispatchers.
+///
+/// The message_type member is set to an atom that indicates how the data
+/// should be interpreted by the receiving client. The format member is set to
+/// 8, 16, or 32 and specifies whether the data should be viewed as a list of
+/// bytes, shorts, or longs. The data member is a union that contains the
+/// members b, s, and l. The b, s, and l members represent data of twenty 8-bit
+/// values, ten 16-bit values, and five 32-bit values. Particular message types
+/// might not make use of all these values. The X server places no
+/// interpretation on the values in the window, message_type, or data members.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XClientMessageEvent.3.xhtml
+pub const XClientMessageEvent = X.XClientMessageEvent;
+
 /// When you receive this event, the structure members are set as follows.
 ///
 /// The type member is set to the event type constant name that uniquely

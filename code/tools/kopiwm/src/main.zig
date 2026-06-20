@@ -507,7 +507,7 @@ fn buttonPress(allocator: Allocator, e: *Xt.XEvent) DwmError!void {
 
 /// (dwm) clientmessage
 fn clientMessage(e: *Xt.XEvent) void {
-    const ev: X.XClientMessageEvent = e.xclient;
+    const ev: Xt.XClientMessageEvent = e.xclient;
     var c: *Client = winToClient(ev.window) orelse return;
 
     if (ev.message_type == atoms.net(.WMState)) {
