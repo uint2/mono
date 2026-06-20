@@ -565,8 +565,7 @@ pub const Drw = struct {
 
     /// (dwm) drw_map
     pub fn map(self: *Self, w: Xt.Window, r: Rect) void {
-        const res = X.XCopyArea(self.dpy, self.drawable, w, self.gc, r.x, r.y, r.w, r.h, r.x, r.y);
-        print_draw_error(res);
+        Xt.XCopyArea(self.dpy, self.drawable, w, self.gc, r, r.toCoordinates());
         Xt.XSync(self.dpy, false);
     }
 };

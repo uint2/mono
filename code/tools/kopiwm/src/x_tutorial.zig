@@ -5,6 +5,7 @@
 const X = @import("c_lib.zig").X;
 const Coordinates = @import("enums.zig").Coordinates;
 const log = @import("std").log;
+const Rect = @import("rect.zig").Rect;
 
 // -----------------------------------------------------------------------------
 // ++ XID aliases
@@ -761,6 +762,53 @@ pub inline fn XConfigureWindow(
 ) void {
     // The meaning of the return value was not specified in documentation.
     _ = X.XConfigureWindow(display, window, value_mask, changes);
+}
+
+/// The XCopyArea function combines the specified rectangle of src with the
+/// specified rectangle of dest. The drawables must have the same root and
+/// depth, or a BadMatch error results.
+///
+/// If regions of the source rectangle are obscured and have not been retained
+/// in backing store or if regions outside the boundaries of the source
+/// drawable are specified, those regions are not copied. Instead, the
+/// following occurs on all corresponding destination regions that are either
+/// visible or are retained in backing store. If the destination is a window
+/// with a background other than None, corresponding regions of the destination
+/// are tiled with that background (with plane-mask of all ones and GXcopy
+/// function). Regardless of tiling or whether the destination is a window or a
+/// pixmap, if graphics-exposures is True, then GraphicsExpose events for all
+/// corresponding destination regions are generated. If graphics-exposures is
+/// True but no GraphicsExpose events are generated, a NoExpose event is
+/// generated. Note that by default graphics-exposures is True in new GCs.
+///
+/// This function uses these GC components: function, plane-mask,
+/// subwindow-mode, graphics-exposures, clip-x-origin, clip-y-origin, and
+/// clip-mask.
+///
+/// XCopyArea can generate BadDrawable, BadGC, and BadMatch errors.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XCopyArea.3.xhtml
+pub inline fn XCopyArea(
+    display: *Display,
+    src_drw: Drawable,
+    dest_drw: Drawable,
+    gc: GC,
+    src: Rect,
+    dest: Coordinates(i32),
+) void {
+    // The meaning of the return value was not specified in documentation.
+    _ = X.XCopyArea(
+        display,
+        src_drw,
+        dest_drw,
+        gc,
+        @intCast(src.x),
+        @intCast(src.y),
+        @intCast(src.w),
+        @intCast(src.h),
+        @intCast(dest.x),
+        @intCast(dest.y),
+    );
 }
 
 /// The XCreateWindow function creates an unmapped subwindow for a specified

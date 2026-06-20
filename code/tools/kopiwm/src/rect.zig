@@ -1,4 +1,5 @@
 const Monitor = @import("monitor.zig").Monitor;
+const Coordinates = @import("enums.zig").Coordinates;
 
 pub const Rect = struct {
     const Self = @This();
@@ -29,6 +30,10 @@ pub const Rect = struct {
     /// Translate from an X11 struct to this. Use keys [x, y, width, height].
     pub fn fromX(comptime T: type, z: *T) Self {
         return .{ .x = @intCast(z.x), .y = @intCast(z.y), .w = @intCast(z.width), .h = @intCast(z.height) };
+    }
+
+    pub fn toCoordinates(self: *const Self) Coordinates(i32) {
+        return .{ .x = self.x, .y = self.y };
     }
 
     /// (dwm) recttomon
