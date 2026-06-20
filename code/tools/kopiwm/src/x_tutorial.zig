@@ -1843,6 +1843,16 @@ pub const WindowState = enum(c_int) {
     IconicState = X.IconicState,
 };
 
+/// There are many more enums than this, just check out any of the X.XC_* stuff.
+/// and the rest should be adjacent.
+pub const PointerShape = enum(@TypeOf(X.XC_left_ptr)) {
+    /// Commonly used for dragging things around. The four arrows spread out
+    /// from the center.
+    Fleur = X.XC_fleur,
+    Left_ptr = X.XC_left_ptr,
+    Sizing = X.XC_sizing,
+};
+
 pub const None = X.None;
 
 pub const False = X.False;
