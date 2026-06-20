@@ -227,20 +227,14 @@ fn winToClient(w: Xt.Window) ?*Client {
 }
 
 /// (dwm) getstate
-fn getState(w: Xt.Window) i32 {
+fn getState(w: Xt.Window) @typeInfo(Xt.WindowState).@"enum".tag_type {
+    const int_type = @typeInfo(Xt.WindowState).@"enum".tag_type;
     log.info("::getState", .{});
-    const data = Xt.XGetWindowProperty(
-        z.dpy,
-        w,
-        z.wmatom.get(.State),
-        0,
-        2,
-        false,
-        z.wmatom.get(.State),
-    ) orelse return -1;
+    const atom = z.wmatom.get(.State);
+    const data = Xt.XGetWindowProperty(z.dpy, w, atom, 0, 2, false, atom) orelse return -1;
     defer data.deinit();
     if (data.value.len() == 0) return -1;
-    const result: i32 = switch (data.value) {
+    const result: int_type = switch (data.value) {
         .Fmt8 => |v| @intCast(v[0]),
         .Fmt16 => |v| @intCast(v[0]),
         .Fmt32 => |v| @intCast(v[0]),
@@ -285,8 +279,8 @@ fn manage(allocator: Allocator, w: Xt.Window, wa: *Xt.XWindowAttributes) error{O
     r.y = @max(r.y, c.mon.w.y); // If client is too far up, truncate it.
     c.bw.set(cfg.borderpx);
 
-    var wc: X.XWindowChanges = .{ .border_width = @intCast(c.bw.now) };
-    _ = X.XConfigureWindow(z.dpy, w, X.CWBorderWidth, &wc);
+    var wc = Xt.XWindowChanges{ .border_width = @intCast(c.bw.now) };
+    Xt.XConfigureWindow(z.dpy, w, X.CWBorderWidth, &wc);
     _ = X.XSetWindowBorder(z.dpy, w, z.scheme.get(.Normal).border.pixel);
 
     c.configure(z.dpy); // propagates border_width, if size doesn't change
@@ -315,7 +309,7 @@ fn manage(allocator: Allocator, w: Xt.Window, wa: *Xt.XWindowAttributes) error{O
         z.dpy,
         z.root,
         z.netatom.get(.ClientList),
-        X.XA_WINDOW,
+        Xt.XA_WINDOW,
         32,
         .Append,
         @ptrCast(&c.win),
@@ -331,7 +325,7 @@ fn manage(allocator: Allocator, w: Xt.Window, wa: *Xt.XWindowAttributes) error{O
     ); // dwm: some windows require this.
     // me: I have no idea why. Looks like we're pushing the window off the screen.
 
-    c.setState(Xt.NormalState);
+    c.setState(.NormalState);
     if (c.mon == z.selmon) {
         unfocus(c.mon.sel, false);
     }
@@ -351,10 +345,10 @@ fn unmanage(allocator: Allocator, c: *Client, destroyed: bool) void {
         _ = X.XGrabServer(z.dpy); // dwm: Avoid race conditions.
         _ = X.XSetErrorHandler(xerrordummy);
         _ = X.XSelectInput(z.dpy, c.win, Xt.masks.NoEventMask);
-        var wc: X.XWindowChanges = .{ .border_width = @intCast(c.bw.prev) };
-        _ = X.XConfigureWindow(z.dpy, c.win, X.CWBorderWidth, &wc); // restore border
+        var wc = Xt.XWindowChanges{ .border_width = @intCast(c.bw.prev) };
+        Xt.XConfigureWindow(z.dpy, c.win, X.CWBorderWidth, &wc); // restore border
         Xt.XUngrabButton(z.dpy, X.AnyButton, X.AnyModifier, c.win);
-        c.setState(X.WithdrawnState);
+        c.setState(.WithdrawnState);
         Xt.XSync(z.dpy, false);
         _ = X.XSetErrorHandler(xerror);
         _ = X.XUngrabServer(z.dpy);
@@ -382,7 +376,7 @@ fn updateClientList() void {
                 z.dpy,
                 z.root,
                 z.netatom.get(.ClientList),
-                X.XA_WINDOW,
+                Xt.XA_WINDOW,
                 32,
                 .Append,
                 @ptrCast(&c.win),
@@ -412,14 +406,11 @@ fn restack(allocator: Allocator, m: *Monitor) void {
         _ = X.XRaiseWindow(z.dpy, sel.win);
     }
     if (has_arrange) {
-        var wc: X.XWindowChanges = .{
-            .stack_mode = Xt.Below,
-            .sibling = m.barwin,
-        };
+        var wc = Xt.XWindowChanges{ .stack_mode = Xt.Below, .sibling = m.barwin };
         var c_opt = m.stack;
         while (c_opt) |c| : (c_opt = c.snext) {
             if (!c.is_floating.now and c.isVisible()) {
-                _ = X.XConfigureWindow(z.dpy, c.win, X.CWSibling | X.CWStackMode, &wc);
+                Xt.XConfigureWindow(z.dpy, c.win, X.CWSibling | X.CWStackMode, &wc);
                 wc.sibling = c.win;
             }
         }
@@ -456,7 +447,7 @@ fn arrange(allocator: Allocator, monitor: ?*Monitor) void {
 
 /// (dwm) buttonpress
 fn buttonPress(allocator: Allocator, e: *Xt.XEvent) DwmError!void {
-    const ev: X.XButtonPressedEvent = e.xbutton;
+    const ev: Xt.XButtonPressedEvent = e.xbutton;
     var click: Clk = .RootWin;
     var arg: Arg = undefined;
 
@@ -585,7 +576,7 @@ fn configureRequest(e: *Xt.XEvent) void {
             c.configure(z.dpy);
         }
     } else {
-        var wc: X.XWindowChanges = .{
+        var wc = X.XWindowChanges{
             .x = ev.x,
             .y = ev.y,
             .width = ev.width,
@@ -594,7 +585,7 @@ fn configureRequest(e: *Xt.XEvent) void {
             .sibling = ev.above,
             .stack_mode = ev.detail,
         };
-        _ = X.XConfigureWindow(z.dpy, ev.window, @intCast(vmask), &wc);
+        Xt.XConfigureWindow(z.dpy, ev.window, @intCast(vmask), &wc);
     }
     Xt.XSync(z.dpy, false);
 }
@@ -728,27 +719,27 @@ fn motionNotify(allocator: Allocator, e: *Xt.XEvent) void {
 /// (dwm) propertynotify
 fn propertyNotify(allocator: Allocator, e: *Xt.XEvent) void {
     const ev: X.XPropertyEvent = e.xproperty;
-    if (ev.window == z.root and ev.atom == X.XA_WM_NAME) {
+    if (ev.window == z.root and ev.atom == Xt.XA_WM_NAME) {
         updateStatus(allocator);
     } else if (ev.state == Xt.PropertyDelete) {
         return; // ignore.
     } else if (winToClient(ev.window)) |c| {
         switch (ev.atom) {
-            X.XA_WM_TRANSIENT_FOR => {
+            Xt.XA_WM_TRANSIENT_FOR => {
                 var trans: Xt.Window = undefined;
                 const b = !c.is_floating.now and
                     X.XGetTransientForHint(z.dpy, c.win, &trans) != 0;
                 c.is_floating.set(winToClient(trans) != null);
                 if (b and c.is_floating.now) arrange(allocator, c.mon);
             },
-            X.XA_WM_NORMAL_HINTS => c.hintsvalid = false,
-            X.XA_WM_HINTS => {
+            Xt.XA_WM_NORMAL_HINTS => c.hintsvalid = false,
+            Xt.XA_WM_HINTS => {
                 c.updateWMHints();
                 drawbars(allocator);
             },
             else => {},
         }
-        if (ev.atom == X.XA_WM_NAME or ev.atom == z.netatom.get(.WMName)) {
+        if (ev.atom == Xt.XA_WM_NAME or ev.atom == z.netatom.get(.WMName)) {
             c.updateTitle();
             if (c == c.mon.sel) {
                 drawbar(allocator, c.mon);
@@ -762,12 +753,12 @@ fn propertyNotify(allocator: Allocator, e: *Xt.XEvent) void {
 
 /// (dwm) unmapnotify
 fn unmapNotify(allocator: Allocator, e: *Xt.XEvent) void {
-    const ev: X.XUnmapEvent = e.xunmap;
+    const ev: Xt.XUnmapEvent = e.xunmap;
     if (winToClient(ev.window)) |c| {
         if (ev.send_event == 0) {
             unmanage(allocator, c, false);
         } else {
-            c.setState(X.WithdrawnState);
+            c.setState(.WithdrawnState);
         }
     }
 }
@@ -1238,9 +1229,9 @@ fn setup(allocator: Allocator, wmcheckwin: *Xt.Window) DwmError!void {
     // Supporting window for NetWMCheck.
     wmcheckwin.* = X.XCreateSimpleWindow(z.dpy, z.root, 0, 0, 1, 1, 0, 0, 0);
     // The @ptrCast is hella sus from dwm. This is supposed to be a const char* in C.
-    Xt.XChangeProperty(z.dpy, wmcheckwin.*, z.netatom.get(.WMCheck), X.XA_WINDOW, 32, .Replace, @ptrCast(wmcheckwin), 1);
+    Xt.XChangeProperty(z.dpy, wmcheckwin.*, z.netatom.get(.WMCheck), Xt.XA_WINDOW, 32, .Replace, @ptrCast(wmcheckwin), 1);
     Xt.XChangeProperty(z.dpy, wmcheckwin.*, z.netatom.get(.WMName), utf8string, 8, .Replace, "dwm", 3);
-    Xt.XChangeProperty(z.dpy, z.root, z.netatom.get(.WMCheck), X.XA_WINDOW, 32, .Replace, @ptrCast(wmcheckwin), 1);
+    Xt.XChangeProperty(z.dpy, z.root, z.netatom.get(.WMCheck), Xt.XA_WINDOW, 32, .Replace, @ptrCast(wmcheckwin), 1);
 
     // EWMH support per view.
     // https://specifications.freedesktop.org/wm/latest/
@@ -1248,7 +1239,7 @@ fn setup(allocator: Allocator, wmcheckwin: *Xt.Window) DwmError!void {
         z.dpy,
         z.root,
         z.netatom.get(.Supported),
-        X.XA_ATOM,
+        Xt.XA_ATOM,
         32,
         .Replace,
         @ptrCast(&z.netatom.values),
@@ -1279,7 +1270,7 @@ fn unfocus(client: ?*Client, setfocus: bool) void {
     grabbuttons(c, false);
     _ = X.XSetWindowBorder(z.dpy, c.win, z.scheme.get(.Normal).border.pixel);
     if (setfocus) {
-        _ = X.XSetInputFocus(z.dpy, z.root, M.RevertToPointerRoot, Xt.CurrentTime);
+        Xt.XSetInputFocus(z.dpy, z.root, .PointerRoot, Xt.CurrentTime);
         _ = X.XDeleteProperty(z.dpy, z.root, z.netatom.get(.ActiveWindow));
     }
 }
@@ -1317,7 +1308,7 @@ fn focus(allocator: Allocator, client: ?*Client) void {
         _ = X.XSetWindowBorder(z.dpy, c.win, z.scheme.get(.Selected).border.pixel);
         c.setFocus();
     } else {
-        _ = X.XSetInputFocus(z.dpy, z.root, M.RevertToPointerRoot, Xt.CurrentTime);
+        Xt.XSetInputFocus(z.dpy, z.root, .PointerRoot, Xt.CurrentTime);
         _ = X.XDeleteProperty(z.dpy, z.root, z.netatom.get(.ActiveWindow));
     }
     z.selmon.sel = c_opt;
@@ -1447,7 +1438,7 @@ fn cleanup(allocator: Allocator, wmcheckwin: *Xt.Window) void {
     _ = X.XDestroyWindow(z.dpy, wmcheckwin.*);
     z.drw.deinit(allocator);
     Xt.XSync(z.dpy, false);
-    _ = X.XSetInputFocus(z.dpy, Xt.PointerRoot, M.RevertToPointerRoot, Xt.CurrentTime);
+    Xt.XSetInputFocus(z.dpy, Xt.PointerRoot, .PointerRoot, Xt.CurrentTime);
     _ = X.XDeleteProperty(z.dpy, z.root, z.netatom.get(.ActiveWindow));
 }
 
@@ -1513,7 +1504,7 @@ fn updateBars() void {
 
 /// (dwm) updatestatus
 fn updateStatus(allocator: Allocator) void {
-    if (z.getTextProp(z.root, X.XA_WM_NAME, &z.stext.buffer)) |len| {
+    if (z.getTextProp(z.root, Xt.XA_WM_NAME, &z.stext.buffer)) |len| {
         z.stext.len = len;
     } else {
         z.stext.set(NAME ++ "-" ++ VERSION);
@@ -1877,7 +1868,7 @@ test "All inline functions have sources" {
         if (std.mem.startsWith(u8, line, "pub inline fn")) {
             log.info("line: {s}", .{line});
             try std.testing.expectStringStartsWith(prev[1].?, "///");
-            try std.testing.expectStringStartsWith(prev[0].?, "/// source: https://x");
+            try std.testing.expectStringStartsWith(prev[0].?, "/// source: https://");
         }
         @memmove(prev[1..n], prev[0 .. n - 1]);
         prev[0] = line;

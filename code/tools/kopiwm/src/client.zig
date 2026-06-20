@@ -3,7 +3,6 @@ const log = std.log;
 const mem = std.mem;
 const Monitor = @import("monitor.zig").Monitor;
 const App = @import("app.zig");
-const X = @import("c_lib.zig").X;
 const fstr = @import("fstr.zig").fstr;
 const Rect = @import("rect.zig").Rect;
 const toggle = @import("toggle.zig").toggle;
@@ -89,11 +88,11 @@ pub const Client = struct {
 
     /// (dwm) seturgent
     /// Sets the client's urgent state to `urgent`.
-    pub fn setUrgent(self: *Self, dpy: ?*Xt.Display, urgent: bool) void {
+    pub fn setUrgent(self: *Self, dpy: *Xt.Display, urgent: bool) void {
         self.isurgent = urgent;
-        var wmh: *Xt.XWMHints = X.XGetWMHints(dpy, self.win) orelse return;
-        if (urgent) wmh.flags |= Xt.XUrgencyHint else wmh.flags &= ~Xt.XUrgencyHint;
-        _ = X.XSetWMHints(dpy, self.win, wmh);
+        var wmh = Xt.XGetWMHints(dpy, self.win) orelse return;
+        if (urgent) wmh.flags |= M.XUrgencyHint else wmh.flags &= ~M.XUrgencyHint;
+        Xt.XSetWMHints(dpy, self.win, wmh);
         Xt.XFree(wmh);
     }
 
@@ -156,13 +155,13 @@ pub const Client = struct {
     pub fn setFocus(self: *Self) void {
         const z = self.app;
         if (!self.neverfocus) {
-            _ = X.XSetInputFocus(z.dpy, self.win, M.RevertToPointerRoot, Xt.CurrentTime);
+            Xt.XSetInputFocus(z.dpy, self.win, .PointerRoot, Xt.CurrentTime);
         }
         Xt.XChangeProperty(
             z.dpy,
             z.root,
             z.netatom.get(.ActiveWindow),
-            X.XA_WINDOW,
+            Xt.XA_WINDOW,
             32,
             .Replace,
             @ptrCast(&self.win),
@@ -175,17 +174,16 @@ pub const Client = struct {
     /// Returns true upon successful execution.
     pub fn sendEvent(self: *Self, proto: Xt.Atom) bool {
         const z = self.app;
-        var n: c_int = undefined;
-        var protocols: ?[*]Xt.Atom = undefined;
         var exists = false;
 
-        if (X.XGetWMProtocols(z.dpy, self.win, &protocols, &n) != 0) {
-            while (!exists and n > 0) {
-                n -= 1;
-                exists = protocols.?[@intCast(n)] == proto;
+        if (Xt.XGetWMProtocols(z.dpy, self.win)) |protocols| {
+            defer Xt.XFree(protocols.ptr);
+            for (protocols) |protocol| {
+                exists = protocol == proto;
+                if (exists) break;
             }
-            Xt.XFree(@ptrCast(protocols));
         }
+
         if (exists) {
             var ev = Xt.XEvent{
                 .xclient = .{
@@ -197,7 +195,7 @@ pub const Client = struct {
             };
             ev.xclient.data.l[0] = @intCast(proto);
             ev.xclient.data.l[1] = Xt.CurrentTime;
-            _ = X.XSendEvent(z.dpy, self.win, Xt.False, Xt.masks.NoEventMask, &ev);
+            Xt.XSendEvent(z.dpy, self.win, false, Xt.masks.NoEventMask, &ev);
         }
         return exists;
     }
@@ -213,7 +211,7 @@ pub const Client = struct {
     }
 
     /// (dwm) configure
-    pub fn configure(self: *const Self, dpy: ?*Xt.Display) void {
+    pub fn configure(self: *const Self, dpy: *Xt.Display) void {
         var xconf = self.pos.now.toX(Xt.XConfigureEvent);
         xconf.type = Xt.ConfigureNotify;
         xconf.display = dpy;
@@ -223,7 +221,7 @@ pub const Client = struct {
         xconf.above = Xt.None;
         xconf.override_redirect = Xt.False;
         var event = Xt.XEvent{ .xconfigure = xconf };
-        _ = X.XSendEvent(dpy, self.win, Xt.False, M.StructureNotifyMask, &event);
+        Xt.XSendEvent(dpy, self.win, false, M.StructureNotifyMask, &event);
     }
 
     /// (dwm) getatomprop
@@ -235,7 +233,7 @@ pub const Client = struct {
         // var dl: c_ulong = undefined; // dummy long.
         // var property: ?[*]u8 = undefined;
 
-        const data = Xt.XGetWindowProperty(dpy, self.win, prop, 0, @sizeOf(Xt.Atom), false, X.XA_ATOM) orelse return null;
+        const data = Xt.XGetWindowProperty(dpy, self.win, prop, 0, @sizeOf(Xt.Atom), false, Xt.XA_ATOM) orelse return null;
         defer data.deinit();
         if (data.value.len() == 0) return null;
         return switch (data.value) {
@@ -253,7 +251,7 @@ pub const Client = struct {
                 z.dpy,
                 self.win,
                 z.netatom.get(.WMState),
-                X.XA_ATOM,
+                Xt.XA_ATOM,
                 32,
                 .Replace,
                 @ptrCast(&z.netatom.get(.WMFullscreen)),
@@ -269,7 +267,7 @@ pub const Client = struct {
                 z.dpy,
                 self.win,
                 z.netatom.get(.WMState),
-                X.XA_ATOM,
+                Xt.XA_ATOM,
                 32,
                 .Replace,
                 null,
@@ -300,11 +298,10 @@ pub const Client = struct {
     /// Resize the X window, and also update its border width.
     pub fn resize(self: *Self, rect: Rect) void {
         const z = self.app;
-        var wc = rect.toX(X.XWindowChanges);
+        var wc = rect.toX(Xt.XWindowChanges);
         wc.border_width = @intCast(self.bw.now);
-        const flags =
-            X.CWX | X.CWY | X.CWWidth | X.CWHeight | X.CWBorderWidth;
-        _ = X.XConfigureWindow(z.dpy, self.win, flags, &wc);
+        const flags = M.CWX | M.CWY | M.CWWidth | M.CWHeight | M.CWBorderWidth;
+        Xt.XConfigureWindow(z.dpy, self.win, flags, &wc);
         self.pos.set(rect);
         self.configure(z.dpy);
         Xt.XSync(z.dpy, false);
@@ -434,12 +431,12 @@ pub const Client = struct {
     /// (dwm) updatewmhints
     pub fn updateWMHints(self: *Self) void {
         const z = self.app;
-        const wmh: *X.XWMHints = X.XGetWMHints(z.dpy, self.win) orelse return;
+        const wmh = Xt.XGetWMHints(z.dpy, self.win) orelse return;
         defer Xt.XFree(wmh);
-        const wmh_urg = wmh.flags & Xt.XUrgencyHint != 0;
+        const wmh_urg = wmh.flags & M.XUrgencyHint != 0;
         if (self == z.selmon.sel and wmh_urg) {
-            wmh.flags &= ~Xt.XUrgencyHint;
-            _ = X.XSetWMHints(z.dpy, self.win, wmh);
+            wmh.flags &= ~M.XUrgencyHint;
+            Xt.XSetWMHints(z.dpy, self.win, wmh);
         } else {
             self.isurgent = wmh_urg;
         }
@@ -452,17 +449,15 @@ pub const Client = struct {
 
     /// (dwm) updatesizehints
     pub fn updateSizeHints(self: *Self) void {
-        var hint: X.XSizeHints = undefined;
-        var msize: c_long = undefined;
         const sz: *ClientSizes = &self.sz;
 
-        if (X.XGetWMNormalHints(self.app.dpy, self.win, &hint, &msize) == 0) {
+        const hint = Xt.XGetWMNormalHints(self.app.dpy, self.win) orelse hint: {
             // Size is uninitialized, ensure that size.flags aren't used.
-            hint.flags = M.PSize;
-        }
+            break :hint Xt.XSizeHints{ .flags = M.PSize };
+        };
 
         // [base]
-        if (hint.flags & M.PBaseSize != 0) {
+        if ((hint.flags & M.PBaseSize) != 0) {
             sz.base = .{ .w = @intCast(hint.base_width), .h = @intCast(hint.base_height) };
         } else if ((hint.flags & M.PMinSize) != 0) {
             sz.base = .{ .w = @intCast(hint.min_width), .h = @intCast(hint.min_height) };
@@ -509,10 +504,10 @@ pub const Client = struct {
         // Rule matching.
         self.is_floating.set(false);
         self.tags = 0;
-        var ch: Xt.XClassHint = undefined;
-        _ = X.XGetClassHint(self.app.dpy, self.win, &ch);
-        const class: []const u8 = if (ch.res_class) |x| mem.span(x) else "<broken>";
-        const instance: []const u8 = if (ch.res_name) |x| mem.span(x) else "<broken>";
+        const class_hint_opt = Xt.XGetClassHint(self.app.dpy, self.win);
+
+        const class: []const u8 = if (class_hint_opt) |c| mem.span(c.res_class) else "<broken>";
+        const instance: []const u8 = if (class_hint_opt) |c| mem.span(c.res_name) else "<broken>";
 
         for (cfg.rules) |rule| {
             var match = if (rule.title) |s| self.name.contains(s) else true;
@@ -524,8 +519,10 @@ pub const Client = struct {
             self.tags |= rule.tags;
         }
 
-        if (ch.res_class) |x| Xt.XFree(x);
-        if (ch.res_name) |x| Xt.XFree(x);
+        if (class_hint_opt) |class_hint| {
+            Xt.XFree(class_hint.res_class);
+            Xt.XFree(class_hint.res_name);
+        }
         if (self.tags & cfg.TAGMASK == 0) {
             self.tags = self.mon.tags;
         } else {
@@ -534,8 +531,8 @@ pub const Client = struct {
     }
 
     /// (dwm) setclientstate
-    pub fn setState(self: *Self, state: u32) void {
-        const data: [2]u32 = .{ state, Xt.None };
+    pub fn setState(self: *Self, state: Xt.WindowState) void {
+        const data: [2]c_int = .{ @intFromEnum(state), Xt.None };
         const z = self.app;
         Xt.XChangeProperty(
             z.dpy,

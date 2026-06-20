@@ -41,6 +41,84 @@ pub const FcPattern = X.FcPattern;
 pub const GC = X.GC;
 pub const Visual = X.Visual;
 
+/// ```c
+/// typedef struct {
+///     int type;             /* ButtonPress or ButtonRelease */
+///     unsigned long serial; /* # of last request processed by server */
+///     Bool send_event;      /* true if this came from a SendEvent request */
+///     Display *display;     /* Display the event was read from */
+///     Window window;        /* "event" window it is reported relative to */
+///     Window root;          /* root window that the event occurred on */
+///     Window subwindow;     /* child window */
+///     Time time;            /* milliseconds */
+///     int x, y;             /* pointer x, y coordinates in event window */
+///     int x_root, y_root;   /* coordinates relative to root */
+///     unsigned int state;   /* key or button mask */
+///     unsigned int button;  /* detail */
+///     Bool same_screen;     /* same screen flag */
+/// } XButtonEvent;
+/// ```
+///
+/// The type member is set to the event type constant name that uniquely
+/// identifies it. For example, when the X server reports a GraphicsExpose
+/// event to a client application, it sends an XGraphicsExposeEvent structure
+/// with the type member set to GraphicsExpose. The display member is set to a
+/// pointer to the display the event was read on. The send_event member is set
+/// to True if the event came from a SendEvent protocol request. The serial
+/// member is set from the serial number reported in the protocol but expanded
+/// from the 16-bit least-significant bits to a full 32-bit value. The window
+/// member is set to the window that is most useful to toolkit dispatchers.
+///
+/// These structures have the following common members: window, root,
+/// subwindow, time, x, y, x_root, y_root, state, and same_screen. The window
+/// member is set to the window on which the event was generated and is
+/// referred to as the event window. As long as the conditions previously
+/// discussed are met, this is the window used by the X server to report the
+/// event. The root member is set to the source window's root window. The
+/// x_root and y_root members are set to the pointer's coordinates relative to
+/// the root window's origin at the time of the event.
+///
+/// The same_screen member is set to indicate whether the event window is on
+/// the same screen as the root window and can be either True or False. If
+/// True, the event and root windows are on the same screen. If False, the
+/// event and root windows are not on the same screen.
+///
+/// If the source window is an inferior of the event window, the subwindow
+/// member of the structure is set to the child of the event window that is the
+/// source window or the child of the event window that is an ancestor of the
+/// source window. Otherwise, the X server sets the subwindow member to None.
+/// The time member is set to the time when the event was generated and is
+/// expressed in milliseconds.
+///
+/// If the event window is on the same screen as the root window, the x and y
+/// members are set to the coordinates relative to the event window's origin.
+/// Otherwise, these members are set to zero.
+///
+/// The state member is set to indicate the logical state of the pointer
+/// buttons and modifier keys just prior to the event, which is the bitwise
+/// inclusive OR of one or more of the button or modifier key masks:
+/// Button1Mask, Button2Mask, Button3Mask, Button4Mask, Button5Mask, ShiftMask,
+/// LockMask, ControlMask, Mod1Mask, Mod2Mask, Mod3Mask, Mod4Mask, and
+/// Mod5Mask.
+///
+/// Each of these structures also has a member that indicates the detail. For
+/// the XKeyPressedEvent and XKeyReleasedEvent structures, this member is
+/// called a keycode. It is set to a number that represents a physical key on
+/// the keyboard. The keycode is an arbitrary representation for any key on the
+/// keyboard (see sections 12.7 and 16.1).
+///
+/// For the XButtonPressedEvent and XButtonReleasedEvent structures, this
+/// member is called button. It represents the pointer button that changed
+/// state and can be the Button1, Button2, Button3, Button4, or Button5 value.
+/// For the XPointerMovedEvent structure, this member is called is_hint. It can
+/// be set to NotifyNormal or NotifyHint.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XButtonEvent.3.xhtml
+pub const XButtonEvent = X.XButtonEvent;
+
+/// For more information, see the docs for `XButtonEvent`.
+pub const XButtonPressedEvent = XButtonEvent;
+
 /// The res_name member contains the application name, and the res_class member
 /// contains the application class. Note that the name set in this property may
 /// differ from the name set as WM_NAME. That is, WM_NAME specifies what should
@@ -152,7 +230,50 @@ pub const XModifierKeymap = X.XModifierKeymap;
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XCreateWindow.3.xhtml
 pub const XSetWindowAttributes = X.XSetWindowAttributes;
 
+/// The XSizeHints structure contains:
+///
+/// ```c
+/// typedef struct {
+///     long flags;        /* marks which fields in this structure are defined */
+///     int x, y;          /* Obsolete */
+///     int width, height; /* Obsolete */
+///     int min_width, min_height;
+///     int max_width, max_height;
+///     int width_inc, height_inc;
+///     struct {
+///         int x;         /* numerator */
+///         int y;         /* denominator */
+///     } min_aspect, max_aspect;
+///     int base_width, base_height;
+///     int win_gravity;   /* this structure may be extended in the future */
+/// } XSizeHints;
+/// ```
+///
+/// The x, y, width, and height members are now obsolete and are left solely
+/// for compatibility reasons. The min_width and min_height members specify the
+/// minimum window size that still allows the application to be useful. The
+/// max_width and max_height members specify the maximum window size. The
+/// width_inc and height_inc members define an arithmetic progression of sizes
+/// (minimum to maximum) into which the window prefers to be resized. The
+/// min_aspect and max_aspect members are expressed as ratios of x and y, and
+/// they allow an application to specify the range of aspect ratios it prefers.
+/// The base_width and base_height members define the desired size of the
+/// window. The window manager will interpret the position of the window and
+/// its border width to position the point of the outer rectangle of the
+/// overall window specified by the win_gravity member. The outer rectangle of
+/// the window includes any borders or decorations supplied by the window
+/// manager. In other words, if the window manager decides to place the window
+/// where the client asked, the position on the parent window's border named by
+/// the win_gravity will be placed where the client window would have been
+/// placed in the absence of a window manager.
+///
+/// Note that use of the PAllHints macro is highly discouraged.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XAllocSizeHints.3.xhtml
+pub const XSizeHints = X.XSizeHints;
+
 /// The XTextProperty structure contains:
+///
 /// ```c
 /// typedef struct {
 ///     unsigned char *value; /* property data */
@@ -161,8 +282,45 @@ pub const XSetWindowAttributes = X.XSetWindowAttributes;
 ///     unsigned long nitems; /* number of items in value */
 /// } XTextProperty;
 /// ```
+///
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XStringListToTextProperty.3.xhtml
 pub const XTextProperty = X.XTextProperty;
+
+/// The structure for UnmapNotify events contains:
+///
+/// ```c
+/// typedef struct {
+///     int type; /* UnmapNotify */
+///     unsigned long serial; /* # of last request processed by server */
+///     Bool send_event; /* true if this came from a SendEvent request */
+///     Display *display; /* Display the event was read from */
+///     Window event;
+///     Window window;
+///     Bool from_configure;
+/// } XUnmapEvent;
+/// ```
+///
+/// When you receive this event, the structure members are set as follows.
+///
+/// The type member is set to the event type constant name that uniquely
+/// identifies it. For example, when the X server reports a GraphicsExpose
+/// event to a client application, it sends an XGraphicsExposeEvent structure
+/// with the type member set to GraphicsExpose. The display member is set to a
+/// pointer to the display the event was read on. The send_event member is set
+/// to True if the event came from a SendEvent protocol request. The serial
+/// member is set from the serial number reported in the protocol but expanded
+/// from the 16-bit least-significant bits to a full 32-bit value. The window
+/// member is set to the window that is most useful to toolkit dispatchers.
+///
+/// The event member is set either to the unmapped window or to its parent,
+/// depending on whether StructureNotify or SubstructureNotify was selected.
+/// This is the window used by the X server to report the event. The window
+/// member is set to the window that was unmapped. The from_configure member is
+/// set to True if the event was generated as a result of a resizing of the
+/// window's parent when the window itself had a win_gravity of UnmapGravity.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XUnmapEvent.3.xhtml
+pub const XUnmapEvent = X.XUnmapEvent;
 
 /// The XWindowAttributes structure contains:
 ///
@@ -237,6 +395,38 @@ pub const XTextProperty = X.XTextProperty;
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XGetWindowAttributes.3.xhtml
 pub const XWindowAttributes = X.XWindowAttributes;
 
+/// The XWindowChanges structure contains:
+///
+/// ```c
+/// typedef struct {
+///     int x, y;
+///     int width, height;
+///     int border_width;
+///     Window sibling;
+///     int stack_mode;
+/// } XWindowChanges;
+/// ```
+///
+/// The x and y members are used to set the window's x and y coordinates, which
+/// are relative to the parent's origin and indicate the position of the
+/// upper-left outer corner of the window. The width and height members are
+/// used to set the inside size of the window, not including the border, and
+/// must be nonzero, or a BadValue error results. Attempts to configure a root
+/// window have no effect.
+///
+/// The border_width member is used to set the width of the border in pixels.
+/// Note that setting just the border width leaves the outer-left corner of the
+/// window in a fixed position but moves the absolute position of the window's
+/// origin. If you attempt to set the border-width attribute of an InputOnly
+/// window nonzero, a BadMatch error results.
+///
+/// The sibling member is used to set the sibling window for stacking
+/// operations. The stack_mode member is used to set how the window is to be
+/// restacked and can be set to Above, Below, TopIf, BottomIf, or Opposite.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XConfigureWindow.3.xhtml
+pub const XWindowChanges = X.XWindowChanges;
+
 /// X Window Manager Hints.
 ///
 /// ```c
@@ -286,7 +476,7 @@ pub const XWindowAttributes = X.XWindowAttributes;
 ///
 /// The UrgencyHint flag, if set in the flags field, indicates that the client
 /// deems the window contents to be urgent, requiring the timely response of
-/// the user. The window manager will make some effort to draw the user’s
+/// the user. The window manager will make some effort to draw the user's
 /// attention to this window while this flag is set. The client must provide
 /// some means by which the user can cause the urgency flag to be cleared
 /// (either mitigating the condition that made the window urgent or merely
@@ -424,6 +614,33 @@ pub inline fn XCloseDisplay(display: *Display) void {
     _ = X.XCloseDisplay(display);
 }
 
+/// The XConfigureWindow function uses the values specified in the
+/// XWindowChanges structure to reconfigure a window's size, position, border,
+/// and stacking order. Values not specified are taken from the existing
+/// geometry of the window.
+///
+/// If a sibling is specified without a stack_mode or if the window is not
+/// actually a sibling, a BadMatch error results. Note that the computations
+/// for BottomIf, TopIf, and Opposite are performed with respect to the
+/// window's final geometry (as controlled by the other arguments passed to
+/// XConfigureWindow), not its initial geometry. Any backing store contents of
+/// the window, its inferiors, and other newly visible windows are either
+/// discarded or changed to reflect the current screen contents (depending on
+/// the implementation).
+///
+/// XConfigureWindow can generate BadMatch, BadValue, and BadWindow errors.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XOpenDisplay.3.xhtml
+pub inline fn XConfigureWindow(
+    display: *Display,
+    window: Window,
+    value_mask: c_uint,
+    changes: *XWindowChanges,
+) void {
+    // The meaning of the return value was not specified in documentation.
+    _ = X.XConfigureWindow(display, window, value_mask, changes);
+}
+
 /// The XCreateWindow function creates an unmapped subwindow for a specified
 /// parent window, returns the window ID of the created window, and causes the
 /// X server to generate a CreateNotify event. The created window is placed on
@@ -508,6 +725,55 @@ pub inline fn XFreeModifiermap(modmap: [*c]X.XModifierKeymap) void {
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XStringListToTextProperty.3.xhtml
 pub inline fn XFreeStringList(list: [*c][*c]u8) void {
     X.XFreeStringList(list);
+}
+
+/// The XGetClassHint function returns the class hint of the specified window
+/// to the members of the supplied structure. If the data returned by the
+/// server is in the Latin Portable Character Encoding, then the returned
+/// strings are in the Host Portable Character Encoding. Otherwise, the result
+/// is implementation-dependent. It returns a nonzero status on success;
+/// otherwise, it returns a zero status. To free res_name and res_class when
+/// finished with the strings, use XFree on each individually.
+///
+/// XGetClassHint can generate a BadWindow error.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XAllocClassHint.3.xhtml
+pub inline fn XGetClassHint(display: *Display, window: Window) ?XClassHint {
+    var class_hints_return: XClassHint = undefined;
+    const status = X.XGetClassHint(display, window, &class_hints_return);
+    if (status == 0) return null;
+    return class_hints_return;
+}
+
+/// The XGetWMNormalHints function returns the size hints stored in the
+/// WM_NORMAL_HINTS property on the specified window. If the property is of
+/// type WM_SIZE_HINTS, is of format 32, and is long enough to contain either
+/// an old (pre-ICCCM) or new size hints structure, XGetWMNormalHints sets the
+/// various fields of the XSizeHints structure, sets the supplied_return
+/// argument to the list of fields that were supplied by the user (whether or
+/// not they contained defined values), and returns a nonzero status.
+/// Otherwise, it returns a zero status.
+///
+/// If XGetWMNormalHints returns successfully and a pre-ICCCM size hints
+/// property is read, the supplied_return argument will contain the following
+/// bits:
+///
+/// (USPosition|USSize|PPosition|PSize|PMinSize|PMaxSize|PResizeInc|PAspect)
+///
+/// If the property is large enough to contain the base size and window gravity
+/// fields as well, the supplied_return argument will also contain the
+/// following bits:
+///
+/// PBaseSize|PWinGravity
+///
+/// XGetWMNormalHints can generate a PN BadWindow error.
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XAllocSizeHints.3.xhtml
+pub inline fn XGetWMNormalHints(display: *Display, window: Window) ?XSizeHints {
+    var hints_return: XSizeHints = undefined;
+    var supplied_return: c_long = undefined;
+    const status = X.XGetWMNormalHints(display, window, &hints_return, &supplied_return);
+    if (status == 0) return null;
+    return hints_return;
 }
 
 /// The XGetTextProperty function reads the specified property from the window
@@ -687,6 +953,45 @@ pub inline fn XGetWindowProperty(
             }
         },
     };
+}
+
+/// The XGetWMHints function reads the window manager hints and returns NULL if
+/// no WM_HINTS property was set on the window or returns a pointer to a
+/// XWMHints structure if it succeeds. When finished with the data, free the
+/// space used for it by calling XFree.
+///
+/// XGetWMHints can generate a BadWindow error.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XAllocWMHints.3.xhtml
+pub inline fn XGetWMHints(display: *Display, window: Window) ?*XWMHints {
+    return X.XGetWMHints(display, window);
+}
+
+/// The XGetWMProtocols function returns the list of atoms stored in the
+/// WM_PROTOCOLS property on the specified window. These atoms describe window
+/// manager protocols in which the owner of this window is willing to
+/// participate. If the property exists, is of type ATOM, is of format 32, and
+/// the atom WM_PROTOCOLS can be interned, XGetWMProtocols sets the
+/// protocols_return argument to a list of atoms, sets the count_return
+/// argument to the number of elements in the list, and returns a nonzero
+/// status. Otherwise, it sets neither of the return arguments and returns a
+/// zero status. To release the list of atoms, use XFree.
+///
+/// XGetWMProtocols can generate a BadWindow error.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XSetWMProtocols.3.xhtml
+pub inline fn XGetWMProtocols(display: *Display, window: Window) ?[]Atom {
+    var atoms: ?[*]Atom = undefined;
+    var count_return: c_int = undefined;
+    // If the property exists, is of type ATOM, is of format 32, and the atom
+    // WM_PROTOCOLS can be interned, XGetWMProtocols sets the protocols_return
+    // argument to a list of atoms, sets the count_return argument to the
+    // number of elements in the list, and returns a nonzero status. Otherwise,
+    // it sets neither of the return arguments and returns a zero status. To
+    // release the list of atoms, use XFree.
+    const status = X.XGetWMProtocols(display, window, &atoms, &count_return);
+    if (status == 0) return null;
+    return atoms.?[0..@intCast(count_return)];
 }
 
 /// The XGrabButton function establishes a passive grab. In the future, the
@@ -1114,6 +1419,117 @@ pub inline fn XQueryPointer(
     return r;
 }
 
+/// The XSendEvent function identifies the destination window, determines which
+/// clients should receive the specified events, and ignores any active grabs.
+/// This function requires you to pass an event mask. For a discussion of the
+/// valid event mask names, see section 10.3. This function uses the w argument
+/// to identify the destination window as follows:
+///
+///
+/// * If w is PointerWindow, the destination window is the window that contains
+///   the pointer.
+/// * If w is InputFocus and if the focus window contains the pointer, the
+///   destination window is the window that contains the pointer; otherwise, the
+///   destination window is the focus window.
+///
+/// To determine which clients should receive the specified events, XSendEvent uses
+/// the propagate argument as follows:
+///
+/// * If event_mask is the empty set, the event is sent to the client that created
+///   the destination window. If that client no longer exists, no event is sent.
+/// * If propagate is False, the event is sent to every client selecting on
+///   destination any of the event types in the event_mask argument.
+/// * If propagate is True and no clients have selected on destination any of
+///   the event types in event-mask, the destination is replaced with the
+///   closest ancestor of destination for which some client has selected a type
+///   in event-mask and for which no intervening window has that type in its
+///   do-not-propagate-mask. If no such window exists or if the window is an
+///   ancestor of the focus window and InputFocus was originally specified as
+///   the destination, the event is not sent to any clients. Otherwise, the
+///   event is reported to every client selecting on the final destination any
+///   of the types specified in event_mask.
+///
+/// The event in the XEvent structure must be one of the core events or one of the
+/// events defined by an extension (or a BadValue error results) so that the X
+/// server can correctly byte-swap the contents as necessary. The contents of the
+/// event are otherwise unaltered and unchecked by the X server except to force
+/// send_event to True in the forwarded event and to set the serial number in the
+/// event correctly; therefore these fields and the display field are ignored by
+/// XSendEvent.
+///
+/// XSendEvent returns zero if the conversion to wire protocol format failed and
+/// returns nonzero otherwise. XSendEvent can generate BadValue and BadWindow
+/// errors.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XSendEvent.3.xhtml
+pub inline fn XSendEvent(
+    display: *Display,
+    window: Window,
+    propagate: bool,
+    event_mask: c_long,
+    event: *XEvent,
+) void {
+    // Meaning of return value is not specified in documentation.
+    _ = X.XSendEvent(display, window, @intFromBool(propagate), event_mask, event);
+}
+
+/// The XSetInputFocus function changes the input focus and the
+/// last-focus-change time. It has no effect if the specified time is earlier
+/// than the current last-focus-change time or is later than the current X
+/// server time. Otherwise, the last-focus-change time is set to the specified
+/// time (CurrentTime is replaced by the current X server time). XSetInputFocus
+/// causes the X server to generate FocusIn and FocusOut events.
+///
+/// Depending on the focus argument, the following occurs:
+///
+/// * If focus is None, all keyboard events are discarded until a new focus
+///   window is set, and the revert_to argument is ignored.
+/// * If focus is a window, it becomes the keyboard's focus window. If a
+///   generated keyboard event would normally be reported to this window or one
+///   of its inferiors, the event is reported as usual. Otherwise, the event is
+///   reported relative to the focus window.
+/// * If focus is PointerRoot, the focus window is dynamically taken to be the
+///   root window of whatever screen the pointer is on at each keyboard event. In
+///   this case, the revert_to argument is ignored.
+///
+/// The specified focus window must be viewable at the time XSetInputFocus is
+/// called, or a BadMatch error results. If the focus window later becomes not
+/// viewable, the X server evaluates the revert_to argument to determine the
+/// new focus window as follows:
+///
+/// * If revert_to is RevertToParent, the focus reverts to the parent (or the
+///   closest viewable ancestor), and the new revert_to value is taken to be
+///   RevertToNone.
+/// * If revert_to is RevertToPointerRoot or RevertToNone, the focus reverts to
+///   PointerRoot or None, respectively. When the focus reverts, the X server
+///   generates FocusIn and FocusOut events, but the last-focus-change time is
+///   not affected.
+///
+/// XSetInputFocus can generate BadMatch, BadValue, and BadWindow errors.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XSetInputFocus.3.xhtml
+pub inline fn XSetInputFocus(
+    display: *Display,
+    window: Window,
+    revert_to: RevertTo,
+    time: Time,
+) void {
+    // Meaning of return value is not specified in documentation.
+    _ = X.XSetInputFocus(display, window, @intFromEnum(revert_to), time);
+}
+
+/// The XSetWMHints function sets the window manager hints that include icon
+/// information and location, the initial state of the window, and whether the
+/// application relies on the window manager to get keyboard input.
+///
+/// XSetWMHints can generate BadAlloc and BadWindow errors.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XAllocWMHints.3.xhtml
+pub inline fn XSetWMHints(display: *Display, window: Window, value: *XWMHints) void {
+    // Meaning of return value is not specified in documentation.
+    _ = X.XSetWMHints(display, window, value);
+}
+
 /// The XSupportsLocale function returns True if Xlib functions are capable of
 /// operating under the current locale. If it returns False, Xlib
 /// locale-dependent functions for which the XLocaleNotSupported return status
@@ -1294,12 +1710,7 @@ pub inline fn XmbTextPropertyToTextList(
 /// source: https://x.org/releases/X11R7.7/doc/xorg-docs/icccm/icccm.html
 pub const Atom = X.Atom;
 
-pub const ParentRelative = X.ParentRelative;
-pub const PointerRoot = X.PointerRoot;
-pub const PropertyDelete = X.PropertyDelete;
-pub const ReplayPointer = X.ReplayPointer;
 pub const Below = X.Below;
-pub const NormalState = X.NormalState;
 pub const ButtonPress = X.ButtonPress;
 pub const CapButt = X.CapButt;
 pub const ClientMessage = X.ClientMessage;
@@ -1322,9 +1733,13 @@ pub const MapRequest = X.MapRequest;
 pub const MappingKeyboard = X.MappingKeyboard;
 pub const MappingNotify = X.MappingNotify;
 pub const MotionNotify = X.MotionNotify;
+pub const NormalState = X.NormalState;
+pub const ParentRelative = X.ParentRelative;
+pub const PointerRoot = X.PointerRoot;
+pub const PropertyDelete = X.PropertyDelete;
 pub const PropertyNotify = X.PropertyNotify;
+pub const ReplayPointer = X.ReplayPointer;
 pub const UnmapNotify = X.UnmapNotify;
-pub const XUrgencyHint = X.XUrgencyHint;
 
 pub const NotifyInferior = X.NotifyInferior;
 pub const NotifyNormal = X.NotifyNormal;
@@ -1333,8 +1748,13 @@ pub const FC_CHARSET = X.FC_CHARSET;
 pub const FC_SCALABLE = X.FC_SCALABLE;
 
 pub const LASTEvent = X.LASTEvent;
+pub const XA_ATOM = X.XA_ATOM;
 pub const XA_STRING = X.XA_STRING;
+pub const XA_WINDOW = X.XA_WINDOW;
+pub const XA_WM_HINTS = X.XA_WM_HINTS;
 pub const XA_WM_NAME = X.XA_WM_NAME;
+pub const XA_WM_NORMAL_HINTS = X.XA_WM_NORMAL_HINTS;
+pub const XA_WM_TRANSIENT_FOR = X.XA_WM_TRANSIENT_FOR;
 
 /// Specifies whether the data should be viewed as a list of 8-bit, 16-bit, or
 /// 32-bit quantities. Used in XGetWindowProperty, among other places.
@@ -1387,6 +1807,18 @@ pub const FcMatch = enum(c_int) {
     Scan = X.FcMatchScan,
 };
 
+pub const RevertTo = enum(c_int) {
+    None = X.RevertToNone,
+    PointerRoot = X.RevertToPointerRoot,
+    Parent = X.RevertToParent,
+};
+
+pub const WindowState = enum(c_int) {
+    WithdrawnState = X.WithdrawnState,
+    NormalState = X.NormalState,
+    IconicState = X.IconicState,
+};
+
 pub const None = X.None;
 
 pub const False = X.False;
@@ -1408,6 +1840,11 @@ pub const masks = struct {
     pub const Mod4Mask = X.Mod4Mask;
     pub const Mod5Mask = X.Mod5Mask;
 
+    pub const CWX = X.CWX;
+    pub const CWY = X.CWY;
+    pub const CWWidth = X.CWWidth;
+    pub const CWHeight = X.CWHeight;
+    pub const CWBorderWidth = X.CWBorderWidth;
     pub const CWEventMask = X.CWEventMask;
 
     // For XSelectInput
@@ -1429,9 +1866,9 @@ pub const masks = struct {
     pub const PMinSize = X.PMinSize;
     pub const PResizeInc = X.PResizeInc;
     pub const PSize = X.PSize;
-    pub const InputHint = X.InputHint;
 
-    pub const RevertToPointerRoot = X.RevertToPointerRoot;
+    pub const InputHint = X.InputHint;
+    pub const XUrgencyHint = X.XUrgencyHint;
 };
 
 // -----------------------------------------------------------------------------
