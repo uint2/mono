@@ -488,7 +488,7 @@ fn buttonPress(allocator: Allocator, e: *Xt.XEvent) DwmError!void {
     if (winToClient(ev.window)) |c| {
         focus(allocator, c);
         restack(allocator, z.selmon);
-        _ = X.XAllowEvents(z.dpy, Xt.ReplayPointer, Xt.CurrentTime);
+        Xt.XAllowEvents(z.dpy, .ReplayPointer, Xt.CurrentTime);
         click = .ClientWin;
     }
 

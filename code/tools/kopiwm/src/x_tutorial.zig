@@ -542,6 +542,19 @@ pub const XftFont = X.XftFont;
 // ++ Functions
 // -----------------------------------------------------------------------------
 
+/// The XAllowEvents function releases some queued events if the client has
+/// caused a device to freeze. It has no effect if the specified time is
+/// earlier than the last-grab time of the most recent active grab for the
+/// client or if the specified time is later than the current X server time.
+///
+/// XAllowEvents can generate a BadValue error.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XAllowEvents.3.xhtml
+pub inline fn XAllowEvents(display: *Display, event_mode: EventMode, time: Time) void {
+    // Meaning of return value is not specified in documentation.
+    _ = X.XAllowEvents(display, @intFromEnum(event_mode), time);
+}
+
 /// The XChangeProperty function alters the property for the specified window
 /// and causes the X server to generate a PropertyNotify event on that window.
 /// XChangeProperty performs the following:
@@ -1788,6 +1801,17 @@ pub const FormattedData = union(Format) {
             .Fmt32 => |v| XFree(v.ptr),
         }
     }
+};
+
+pub const EventMode = enum(c_int) {
+    AsyncPointer = X.AsyncPointer,
+    SyncPointer = X.SyncPointer,
+    ReplayPointer = X.ReplayPointer,
+    AsyncKeyboard = X.AsyncKeyboard,
+    SyncKeyboard = X.SyncKeyboard,
+    ReplayKeyboard = X.ReplayKeyboard,
+    AsyncBoth = X.AsyncBoth,
+    SyncBoth = X.SyncBoth,
 };
 
 pub const GrabMode = enum(c_int) {
