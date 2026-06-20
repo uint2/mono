@@ -1,0 +1,14 @@
+curl -fLO https://xorg.freedesktop.org/archive/X11R7.0/doc/html/FcPatternAdd-Type.3.html
+curl -fLO https://xorg.freedesktop.org/archive/X11R7.0/doc/html/FcPatternAdd.3.html
+curl -fLO https://xorg.freedesktop.org/archive/X11R7.0/doc/html/FcPatternAddWeak.3.html
+curl -fLO https://xorg.freedesktop.org/archive/X11R7.0/doc/html/FcPatternBuild.3.html
+curl -fLO https://xorg.freedesktop.org/archive/X11R7.0/doc/html/FcPatternCreate.3.html
+curl -fLO https://xorg.freedesktop.org/archive/X11R7.0/doc/html/FcPatternDel.3.html
+curl -fLO https://xorg.freedesktop.org/archive/X11R7.0/doc/html/FcPatternDestroy.3.html
+curl -fLO https://xorg.freedesktop.org/archive/X11R7.0/doc/html/FcPatternEqual.3.html
+curl -fLO https://xorg.freedesktop.org/archive/X11R7.0/doc/html/FcPatternEqualSubset.3.html
+curl -fLO https://xorg.freedesktop.org/archive/X11R7.0/doc/html/FcPatternGet-Type.3.html
+curl -fLO https://xorg.freedesktop.org/archive/X11R7.0/doc/html/FcPatternGet.3.html
+curl -fLO https://xorg.freedesktop.org/archive/X11R7.0/doc/html/FcPatternHash.3.html
+curl -fLO https://xorg.freedesktop.org/archive/X11R7.0/doc/html/FcPatternPrint.3.html
+curl -fLO https://xorg.freedesktop.org/archive/X11R7.0/doc/html/FcPatternRemove.3.html
