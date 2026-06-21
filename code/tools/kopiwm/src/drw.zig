@@ -326,8 +326,7 @@ pub const Drw = struct {
         const color = if (invert) scheme.bg.pixel else scheme.fg.pixel;
         _ = X.XSetForeground(self.dpy, self.gc, color);
         if (filled) {
-            const res = X.XFillRectangle(self.dpy, self.drawable, self.gc, rect.x, rect.y, rect.w, rect.h);
-            print_draw_error(res);
+            Xt.XFillRectangle(self.dpy, self.drawable, self.gc, rect);
         } else {
             Xt.XDrawRectangle(self.dpy, self.drawable, self.gc, .{
                 .x = rect.x,
@@ -381,7 +380,7 @@ pub const Drw = struct {
         } else {
             const color = if (invert_) &self.scheme.?.fg else &self.scheme.?.bg;
             _ = X.XSetForeground(self.dpy, self.gc, color.pixel);
-            _ = X.XFillRectangle(self.dpy, self.drawable, self.gc, x, y, w, h);
+            Xt.XFillRectangle(self.dpy, self.drawable, self.gc, .{ .x = x, .y = y, .w = w, .h = h });
             if (w < lpad) {
                 return x + @as(i32, @intCast(w));
             }

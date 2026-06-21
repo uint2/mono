@@ -1388,6 +1388,39 @@ pub inline fn XDrawRectangle(
     _ = X.XDrawRectangle(display, drawable, gc, rect.x, rect.y, rect.w, rect.h);
 }
 
+/// The XFillRectangle and XFillRectangles functions fill the specified
+/// rectangle or rectangles as if a four-point FillPolygon protocol request
+/// were specified for each rectangle:
+///
+/// [x,y] [x+width,y] [x+width,y+height] [x,y+height]
+///
+/// Each function uses the x and y coordinates, width and height dimensions,
+/// and GC you specify.
+///
+/// XFillRectangles fills the rectangles in the order listed in the array. For
+/// any given rectangle, XFillRectangle and XFillRectangles do not draw a pixel
+/// more than once. If rectangles intersect, the intersecting pixels are drawn
+/// multiple times.
+///
+/// Both functions use these GC components: function, plane-mask, fill-style,
+/// subwindow-mode, clip-x-origin, clip-y-origin, and clip-mask. They also use
+/// these GC mode-dependent components: foreground, background, tile, stipple,
+/// tile-stipple-x-origin, and tile-stipple-y-origin.
+///
+/// XFillRectangle and XFillRectangles can generate BadDrawable, BadGC, and
+/// BadMatch errors.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XFillRectangle.3.xhtml
+pub inline fn XFillRectangle(
+    display: *Display,
+    drawable: Drawable,
+    gc: GC,
+    rect: Rect,
+) void {
+    // The meaning of the return value was not specified in documentation.
+    _ = X.XFillRectangle(display, drawable, gc, rect.x, rect.y, rect.w, rect.h);
+}
+
 /// The XFree function is a general-purpose Xlib routine that frees the
 /// specified data. You must use it to free any objects that were allocated by
 /// Xlib, unless an alternate function is explicitly specified for the object.
