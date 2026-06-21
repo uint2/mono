@@ -3118,7 +3118,7 @@ pub inline fn FcPatternDestroy(p: *FcPattern) void {
 /// Copy a pattern, returning a new pattern that matches p. Each pattern may be
 /// modified without affecting the other.
 ///
-/// source: https://www.freedesktop.org/software/fontconfig/fontconfig-devel/fcpatternduplicate.html
+/// source: https://freedesktop.org/software/fontconfig/fontconfig-devel/fcpatternduplicate.html
 pub inline fn FcPatternDuplicate(p: *const FcPattern) ?*FcPattern {
     return X.FcPatternDuplicate(p);
 }
