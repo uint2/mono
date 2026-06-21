@@ -302,7 +302,7 @@ pub const Drw = struct {
 
     /// (dwm) drw_cur_create
     pub fn curCreate(self: *Self, shape: Xt.PointerShape) Xt.Cursor {
-        return X.XCreateFontCursor(self.dpy, @intCast(@intFromEnum(shape)));
+        return Xt.XCreateFontCursor(self.dpy, shape);
     }
 
     /// (dwm) drw_cur_free

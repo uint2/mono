@@ -1208,9 +1208,9 @@ fn setup(allocator: Allocator, wmcheckwin: *Xt.Window) DwmError!void {
     atoms.initializeAtomsForEnum(atoms.Net, Xt.Atom, &atoms.__NET, z.dpy);
 
     // Initialize cursors.
-    z.cursors.set(.Normal, z.drw.curCreate(.Left_ptr));
-    z.cursors.set(.Resize, z.drw.curCreate(.Sizing));
-    z.cursors.set(.Move, z.drw.curCreate(.Fleur));
+    z.cursors.set(.Normal, Xt.XCreateFontCursor(z.dpy, .Left_ptr));
+    z.cursors.set(.Resize, Xt.XCreateFontCursor(z.dpy, .Sizing));
+    z.cursors.set(.Move, Xt.XCreateFontCursor(z.dpy, .Fleur));
 
     // Initialize appearance.
     for (std.enums.values(SchemeState)) |ss| {

@@ -811,6 +811,22 @@ pub inline fn XCopyArea(
     );
 }
 
+/// X provides a set of standard cursor shapes in a special font named cursor.
+/// Applications are encouraged to use this interface for their cursors because
+/// the font can be customized for the individual display type. The shape
+/// argument specifies which glyph of the standard fonts to use.
+///
+/// The hotspot comes from the information stored in the cursor font. The
+/// initial colors of a cursor are a black foreground and a white background
+/// (see XRecolorCursor).
+///
+/// XCreateFontCursor can generate BadAlloc and BadValue errors.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XCreateFontCursor.3.xhtml
+pub inline fn XCreateFontCursor(display: *Display, shape: PointerShape) Cursor {
+    return X.XCreateFontCursor(display, @intFromEnum(shape));
+}
+
 /// The XCreateWindow function creates an unmapped subwindow for a specified
 /// parent window, returns the window ID of the created window, and causes the
 /// X server to generate a CreateNotify event. The created window is placed on
