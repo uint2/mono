@@ -683,6 +683,27 @@ pub const XGCValues = X.XGCValues;
 /// source: https://x.org/releases/X11R7.7/doc/libXrender/libXrender.txt
 pub const XGlyphInfo = X.XGlyphInfo;
 
+/// ```c
+/// typedef struct {
+///     int type;             /* KeyPress or KeyRelease */
+///     unsigned long serial; /* # of last request processed by server */
+///     Bool send_event;      /* true if this came from a SendEvent request */
+///     Display *display;     /* Display the event was read from */
+///     Window window;        /* "event" window it is reported relative to */
+///     Window root;          /* root window that the event occurred on */
+///     Window subwindow;     /* child window */
+///     Time time;            /* milliseconds */
+///     int x, y;             /* pointer x, y coordinates in event window */
+///     int x_root, y_root;   /* coordinates relative to root */
+///     unsigned int state;   /* key or button mask */
+///     unsigned int keycode; /* detail */
+///     Bool same_screen;     /* same screen flag */
+/// } XKeyEvent;
+/// ```
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XButtonEvent.3.xhtml
+pub const XKeyEvent = X.XKeyEvent;
+
 /// The XModifierKeymap structure contains:
 ///
 /// ```c

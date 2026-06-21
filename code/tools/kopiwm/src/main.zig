@@ -657,7 +657,7 @@ fn focusIn(e: *Xt.XEvent) void {
 
 /// (dwm) keypress
 fn keyPress(e: *Xt.XEvent) DwmError!void {
-    const ev: X.XKeyEvent = e.xkey;
+    const ev: Xt.XKeyEvent = e.xkey;
     const keysym = X.XkbKeycodeToKeysym(z.dpy, @intCast(ev.keycode), 0, 0);
     for (cfg.keys) |key| {
         if (keysym == key.sym and CLEANMASK(key.mod) == CLEANMASK(ev.state)) {
