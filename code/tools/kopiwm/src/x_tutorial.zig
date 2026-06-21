@@ -1556,6 +1556,17 @@ pub inline fn XFreeCursor(display: *Display, cursor: Cursor) void {
     _ = X.XFreeCursor(display, cursor);
 }
 
+/// The XFreeGC function destroys the specified GC as well as all the
+/// associated storage.
+///
+/// XFreeGC can generate a BadGC error.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XCreateGC.3.xhtml
+pub inline fn XFreeGC(display: *Display, gc: GC) void {
+    // The meaning of the return value was not specified in documentation.
+    _ = X.XFreeGC(display, gc);
+}
+
 /// The XFreeModifiermap function frees the specified XModifierKeymap structure.
 ///
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XChangeKeyboardMapping.3.xhtml

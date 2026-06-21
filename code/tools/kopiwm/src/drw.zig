@@ -204,7 +204,7 @@ pub const Drw = struct {
     /// (dwm) drw_free
     pub fn deinit(self: *Self, allocator: Allocator) void {
         _ = X.XFreePixmap(self.dpy, self.drawable);
-        _ = X.XFreeGC(self.dpy, self.gc);
+        Xt.XFreeGC(self.dpy, self.gc);
         fontsetFree(allocator, self.fonts);
     }
 
