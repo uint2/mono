@@ -1395,7 +1395,7 @@ fn updatenumlockmask() void {
     for (0..8) |i| {
         for (0..mkpm) |j| {
             const keycode = modmap.*.modifiermap[i * mkpm + j];
-            if (keycode == X.XKeysymToKeycode(z.dpy, Xt.keys.XK_Num_Lock)) {
+            if (keycode == Xt.XKeysymToKeycode(z.dpy, Xt.keys.XK_Num_Lock)) {
                 z.numlockmask = @as(u32, 1) << @intCast(i);
             }
         }

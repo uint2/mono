@@ -800,7 +800,7 @@ pub const XMotionEvent = X.XMotionEvent;
 /// member is set to the window that is most useful to toolkit dispatchers.
 ///
 /// The window member is set to the window whose associated property was
-/// changed. The atom member is set to the property’s atom and indicates which
+/// changed. The atom member is set to the property's atom and indicates which
 /// property was changed or desired. The time member is set to the server time
 /// when the property was changed. The state member is set to indicate whether
 /// the property was changed to a new value or deleted and can be
@@ -2334,6 +2334,17 @@ pub inline fn XInternAtom(
     // #endif
     // ```
     return if (atom == X.None) null else atom;
+}
+
+/// The XKeycodeToKeysym function uses internal Xlib tables and returns the
+/// KeySym defined for the specified KeyCode and the element of the KeyCode
+/// vector. If no symbol is defined, XKeycodeToKeysym returns NoSymbol.
+/// XKeycodeToKeysym predates the XKB extension. If you want to lookup a KeySym
+/// while using XKB you have to use XkbKeycodeToKeysym.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XStringToKeysym.3.xhtml
+pub inline fn XKeysymToKeycode(display: *Display, keysym: KeySym) KeyCode {
+    return X.XKeysymToKeycode(display, keysym);
 }
 
 /// The XMapWindow function maps the window and all of its subwindows that have
