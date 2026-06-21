@@ -1454,7 +1454,7 @@ fn cleanupmon(allocator: Allocator, mon: *Monitor) void {
             }
         }
     }
-    _ = Xt.XUnmapWindow(z.dpy, mon.barwin);
+    Xt.XUnmapWindow(z.dpy, mon.barwin);
     Xt.XDestroyWindow(z.dpy, mon.barwin);
     log.warn("Deallocate monitor: {*}", .{mon});
     allocator.destroy(mon);

@@ -2324,8 +2324,9 @@ pub inline fn XUngrabPointer(display: *Display, time: Time) void {
 /// XUnmapWindow can generate a BadWindow error.
 ///
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XUnmapWindow.3.xhtml
-pub inline fn XUnmapWindow(display: *Display, window: Window) c_int {
-    return X.XUnmapWindow(display, window);
+pub inline fn XUnmapWindow(display: *Display, window: Window) void {
+    // Meaning of return value is not specified in documentation.
+    _ = X.XUnmapWindow(display, window);
 }
 
 /// The XmbTextPropertyToTextList, XwcTextPropertyToTextList and
