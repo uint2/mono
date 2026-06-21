@@ -1396,7 +1396,7 @@ fn updatenumlockmask() void {
     if (modmap == null) {
         return;
     }
-    defer _ = X.XFreeModifiermap(modmap);
+    defer Xt.XFreeModifiermap(modmap);
     const mkpm: usize = @intCast(modmap.*.max_keypermod);
     for (0..8) |i| {
         for (0..mkpm) |j| {
