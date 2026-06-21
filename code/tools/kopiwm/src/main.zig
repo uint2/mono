@@ -339,7 +339,7 @@ fn unmanage(allocator: Allocator, c: *Client, destroyed: bool) void {
     c.detachStack();
 
     if (!destroyed) {
-        _ = X.XGrabServer(z.dpy); // dwm: Avoid race conditions.
+        Xt.XGrabServer(z.dpy); // dwm: Avoid race conditions.
         _ = X.XSetErrorHandler(xerrordummy);
         Xt.XSelectInput(z.dpy, c.win, Xt.masks.NoEventMask);
         var wc = Xt.XWindowChanges{ .border_width = @intCast(c.bw.prev) };
@@ -348,7 +348,7 @@ fn unmanage(allocator: Allocator, c: *Client, destroyed: bool) void {
         c.setState(.WithdrawnState);
         Xt.XSync(z.dpy, false);
         _ = X.XSetErrorHandler(xerror);
-        _ = X.XUngrabServer(z.dpy);
+        Xt.XUngrabServer(z.dpy);
     }
     log.warn("Deallocate client: {*} (will arrange monitor {*})", .{ c, c.mon });
     const m = c.mon; // So that we can still access c.mon after freeing c.
@@ -873,13 +873,13 @@ pub fn killClient(_: *const Arg) void {
     log.info("Trying to kill client {*}", .{sel});
     if (!sel.sendEvent(atoms.wm(.Delete))) {
         log.info("Kill effective", .{});
-        _ = X.XGrabServer(z.dpy);
+        Xt.XGrabServer(z.dpy);
         _ = X.XSetErrorHandler(xerrordummy);
         _ = X.XSetCloseDownMode(z.dpy, Xt.DestroyAll);
         _ = X.XKillClient(z.dpy, sel.win);
         Xt.XSync(z.dpy, false);
         _ = X.XSetErrorHandler(xerror);
-        _ = X.XUngrabServer(z.dpy);
+        Xt.XUngrabServer(z.dpy);
     } else {
         log.info("Kill ineffective", .{});
     }

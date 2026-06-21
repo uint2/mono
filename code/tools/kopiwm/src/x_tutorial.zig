@@ -2178,6 +2178,16 @@ pub inline fn XGrabPointer(
     return result == X.GrabSuccess;
 }
 
+/// The XGrabServer function disables processing of requests and close downs on
+/// all other connections than the one this request arrived on. You should not
+/// grab the X server any more than is absolutely necessary.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XGrabServer.3.xhtml
+pub inline fn XGrabServer(display: *Display) void {
+    // Meaning of return value is not specified in documentation.
+    _ = X.XGrabServer(display);
+}
+
 /// The XInternAtom function returns the atom identifier associated with the
 /// specified atom_name. If the atom name is not in the Host Portable Character
 /// Encoding, the result is implementation-dependent. Uppercase and lowercase
@@ -2679,6 +2689,16 @@ pub inline fn XUngrabKey(
 pub inline fn XUngrabPointer(display: *Display, time: Time) void {
     // The meaning of the return value was not specified in documentation.
     _ = X.XUngrabPointer(display, time);
+}
+
+/// The XUngrabServer function restarts processing of requests and close downs
+/// on other connections. You should avoid grabbing the X server as much as
+/// possible.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XGrabServer.3.xhtml
+pub inline fn XUngrabServer(display: *Display) void {
+    // Meaning of return value is not specified in documentation.
+    _ = X.XUngrabServer(display);
 }
 
 /// The XUnmapWindow function unmaps the specified window and causes the X
