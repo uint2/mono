@@ -405,7 +405,7 @@ pub const XEvent = X.XEvent;
 /// member is set to the window that is most useful to toolkit dispatchers.
 ///
 /// The window member is set to the exposed (damaged) window. The x and y
-/// members are set to the coordinates relative to the window’s origin and
+/// members are set to the coordinates relative to the window's origin and
 /// indicate the upper-left corner of the rectangle. The width and height
 /// members are set to the size (extent) of the rectangle. The count member is
 /// set to the number of Expose events that are to follow. If count is zero, no
@@ -418,6 +418,55 @@ pub const XEvent = X.XEvent;
 ///
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XExposeEvent.3.xhtml
 pub const XExposeEvent = X.XExposeEvent;
+
+/// The structure for FocusIn and FocusOut events contains:
+///
+/// ```c
+/// typedef struct {
+///     int type;             /* FocusIn or FocusOut */
+///     unsigned long serial; /* # of last request processed by server */
+///     Bool send_event;      /* true if this came from a SendEvent request */
+///     Display *display;     /* Display the event was read from */
+///     Window window;        /* window of event */
+///     int mode;             /* NotifyNormal, NotifyGrab, NotifyUngrab */
+///     int detail;           /*
+///                            * NotifyAncestor, NotifyVirtual, NotifyInferior,
+///                            * NotifyNonlinear,NotifyNonlinearVirtual, NotifyPointer,
+///                            * NotifyPointerRoot, NotifyDetailNone
+///                            */
+/// } XFocusChangeEvent;
+/// ```
+///
+/// The type member is set to the event type constant name that uniquely
+/// identifies it. For example, when the X server reports a GraphicsExpose
+/// event to a client application, it sends an XGraphicsExposeEvent structure
+/// with the type member set to GraphicsExpose. The display member is set to a
+/// pointer to the display the event was read on. The send_event member is set
+/// to True if the event came from a SendEvent protocol request. The serial
+/// member is set from the serial number reported in the protocol but expanded
+/// from the 16-bit least-significant bits to a full 32-bit value. The window
+/// member is set to the window that is most useful to toolkit dispatchers.
+///
+/// The window member is set to the window on which the FocusIn or FocusOut
+/// event was generated. This is the window used by the X server to report the
+/// event. The mode member is set to indicate whether the focus events are
+/// normal focus events, focus events while grabbed, focus events when a grab
+/// activates, or focus events when a grab deactivates. The X server can set
+/// the mode member to NotifyNormal, NotifyWhileGrabbed, NotifyGrab, or
+/// NotifyUngrab.
+///
+/// All FocusOut events caused by a window unmap are generated after any
+/// UnmapNotify event; however, the X protocol does not constrain the ordering
+/// of FocusOut events with respect to generated EnterNotify, LeaveNotify,
+/// VisibilityNotify, and Expose events.
+///
+/// Depending on the event mode, the detail member is set to indicate the
+/// notify detail and can be NotifyAncestor, NotifyVirtual, NotifyInferior,
+/// NotifyNonlinear, NotifyNonlinearVirtual, NotifyPointer, NotifyPointerRoot,
+/// or NotifyDetailNone.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XFocusChangeEvent.3.xhtml
+pub const XFocusChangeEvent = X.XFocusChangeEvent;
 
 /// The XGCValues structure contains:
 ///

@@ -649,7 +649,7 @@ fn expose(allocator: Allocator, e: *Xt.XEvent) void {
 
 /// (dwm) focusin
 fn focusIn(e: *Xt.XEvent) void {
-    const ev: X.XFocusChangeEvent = e.xfocus;
+    const ev: Xt.XFocusChangeEvent = e.xfocus;
     if (z.selmon.sel) |sel| {
         if (ev.window != sel.win) sel.setFocus();
     }
