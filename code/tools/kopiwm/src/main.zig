@@ -1369,7 +1369,7 @@ fn grabkeys() void {
     var end: c_int = undefined;
     var skip: c_int = undefined;
 
-    _ = X.XUngrabKey(z.dpy, X.AnyKey, X.AnyModifier, z.root);
+    Xt.XUngrabKey(z.dpy, X.AnyKey, X.AnyModifier, z.root);
     Xt.XDisplayKeycodes(z.dpy, &start, &end);
     const syms: [*]Xt.KeySym =
         X.XGetKeyboardMapping(z.dpy, @intCast(start), end - start + 1, &skip) orelse
@@ -1423,7 +1423,7 @@ fn cleanup(allocator: Allocator, wmcheckwin: *Xt.Window) void {
             unmanage(allocator, c, false);
         }
     }
-    _ = X.XUngrabKey(z.dpy, X.AnyKey, X.AnyModifier, z.root);
+    Xt.XUngrabKey(z.dpy, X.AnyKey, X.AnyModifier, z.root);
     while (z.mons) |mon| {
         cleanupmon(allocator, mon);
     }

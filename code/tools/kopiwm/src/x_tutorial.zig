@@ -2337,8 +2337,31 @@ pub inline fn XUngrabButton(
     modifiers: c_uint,
     grab_window: Window,
 ) void {
-    // According to the docs, the return value is not used.
+    // The meaning of the return value was not specified in documentation.
     _ = X.XUngrabButton(display, button, modifiers, grab_window);
+}
+
+/// The XUngrabKey function releases the key combination on the specified
+/// window if it was grabbed by this client. It has no effect on an active
+/// grab. A modifiers of AnyModifier is equivalent to issuing the request for
+/// all possible modifier combinations (including the combination of no
+/// modifiers). A keycode argument of AnyKey is equivalent to issuing the
+/// request for all possible key codes.
+///
+/// XUngrabKey can generate BadValue and BadWindow error.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XGrabKey.3.xhtml
+pub inline fn XUngrabKey(
+    display: *Display,
+    /// Specifies the KeyCode or AnyKey.
+    keycode: c_uint,
+    /// Specifies the set of keymasks or AnyModifier. The mask is the bitwise
+    /// inclusive OR of the valid keymask bits.
+    modifiers: c_uint,
+    grab_window: Window,
+) void {
+    // The meaning of the return value was not specified in documentation.
+    _ = X.XUngrabKey(display, keycode, modifiers, grab_window);
 }
 
 /// The XUngrabPointer function releases the pointer and any queued events if
@@ -2354,7 +2377,7 @@ pub inline fn XUngrabButton(
 ///
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XGrabPointer.3.xhtml
 pub inline fn XUngrabPointer(display: *Display, time: Time) void {
-    // According to the docs, the return value is not used.
+    // The meaning of the return value was not specified in documentation.
     _ = X.XUngrabPointer(display, time);
 }
 
