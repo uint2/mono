@@ -1710,6 +1710,22 @@ pub inline fn XGetTransientForHint(display: *Display, window: Window) ?Window {
     return prop_window_return;
 }
 
+/// The XGetWindowAttributes function returns the current attributes for the
+/// specified window to an XWindowAttributes structure. It returns true upon
+/// success.
+///
+/// XGetWindowAttributes can generate BadDrawable and BadWindow errors.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XGetWindowAttributes.3.xhtml
+pub inline fn XGetWindowAttributes(
+    display: *Display,
+    window: Window,
+    window_attributes_return: *XWindowAttributes,
+) bool {
+    // It returns a nonzero status on success; otherwise, it returns a zero status.
+    return X.XGetWindowAttributes(display, window, window_attributes_return) != 0;
+}
+
 pub const YGetWindowPropertyResult = struct {
     const Self = @This();
 

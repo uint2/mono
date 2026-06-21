@@ -683,8 +683,8 @@ fn mapRequest(allocator: Allocator, e: *Xt.XEvent) error{OutOfMemory}!void {
     const ev: X.XMapRequestEvent = e.xmaprequest;
     var wa: Xt.XWindowAttributes = undefined;
 
-    const res = X.XGetWindowAttributes(z.dpy, ev.window, &wa);
-    if (res == 0 or wa.override_redirect != 0) return;
+    if (!Xt.XGetWindowAttributes(z.dpy, ev.window, &wa)) return;
+    if (wa.override_redirect != 0) return;
 
     if (winToClient(ev.window) == null) {
         log.info("Start managing window {d} (mapRequest)", .{ev.window});
@@ -836,8 +836,8 @@ fn scan(allocator: Allocator) error{OutOfMemory}!void {
 
     i = 0;
     while (i < num) : (i += 1) {
-        const res = X.XGetWindowAttributes(z.dpy, wins[i], &wa);
-        if (res == 0 or wa.override_redirect != 0) continue;
+        const ok = Xt.XGetWindowAttributes(z.dpy, wins[i], &wa);
+        if (!ok or wa.override_redirect != 0) continue;
         if (Xt.XGetTransientForHint(z.dpy, wins[i]) == null) continue;
         if (wa.map_state == Xt.IsViewable or getState(wins[i]) == Xt.IconicState) {
             log.info("Start managing window {d} (scan, non-transient)", .{wins[i]});
@@ -846,7 +846,7 @@ fn scan(allocator: Allocator) error{OutOfMemory}!void {
     }
     i = 0;
     while (i < num) : (i += 1) { // now the transients
-        if (X.XGetWindowAttributes(z.dpy, wins[i], &wa) == 0) continue;
+        if (!Xt.XGetWindowAttributes(z.dpy, wins[i], &wa)) continue;
         if (Xt.XGetTransientForHint(z.dpy, wins[i]) == null) continue;
         const viewable = wa.map_state == Xt.IsViewable;
         const iconic = getState(wins[i]) == Xt.IconicState;
