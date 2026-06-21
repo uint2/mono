@@ -152,8 +152,6 @@ pub const XClassHint = X.XClassHint;
 /// } XClientMessageEvent;
 /// ```
 ///
-/// When you receive this event, the structure members are set as follows.
-///
 /// The type member is set to the event type constant name that uniquely
 /// identifies it. For example, when the X server reports a GraphicsExpose
 /// event to a client application, it sends an XGraphicsExposeEvent structure
@@ -176,7 +174,23 @@ pub const XClassHint = X.XClassHint;
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XClientMessageEvent.3.xhtml
 pub const XClientMessageEvent = X.XClientMessageEvent;
 
-/// When you receive this event, the structure members are set as follows.
+/// The structure for ConfigureNotify events contains:
+///
+/// ```c
+/// typedef struct {
+///     int type;             /* ConfigureNotify */
+///     unsigned long serial; /* # of last request processed by server */
+///     Bool send_event;      /* true if this came from a SendEvent request */
+///     Display *display;     /* Display the event was read from */
+///     Window event;
+///     Window window;
+///     int x, y;
+///     int width, height;
+///     int border_width;
+///     Window above;
+///     Bool override_redirect;
+/// } XConfigureEvent;
+/// ```
 ///
 /// The type member is set to the event type constant name that uniquely
 /// identifies it. For example, when the X server reports a GraphicsExpose
@@ -234,8 +248,6 @@ pub const XConfigureEvent = X.XConfigureEvent;
 ///     unsigned int state;   /* key or button mask */
 /// } XCrossingEvent;
 /// ```
-///
-/// When you receive these events, the structure members are set as follows.
 ///
 /// The type member is set to the event type constant name that uniquely
 /// identifies it. For example, when the X server reports a GraphicsExpose
@@ -328,7 +340,19 @@ pub const XCrossingEvent = X.XCrossingEvent;
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XDestroyWindowEvent.3.xhtml
 pub const XDestroyWindowEvent = X.XDestroyWindowEvent;
 
-/// When you receive this event, the structure members are set as follows.
+/// The XErrorEvent structure contains:
+///
+/// ```c
+/// typedef struct {
+///     int type;
+///     Display *display;           /* Display the event was read from */
+///     unsigned long serial;       /* serial number of failed request */
+///     unsigned char error_code;   /* error code of failed request */
+///     unsigned char request_code; /* Major op-code of failed request */
+///     unsigned char minor_code;   /* Minor op-code of failed request */
+///     XID resourceid;             /* resource id */
+/// } XErrorEvent;
+/// ```
 ///
 /// The serial member is the number of requests, starting from one, sent over
 /// the network connection since it was opened. It is the number that was the
@@ -354,6 +378,46 @@ pub const XErrorEvent = X.XErrorEvent;
 ///
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XAnyEvent.3.xhtml
 pub const XEvent = X.XEvent;
+
+/// The structure for Expose events contains:
+///
+/// ```c
+/// typedef struct {
+///     int type;             /* Expose */
+///     unsigned long serial; /* # of last request processed by server */
+///     Bool send_event;      /* true if this came from a SendEvent request */
+///     Display *display;     /* Display the event was read from */
+///     Window window;
+///     int x, y;
+///     int width, height;
+///     int count;            /* if nonzero, at least this many more */
+/// } XExposeEvent;
+/// ```
+///
+/// The type member is set to the event type constant name that uniquely
+/// identifies it. For example, when the X server reports a GraphicsExpose
+/// event to a client application, it sends an XGraphicsExposeEvent structure
+/// with the type member set to GraphicsExpose. The display member is set to a
+/// pointer to the display the event was read on. The send_event member is set
+/// to True if the event came from a SendEvent protocol request. The serial
+/// member is set from the serial number reported in the protocol but expanded
+/// from the 16-bit least-significant bits to a full 32-bit value. The window
+/// member is set to the window that is most useful to toolkit dispatchers.
+///
+/// The window member is set to the exposed (damaged) window. The x and y
+/// members are set to the coordinates relative to the window’s origin and
+/// indicate the upper-left corner of the rectangle. The width and height
+/// members are set to the size (extent) of the rectangle. The count member is
+/// set to the number of Expose events that are to follow. If count is zero, no
+/// more Expose events follow for this window. However, if count is nonzero, at
+/// least that number of Expose events (and possibly more) follow for this
+/// window. Simple applications that do not want to optimize redisplay by
+/// distinguishing between subareas of its window can just ignore all Expose
+/// events with nonzero counts and perform full redisplays on events with zero
+/// counts.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XExposeEvent.3.xhtml
+pub const XExposeEvent = X.XExposeEvent;
 
 /// The XGCValues structure contains:
 ///
@@ -656,8 +720,6 @@ pub const XTextProperty = X.XTextProperty;
 ///     Bool from_configure;
 /// } XUnmapEvent;
 /// ```
-///
-/// When you receive this event, the structure members are set as follows.
 ///
 /// The type member is set to the event type constant name that uniquely
 /// identifies it. For example, when the X server reports a GraphicsExpose

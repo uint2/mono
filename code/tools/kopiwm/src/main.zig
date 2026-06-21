@@ -641,7 +641,7 @@ fn enterNotify(allocator: Allocator, e: *Xt.XEvent) void {
 
 /// (dwm) expose
 fn expose(allocator: Allocator, e: *Xt.XEvent) void {
-    const ev: X.XExposeEvent = e.xexpose;
+    const ev: Xt.XExposeEvent = e.xexpose;
     if (ev.count == 0) {
         drawbar(allocator, wintomon(ev.window));
     }
