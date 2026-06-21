@@ -1428,7 +1428,7 @@ fn cleanup(allocator: Allocator, wmcheckwin: *Xt.Window) void {
         cleanupmon(allocator, mon);
     }
     for (z.cursors.values) |cursor| {
-        z.drw.curFree(cursor);
+        Xt.XFreeCursor(z.dpy, cursor);
     }
     for (std.enums.values(SchemeState)) |ss| {
         z.drw.scmFree(allocator, z.scheme.get(ss));

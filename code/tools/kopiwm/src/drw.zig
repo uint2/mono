@@ -300,16 +300,6 @@ pub const Drw = struct {
         allocator.destroy(scheme);
     }
 
-    /// (dwm) drw_cur_create
-    pub fn curCreate(self: *Self, shape: Xt.PointerShape) Xt.Cursor {
-        return Xt.XCreateFontCursor(self.dpy, shape);
-    }
-
-    /// (dwm) drw_cur_free
-    pub fn curFree(self: *Self, cursor: Xt.Cursor) void {
-        _ = X.XFreeCursor(self.dpy, cursor);
-    }
-
     /// (dwm) drw_setscheme
     pub fn setScheme(self: *Self, scheme: *ColorScheme) void {
         self.scheme = scheme;

@@ -1543,11 +1543,25 @@ pub inline fn XFree(ptr: ?*anyopaque) void {
     _ = X.XFree(ptr);
 }
 
+/// The XFreeCursor function deletes the association between the cursor
+/// resource ID and the specified cursor. The cursor storage is freed when no
+/// other resource references it. The specified cursor ID should not be
+/// referred to again.
+///
+/// XFreeCursor can generate a BadCursor error.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XRecolorCursor.3.xhtml
+pub inline fn XFreeCursor(display: *Display, cursor: Cursor) void {
+    // The meaning of the return value was not specified in documentation.
+    _ = X.XFreeCursor(display, cursor);
+}
+
 /// The XFreeModifiermap function frees the specified XModifierKeymap structure.
 ///
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XChangeKeyboardMapping.3.xhtml
 pub inline fn XFreeModifiermap(modmap: [*c]X.XModifierKeymap) void {
-    X.XFreeModifiermap(modmap);
+    // The meaning of the return value was not specified in documentation.
+    _ = X.XFreeModifiermap(modmap);
 }
 
 /// The XFreeStringList function releases memory allocated by
