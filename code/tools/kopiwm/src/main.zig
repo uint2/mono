@@ -671,7 +671,7 @@ fn keyPress(e: *Xt.XEvent) DwmError!void {
 
 /// (dwm) mappingnotify
 fn mappingNotify(e: *Xt.XEvent) void {
-    const ev: *X.XMappingEvent = &e.xmapping;
+    const ev: *Xt.XMappingEvent = &e.xmapping;
     _ = X.XRefreshKeyboardMapping(ev);
     if (ev.request == Xt.MappingKeyboard) {
         grabkeys();
@@ -694,7 +694,7 @@ fn mapRequest(allocator: Allocator, e: *Xt.XEvent) error{OutOfMemory}!void {
 
 /// (dwm) motionnotify
 fn motionNotify(allocator: Allocator, e: *Xt.XEvent) void {
-    const ev: X.XMotionEvent = e.xmotion;
+    const ev: Xt.XMotionEvent = e.xmotion;
     const static = struct {
         var mon: ?*Monitor = null;
     };
@@ -715,7 +715,7 @@ fn motionNotify(allocator: Allocator, e: *Xt.XEvent) void {
 
 /// (dwm) propertynotify
 fn propertyNotify(allocator: Allocator, e: *Xt.XEvent) void {
-    const ev: X.XPropertyEvent = e.xproperty;
+    const ev: Xt.XPropertyEvent = e.xproperty;
     if (ev.window == z.root and ev.atom == Xt.XA_WM_NAME) {
         updateStatus(allocator);
     } else if (ev.state == Xt.PropertyDelete) {

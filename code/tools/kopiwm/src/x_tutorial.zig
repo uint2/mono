@@ -704,16 +704,117 @@ pub const XGlyphInfo = X.XGlyphInfo;
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XButtonEvent.3.xhtml
 pub const XKeyEvent = X.XKeyEvent;
 
+/// The structure for MappingNotify events is:
+///
+/// ```c
+/// typedef struct {
+///     int type;             /* MappingNotify */
+///     unsigned long serial; /* # of last request processed by server */
+///     Bool send_event;      /* true if this came from a SendEvent request */
+///     Display *display;     /* Display the event was read from */
+///     Window window;        /* unused */
+///     int request;          /* one of MappingModifier, MappingKeyboard, MappingPointer */
+///     int first_keycode;    /* first keycode */
+///     int count;            /* defines range of change w. first_keycode*/
+/// } XMappingEvent;
+/// ```
+///
+/// The type member is set to the event type constant name that uniquely
+/// identifies it. For example, when the X server reports a GraphicsExpose
+/// event to a client application, it sends an XGraphicsExposeEvent structure
+/// with the type member set to GraphicsExpose. The display member is set to a
+/// pointer to the display the event was read on. The send_event member is set
+/// to True if the event came from a SendEvent protocol request. The serial
+/// member is set from the serial number reported in the protocol but expanded
+/// from the 16-bit least-significant bits to a full 32-bit value. The window
+/// member is set to the window that is most useful to toolkit dispatchers.
+///
+/// The request member is set to indicate the kind of mapping change that
+/// occurred and can be MappingModifier, MappingKeyboard, MappingPointer. If it
+/// is MappingModifier, the modifier mapping was changed. If it is
+/// MappingKeyboard, the keyboard mapping was changed. If it is MappingPointer,
+/// the pointer button mapping was changed. The first_keycode and count members
+/// are set only if the request member was set to MappingKeyboard. The number
+/// in first_keycode represents the first number in the range of the altered
+/// mapping, and count represents the number of keycodes altered.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XMapEvent.3.xhtml
+pub const XMappingEvent = X.XMappingEvent;
+
 /// The XModifierKeymap structure contains:
 ///
 /// ```c
 /// typedef struct {
-///     int max_keypermod; /* This server's max number of keys per modifier */
+///     int max_keypermod;    /* This server's max number of keys per modifier */
 ///     KeyCode *modifiermap; /* An 8 by max_keypermod array of the modifiers */
 /// } XModifierKeymap;
 /// ```
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XChangeKeyboardMapping.3.xhtml
 pub const XModifierKeymap = X.XModifierKeymap;
+
+/// ```c
+/// typedef struct {
+///     int type;             /* MotionNotify */
+///     unsigned long serial; /* # of last request processed by server */
+///     Bool send_event;      /* true if this came from a SendEvent request */
+///     Display *display;     /* Display the event was read from */
+///     Window window;        /* "event" window reported relative to */
+///     Window root;          /* root window that the event occurred on */
+///     Window subwindow;     /* child window */
+///     Time time;            /* milliseconds */
+///     int x, y;             /* pointer x, y coordinates in event window */
+///     int x_root, y_root;   /* coordinates relative to root */
+///     unsigned int state;   /* key or button mask */
+///     char is_hint;         /* detail */
+///     Bool same_screen;     /* same screen flag */
+/// } XMotionEvent;
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XButtonEvent.3.xhtml
+pub const XMotionEvent = X.XMotionEvent;
+
+/// The structure for PropertyNotify events contains:
+///
+/// ```c
+/// typedef struct {
+///     int type;             /* PropertyNotify */
+///     unsigned long serial; /* # of last request processed by server */
+///     Bool send_event;      /* true if this came from a SendEvent request */
+///     Display *display;     /* Display the event was read from */
+///     Window window;
+///     Atom atom;
+///     Time time;
+///     int state;            /* PropertyNewValue or PropertyDelete */
+/// } XPropertyEvent;
+/// ```
+///
+/// When you receive this event, the structure members are set as follows.
+///
+/// The type member is set to the event type constant name that uniquely
+/// identifies it. For example, when the X server reports a GraphicsExpose
+/// event to a client application, it sends an XGraphicsExposeEvent structure
+/// with the type member set to GraphicsExpose. The display member is set to a
+/// pointer to the display the event was read on. The send_event member is set
+/// to True if the event came from a SendEvent protocol request. The serial
+/// member is set from the serial number reported in the protocol but expanded
+/// from the 16-bit least-significant bits to a full 32-bit value. The window
+/// member is set to the window that is most useful to toolkit dispatchers.
+///
+/// The window member is set to the window whose associated property was
+/// changed. The atom member is set to the property’s atom and indicates which
+/// property was changed or desired. The time member is set to the server time
+/// when the property was changed. The state member is set to indicate whether
+/// the property was changed to a new value or deleted and can be
+/// PropertyNewValue or PropertyDelete. The state member is set to
+/// PropertyNewValue when a property of the window is changed using
+/// XChangeProperty or XRotateWindowProperties (even when adding zero-length
+/// data using XChangeProperty) and when replacing all or part of a property
+/// with identical data using XChangeProperty or XRotateWindowProperties. The
+/// state member is set to PropertyDelete when a property of the window is
+/// deleted using XDeleteProperty or, if the delete argument is True,
+/// XGetWindowProperty.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XPropertyEvent.3.xhtml
+pub const XPropertyEvent = X.XPropertyEvent;
 
 /// The XSetWindowAttributes structure contains:
 ///
