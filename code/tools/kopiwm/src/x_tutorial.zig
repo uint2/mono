@@ -238,6 +238,202 @@ pub const XErrorEvent = X.XErrorEvent;
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XAnyEvent.3.xhtml
 pub const XEvent = X.XEvent;
 
+/// The XGCValues structure contains:
+///
+/// ```c
+/// typedef struct {
+///     int function;             /* logical operation */
+///     unsigned long plane_mask; /* plane mask */
+///     unsigned long foreground; /* foreground pixel */
+///     unsigned long background; /* background pixel */
+///     int line_width;           /* line width (in pixels) */
+///     int line_style;           /* LineSolid, LineOnOffDash, LineDoubleDash */
+///     int cap_style;            /* CapNotLast, CapButt, CapRound, CapProjecting */
+///     int join_style;           /* JoinMiter, JoinRound, JoinBevel */
+///     int fill_style;           /* FillSolid, FillTiled, FillStippled FillOpaqueStippled*/
+///     int fill_rule;            /* EvenOddRule, WindingRule */
+///     int arc_mode;             /* ArcChord, ArcPieSlice */
+///     Pixmap tile;              /* tile pixmap for tiling operations */
+///     Pixmap stipple;           /* stipple 1 plane pixmap for stippling */
+///     int ts_x_origin;          /* offset for tile or stipple operations */
+///     int ts_y_origin;
+///     Font font;                /* default text font for text operations */
+///     int subwindow_mode;       /* ClipByChildren, IncludeInferiors */
+///     Bool graphics_exposures;  /* boolean, should exposures be generated */
+///     int clip_x_origin;        /* origin for clipping */
+///     int clip_y_origin;
+///     Pixmap clip_mask;         /* bitmap clipping; other calls for rects */
+///     int dash_offset;          /* patterned/dashed line information */
+///     char dashes;
+/// } XGCValues;
+///
+/// The function attributes of a GC are used when you update a section of a
+/// drawable (the destination) with bits from somewhere else (the source). The
+/// function in a GC defines how the new destination bits are to be computed
+/// from the source bits and the old destination bits. GXcopy is typically the
+/// most useful because it will work on a color display, but special
+/// applications may use other functions, particularly in concert with
+/// particular planes of a color display.
+///
+/// Many graphics operations depend on either pixel values or planes in a GC.
+/// The planes attribute is of type long, and it specifies which planes of the
+/// destination are to be modified, one bit per plane. A monochrome display has
+/// only one plane and will be the least significant bit of the word. As planes
+/// are added to the display hardware, they will occupy more significant bits
+/// in the plane mask.
+///
+/// In graphics operations, given a source and destination pixel, the result is
+/// computed bitwise on corresponding bits of the pixels. That is, a Boolean
+/// operation is performed in each bit plane. The plane_mask restricts the
+/// operation to a subset of planes. A macro constant AllPlanes can be used to
+/// refer to all planes of the screen simultaneously. The result is computed by
+/// the following:
+///
+/// ((src FUNC dst) AND plane-mask) OR (dst AND (NOT plane-mask))
+///
+/// Range checking is not performed on the values for foreground, background,
+/// or plane_mask. They are simply truncated to the appropriate number of bits.
+/// The line-width is measured in pixels and either can be greater than or
+/// equal to one (wide line) or can be the special value zero (thin line).
+///
+/// Wide lines are drawn centered on the path described by the graphics
+/// request. Unless otherwise specified by the join-style or cap-style, the
+/// bounding box of a wide line with endpoints [x1, y1], [x2, y2] and width w
+/// is a rectangle with vertices at the following real coordinates:
+///
+/// [x1-(w*sn/2), y1+(w*cs/2)], [x1+(w*sn/2), y1-(w*cs/2)], [x2-(w*sn/2),
+/// y2+(w*cs/2)], [x2+(w*sn/2), y2-(w*cs/2)]
+///
+/// Here sn is the sine of the angle of the line, and cs is the cosine of the
+/// angle of the line. A pixel is part of the line and so is drawn if the
+/// center of the pixel is fully inside the bounding box (which is viewed as
+/// having infinitely thin edges). If the center of the pixel is exactly on the
+/// bounding box, it is part of the line if and only if the interior is
+/// immediately to its right (x increasing direction). Pixels with centers on a
+/// horizontal edge are a special case and are part of the line if and only if
+/// the interior or the boundary is immediately below (y increasing direction)
+/// and the interior or the boundary is immediately to the right (x increasing
+/// direction).
+///
+/// Thin lines (zero line-width) are one-pixel-wide lines drawn using an
+/// unspecified, device-dependent algorithm. There are only two constraints on
+/// this algorithm.
+///
+/// 1. If a line is drawn unclipped from [x1,y1] to [x2,y2] and if another line is
+///    drawn unclipped from [x1+dx,y1+dy] to [x2+dx,y2+dy], a point [x,y] is touched
+///    by drawing the first line if and only if the point [x+dx,y+dy] is touched by
+///    drawing the second line.
+///
+/// 2. The effective set of points comprising a line cannot be affected by clipping.
+///    That is, a point is touched in a clipped line if and only if the point lies
+///    inside the clipping region and the point would be touched by the line when
+///    drawn unclipped.
+///
+/// A wide line drawn from [x1,y1] to [x2,y2] always draws the same pixels as a
+/// wide line drawn from [x2,y2] to [x1,y1], not counting cap-style and
+/// join-style. It is recommended that this property be true for thin lines,
+/// but this is not required. A line-width of zero may differ from a line-width
+/// of one in which pixels are drawn. This permits the use of many
+/// manufacturers' line drawing hardware, which may run many times faster than
+/// the more precisely specified wide lines.
+///
+/// In general, drawing a thin line will be faster than drawing a wide line of
+/// width one. However, because of their different drawing algorithms, thin
+/// lines may not mix well aesthetically with wide lines. If it is desirable to
+/// obtain precise and uniform results across all displays, a client should
+/// always use a line-width of one rather than a line-width of zero.
+///
+/// For a line with coincident endpoints (x1=x2, y1=y2), when the join-style is
+/// applied at one or both endpoints, the effect is as if the line was removed
+/// from the overall path. However, if the total path consists of or is reduced
+/// to a single point joined with itself, the effect is the same as when the
+/// cap-style is applied at both endpoints.
+///
+/// The tile/stipple represents an infinite two-dimensional plane, with the
+/// tile/stipple replicated in all dimensions. When that plane is superimposed
+/// on the drawable for use in a graphics operation, the upper-left corner of
+/// some instance of the tile/stipple is at the coordinates within the drawable
+/// specified by the tile/stipple origin. The tile/stipple and clip origins are
+/// interpreted relative to the origin of whatever destination drawable is
+/// specified in a graphics request. The tile pixmap must have the same root
+/// and depth as the GC, or a BadMatch error results. The stipple pixmap must
+/// have depth one and must have the same root as the GC, or a BadMatch error
+/// results. For stipple operations where the fill-style is FillStippled but
+/// not FillOpaqueStippled, the stipple pattern is tiled in a single plane and
+/// acts as an additional clip mask to be ANDed with the clip-mask. Although
+/// some sizes may be faster to use than others, any size pixmap can be used
+/// for tiling or stippling.
+///
+/// Storing a pixmap in a GC might or might not result in a copy being made. If
+/// the pixmap is later used as the destination for a graphics request, the
+/// change might or might not be reflected in the GC. If the pixmap is used
+/// simultaneously in a graphics request both as a destination and as a tile or
+/// stipple, the results are undefined.
+///
+/// For optimum performance, you should draw as much as possible with the same
+/// GC (without changing its components). The costs of changing GC components
+/// relative to using different GCs depend on the display hardware and the
+/// server implementation. It is quite likely that some amount of GC
+/// information will be cached in display hardware and that such hardware can
+/// only cache a small number of GCs.
+///
+/// The dashes value is actually a simplified form of the more general patterns
+/// that can be set with XSetDashes. Specifying a value of N is equivalent to
+/// specifying the two-element list [N, N] in XSetDashes. The value must be
+/// nonzero, or a BadValue error results.
+///
+/// The clip-mask restricts writes to the destination drawable. If the
+/// clip-mask is set to a pixmap, it must have depth one and have the same root
+/// as the GC, or a BadMatch error results. If clip-mask is set to None, the
+/// pixels are always drawn regardless of the clip origin. The clip-mask also
+/// can be set by calling the XSetClipRectangles or XSetRegion functions. Only
+/// pixels where the clip-mask has a bit set to 1 are drawn. Pixels are not
+/// drawn outside the area covered by the clip-mask or where the clip-mask has
+/// a bit set to 0. The clip-mask affects all graphics requests. The clip-mask
+/// does not clip sources. The clip-mask origin is interpreted relative to the
+/// origin of whatever destination drawable is specified in a graphics request.
+///
+/// You can set the subwindow-mode to ClipByChildren or IncludeInferiors. For
+/// ClipByChildren, both source and destination windows are additionally
+/// clipped by all viewable InputOutput children. For IncludeInferiors, neither
+/// source nor destination window is clipped by inferiors. This will result in
+/// including subwindow contents in the source and drawing through subwindow
+/// boundaries of the destination. The use of IncludeInferiors on a window of
+/// one depth with mapped inferiors of differing depth is not illegal, but the
+/// semantics are undefined by the core protocol.
+///
+/// The fill-rule defines what pixels are inside (drawn) for paths given in
+/// XFillPolygon requests and can be set to EvenOddRule or WindingRule. For
+/// EvenOddRule, a point is inside if an infinite ray with the point as origin
+/// crosses the path an odd number of times. For WindingRule, a point is inside
+/// if an infinite ray with the point as origin crosses an unequal number of
+/// clockwise and counterclockwise directed path segments. A clockwise directed
+/// path segment is one that crosses the ray from left to right as observed
+/// from the point. A counterclockwise segment is one that crosses the ray from
+/// right to left as observed from the point. The case where a directed line
+/// segment is coincident with the ray is uninteresting because you can simply
+/// choose a different ray that is not coincident with a segment.
+///
+/// For both EvenOddRule and WindingRule, a point is infinitely small, and the
+/// path is an infinitely thin line. A pixel is inside if the center point of
+/// the pixel is inside and the center point is not on the boundary. If the
+/// center point is on the boundary, the pixel is inside if and only if the
+/// polygon interior is immediately to its right (x increasing direction).
+/// Pixels with centers on a horizontal edge are a special case and are inside
+/// if and only if the polygon interior is immediately below (y increasing
+/// direction).
+///
+/// The arc-mode controls filling in the XFillArcs function and can be set to
+/// ArcPieSlice or ArcChord. For ArcPieSlice, the arcs are pie-slice filled.
+/// For ArcChord, the arcs are chord filled.
+///
+/// The graphics-exposure flag controls GraphicsExpose event generation for
+/// XCopyArea and XCopyPlane requests (and any similar requests defined by
+/// extensions).
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XCreateGC.3.xhtml
+pub const XGCValues = X.XGCValues;
+
 /// The XModifierKeymap structure contains:
 ///
 /// ```c
@@ -825,6 +1021,24 @@ pub inline fn XCopyArea(
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XCreateFontCursor.3.xhtml
 pub inline fn XCreateFontCursor(display: *Display, shape: PointerShape) Cursor {
     return X.XCreateFontCursor(display, @intFromEnum(shape));
+}
+
+/// The XCreateGC function creates a graphics context and returns a GC. The GC
+/// can be used with any destination drawable having the same root and depth as
+/// the specified drawable. Use with other drawables results in a BadMatch
+/// error.
+///
+/// XCreateGC can generate BadAlloc, BadDrawable, BadFont, BadMatch, BadPixmap,
+/// and BadValue errors.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XCreateGC.3.xhtml
+pub inline fn XCreateGC(
+    display: *Display,
+    drawable: Drawable,
+    valuemask: c_ulong,
+    values: *XGCValues,
+) GC {
+    return X.XCreateGC(display, drawable, valuemask, values);
 }
 
 /// The XCreateWindow function creates an unmapped subwindow for a specified

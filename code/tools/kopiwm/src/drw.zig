@@ -189,7 +189,7 @@ pub const Drw = struct {
             .screen = screen,
             .root = root,
             .drawable = X.XCreatePixmap(dpy, root, w, h, @intCast(Xt.DefaultDepth(dpy, screen))),
-            .gc = X.XCreateGC(dpy, root, 0, null),
+            .gc = Xt.XCreateGC(dpy, root, 0, undefined),
             .fonts = undefined,
         };
         _ = X.XSetLineAttributes(dpy, drw.gc, 1, Xt.LineSolid, Xt.CapButt, Xt.JoinMiter);
