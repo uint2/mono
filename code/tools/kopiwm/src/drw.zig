@@ -203,7 +203,7 @@ pub const Drw = struct {
 
     /// (dwm) drw_free
     pub fn deinit(self: *Self, allocator: Allocator) void {
-        _ = X.XFreePixmap(self.dpy, self.drawable);
+        Xt.XFreePixmap(self.dpy, self.drawable);
         Xt.XFreeGC(self.dpy, self.gc);
         fontsetFree(allocator, self.fonts);
     }
@@ -214,7 +214,7 @@ pub const Drw = struct {
         self.w = w;
         self.h = h;
         if (self.drawable != 0) {
-            _ = X.XFreePixmap(self.dpy, self.drawable);
+            Xt.XFreePixmap(self.dpy, self.drawable);
         }
         self.drawable = Xt.XCreatePixmap(
             self.dpy,

@@ -1575,6 +1575,18 @@ pub inline fn XFreeModifiermap(modmap: [*c]X.XModifierKeymap) void {
     _ = X.XFreeModifiermap(modmap);
 }
 
+/// The XFreePixmap function first deletes the association between the pixmap
+/// ID and the pixmap. Then, the X server frees the pixmap storage when there
+/// are no references to it. The pixmap should never be referenced again.
+///
+/// XFreePixmap can generate a BadPixmap error.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XCreatePixmap.3.xhtml
+pub inline fn XFreePixmap(display: *Display, pixmap: Pixmap) void {
+    // The meaning of the return value was not specified in documentation.
+    _ = X.XFreePixmap(display, pixmap);
+}
+
 /// The XFreeStringList function releases memory allocated by
 /// XmbTextPropertyToTextList, Xutf8TextPropertyToTextList and
 /// XTextPropertyToStringList and the missing charset list allocated by
