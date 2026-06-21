@@ -3024,6 +3024,7 @@ pub const keys = struct {
     pub const XK_minus = X.XK_minus;
     pub const XK_period = X.XK_period;
     pub const XK_space = X.XK_space;
+    pub const XK_Num_Lock = X.XK_Num_Lock;
 
     // AwesomeWM provides a very helpful graphic here:
     // https://awesomewm.org/doc/api/libraries/mouse.html
