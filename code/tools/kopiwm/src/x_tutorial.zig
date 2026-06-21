@@ -2134,6 +2134,22 @@ pub inline fn XSendEvent(
     _ = X.XSendEvent(display, window, @intFromBool(propagate), event_mask, event);
 }
 
+/// The XSetClassHint function sets the class hint for the specified window. If
+/// the strings are not in the Host Portable Character Encoding, the result is
+/// implementation-dependent.
+///
+/// XSetClassHint can generate BadAlloc and BadWindow errors.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XAllocClassHint.3.xhtml
+pub inline fn XSetClassHint(
+    display: *Display,
+    window: Window,
+    class_hint: *XClassHint,
+) void {
+    // Meaning of return value is not specified in documentation.
+    _ = X.XSetClassHint(display, window, class_hint);
+}
+
 /// The XSetInputFocus function changes the input focus and the
 /// last-focus-change time. It has no effect if the specified time is earlier
 /// than the current last-focus-change time or is later than the current X
