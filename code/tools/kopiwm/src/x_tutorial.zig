@@ -2384,6 +2384,19 @@ pub inline fn XMapRaised(display: *Display, window: Window) void {
     _ = X.XMapRaised(display, window);
 }
 
+/// The XMaskEvent function searches the event queue for the events associated
+/// with the specified mask. When it finds a match, XMaskEvent removes that
+/// event and copies it into the specified XEvent structure. The other events
+/// stored in the queue are not discarded. If the event you requested is not in
+/// the queue, XMaskEvent flushes the output buffer and blocks until one is
+/// received.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XNextEvent.3.xhtml
+pub inline fn XMaskEvent(display: *Display, window: Window, event_return: *XEvent) void {
+    // Meaning of return value is not specified in documentation.
+    _ = X.XMaskEvent(display, window, event_return);
+}
+
 /// The XMoveResizeWindow function changes the size and location of the
 /// specified window without raising it. Moving and resizing a mapped window
 /// may generate an Expose event on the window. Depending on the new size and

@@ -925,7 +925,7 @@ pub fn moveMouse(_: *const Arg) DwmError!void {
     var ev: Xt.XEvent = undefined;
     var lasttime: Xt.Time = 0;
     while (true) {
-        _ = X.XMaskEvent(z.dpy, MOUSEMASK | M.ExposureMask | M.SubstructureRedirectMask, &ev);
+        Xt.XMaskEvent(z.dpy, MOUSEMASK | M.ExposureMask | M.SubstructureRedirectMask, &ev);
         switch (ev.type) {
             Xt.Expose | Xt.MapRequest | Xt.ConfigureRequest => try runOne(global_allocator, &ev),
             Xt.MotionNotify => {
@@ -1038,7 +1038,7 @@ pub fn resizeMouse(_: *const Arg) DwmError!void {
     var ev: Xt.XEvent = undefined;
     var lasttime: Xt.Time = 0;
     while (true) {
-        _ = X.XMaskEvent(z.dpy, MOUSEMASK | M.ExposureMask | M.SubstructureRedirectMask, &ev);
+        Xt.XMaskEvent(z.dpy, MOUSEMASK | M.ExposureMask | M.SubstructureRedirectMask, &ev);
         switch (ev.type) {
             Xt.Expose | Xt.MapRequest | Xt.ConfigureRequest => try runOne(global_allocator, &ev),
             Xt.MotionNotify => {
