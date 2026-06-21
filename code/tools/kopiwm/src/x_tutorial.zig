@@ -15,6 +15,7 @@ const Rect = @import("rect.zig").Rect;
 pub const Cursor = X.Cursor;
 pub const Drawable = X.Drawable;
 pub const KeySym = X.KeySym;
+pub const Pixmap = X.Pixmap;
 /// To specify a null state, use `None`.
 pub const Window = X.Window;
 
@@ -1039,6 +1040,31 @@ pub inline fn XCreateGC(
     values: *XGCValues,
 ) GC {
     return X.XCreateGC(display, drawable, valuemask, values);
+}
+
+/// The XCreatePixmap function creates a pixmap of the width, height, and depth
+/// you specified and returns a pixmap ID that identifies it. It is valid to
+/// pass an InputOnly window to the drawable argument. The width and height
+/// arguments must be nonzero, or a BadValue error results. The depth argument
+/// must be one of the depths supported by the screen of the specified
+/// drawable, or a BadValue error results.
+///
+/// The server uses the specified drawable to determine on which screen to
+/// create the pixmap. The pixmap can be used only on this screen and only with
+/// other drawables of the same depth (see XCopyPlane for an exception to this
+/// rule). The initial contents of the pixmap are undefined.
+///
+/// XCreatePixmap can generate BadAlloc, BadDrawable, and BadValue errors.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XCreatePixmap.3.xhtml
+pub inline fn XCreatePixmap(
+    display: *Display,
+    drawable: Drawable,
+    width: c_uint,
+    height: c_uint,
+    depth: c_uint,
+) Pixmap {
+    return X.XCreatePixmap(display, drawable, width, height, depth);
 }
 
 /// The XCreateWindow function creates an unmapped subwindow for a specified

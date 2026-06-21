@@ -188,7 +188,7 @@ pub const Drw = struct {
             .dpy = dpy,
             .screen = screen,
             .root = root,
-            .drawable = X.XCreatePixmap(dpy, root, w, h, @intCast(Xt.DefaultDepth(dpy, screen))),
+            .drawable = Xt.XCreatePixmap(dpy, root, w, h, @intCast(Xt.DefaultDepth(dpy, screen))),
             .gc = Xt.XCreateGC(dpy, root, 0, undefined),
             .fonts = undefined,
         };
@@ -216,7 +216,7 @@ pub const Drw = struct {
         if (self.drawable != 0) {
             _ = X.XFreePixmap(self.dpy, self.drawable);
         }
-        self.drawable = X.XCreatePixmap(
+        self.drawable = Xt.XCreatePixmap(
             self.dpy,
             self.root,
             w,
