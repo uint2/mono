@@ -1657,38 +1657,6 @@ pub inline fn XGetKeyboardMapping(
     );
 }
 
-/// The XGetWMNormalHints function returns the size hints stored in the
-/// WM_NORMAL_HINTS property on the specified window. If the property is of
-/// type WM_SIZE_HINTS, is of format 32, and is long enough to contain either
-/// an old (pre-ICCCM) or new size hints structure, XGetWMNormalHints sets the
-/// various fields of the XSizeHints structure, sets the supplied_return
-/// argument to the list of fields that were supplied by the user (whether or
-/// not they contained defined values), and returns a nonzero status.
-/// Otherwise, it returns a zero status.
-///
-/// If XGetWMNormalHints returns successfully and a pre-ICCCM size hints
-/// property is read, the supplied_return argument will contain the following
-/// bits:
-///
-/// (USPosition|USSize|PPosition|PSize|PMinSize|PMaxSize|PResizeInc|PAspect)
-///
-/// If the property is large enough to contain the base size and window gravity
-/// fields as well, the supplied_return argument will also contain the
-/// following bits:
-///
-/// PBaseSize|PWinGravity
-///
-/// XGetWMNormalHints can generate a PN BadWindow error.
-///
-/// source: https://x.org/releases/X11R7.7/doc/man/man3/XAllocSizeHints.3.xhtml
-pub inline fn XGetWMNormalHints(display: *Display, window: Window) ?XSizeHints {
-    var hints_return: XSizeHints = undefined;
-    var supplied_return: c_long = undefined;
-    const status = X.XGetWMNormalHints(display, window, &hints_return, &supplied_return);
-    if (status == 0) return null;
-    return hints_return;
-}
-
 /// The XGetTextProperty function reads the specified property from the window
 /// and stores the data in the returned XTextProperty structure. It stores the
 /// data in the value field, the type of the data in the encoding field, the
@@ -1878,6 +1846,38 @@ pub inline fn XGetWindowProperty(
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XAllocWMHints.3.xhtml
 pub inline fn XGetWMHints(display: *Display, window: Window) ?*XWMHints {
     return X.XGetWMHints(display, window);
+}
+
+/// The XGetWMNormalHints function returns the size hints stored in the
+/// WM_NORMAL_HINTS property on the specified window. If the property is of
+/// type WM_SIZE_HINTS, is of format 32, and is long enough to contain either
+/// an old (pre-ICCCM) or new size hints structure, XGetWMNormalHints sets the
+/// various fields of the XSizeHints structure, sets the supplied_return
+/// argument to the list of fields that were supplied by the user (whether or
+/// not they contained defined values), and returns a nonzero status.
+/// Otherwise, it returns a zero status.
+///
+/// If XGetWMNormalHints returns successfully and a pre-ICCCM size hints
+/// property is read, the supplied_return argument will contain the following
+/// bits:
+///
+/// (USPosition|USSize|PPosition|PSize|PMinSize|PMaxSize|PResizeInc|PAspect)
+///
+/// If the property is large enough to contain the base size and window gravity
+/// fields as well, the supplied_return argument will also contain the
+/// following bits:
+///
+/// PBaseSize|PWinGravity
+///
+/// XGetWMNormalHints can generate a PN BadWindow error.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XAllocSizeHints.3.xhtml
+pub inline fn XGetWMNormalHints(display: *Display, window: Window) ?XSizeHints {
+    var hints_return: XSizeHints = undefined;
+    var supplied_return: c_long = undefined;
+    const status = X.XGetWMNormalHints(display, window, &hints_return, &supplied_return);
+    if (status == 0) return null;
+    return hints_return;
 }
 
 /// The XGetWMProtocols function returns the list of atoms stored in the
