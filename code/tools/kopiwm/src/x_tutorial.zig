@@ -26,6 +26,7 @@ pub const Window = X.Window;
 pub const FcMatchKind = X.FcMatchKind;
 pub const KeyCode = X.KeyCode;
 pub const Time = X.Time;
+pub const XID = X.XID;
 
 // -----------------------------------------------------------------------------
 // ++ Structs
@@ -2345,6 +2346,25 @@ pub inline fn XInternAtom(
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XStringToKeysym.3.xhtml
 pub inline fn XKeysymToKeycode(display: *Display, keysym: KeySym) KeyCode {
     return X.XKeysymToKeycode(display, keysym);
+}
+
+/// The XKillClient function forces a close down of the client that created the
+/// resource if a valid resource is specified. If the client has already
+/// terminated in either RetainPermanent or RetainTemporary mode, all of the
+/// client's resources are destroyed. If AllTemporary is specified, the
+/// resources of all clients that have terminated in RetainTemporary are
+/// destroyed (see section 2.5). This permits implementation of window manager
+/// facilities that aid debugging. A client can set its close-down mode to
+/// RetainTemporary. If the client then crashes, its windows would not be
+/// destroyed. The programmer can then inspect the application's window tree
+/// and use the window manager to destroy the zombie windows.
+///
+/// XKillClient can generate a BadValue error.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XSetCloseDownMode.3.xhtml
+pub inline fn XKillClient(display: *Display, resource: XID) void {
+    // Meaning of return value is not specified in documentation.
+    _ = X.XKillClient(display, resource);
 }
 
 /// The XMapWindow function maps the window and all of its subwindows that have
