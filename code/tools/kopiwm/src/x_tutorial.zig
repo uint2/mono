@@ -665,6 +665,24 @@ pub const XFocusChangeEvent = X.XFocusChangeEvent;
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XCreateGC.3.xhtml
 pub const XGCValues = X.XGCValues;
 
+/// Glyphs are stored in the server, so these definitions are passed from the
+/// client to the library and on to the server as glyphs are rasterized and
+/// transmitted over the wire.
+///
+/// ```c
+/// typedef struct _XGlyphInfo {
+///     unsigned short  width;
+///     unsigned short  height;
+///     short           x;
+///     short           y;
+///     short           xOff;
+///     short           yOff;
+/// } XGlyphInfo;
+/// ```
+///
+/// source: https://x.org/releases/X11R7.7/doc/libXrender/libXrender.txt
+pub const XGlyphInfo = X.XGlyphInfo;
+
 /// The XModifierKeymap structure contains:
 ///
 /// ```c

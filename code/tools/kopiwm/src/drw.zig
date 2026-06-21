@@ -23,7 +23,7 @@ pub const Fnt = struct {
         if (text.len == 0) {
             return;
         }
-        var ext: X.XGlyphInfo = undefined;
+        var ext: Xt.XGlyphInfo = undefined;
         X.XftTextExtentsUtf8(self.dpy, self.xfont, text.ptr, @intCast(text.len), &ext);
         if (w) |w_ptr| {
             w_ptr.* = @intCast(ext.xOff);
