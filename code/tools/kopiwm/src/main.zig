@@ -1365,15 +1365,13 @@ fn grabkeys() void {
     updatenumlockmask();
     const modifiers: [4]c_uint = .{ 0, Xt.LockMask, z.numlockmask, z.numlockmask | Xt.LockMask };
 
-    var start: c_int = undefined;
-    var end: c_int = undefined;
+    var start: c_int = undefined; // or, Xt.KeyCode
+    var end: c_int = undefined; // or, Xt.KeyCode
     var skip: c_int = undefined;
 
     Xt.XUngrabKey(z.dpy, X.AnyKey, X.AnyModifier, z.root);
     Xt.XDisplayKeycodes(z.dpy, &start, &end);
-    const syms: [*]Xt.KeySym =
-        X.XGetKeyboardMapping(z.dpy, @intCast(start), end - start + 1, &skip) orelse
-        return;
+    const syms = Xt.XGetKeyboardMapping(z.dpy, @intCast(start), end - start + 1, &skip) orelse return;
     defer Xt.XFree(syms);
 
     var keycode = start;

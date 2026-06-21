@@ -24,6 +24,7 @@ pub const Window = X.Window;
 // -----------------------------------------------------------------------------
 
 pub const FcMatchKind = X.FcMatchKind;
+pub const KeyCode = X.KeyCode;
 pub const Time = X.Time;
 
 // -----------------------------------------------------------------------------
@@ -1615,6 +1616,47 @@ pub inline fn XGetClassHint(display: *Display, window: Window) ?XClassHint {
     return class_hints_return;
 }
 
+/// The XGetKeyboardMapping function returns the symbols for the specified
+/// number of KeyCodes starting with first_keycode. The value specified in
+/// first_keycode must be greater than or equal to min_keycode as returned by
+/// XDisplayKeycodes, or a BadValue error results. In addition, the following
+/// expression must be less than or equal to max_keycode as returned by
+/// XDisplayKeycodes:
+///
+/// first_keycode + keycode_count − 1
+///
+/// If this is not the case, a BadValue error results. The number of elements
+/// in the KeySyms list is:
+///
+/// keycode_count * keysyms_per_keycode_return
+///
+/// KeySym number N, counting from zero, for KeyCode K has the following index
+/// in the list, counting from zero: (K − first_code) * keysyms_per_code_return
+/// + N
+///
+/// The X server arbitrarily chooses the keysyms_per_keycode_return value to be
+/// large enough to report all requested symbols. A special KeySym value of
+/// NoSymbol is used to fill in unused elements for individual KeyCodes. To
+/// free the storage returned by XGetKeyboardMapping, use XFree.
+///
+/// XGetKeyboardMapping can generate a BadValue error.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XChangeKeyboardMapping.3.xhtml
+pub inline fn XGetKeyboardMapping(
+    display: *Display,
+    first_keycode: KeyCode,
+    keycode_count: c_int,
+    keysyms_per_keycode_return: *c_int,
+) ?[*]KeySym {
+    // Meaning of return value is not specified in documentation.
+    return X.XGetKeyboardMapping(
+        display,
+        first_keycode,
+        keycode_count,
+        keysyms_per_keycode_return,
+    );
+}
+
 /// The XGetWMNormalHints function returns the size hints stored in the
 /// WM_NORMAL_HINTS property on the specified window. If the property is of
 /// type WM_SIZE_HINTS, is of format 32, and is long enough to contain either
@@ -1637,6 +1679,7 @@ pub inline fn XGetClassHint(display: *Display, window: Window) ?XClassHint {
 /// PBaseSize|PWinGravity
 ///
 /// XGetWMNormalHints can generate a PN BadWindow error.
+///
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XAllocSizeHints.3.xhtml
 pub inline fn XGetWMNormalHints(display: *Display, window: Window) ?XSizeHints {
     var hints_return: XSizeHints = undefined;
