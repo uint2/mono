@@ -1278,6 +1278,19 @@ pub inline fn XDefineCursor(display: *Display, window: Window, cursor: Cursor) v
     _ = X.XDefineCursor(display, window, cursor);
 }
 
+/// The XDeleteProperty function deletes the specified property only if the
+/// property was defined on the specified window and causes the X server to
+/// generate a PropertyNotify event on the window unless the property does not
+/// exist.
+///
+/// XDeleteProperty can generate BadAtom and BadWindow errors.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XGetWindowProperty.3.xhtml
+pub inline fn XDeleteProperty(display: *Display, window: Window, atom: Atom) void {
+    // The meaning of the return value was not specified in documentation.
+    _ = X.XDeleteProperty(display, window, atom);
+}
+
 /// The XFree function is a general-purpose Xlib routine that frees the
 /// specified data. You must use it to free any objects that were allocated by
 /// Xlib, unless an alternate function is explicitly specified for the object.

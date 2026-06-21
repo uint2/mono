@@ -364,7 +364,7 @@ fn updateClientList() void {
     var m_opt = z.mons;
     var c_opt: ?*Client = undefined;
     // Delete the existing list.
-    _ = X.XDeleteProperty(z.dpy, z.root, atoms.net(.ClientList));
+    Xt.XDeleteProperty(z.dpy, z.root, atoms.net(.ClientList));
     // Rebuild the list.
     while (m_opt) |m| : (m_opt = m.next) {
         c_opt = m.clients;
@@ -1243,7 +1243,7 @@ fn setup(allocator: Allocator, wmcheckwin: *Xt.Window) DwmError!void {
         @ptrCast(&atoms.__NET.values),
         @intCast(atoms.__NET.values.len),
     );
-    _ = X.XDeleteProperty(z.dpy, z.root, atoms.net(.ClientList));
+    Xt.XDeleteProperty(z.dpy, z.root, atoms.net(.ClientList));
 
     // Select events.
     {
@@ -1269,7 +1269,7 @@ fn unfocus(client: ?*Client, setfocus: bool) void {
     _ = X.XSetWindowBorder(z.dpy, c.win, z.scheme.get(.Normal).border.pixel);
     if (setfocus) {
         Xt.XSetInputFocus(z.dpy, z.root, .PointerRoot, Xt.CurrentTime);
-        _ = X.XDeleteProperty(z.dpy, z.root, atoms.net(.ActiveWindow));
+        Xt.XDeleteProperty(z.dpy, z.root, atoms.net(.ActiveWindow));
     }
 }
 
@@ -1307,7 +1307,7 @@ fn focus(allocator: Allocator, client: ?*Client) void {
         c.setFocus();
     } else {
         Xt.XSetInputFocus(z.dpy, z.root, .PointerRoot, Xt.CurrentTime);
-        _ = X.XDeleteProperty(z.dpy, z.root, atoms.net(.ActiveWindow));
+        Xt.XDeleteProperty(z.dpy, z.root, atoms.net(.ActiveWindow));
     }
     z.selmon.sel = c_opt;
     drawbars(allocator);
@@ -1437,7 +1437,7 @@ fn cleanup(allocator: Allocator, wmcheckwin: *Xt.Window) void {
     z.drw.deinit(allocator);
     Xt.XSync(z.dpy, false);
     Xt.XSetInputFocus(z.dpy, Xt.PointerRoot, .PointerRoot, Xt.CurrentTime);
-    _ = X.XDeleteProperty(z.dpy, z.root, atoms.net(.ActiveWindow));
+    Xt.XDeleteProperty(z.dpy, z.root, atoms.net(.ActiveWindow));
 }
 
 /// (dwm) cleanupmon
