@@ -618,7 +618,7 @@ fn configureNotify(allocator: Allocator, e: *Xt.XEvent) error{OutOfMemory}!void 
 
 /// (dwm) destroynotify
 fn destroyNotify(allocator: Allocator, e: *Xt.XEvent) void {
-    const ev: X.XDestroyWindowEvent = e.xdestroywindow;
+    const ev: Xt.XDestroyWindowEvent = e.xdestroywindow;
     if (winToClient(ev.window)) |c| unmanage(allocator, c, true);
 }
 

@@ -298,6 +298,36 @@ pub const XConfigureEvent = X.XConfigureEvent;
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XCrossingEvent.3.xhtml
 pub const XCrossingEvent = X.XCrossingEvent;
 
+/// The structure for DestroyNotify events contains:
+///
+/// ```c
+/// typedef struct {
+///     int type;             /* DestroyNotify */
+///     unsigned long serial; /* # of last request processed by server */
+///     Bool send_event;      /* true if this came from a SendEvent request */
+///     Display *display;     /* Display the event was read from */
+///     Window event;
+///     Window window;
+/// } XDestroyWindowEvent;
+/// ```
+///
+/// The type member is set to the event type constant name that uniquely
+/// identifies it. For example, when the X server reports a GraphicsExpose
+/// event to a client application, it sends an XGraphicsExposeEvent structure
+/// with the type member set to GraphicsExpose. The display member is set to a
+/// pointer to the display the event was read on. The send_event member is set
+/// to True if the event came from a SendEvent protocol request. The serial
+/// member is set from the serial number reported in the protocol but expanded
+/// from the 16-bit least-significant bits to a full 32-bit value. The window
+/// member is set to the window that is most useful to toolkit dispatchers.
+///
+/// The event member is set either to the destroyed window or to its parent,
+/// depending on whether StructureNotify or SubstructureNotify was selected.
+/// The window member is set to the window that is destroyed.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XDestroyWindowEvent.3.xhtml
+pub const XDestroyWindowEvent = X.XDestroyWindowEvent;
+
 /// When you receive this event, the structure members are set as follows.
 ///
 /// The serial member is the number of requests, starting from one, sent over
