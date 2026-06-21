@@ -1825,6 +1825,54 @@ pub inline fn XInternAtom(
     return if (atom == X.None) null else atom;
 }
 
+/// The XMapWindow function maps the window and all of its subwindows that have
+/// had map requests. Mapping a window that has an unmapped ancestor does not
+/// display the window but marks it as eligible for display when the ancestor
+/// becomes mapped. Such a window is called unviewable. When all its ancestors
+/// are mapped, the window becomes viewable and will be visible on the screen
+/// if it is not obscured by another window. This function has no effect if the
+/// window is already mapped.
+///
+/// If the override-redirect of the window is False and if some other client
+/// has selected SubstructureRedirectMask on the parent window, then the X
+/// server generates a MapRequest event, and the XMapWindow function does not
+/// map the window. Otherwise, the window is mapped, and the X server generates
+/// a MapNotify event.
+///
+/// If the window becomes viewable and no earlier contents for it are
+/// remembered, the X server tiles the window with its background. If the
+/// window's background is undefined, the existing screen contents are not
+/// altered, and the X server generates zero or more Expose events. If
+/// backing-store was maintained while the window was unmapped, no Expose
+/// events are generated. If backing-store will now be maintained, a
+/// full-window exposure is always generated. Otherwise, only visible regions
+/// may be reported. Similar tiling and exposure take place for any newly
+/// viewable inferiors.
+///
+/// If the window is an InputOutput window, XMapWindow generates Expose events
+/// on each InputOutput window that it causes to be displayed. If the client
+/// maps and paints the window and if the client begins processing events, the
+/// window is painted twice. To avoid this, first ask for Expose events and
+/// then map the window, so the client processes input events as usual. The
+/// event list will include Expose for each window that has appeared on the
+/// screen. The client's normal response to an Expose event should be to
+/// repaint the window. This method usually leads to simpler programs and to
+/// proper interaction with window managers.
+///
+/// XMapWindow can generate a BadWindow error.
+///
+/// The XMapRaised function essentially is similar to XMapWindow in that it
+/// maps the window and all of its subwindows that have had map requests.
+/// However, it also raises the specified window to the top of the stack.
+///
+/// XMapRaised can generate a BadWindow error.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XMapWindow.3.xhtml
+pub inline fn XMapRaised(display: *Display, window: Window) void {
+    // Meaning of return value is not specified in documentation.
+    _ = X.XMapRaised(display, window);
+}
+
 /// The XMoveResizeWindow function changes the size and location of the
 /// specified window without raising it. Moving and resizing a mapped window
 /// may generate an Expose event on the window. Depending on the new size and

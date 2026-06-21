@@ -1495,7 +1495,7 @@ fn updateBars() void {
             z.bar_height,
         });
         Xt.XDefineCursor(z.dpy, m.barwin, z.cursors.get(.Normal));
-        _ = X.XMapRaised(z.dpy, m.barwin);
+        Xt.XMapRaised(z.dpy, m.barwin);
         _ = X.XSetClassHint(z.dpy, m.barwin, &ch);
     }
 }
