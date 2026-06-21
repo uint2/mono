@@ -1571,7 +1571,7 @@ pub inline fn XFreeGC(display: *Display, gc: GC) void {
 /// The XFreeModifiermap function frees the specified XModifierKeymap structure.
 ///
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XChangeKeyboardMapping.3.xhtml
-pub inline fn XFreeModifiermap(modmap: [*c]X.XModifierKeymap) void {
+pub inline fn XFreeModifiermap(modmap: *XModifierKeymap) void {
     // The meaning of the return value was not specified in documentation.
     _ = X.XFreeModifiermap(modmap);
 }
@@ -1655,6 +1655,17 @@ pub inline fn XGetKeyboardMapping(
         keycode_count,
         keysyms_per_keycode_return,
     );
+}
+
+/// The XGetModifierMapping function returns a pointer to a newly created
+/// XModifierKeymap structure that contains the keys being used as modifiers.
+/// The structure should be freed after use by calling XFreeModifiermap. If
+/// only zero values appear in the set for any modifier, that modifier is
+/// disabled.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XChangeKeyboardMapping.3.xhtml
+pub inline fn XGetModifierMapping(display: *Display) ?*XModifierKeymap {
+    return X.XGetModifierMapping(display);
 }
 
 /// The XGetTextProperty function reads the specified property from the window

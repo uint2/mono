@@ -1390,10 +1390,7 @@ fn grabkeys() void {
 /// (dwm) updatenumlockmask
 fn updatenumlockmask() void {
     z.numlockmask = 0;
-    const modmap = X.XGetModifierMapping(z.dpy);
-    if (modmap == null) {
-        return;
-    }
+    const modmap = Xt.XGetModifierMapping(z.dpy) orelse return;
     defer Xt.XFreeModifiermap(modmap);
     const mkpm: usize = @intCast(modmap.*.max_keypermod);
     for (0..8) |i| {
