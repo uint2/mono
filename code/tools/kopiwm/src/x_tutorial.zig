@@ -1291,6 +1291,26 @@ pub inline fn XDeleteProperty(display: *Display, window: Window, atom: Atom) voi
     _ = X.XDeleteProperty(display, window, atom);
 }
 
+/// The XDestroyWindow function destroys the specified window as well as all of
+/// its subwindows and causes the X server to generate a DestroyNotify event
+/// for each window. The window should never be referenced again. If the window
+/// specified by the w argument is mapped, it is unmapped automatically. The
+/// ordering of the DestroyNotify events is such that for any given window
+/// being destroyed, DestroyNotify is generated on any inferiors of the window
+/// before being generated on the window itself. The ordering among siblings
+/// and across subhierarchies is not otherwise constrained. If the window you
+/// specified is a root window, no windows are destroyed. Destroying a mapped
+/// window will generate Expose events on other windows that were obscured by
+/// the window being destroyed.
+///
+/// XDestroyWindow can generate a BadWindow error.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XDestroyWindow.3.xhtml
+pub inline fn XDestroyWindow(display: *Display, window: Window) void {
+    // The meaning of the return value was not specified in documentation.
+    _ = X.XDestroyWindow(display, window);
+}
+
 /// The XFree function is a general-purpose Xlib routine that frees the
 /// specified data. You must use it to free any objects that were allocated by
 /// Xlib, unless an alternate function is explicitly specified for the object.

@@ -1433,7 +1433,7 @@ fn cleanup(allocator: Allocator, wmcheckwin: *Xt.Window) void {
     for (std.enums.values(SchemeState)) |ss| {
         z.drw.scmFree(allocator, z.scheme.get(ss));
     }
-    _ = X.XDestroyWindow(z.dpy, wmcheckwin.*);
+    Xt.XDestroyWindow(z.dpy, wmcheckwin.*);
     z.drw.deinit(allocator);
     Xt.XSync(z.dpy, false);
     Xt.XSetInputFocus(z.dpy, Xt.PointerRoot, .PointerRoot, Xt.CurrentTime);
@@ -1455,7 +1455,7 @@ fn cleanupmon(allocator: Allocator, mon: *Monitor) void {
         }
     }
     _ = Xt.XUnmapWindow(z.dpy, mon.barwin);
-    _ = X.XDestroyWindow(z.dpy, mon.barwin);
+    Xt.XDestroyWindow(z.dpy, mon.barwin);
     log.warn("Deallocate monitor: {*}", .{mon});
     allocator.destroy(mon);
 }
