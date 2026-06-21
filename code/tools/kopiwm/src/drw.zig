@@ -329,7 +329,12 @@ pub const Drw = struct {
             const res = X.XFillRectangle(self.dpy, self.drawable, self.gc, rect.x, rect.y, rect.w, rect.h);
             print_draw_error(res);
         } else {
-            _ = X.XDrawRectangle(self.dpy, self.drawable, self.gc, rect.x, rect.y, rect.w - 1, rect.h - 1);
+            Xt.XDrawRectangle(self.dpy, self.drawable, self.gc, .{
+                .x = rect.x,
+                .y = rect.y,
+                .w = rect.w - 1,
+                .h = rect.h - 1,
+            });
         }
     }
 

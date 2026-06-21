@@ -1357,6 +1357,37 @@ pub inline fn XDisplayKeycodes(
     _ = X.XDisplayKeycodes(display, min_keycodes_return, max_keycodes_return);
 }
 
+/// The XDrawRectangle and XDrawRectangles functions draw the outlines of the
+/// specified rectangle or rectangles as if a five-point PolyLine protocol
+/// request were specified for each rectangle:
+///
+/// [x,y] [x+width,y] [x+width,y+height] [x,y+height] [x,y]
+///
+/// For the specified rectangle or rectangles, these functions do not draw a
+/// pixel more than once. XDrawRectangles draws the rectangles in the order
+/// listed in the array. If rectangles intersect, the intersecting pixels are
+/// drawn multiple times.
+///
+/// Both functions use these GC components: function, plane-mask, line-width,
+/// line-style, cap-style, join-style, fill-style, subwindow-mode,
+/// clip-x-origin, clip-y-origin, and clip-mask. They also use these GC
+/// mode-dependent components: foreground, background, tile, stipple,
+/// tile-stipple-x-origin, tile-stipple-y-origin, dash-offset, and dash-list.
+///
+/// XDrawRectangle and XDrawRectangles can generate BadDrawable, BadGC, and
+/// BadMatch errors.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XDrawRectangle.3.xhtml
+pub inline fn XDrawRectangle(
+    display: *Display,
+    drawable: Drawable,
+    gc: GC,
+    rect: Rect,
+) void {
+    // The meaning of the return value was not specified in documentation.
+    _ = X.XDrawRectangle(display, drawable, gc, rect.x, rect.y, rect.w, rect.h);
+}
+
 /// The XFree function is a general-purpose Xlib routine that frees the
 /// specified data. You must use it to free any objects that were allocated by
 /// Xlib, unless an alternate function is explicitly specified for the object.
