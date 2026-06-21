@@ -624,7 +624,7 @@ fn destroyNotify(allocator: Allocator, e: *Xt.XEvent) void {
 
 /// (dwm) enternotify
 fn enterNotify(allocator: Allocator, e: *Xt.XEvent) void {
-    const ev: X.XCrossingEvent = e.xcrossing;
+    const ev: Xt.XCrossingEvent = e.xcrossing;
     if ((ev.mode != Xt.NotifyNormal or ev.detail == Xt.NotifyInferior) and ev.window != z.root) {
         return;
     }
