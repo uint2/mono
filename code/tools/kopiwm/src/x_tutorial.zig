@@ -1073,6 +1073,62 @@ pub inline fn XCreatePixmap(
 /// top in the stacking order with respect to siblings.
 ///
 /// The coordinate system has the X axis horizontal and the Y axis vertical
+/// with the origin [0, 0] at the upper-left corner. Coordinates are integral,
+/// in terms of pixels, and coincide with pixel centers. Each window and pixmap
+/// has its own coordinate system. For a window, the origin is inside the
+/// border at the inside, upper-left corner.
+///
+/// The border_width for an InputOnly window must be zero, or a BadMatch error
+/// results. For class InputOutput, the visual type and depth must be a
+/// combination supported for the screen, or a BadMatch error results. The
+/// depth need not be the same as the parent, but the parent must not be a
+/// window of class InputOnly, or a BadMatch error results. For an InputOnly
+/// window, the depth must be zero, and the visual must be one supported by the
+/// screen. If either condition is not met, a BadMatch error results. The
+/// parent window, however, may have any depth and class. If you specify any
+/// invalid window attribute for a window, a BadMatch error results.
+///
+/// The created window is not yet displayed (mapped) on the user's display. To
+/// display the window, call XMapWindow. The new window initially uses the same
+/// cursor as its parent. A new cursor can be defined for the new window by
+/// calling XDefineCursor. The window will not be visible on the screen unless
+/// it and all of its ancestors are mapped and it is not obscured by any of its
+/// ancestors.
+///
+/// XCreateWindow can generate BadAlloc BadColor, BadCursor, BadMatch,
+/// BadPixmap, BadValue, and BadWindow errors.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XCreateSimpleWindow.3.xhtml
+pub inline fn XCreateSimpleWindow(
+    display: *Display,
+    parent: Window,
+    rect: Rect,
+    /// Specifies the width of the created window's border in pixels.
+    border_width: c_uint,
+    /// Specifies the border pixel value of the window.
+    border: c_ulong,
+    /// Specifies the background pixel value of the window.
+    background: c_ulong,
+) Window {
+    return X.XCreateSimpleWindow(
+        display,
+        parent,
+        rect.x,
+        rect.y,
+        rect.w,
+        rect.h,
+        border_width,
+        border,
+        background,
+    );
+}
+
+/// The XCreateWindow function creates an unmapped subwindow for a specified
+/// parent window, returns the window ID of the created window, and causes the
+/// X server to generate a CreateNotify event. The created window is placed on
+/// top in the stacking order with respect to siblings.
+///
+/// The coordinate system has the X axis horizontal and the Y axis vertical
 /// with the origin [0,0] at the upper-left corner. Coordinates are integral,
 /// in terms of pixels, and coincide with pixel centers. Each window and pixmap
 /// has its own coordinate system. For a window, the origin is inside the

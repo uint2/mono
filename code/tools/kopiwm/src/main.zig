@@ -1224,7 +1224,8 @@ fn setup(allocator: Allocator, wmcheckwin: *Xt.Window) DwmError!void {
     updateStatus(allocator);
 
     // Supporting window for NetWMCheck.
-    wmcheckwin.* = X.XCreateSimpleWindow(z.dpy, z.root, 0, 0, 1, 1, 0, 0, 0);
+    const smol = Rect{ .x = 0, .y = 0, .w = 1, .h = 1 };
+    wmcheckwin.* = Xt.XCreateSimpleWindow(z.dpy, z.root, smol, 0, 0, 0);
     // The @ptrCast is hella sus from dwm. This is supposed to be a const char* in C.
     Xt.XChangeProperty(z.dpy, wmcheckwin.*, atoms.net(.WMCheck), Xt.XA_WINDOW, 32, .Replace, @ptrCast(wmcheckwin), 1);
     Xt.XChangeProperty(z.dpy, wmcheckwin.*, atoms.net(.WMName), utf8string, 8, .Replace, "dwm", 3);
