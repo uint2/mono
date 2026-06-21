@@ -723,10 +723,9 @@ fn propertyNotify(allocator: Allocator, e: *Xt.XEvent) void {
     } else if (winToClient(ev.window)) |c| {
         switch (ev.atom) {
             Xt.XA_WM_TRANSIENT_FOR => {
-                var trans: Xt.Window = undefined;
-                const b = !c.is_floating.now and
-                    X.XGetTransientForHint(z.dpy, c.win, &trans) != 0;
-                c.is_floating.set(winToClient(trans) != null);
+                const trans_opt = Xt.XGetTransientForHint(z.dpy, c.win);
+                const b = !c.is_floating.now and trans_opt != null;
+                if (trans_opt) |t| c.is_floating.set(winToClient(t) != null);
                 if (b and c.is_floating.now) arrange(allocator, c.mon);
             },
             Xt.XA_WM_NORMAL_HINTS => c.hintsvalid = false,
@@ -839,7 +838,7 @@ fn scan(allocator: Allocator) error{OutOfMemory}!void {
     while (i < num) : (i += 1) {
         const res = X.XGetWindowAttributes(z.dpy, wins[i], &wa);
         if (res == 0 or wa.override_redirect != 0) continue;
-        if (X.XGetTransientForHint(z.dpy, wins[i], &d1) != 0) continue;
+        if (Xt.XGetTransientForHint(z.dpy, wins[i]) == null) continue;
         if (wa.map_state == Xt.IsViewable or getState(wins[i]) == Xt.IconicState) {
             log.info("Start managing window {d} (scan, non-transient)", .{wins[i]});
             try manage(allocator, wins[i], &wa);
@@ -848,7 +847,7 @@ fn scan(allocator: Allocator) error{OutOfMemory}!void {
     i = 0;
     while (i < num) : (i += 1) { // now the transients
         if (X.XGetWindowAttributes(z.dpy, wins[i], &wa) == 0) continue;
-        if (X.XGetTransientForHint(z.dpy, wins[i], &d1) == 0) continue;
+        if (Xt.XGetTransientForHint(z.dpy, wins[i]) == null) continue;
         const viewable = wa.map_state == Xt.IsViewable;
         const iconic = getState(wins[i]) == Xt.IconicState;
         if (viewable or iconic) {
