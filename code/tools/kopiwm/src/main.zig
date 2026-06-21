@@ -1370,7 +1370,7 @@ fn grabkeys() void {
     var skip: c_int = undefined;
 
     _ = X.XUngrabKey(z.dpy, X.AnyKey, X.AnyModifier, z.root);
-    _ = X.XDisplayKeycodes(z.dpy, &start, &end);
+    Xt.XDisplayKeycodes(z.dpy, &start, &end);
     const syms: [*]Xt.KeySym =
         X.XGetKeyboardMapping(z.dpy, @intCast(start), end - start + 1, &skip) orelse
         return;

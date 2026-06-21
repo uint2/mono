@@ -1341,6 +1341,22 @@ pub inline fn XDestroyWindow(display: *Display, window: Window) void {
     _ = X.XDestroyWindow(display, window);
 }
 
+/// The XDisplayKeycodes function returns the min-keycodes and max-keycodes
+/// supported by the specified display. The minimum number of KeyCodes returned
+/// is never less than 8, and the maximum number of KeyCodes returned is never
+/// greater than 255. Not all KeyCodes in this range are required to have
+/// corresponding keys.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XChangeKeyboardMapping.3.xhtml
+pub inline fn XDisplayKeycodes(
+    display: *Display,
+    min_keycodes_return: *c_int,
+    max_keycodes_return: *c_int,
+) void {
+    // The meaning of the return value was not specified in documentation.
+    _ = X.XDisplayKeycodes(display, min_keycodes_return, max_keycodes_return);
+}
+
 /// The XFree function is a general-purpose Xlib routine that frees the
 /// specified data. You must use it to free any objects that were allocated by
 /// Xlib, unless an alternate function is explicitly specified for the object.
