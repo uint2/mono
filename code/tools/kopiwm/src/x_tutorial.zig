@@ -742,6 +742,37 @@ pub const XKeyEvent = X.XKeyEvent;
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XMapEvent.3.xhtml
 pub const XMappingEvent = X.XMappingEvent;
 
+/// The structure for MapRequest events contains:
+///
+/// ```c
+/// typedef struct {
+///     int type;             /* MapRequest */
+///     unsigned long serial; /* # of last request processed by server */
+///     Bool send_event;      /* true if this came from a SendEvent request */
+///     Display *display;     /* Display the event was read from */
+///     Window parent;
+///     Window window;
+/// } XMapRequestEvent;
+/// ```
+///
+/// When you receive this event, the structure members are set as follows.
+///
+/// The type member is set to the event type constant name that uniquely
+/// identifies it. For example, when the X server reports a GraphicsExpose
+/// event to a client application, it sends an XGraphicsExposeEvent structure
+/// with the type member set to GraphicsExpose. The display member is set to a
+/// pointer to the display the event was read on. The send_event member is set
+/// to True if the event came from a SendEvent protocol request. The serial
+/// member is set from the serial number reported in the protocol but expanded
+/// from the 16-bit least-significant bits to a full 32-bit value. The window
+/// member is set to the window that is most useful to toolkit dispatchers.
+///
+/// The parent member is set to the parent window. The window member is set to
+/// the window to be mapped.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XMapRequestEvent.3.xhtml
+pub const XMapRequestEvent = X.XMapRequestEvent;
+
 /// The XModifierKeymap structure contains:
 ///
 /// ```c

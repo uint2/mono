@@ -680,7 +680,7 @@ fn mappingNotify(e: *Xt.XEvent) void {
 
 /// (dwm) maprequest
 fn mapRequest(allocator: Allocator, e: *Xt.XEvent) error{OutOfMemory}!void {
-    const ev: X.XMapRequestEvent = e.xmaprequest;
+    const ev: Xt.XMapRequestEvent = e.xmaprequest;
     var wa: Xt.XWindowAttributes = undefined;
 
     if (!Xt.XGetWindowAttributes(z.dpy, ev.window, &wa)) return;
