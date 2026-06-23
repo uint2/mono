@@ -96,11 +96,11 @@ var xerrorlib: ?*const fn (?*Xt.Display, [*c]Xt.XErrorEvent) callconv(.c) c_int 
 
 /// (dwm) checkotherwm
 fn check_other_wm() void {
-    xerrorlib = X.XSetErrorHandler(xerrorstart);
+    xerrorlib = Xt.XSetErrorHandler(xerrorstart);
     // this causes an error if some other window manager is running
     Xt.XSelectInput(z.dpy, Xt.DefaultRootWindow(z.dpy), M.SubstructureRedirectMask);
     Xt.XSync(z.dpy, false);
-    _ = X.XSetErrorHandler(xerror);
+    _ = Xt.XSetErrorHandler(xerror);
     Xt.XSync(z.dpy, false);
 }
 
@@ -340,14 +340,14 @@ fn unmanage(allocator: Allocator, c: *Client, destroyed: bool) void {
 
     if (!destroyed) {
         Xt.XGrabServer(z.dpy); // dwm: Avoid race conditions.
-        _ = X.XSetErrorHandler(xerrordummy);
+        _ = Xt.XSetErrorHandler(xerrordummy);
         Xt.XSelectInput(z.dpy, c.win, Xt.masks.NoEventMask);
         var wc = Xt.XWindowChanges{ .border_width = @intCast(c.bw.prev) };
         Xt.XConfigureWindow(z.dpy, c.win, X.CWBorderWidth, &wc); // restore border
         Xt.XUngrabButton(z.dpy, X.AnyButton, X.AnyModifier, c.win);
         c.setState(.WithdrawnState);
         Xt.XSync(z.dpy, false);
-        _ = X.XSetErrorHandler(xerror);
+        _ = Xt.XSetErrorHandler(xerror);
         Xt.XUngrabServer(z.dpy);
     }
     log.warn("Deallocate client: {*} (will arrange monitor {*})", .{ c, c.mon });
@@ -869,11 +869,11 @@ pub fn killClient(_: *const Arg) void {
     if (!sel.sendEvent(atoms.wm(.Delete))) {
         log.info("Kill effective", .{});
         Xt.XGrabServer(z.dpy);
-        _ = X.XSetErrorHandler(xerrordummy);
+        _ = Xt.XSetErrorHandler(xerrordummy);
         Xt.XSetCloseDownMode(z.dpy, .DestroyAll);
         Xt.XKillClient(z.dpy, sel.win);
         Xt.XSync(z.dpy, false);
-        _ = X.XSetErrorHandler(xerror);
+        _ = Xt.XSetErrorHandler(xerror);
         Xt.XUngrabServer(z.dpy);
     } else {
         log.info("Kill ineffective", .{});

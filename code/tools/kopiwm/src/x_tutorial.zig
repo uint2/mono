@@ -2855,6 +2855,24 @@ pub inline fn XSetCloseDownMode(
     _ = X.XSetCloseDownMode(display, @intFromEnum(close_mode));
 }
 
+const ErrHandler = *const fn (?*Display, [*c]XErrorEvent) callconv(.c) c_int;
+
+/// Xlib generally calls the program's supplied error handler whenever an error
+/// is received. It is not called on BadName errors from OpenFont, LookupColor,
+/// or AllocNamedColor protocol requests or on BadFont errors from a QueryFont
+/// protocol request. These errors generally are reflected back to the program
+/// through the procedural interface. Because this condition is not assumed to
+/// be fatal, it is acceptable for your error handler to return; the returned
+/// value is ignored. However, the error handler should not call any functions
+/// (directly or indirectly) on the display that will generate protocol
+/// requests or that will look for input events. The previous error handler is
+/// returned.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XSetErrorHandler.3.xhtml
+pub inline fn XSetErrorHandler(f: ?ErrHandler) (?ErrHandler) {
+    return X.XSetErrorHandler(f);
+}
+
 /// The XSetInputFocus function changes the input focus and the
 /// last-focus-change time. It has no effect if the specified time is earlier
 /// than the current last-focus-change time or is later than the current X
