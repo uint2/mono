@@ -281,7 +281,7 @@ fn manage(allocator: Allocator, w: Xt.Window, wa: *Xt.XWindowAttributes) error{O
 
     var wc = Xt.XWindowChanges{ .border_width = @intCast(c.bw.now) };
     Xt.XConfigureWindow(z.dpy, w, X.CWBorderWidth, &wc);
-    _ = X.XSetWindowBorder(z.dpy, w, z.scheme.get(.Normal).border.pixel);
+    Xt.XSetWindowBorder(z.dpy, w, z.scheme.get(.Normal).border.pixel);
 
     c.configure(z.dpy); // propagates border_width, if size doesn't change
     c.updateWindowType();
@@ -1260,7 +1260,7 @@ fn unfocus(client: ?*Client, setfocus: bool) void {
     const c = client orelse return;
     log.info("Unfocusing client at: {*}", .{c});
     grabbuttons(c, false);
-    _ = X.XSetWindowBorder(z.dpy, c.win, z.scheme.get(.Normal).border.pixel);
+    Xt.XSetWindowBorder(z.dpy, c.win, z.scheme.get(.Normal).border.pixel);
     if (setfocus) {
         Xt.XSetInputFocus(z.dpy, z.root, .PointerRoot, Xt.CurrentTime);
         Xt.XDeleteProperty(z.dpy, z.root, atoms.net(.ActiveWindow));
@@ -1297,7 +1297,7 @@ fn focus(allocator: Allocator, client: ?*Client) void {
         c.detachStack();
         c.attachStack();
         grabbuttons(c, true);
-        _ = X.XSetWindowBorder(z.dpy, c.win, z.scheme.get(.Selected).border.pixel);
+        Xt.XSetWindowBorder(z.dpy, c.win, z.scheme.get(.Selected).border.pixel);
         c.setFocus();
     } else {
         Xt.XSetInputFocus(z.dpy, z.root, .PointerRoot, Xt.CurrentTime);

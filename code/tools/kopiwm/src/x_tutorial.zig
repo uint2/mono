@@ -2957,6 +2957,22 @@ pub inline fn XSetLineAttributes(
     );
 }
 
+/// The XSetWindowBorder function sets the border of the window to the pixel
+/// value you specify. If you attempt to perform this on an InputOnly window, a
+/// BadMatch error results.
+///
+/// XSetWindowBorder can generate BadMatch and BadWindow errors.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XChangeWindowAttributes.3.xhtml
+pub inline fn XSetWindowBorder(
+    display: *Display,
+    window: Window,
+    border_pixel: c_ulong,
+) void {
+    // Meaning of return value is not specified in documentation.
+    _ = X.XSetWindowBorder(display, window, border_pixel);
+}
+
 /// The XSetWMHints function sets the window manager hints that include icon
 /// information and location, the initial state of the window, and whether the
 /// application relies on the window manager to get keyboard input.
