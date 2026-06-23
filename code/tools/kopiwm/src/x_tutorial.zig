@@ -2873,6 +2873,21 @@ pub inline fn XSetErrorHandler(f: ?ErrHandler) (?ErrHandler) {
     return X.XSetErrorHandler(f);
 }
 
+/// The XSetForeground function sets the foreground in the specified GC.
+///
+/// XSetForeground can generate BadAlloc and BadGC errors.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XSetState.3.xhtml
+pub inline fn XSetForeground(
+    display: *Display,
+    gc: GC,
+    /// Specifies the foreground you want to set for the specified GC.
+    foreground: c_ulong,
+) void {
+    // Meaning of return value is not specified in documentation.
+    _ = X.XSetForeground(display, gc, foreground);
+}
+
 /// The XSetInputFocus function changes the input focus and the
 /// last-focus-change time. It has no effect if the specified time is earlier
 /// than the current last-focus-change time or is later than the current X

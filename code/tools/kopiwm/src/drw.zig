@@ -314,7 +314,7 @@ pub const Drw = struct {
     pub fn drawRect(self: *Self, rect: Rect, filled: bool, invert: bool) void {
         const scheme = self.scheme orelse return;
         const color = if (invert) scheme.bg.pixel else scheme.fg.pixel;
-        _ = X.XSetForeground(self.dpy, self.gc, color);
+        Xt.XSetForeground(self.dpy, self.gc, color);
         if (filled) {
             Xt.XFillRectangle(self.dpy, self.drawable, self.gc, rect);
         } else {
@@ -369,7 +369,7 @@ pub const Drw = struct {
             w = if (invert_) invert else ~invert;
         } else {
             const color = if (invert_) &self.scheme.?.fg else &self.scheme.?.bg;
-            _ = X.XSetForeground(self.dpy, self.gc, color.pixel);
+            Xt.XSetForeground(self.dpy, self.gc, color.pixel);
             Xt.XFillRectangle(self.dpy, self.drawable, self.gc, .{ .x = x, .y = y, .w = w, .h = h });
             if (w < lpad) {
                 return x + @as(i32, @intCast(w));
