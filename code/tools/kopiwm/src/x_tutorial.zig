@@ -2722,6 +2722,17 @@ pub inline fn XRaiseWindow(display: *Display, window: Window) void {
     _ = X.XRaiseWindow(display, window);
 }
 
+/// The XRefreshKeyboardMapping function refreshes the stored modifier and
+/// keymap information. You usually call this function when a MappingNotify
+/// event with a request member of MappingKeyboard or MappingModifier occurs.
+/// The result is to update Xlib's knowledge of the keyboard.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XLookupKeysym.3.xhtml
+pub inline fn XRefreshKeyboardMapping(ev: *XMappingEvent) void {
+    // Meaning of return value is not specified in documentation.
+    _ = X.XRefreshKeyboardMapping(ev);
+}
+
 /// The XSelectInput function requests that the X server report the events
 /// associated with the specified event mask. Initially, X will not report any
 /// of these events. Events are reported relative to a window. If a window is

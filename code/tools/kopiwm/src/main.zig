@@ -672,7 +672,7 @@ fn keyPress(e: *Xt.XEvent) DwmError!void {
 /// (dwm) mappingnotify
 fn mappingNotify(e: *Xt.XEvent) void {
     const ev: *Xt.XMappingEvent = &e.xmapping;
-    _ = X.XRefreshKeyboardMapping(ev);
+    Xt.XRefreshKeyboardMapping(ev);
     if (ev.request == Xt.MappingKeyboard) {
         grabkeys();
     }
