@@ -328,7 +328,7 @@ fn manage(allocator: Allocator, w: Xt.Window, wa: *Xt.XWindowAttributes) error{O
     }
     c.mon.sel = c;
     arrange(allocator, c.mon);
-    _ = X.XMapWindow(z.dpy, c.win);
+    Xt.XMapWindow(z.dpy, c.win);
     focus(allocator, null);
 }
 
