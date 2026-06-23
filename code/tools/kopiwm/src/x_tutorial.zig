@@ -2701,6 +2701,27 @@ pub inline fn XQueryTree(
     return children;
 }
 
+/// The XRaiseWindow function raises the specified window to the top of the
+/// stack so that no sibling window obscures it. If the windows are regarded as
+/// overlapping sheets of paper stacked on a desk, then raising a window is
+/// analogous to moving the sheet to the top of the stack but leaving its x and
+/// y location on the desk constant. Raising a mapped window may generate
+/// Expose events for the window and any mapped subwindows that were formerly
+/// obscured.
+///
+/// If the override-redirect attribute of the window is False and some other
+/// client has selected SubstructureRedirectMask on the parent, the X server
+/// generates a ConfigureRequest event, and no processing is performed.
+/// Otherwise, the window is raised.
+///
+/// XRaiseWindow can generate a BadWindow error.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XRaiseWindow.3.xhtml
+pub inline fn XRaiseWindow(display: *Display, window: Window) void {
+    // Meaning of return value is not specified in documentation.
+    _ = X.XRaiseWindow(display, window);
+}
+
 /// The XSelectInput function requests that the X server report the events
 /// associated with the specified event mask. Initially, X will not report any
 /// of these events. Events are reported relative to a window. If a window is

@@ -297,7 +297,7 @@ fn manage(allocator: Allocator, w: Xt.Window, wa: *Xt.XWindowAttributes) error{O
         c.is_floating = .init(transient_window != null or c.is_fixed);
     }
     if (c.is_floating.now) {
-        _ = X.XRaiseWindow(z.dpy, c.win);
+        Xt.XRaiseWindow(z.dpy, c.win);
     }
     c.attach();
     c.attachStack();
@@ -400,7 +400,7 @@ fn restack(allocator: Allocator, m: *Monitor) void {
 
     const sel = m.sel orelse return;
     if (sel.is_floating.now or !has_arrange) {
-        _ = X.XRaiseWindow(z.dpy, sel.win);
+        Xt.XRaiseWindow(z.dpy, sel.win);
     }
     if (has_arrange) {
         var wc = Xt.XWindowChanges{ .stack_mode = Xt.Below, .sibling = m.barwin };

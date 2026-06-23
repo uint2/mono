@@ -262,7 +262,7 @@ pub const Client = struct {
             self.bw.set(0);
             self.is_floating.set(true);
             self.resize(self.mon.m);
-            // XRaiseWindow(dpy, self.win);
+            Xt.XRaiseWindow(self.app.dpy, self.win);
         } else if (!fullscreen and self.isfullscreen) {
             Xt.XChangeProperty(
                 z.dpy,
