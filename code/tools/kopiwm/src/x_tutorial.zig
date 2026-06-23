@@ -2674,6 +2674,33 @@ pub inline fn XQueryPointer(
     return r;
 }
 
+/// The XQueryTree function returns the root ID, the parent window ID, a
+/// pointer to the list of children windows (NULL when there are no children),
+/// and the number of children in the list for the specified window. The
+/// children are listed in current stacking order, from bottom-most (first) to
+/// top-most (last). XQueryTree returns zero if it fails and nonzero if it
+/// succeeds. To free a non-NULL children list when it is no longer needed, use
+/// XFree.
+///
+/// XQueryTree can generate a BadWindow error.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XQueryTree.3.xhtml
+pub inline fn XQueryTree(
+    display: *Display,
+    window: Window,
+    root_return: *Window,
+    parent_return: *Window,
+) ?[]Window {
+    var c_opt: ?[*]Window = undefined;
+    var n: c_uint = undefined;
+    const status = X.XQueryTree(display, window, root_return, parent_return, &c_opt, &n);
+    if (status == 0) return null;
+    var children: []Window = undefined;
+    children.ptr = c_opt orelse return null;
+    children.len = @intCast(n);
+    return children;
+}
+
 /// The XSelectInput function requests that the X server report the events
 /// associated with the specified event mask. Initially, X will not report any
 /// of these events. Events are reported relative to a window. If a window is

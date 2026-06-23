@@ -817,25 +817,20 @@ fn createHandler() [Xt.LASTEvent]?HandlerFn {
 /// (dwm) scan
 fn scan(allocator: Allocator) error{OutOfMemory}!void {
     var wa: Xt.XWindowAttributes = undefined;
-    var num: c_uint = undefined;
     var i: c_uint = undefined;
     var d1: Xt.Window = undefined;
     var d2: Xt.Window = undefined;
-    var wins_opt: ?[*]Xt.Window = undefined;
 
-    if (X.XQueryTree(z.dpy, z.root, &d1, &d2, &wins_opt, &num) == 0) {
-        return;
-    }
     // No need to call XFree because null in Zig means NULL in C.
-    const wins: [*]Xt.Window = wins_opt orelse return;
-    defer Xt.XFree(wins);
+    const wins: []Xt.Window = Xt.XQueryTree(z.dpy, z.root, &d1, &d2) orelse return;
+    defer Xt.XFree(wins.ptr);
 
     // Note: this section down here in important in deciding which window to be
     // `manage`d. We specifically do NOT want to be `manage`-ing the bar
     // window.
 
     i = 0;
-    while (i < num) : (i += 1) {
+    while (i < wins.len) : (i += 1) {
         const ok = Xt.XGetWindowAttributes(z.dpy, wins[i], &wa);
         if (!ok or wa.override_redirect != 0) continue;
         if (Xt.XGetTransientForHint(z.dpy, wins[i]) == null) continue;
@@ -845,7 +840,7 @@ fn scan(allocator: Allocator) error{OutOfMemory}!void {
         }
     }
     i = 0;
-    while (i < num) : (i += 1) { // now the transients
+    while (i < wins.len) : (i += 1) { // now the transients
         if (!Xt.XGetWindowAttributes(z.dpy, wins[i], &wa)) continue;
         if (Xt.XGetTransientForHint(z.dpy, wins[i]) == null) continue;
         const viewable = wa.map_state == Xt.IsViewable;
