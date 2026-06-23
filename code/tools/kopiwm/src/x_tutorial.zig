@@ -2933,6 +2933,30 @@ pub inline fn XSetInputFocus(
     _ = X.XSetInputFocus(display, window, @intFromEnum(revert_to), time);
 }
 
+/// The XSetLineAttributes function sets the line drawing components in the specified GC.
+///
+/// XSetLineAttributes can generate BadAlloc, BadGC, and BadValue errors.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XSetLineAttributes.3.xhtml
+pub inline fn XSetLineAttributes(
+    display: *Display,
+    gc: GC,
+    line_width: c_uint,
+    line_style: LineStyle,
+    cap_style: CapStyle,
+    join_style: JoinStyle,
+) void {
+    // Meaning of return value is not specified in documentation.
+    _ = X.XSetLineAttributes(
+        display,
+        gc,
+        line_width,
+        @intFromEnum(line_style),
+        @intFromEnum(cap_style),
+        @intFromEnum(join_style),
+    );
+}
+
 /// The XSetWMHints function sets the window manager hints that include icon
 /// information and location, the initial state of the window, and whether the
 /// application relies on the window manager to get keyboard input.
@@ -3161,7 +3185,6 @@ pub const Atom = X.Atom;
 
 pub const Below = X.Below;
 pub const ButtonPress = X.ButtonPress;
-pub const CapButt = X.CapButt;
 pub const ClientMessage = X.ClientMessage;
 pub const ConfigureNotify = X.ConfigureNotify;
 pub const ConfigureRequest = X.ConfigureRequest;
@@ -3174,9 +3197,7 @@ pub const Expose = X.Expose;
 pub const FocusIn = X.FocusIn;
 pub const IconicState = X.IconicState;
 pub const IsViewable = X.IsViewable;
-pub const JoinMiter = X.JoinMiter;
 pub const KeyPress = X.KeyPress;
-pub const LineSolid = X.LineSolid;
 pub const LockMask = X.LockMask;
 pub const MapRequest = X.MapRequest;
 pub const MappingKeyboard = X.MappingKeyboard;
@@ -3293,6 +3314,25 @@ pub const PointerShape = enum(@TypeOf(X.XC_left_ptr)) {
     Fleur = X.XC_fleur,
     Left_ptr = X.XC_left_ptr,
     Sizing = X.XC_sizing,
+};
+
+pub const JoinStyle = enum(c_int) {
+    Miter = X.JoinMiter,
+    Round = X.JoinRound,
+    Bevel = X.JoinBevel,
+};
+
+pub const LineStyle = enum(c_int) {
+    Solid = X.LineSolid,
+    OnOffDash = X.LineOnOffDash,
+    DoubleDash = X.LineDoubleDash,
+};
+
+pub const CapStyle = enum(c_int) {
+    NotLast = X.CapNotLast,
+    Butt = X.CapButt,
+    Round = X.CapRound,
+    Projecting = X.CapProjecting,
 };
 
 pub const None = X.None;

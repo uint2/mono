@@ -192,7 +192,7 @@ pub const Drw = struct {
             .gc = Xt.XCreateGC(dpy, root, 0, undefined),
             .fonts = undefined,
         };
-        _ = X.XSetLineAttributes(dpy, drw.gc, 1, Xt.LineSolid, Xt.CapButt, Xt.JoinMiter);
+        Xt.XSetLineAttributes(dpy, drw.gc, 1, .Solid, .Butt, .Miter);
         drw.fonts = try drw.fontsetCreate(allocator, fonts) orelse {
             // Empty linked list. No fonts loaded.
             std.debug.print("no fonts could be loaded.\n", .{});
