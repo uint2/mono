@@ -2837,6 +2837,24 @@ pub inline fn XSetClassHint(
     _ = X.XSetClassHint(display, window, class_hint);
 }
 
+/// The XSetCloseDownMode defines what will happen to the client's resources at
+/// connection close. A connection starts in DestroyAll mode. For information
+/// on what happens to the client's resources when the close_mode argument is
+/// RetainPermanent or RetainTemporary, see section 2.6.
+///
+/// XSetCloseDownMode can generate a BadValue error.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XSetCloseDownMode.3.xhtml
+pub inline fn XSetCloseDownMode(
+    display: *Display,
+    /// Specifies the client close-down mode. You can pass DestroyAll,
+    /// RetainPermanent, or RetainTemporary.
+    close_mode: CloseMode,
+) void {
+    // Meaning of return value is not specified in documentation.
+    _ = X.XSetCloseDownMode(display, @intFromEnum(close_mode));
+}
+
 /// The XSetInputFocus function changes the input focus and the
 /// last-focus-change time. It has no effect if the specified time is earlier
 /// than the current last-focus-change time or is later than the current X
@@ -3226,6 +3244,12 @@ pub const WindowState = enum(c_int) {
     WithdrawnState = X.WithdrawnState,
     NormalState = X.NormalState,
     IconicState = X.IconicState,
+};
+
+pub const CloseMode = enum(c_int) {
+    DestroyAll = X.DestroyAll,
+    RetainPermanent = X.RetainPermanent,
+    RetainTemporary = X.RetainTemporary,
 };
 
 /// There are many more enums than this, just check out any of the X.XC_* stuff.

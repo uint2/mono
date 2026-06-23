@@ -870,7 +870,7 @@ pub fn killClient(_: *const Arg) void {
         log.info("Kill effective", .{});
         Xt.XGrabServer(z.dpy);
         _ = X.XSetErrorHandler(xerrordummy);
-        _ = X.XSetCloseDownMode(z.dpy, Xt.DestroyAll);
+        Xt.XSetCloseDownMode(z.dpy, .DestroyAll);
         Xt.XKillClient(z.dpy, sel.win);
         Xt.XSync(z.dpy, false);
         _ = X.XSetErrorHandler(xerror);
