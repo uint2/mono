@@ -3511,6 +3511,22 @@ pub const err = struct {
 };
 
 // -----------------------------------------------------------------------------
+// ++ RequestCodes
+// -----------------------------------------------------------------------------
+
+/// Request Code of a XErrorEvent.
+pub const rq = struct {
+    pub const ConfigureWindow = X.X_ConfigureWindow;
+    pub const GrabButton = X.X_GrabButton;
+    pub const GrabKey = X.X_GrabKey;
+    pub const SetInputFocus = X.X_SetInputFocus;
+    pub const CopyArea = X.X_CopyArea;
+    pub const PolySegment = X.X_PolySegment;
+    pub const PolyFillRectangle = X.X_PolyFillRectangle;
+    pub const PolyText8 = X.X_PolyText8;
+};
+
+// -----------------------------------------------------------------------------
 // ++ FontConfig
 // -----------------------------------------------------------------------------
 

@@ -74,14 +74,14 @@ fn xerror(_dpy: ?*Xt.Display, err_event: [*c]Xt.XErrorEvent) callconv(.c) c_int 
     const rc = e.request_code;
     const ec = e.error_code;
     if (ec == X.BadWindow or
-        (rc == X.X_SetInputFocus and ec == Xt.err.BadMatch) or
-        (rc == X.X_PolyText8 and ec == Xt.err.BadDrawable) or
-        (rc == X.X_PolyFillRectangle and ec == Xt.err.BadDrawable) or
-        (rc == X.X_PolySegment and ec == Xt.err.BadDrawable) or
-        (rc == X.X_ConfigureWindow and ec == Xt.err.BadMatch) or
-        (rc == X.X_GrabButton and ec == Xt.err.BadAccess) or
-        (rc == X.X_GrabKey and ec == Xt.err.BadAccess) or
-        (rc == X.X_CopyArea and ec == Xt.err.BadDrawable))
+        (rc == Xt.rq.SetInputFocus and ec == Xt.err.BadMatch) or
+        (rc == Xt.rq.PolyText8 and ec == Xt.err.BadDrawable) or
+        (rc == Xt.rq.PolyFillRectangle and ec == Xt.err.BadDrawable) or
+        (rc == Xt.rq.PolySegment and ec == Xt.err.BadDrawable) or
+        (rc == Xt.rq.ConfigureWindow and ec == Xt.err.BadMatch) or
+        (rc == Xt.rq.GrabButton and ec == Xt.err.BadAccess) or
+        (rc == Xt.rq.GrabKey and ec == Xt.err.BadAccess) or
+        (rc == Xt.rq.CopyArea and ec == Xt.err.BadDrawable))
     {
         return 0;
     }
