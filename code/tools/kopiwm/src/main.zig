@@ -1022,11 +1022,11 @@ pub fn resizeMouse(_: *const Arg) DwmError!void {
     );
     if (!grab_ok) return;
     if (c.is_floating.now) {
-        _ = X.XWarpPointer(z.dpy, Xt.None, c.win, 0, 0, 0, 0, //
+        Xt.XWarpPointer(z.dpy, Xt.None, c.win, .zero, //
             @intCast(c.pos.now.w + c.bw.now - 1), //
             @intCast(c.pos.now.h + c.bw.now - 1));
     } else {
-        _ = X.XWarpPointer(z.dpy, Xt.None, z.selmon.barwin, 0, 0, 0, 0, //
+        Xt.XWarpPointer(z.dpy, Xt.None, z.selmon.barwin, .zero, //
             @intFromFloat(z.selmon.mfact * @as(f32, @floatFromInt(z.selmon.m.w))), //
             @intCast(@divFloor(z.selmon.m.h, 2)));
     }
@@ -1076,7 +1076,7 @@ pub fn resizeMouse(_: *const Arg) DwmError!void {
         }
     }
     if (c.is_floating.now) {
-        _ = X.XWarpPointer(z.dpy, Xt.None, c.win, 0, 0, 0, 0, //
+        Xt.XWarpPointer(z.dpy, Xt.None, c.win, .zero, //
             @intCast(c.pos.now.w + c.bw.now - 1), //
             @intCast(c.pos.now.h + c.bw.now - 1));
     }

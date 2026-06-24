@@ -3107,6 +3107,41 @@ pub inline fn XUnmapWindow(display: *Display, window: Window) void {
     _ = X.XUnmapWindow(display, window);
 }
 
+/// If dest_w is None, XWarpPointer moves the pointer by the offsets (dest_x,
+/// dest_y) relative to the current position of the pointer. If dest_w is a
+/// window, XWarpPointer moves the pointer to the offsets (dest_x, dest_y)
+/// relative to the origin of dest_w. However, if src_w is a window, the move
+/// only takes place if the window src_w contains the pointer and if the
+/// specified rectangle of src_w contains the pointer.
+///
+/// The src_x and src_y coordinates are relative to the origin of src_w. If
+/// src_height is zero, it is replaced with the current height of src_w minus
+/// src_y. If src_width is zero, it is replaced with the current width of src_w
+/// minus src_x.
+///
+/// There is seldom any reason for calling this function. The pointer should
+/// normally be left to the user. If you do use this function, however, it
+/// generates events just as if the user had instantaneously moved the pointer
+/// from one position to another. Note that you cannot use XWarpPointer to move
+/// the pointer outside the confine_to window of an active pointer grab. An
+/// attempt to do so will only move the pointer as far as the closest edge of
+/// the confine_to window.
+///
+/// XWarpPointer can generate a BadWindow error.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XWarpPointer.3.xhtml
+pub inline fn XWarpPointer(
+    display: *Display,
+    src_w: Window,
+    dest_w: Window,
+    src: Rect,
+    dest_x: c_int,
+    dest_y: c_int,
+) void {
+    // Meaning of return value is not specified in documentation.
+    _ = X.XWarpPointer(display, src_w, dest_w, src.x, src.y, src.w, src.h, dest_x, dest_y);
+}
+
 /// The XmbTextPropertyToTextList, XwcTextPropertyToTextList and
 /// Xutf8TextPropertyToTextList functions return a list of text strings
 /// representing the null-separated elements of the specified XTextProperty
