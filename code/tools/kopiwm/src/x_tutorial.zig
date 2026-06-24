@@ -2368,15 +2368,32 @@ pub inline fn XInternAtom(
     return if (atom == X.None) null else atom;
 }
 
+/// If the specified KeySym is not defined for any KeyCode, XKeysymToKeycode
+/// returns zero.
+///
+/// The inverse function would be `XkbKeycodeToKeysym`.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XStringToKeysym.3.xhtml
+pub inline fn XKeysymToKeycode(display: *Display, keysym: KeySym) KeyCode {
+    return X.XKeysymToKeycode(display, keysym);
+}
+
 /// The XKeycodeToKeysym function uses internal Xlib tables and returns the
 /// KeySym defined for the specified KeyCode and the element of the KeyCode
 /// vector. If no symbol is defined, XKeycodeToKeysym returns NoSymbol.
 /// XKeycodeToKeysym predates the XKB extension. If you want to lookup a KeySym
 /// while using XKB you have to use XkbKeycodeToKeysym.
 ///
+/// The inverse function would be `XKeysymToKeycode`.
+///
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XStringToKeysym.3.xhtml
-pub inline fn XKeysymToKeycode(display: *Display, keysym: KeySym) KeyCode {
-    return X.XKeysymToKeycode(display, keysym);
+pub inline fn XkbKeycodeToKeysym(
+    display: *Display,
+    keycode: KeyCode,
+    group: c_uint,
+    level: c_uint,
+) KeySym {
+    return X.XkbKeycodeToKeysym(display, keycode, group, level);
 }
 
 /// The XKillClient function forces a close down of the client that created the
