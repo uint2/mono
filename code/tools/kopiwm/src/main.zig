@@ -573,7 +573,7 @@ fn configureRequest(e: *Xt.XEvent) void {
             c.configure(z.dpy);
         }
     } else {
-        var wc = X.XWindowChanges{
+        var wc = Xt.XWindowChanges{
             .x = ev.x,
             .y = ev.y,
             .width = ev.width,
