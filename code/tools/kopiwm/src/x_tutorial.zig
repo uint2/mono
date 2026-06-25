@@ -28,6 +28,7 @@ pub const FcMatchKind = X.FcMatchKind;
 pub const KeyCode = X.KeyCode;
 pub const Time = X.Time;
 pub const XID = X.XID;
+pub const XftResult = X.XftResult;
 
 // -----------------------------------------------------------------------------
 // ++ Structs
