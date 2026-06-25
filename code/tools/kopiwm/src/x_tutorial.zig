@@ -3379,6 +3379,19 @@ pub inline fn XftFontMatch(
     return X.XftFontMatch(display, screen, pattern, result);
 }
 
+/// XftFontOpenName behaves as XftFontOpen does, except that it takes a
+/// Fontconfig pattern string (which is passed to the Fontconfig library's
+/// FcNameParse() function).
+///
+/// source: https://man.archlinux.org/man/Xft.3
+pub inline fn XftFontOpenName(
+    display: *Display,
+    screen: c_int,
+    name: []const u8,
+) ?*XftFont {
+    return X.XftFontOpenName(display, screen, name.ptr);
+}
+
 // -----------------------------------------------------------------------------
 // ++ Enums
 // -----------------------------------------------------------------------------

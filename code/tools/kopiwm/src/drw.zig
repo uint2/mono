@@ -64,7 +64,7 @@ fn xfontCreate(
         // FcNameParse; using the latter results in the desired fallback
         // behaviour whereas the former just results in missing-character
         // rectangles being drawn, at least with some fonts.
-        xfont = X.XftFontOpenName(drw.dpy, drw.screen, @ptrCast(fontname)) orelse {
+        xfont = Xt.XftFontOpenName(drw.dpy, drw.screen, fontname) orelse {
             std.debug.print("error, cannot load font from name: '{s}'\n", .{fontname});
             return error.FontCreateError;
         };
