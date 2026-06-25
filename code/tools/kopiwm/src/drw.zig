@@ -270,7 +270,7 @@ pub const Drw = struct {
 
     /// (dwm) drw_clr_free
     pub fn clrFree(self: *Self, c: *Xt.XftColor) void {
-        X.XftColorFree(
+        Xt.XftColorFree(
             self.dpy,
             Xt.DefaultVisual(self.dpy, self.screen),
             Xt.DefaultColormap(self.dpy, self.screen),

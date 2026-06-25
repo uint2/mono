@@ -3258,6 +3258,21 @@ pub inline fn XftColorAllocName(
     return status != X.False;
 }
 
+/// If the visual class is not TrueColor, Xft calls XFreeColors() to free the
+/// entry from the colormap cmap whose pixel value in the color parameter was
+/// allocated by XftColorAllocName().
+///
+/// source: https://man.archlinux.org/man/XftColorAllocName.3
+pub inline fn XftColorFree(
+    display: *Display,
+    visual: *Visual,
+    cmap: Colormap,
+    color: *XftColor,
+) void {
+    // Meaning of return value is not specified in documentation.
+    _ = X.XftColorFree(display, visual, cmap, color);
+}
+
 // -----------------------------------------------------------------------------
 // ++ Enums
 // -----------------------------------------------------------------------------
