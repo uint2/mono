@@ -42,6 +42,7 @@ pub const Display = X.Display;
 pub const FcCharSet = X.FcCharSet;
 pub const FcConfig = X.FcConfig;
 pub const FcPattern = X.FcPattern;
+pub const FcResult = X.FcResult;
 /// X Graphics Context.
 pub const GC = X.GC;
 pub const Visual = X.Visual;
@@ -3362,6 +3363,20 @@ pub inline fn XftDrawStringUtf8(
 /// source: https://man.archlinux.org/man/Xft.3
 pub inline fn XftFontClose(display: *Display, font: *XftFont) void {
     X.XftFontClose(display, font);
+}
+
+/// Also used internally by the XftFontOpen* functions, XftFontMatch can also
+/// be used directly to determine the Fontconfig font pattern resulting from an
+/// Xft font open request.
+///
+/// source: https://man.archlinux.org/man/Xft.3
+pub inline fn XftFontMatch(
+    display: *Display,
+    screen: c_int,
+    pattern: *FcPattern,
+    result: *FcResult,
+) ?*FcPattern {
+    return X.XftFontMatch(display, screen, pattern, result);
 }
 
 // -----------------------------------------------------------------------------

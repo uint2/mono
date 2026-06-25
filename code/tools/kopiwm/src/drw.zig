@@ -527,7 +527,7 @@ pub const Drw = struct {
 
                 _ = Xt.FcConfigSubstitute(null, fcpattern, .Pattern);
                 Xt.FcDefaultSubstitute(fcpattern);
-                match_opt = X.XftFontMatch(self.dpy, self.screen, fcpattern, &result);
+                match_opt = Xt.XftFontMatch(self.dpy, self.screen, fcpattern, &result);
 
                 Xt.FcCharSetDestroy(fccharset);
                 Xt.FcPatternDestroy(fcpattern);
