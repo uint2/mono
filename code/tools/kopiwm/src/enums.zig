@@ -1,4 +1,4 @@
-const Xt = @import("x_tutorial.zig");
+const X = @import("x11.zig");
 const App = @import("app.zig");
 const Layout = @import("layout.zig").Layout;
 const DwmError = @import("errors.zig").DwmError;
@@ -43,10 +43,10 @@ pub const Key = struct {
     /// Modifier keys, in any.
     mod: c_uint,
     /// X keysym.
-    sym: Xt.KeySym,
+    sym: X.KeySym,
     lf: LazyFn,
 
-    pub fn init(mod: c_uint, sym: Xt.KeySym, lf: LazyFn) @This() {
+    pub fn init(mod: c_uint, sym: X.KeySym, lf: LazyFn) @This() {
         return .{ .mod = mod, .sym = sym, .lf = lf };
     }
 };
@@ -103,8 +103,8 @@ pub fn Coordinates(comptime T: type) type {
 
 pub const HandlerFnTag = enum { NoAllocE, AllocE, NoAlloc, Alloc };
 pub const HandlerFn = union(HandlerFnTag) {
-    NoAllocE: *const fn (*Xt.XEvent) DwmError!void,
-    AllocE: *const fn (Allocator, *Xt.XEvent) DwmError!void,
-    NoAlloc: *const fn (*Xt.XEvent) void,
-    Alloc: *const fn (Allocator, *Xt.XEvent) void,
+    NoAllocE: *const fn (*X.XEvent) DwmError!void,
+    AllocE: *const fn (Allocator, *X.XEvent) DwmError!void,
+    NoAlloc: *const fn (*X.XEvent) void,
+    Alloc: *const fn (Allocator, *X.XEvent) void,
 };

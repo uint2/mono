@@ -2,7 +2,17 @@
 //!
 //! https://x.org/releases/X11R7.7/doc/man/man3/
 
-const X = @import("c_lib.zig").X;
+const X = @cImport({
+    @cInclude("X11/Xlib.h");
+    @cInclude("X11/cursorfont.h");
+    @cInclude("X11/keysym.h");
+    @cInclude("X11/Xatom.h");
+    @cInclude("X11/Xproto.h");
+    @cInclude("X11/Xutil.h");
+    @cInclude("X11/Xft/Xft.h");
+    @cInclude("X11/XKBlib.h");
+});
+
 const Coordinates = @import("enums.zig").Coordinates;
 const log = @import("std").log;
 const Rect = @import("rect.zig").Rect;
@@ -11,10 +21,12 @@ const Rect = @import("rect.zig").Rect;
 // ++ XID aliases
 // -----------------------------------------------------------------------------
 
+pub const Colormap = X.Colormap;
 /// See the XC_* defines in X11. The usual cursor would be `XC_left_ptr`.
 pub const Cursor = X.Cursor;
 pub const Drawable = X.Drawable;
 pub const KeySym = X.KeySym;
+pub const Pixmap = X.Pixmap;
 /// To specify a null state, use `None`.
 pub const Window = X.Window;
 
@@ -23,7 +35,10 @@ pub const Window = X.Window;
 // -----------------------------------------------------------------------------
 
 pub const FcMatchKind = X.FcMatchKind;
+pub const KeyCode = X.KeyCode;
 pub const Time = X.Time;
+pub const XID = X.XID;
+pub const XftResult = X.XftResult;
 
 // -----------------------------------------------------------------------------
 // ++ Structs
@@ -38,6 +53,7 @@ pub const Display = X.Display;
 pub const FcCharSet = X.FcCharSet;
 pub const FcConfig = X.FcConfig;
 pub const FcPattern = X.FcPattern;
+pub const FcResult = X.FcResult;
 /// X Graphics Context.
 pub const GC = X.GC;
 pub const Visual = X.Visual;
@@ -151,8 +167,6 @@ pub const XClassHint = X.XClassHint;
 /// } XClientMessageEvent;
 /// ```
 ///
-/// When you receive this event, the structure members are set as follows.
-///
 /// The type member is set to the event type constant name that uniquely
 /// identifies it. For example, when the X server reports a GraphicsExpose
 /// event to a client application, it sends an XGraphicsExposeEvent structure
@@ -175,7 +189,23 @@ pub const XClassHint = X.XClassHint;
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XClientMessageEvent.3.xhtml
 pub const XClientMessageEvent = X.XClientMessageEvent;
 
-/// When you receive this event, the structure members are set as follows.
+/// The structure for ConfigureNotify events contains:
+///
+/// ```c
+/// typedef struct {
+///     int type;             /* ConfigureNotify */
+///     unsigned long serial; /* # of last request processed by server */
+///     Bool send_event;      /* true if this came from a SendEvent request */
+///     Display *display;     /* Display the event was read from */
+///     Window event;
+///     Window window;
+///     int x, y;
+///     int width, height;
+///     int border_width;
+///     Window above;
+///     Bool override_redirect;
+/// } XConfigureEvent;
+/// ```
 ///
 /// The type member is set to the event type constant name that uniquely
 /// identifies it. For example, when the X server reports a GraphicsExpose
@@ -211,7 +241,133 @@ pub const XClientMessageEvent = X.XClientMessageEvent;
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XConfigureEvent.3.xhtml
 pub const XConfigureEvent = X.XConfigureEvent;
 
-/// When you receive this event, the structure members are set as follows.
+/// ```c
+/// typedef struct {
+///     int type;             /* EnterNotify or LeaveNotify */
+///     unsigned long serial; /* # of last request processed by server */
+///     Bool send_event;      /* true if this came from a SendEvent request */
+///     Display *display;     /* Display the event was read from */
+///     Window window;        /* "event" window reported relative to */
+///     Window root;          /* root window that the event occurred on */
+///     Window subwindow;     /* child window */
+///     Time time;            /* milliseconds */
+///     int x, y;             /* pointer x, y coordinates in event window */
+///     int x_root, y_root;   /* coordinates relative to root */
+///     int mode;             /* NotifyNormal, NotifyGrab, NotifyUngrab */
+///     int detail;           /*
+///                            * NotifyAncestor, NotifyVirtual, NotifyInferior,
+///                            * NotifyNonlinear,NotifyNonlinearVirtual
+///                            */
+///     Bool same_screen;     /* same screen flag */
+///     Bool focus;           /* boolean focus */
+///     unsigned int state;   /* key or button mask */
+/// } XCrossingEvent;
+/// ```
+///
+/// The type member is set to the event type constant name that uniquely
+/// identifies it. For example, when the X server reports a GraphicsExpose
+/// event to a client application, it sends an XGraphicsExposeEvent structure
+/// with the type member set to GraphicsExpose. The display member is set to a
+/// pointer to the display the event was read on. The send_event member is set
+/// to True if the event came from a SendEvent protocol request. The serial
+/// member is set from the serial number reported in the protocol but expanded
+/// from the 16-bit least-significant bits to a full 32-bit value. The window
+/// member is set to the window that is most useful to toolkit dispatchers.
+///
+/// The window member is set to the window on which the EnterNotify or
+/// LeaveNotify event was generated and is referred to as the event window.
+/// This is the window used by the X server to report the event, and is
+/// relative to the root window on which the event occurred. The root member is
+/// set to the root window of the screen on which the event occurred.
+///
+/// For a LeaveNotify event, if a child of the event window contains the
+/// initial position of the pointer, the subwindow component is set to that
+/// child. Otherwise, the X server sets the subwindow member to None. For an
+/// EnterNotify event, if a child of the event window contains the final
+/// pointer position, the subwindow component is set to that child or None.
+///
+/// The time member is set to the time when the event was generated and is
+/// expressed in milliseconds. The x and y members are set to the coordinates
+/// of the pointer position in the event window. This position is always the
+/// pointer's final position, not its initial position. If the event window is
+/// on the same screen as the root window, x and y are the pointer coordinates
+/// relative to the event window's origin. Otherwise, x and y are set to zero.
+/// The x_root and y_root members are set to the pointer's coordinates relative
+/// to the root window's origin at the time of the event.
+///
+/// The same_screen member is set to indicate whether the event window is on
+/// the same screen as the root window and can be either True or False. If
+/// True, the event and root windows are on the same screen. If False, the
+/// event and root windows are not on the same screen.
+///
+/// The focus member is set to indicate whether the event window is the focus
+/// window or an inferior of the focus window. The X server can set this member
+/// to either True or False. If True, the event window is the focus window or
+/// an inferior of the focus window. If False, the event window is not the
+/// focus window or an inferior of the focus window.
+///
+/// The state member is set to indicate the state of the pointer buttons and
+/// modifier keys just prior to the event. The X server can set this member to
+/// the bitwise inclusive OR of one or more of the button or modifier key
+/// masks: Button1Mask, Button2Mask, Button3Mask, Button4Mask, Button5Mask,
+/// ShiftMask, LockMask, ControlMask, Mod1Mask, Mod2Mask, Mod3Mask, Mod4Mask,
+/// Mod5Mask.
+///
+/// The mode member is set to indicate whether the events are normal events,
+/// pseudo-motion events when a grab activates, or pseudo-motion events when a
+/// grab deactivates. The X server can set this member to NotifyNormal,
+/// NotifyGrab, or NotifyUngrab.
+///
+/// The detail member is set to indicate the notify detail and can be
+/// NotifyAncestor, NotifyVirtual, NotifyInferior, NotifyNonlinear, or
+/// NotifyNonlinearVirtual.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XCrossingEvent.3.xhtml
+pub const XCrossingEvent = X.XCrossingEvent;
+
+/// The structure for DestroyNotify events contains:
+///
+/// ```c
+/// typedef struct {
+///     int type;             /* DestroyNotify */
+///     unsigned long serial; /* # of last request processed by server */
+///     Bool send_event;      /* true if this came from a SendEvent request */
+///     Display *display;     /* Display the event was read from */
+///     Window event;
+///     Window window;
+/// } XDestroyWindowEvent;
+/// ```
+///
+/// The type member is set to the event type constant name that uniquely
+/// identifies it. For example, when the X server reports a GraphicsExpose
+/// event to a client application, it sends an XGraphicsExposeEvent structure
+/// with the type member set to GraphicsExpose. The display member is set to a
+/// pointer to the display the event was read on. The send_event member is set
+/// to True if the event came from a SendEvent protocol request. The serial
+/// member is set from the serial number reported in the protocol but expanded
+/// from the 16-bit least-significant bits to a full 32-bit value. The window
+/// member is set to the window that is most useful to toolkit dispatchers.
+///
+/// The event member is set either to the destroyed window or to its parent,
+/// depending on whether StructureNotify or SubstructureNotify was selected.
+/// The window member is set to the window that is destroyed.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XDestroyWindowEvent.3.xhtml
+pub const XDestroyWindowEvent = X.XDestroyWindowEvent;
+
+/// The XErrorEvent structure contains:
+///
+/// ```c
+/// typedef struct {
+///     int type;
+///     Display *display;           /* Display the event was read from */
+///     unsigned long serial;       /* serial number of failed request */
+///     unsigned char error_code;   /* error code of failed request */
+///     unsigned char request_code; /* Major op-code of failed request */
+///     unsigned char minor_code;   /* Minor op-code of failed request */
+///     XID resourceid;             /* resource id */
+/// } XErrorEvent;
+/// ```
 ///
 /// The serial member is the number of requests, starting from one, sent over
 /// the network connection since it was opened. It is the number that was the
@@ -238,16 +394,472 @@ pub const XErrorEvent = X.XErrorEvent;
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XAnyEvent.3.xhtml
 pub const XEvent = X.XEvent;
 
+/// The structure for Expose events contains:
+///
+/// ```c
+/// typedef struct {
+///     int type;             /* Expose */
+///     unsigned long serial; /* # of last request processed by server */
+///     Bool send_event;      /* true if this came from a SendEvent request */
+///     Display *display;     /* Display the event was read from */
+///     Window window;
+///     int x, y;
+///     int width, height;
+///     int count;            /* if nonzero, at least this many more */
+/// } XExposeEvent;
+/// ```
+///
+/// The type member is set to the event type constant name that uniquely
+/// identifies it. For example, when the X server reports a GraphicsExpose
+/// event to a client application, it sends an XGraphicsExposeEvent structure
+/// with the type member set to GraphicsExpose. The display member is set to a
+/// pointer to the display the event was read on. The send_event member is set
+/// to True if the event came from a SendEvent protocol request. The serial
+/// member is set from the serial number reported in the protocol but expanded
+/// from the 16-bit least-significant bits to a full 32-bit value. The window
+/// member is set to the window that is most useful to toolkit dispatchers.
+///
+/// The window member is set to the exposed (damaged) window. The x and y
+/// members are set to the coordinates relative to the window's origin and
+/// indicate the upper-left corner of the rectangle. The width and height
+/// members are set to the size (extent) of the rectangle. The count member is
+/// set to the number of Expose events that are to follow. If count is zero, no
+/// more Expose events follow for this window. However, if count is nonzero, at
+/// least that number of Expose events (and possibly more) follow for this
+/// window. Simple applications that do not want to optimize redisplay by
+/// distinguishing between subareas of its window can just ignore all Expose
+/// events with nonzero counts and perform full redisplays on events with zero
+/// counts.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XExposeEvent.3.xhtml
+pub const XExposeEvent = X.XExposeEvent;
+
+/// The structure for FocusIn and FocusOut events contains:
+///
+/// ```c
+/// typedef struct {
+///     int type;             /* FocusIn or FocusOut */
+///     unsigned long serial; /* # of last request processed by server */
+///     Bool send_event;      /* true if this came from a SendEvent request */
+///     Display *display;     /* Display the event was read from */
+///     Window window;        /* window of event */
+///     int mode;             /* NotifyNormal, NotifyGrab, NotifyUngrab */
+///     int detail;           /*
+///                            * NotifyAncestor, NotifyVirtual, NotifyInferior,
+///                            * NotifyNonlinear,NotifyNonlinearVirtual, NotifyPointer,
+///                            * NotifyPointerRoot, NotifyDetailNone
+///                            */
+/// } XFocusChangeEvent;
+/// ```
+///
+/// The type member is set to the event type constant name that uniquely
+/// identifies it. For example, when the X server reports a GraphicsExpose
+/// event to a client application, it sends an XGraphicsExposeEvent structure
+/// with the type member set to GraphicsExpose. The display member is set to a
+/// pointer to the display the event was read on. The send_event member is set
+/// to True if the event came from a SendEvent protocol request. The serial
+/// member is set from the serial number reported in the protocol but expanded
+/// from the 16-bit least-significant bits to a full 32-bit value. The window
+/// member is set to the window that is most useful to toolkit dispatchers.
+///
+/// The window member is set to the window on which the FocusIn or FocusOut
+/// event was generated. This is the window used by the X server to report the
+/// event. The mode member is set to indicate whether the focus events are
+/// normal focus events, focus events while grabbed, focus events when a grab
+/// activates, or focus events when a grab deactivates. The X server can set
+/// the mode member to NotifyNormal, NotifyWhileGrabbed, NotifyGrab, or
+/// NotifyUngrab.
+///
+/// All FocusOut events caused by a window unmap are generated after any
+/// UnmapNotify event; however, the X protocol does not constrain the ordering
+/// of FocusOut events with respect to generated EnterNotify, LeaveNotify,
+/// VisibilityNotify, and Expose events.
+///
+/// Depending on the event mode, the detail member is set to indicate the
+/// notify detail and can be NotifyAncestor, NotifyVirtual, NotifyInferior,
+/// NotifyNonlinear, NotifyNonlinearVirtual, NotifyPointer, NotifyPointerRoot,
+/// or NotifyDetailNone.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XFocusChangeEvent.3.xhtml
+pub const XFocusChangeEvent = X.XFocusChangeEvent;
+
+/// The XGCValues structure contains:
+///
+/// ```c
+/// typedef struct {
+///     int function;             /* logical operation */
+///     unsigned long plane_mask; /* plane mask */
+///     unsigned long foreground; /* foreground pixel */
+///     unsigned long background; /* background pixel */
+///     int line_width;           /* line width (in pixels) */
+///     int line_style;           /* LineSolid, LineOnOffDash, LineDoubleDash */
+///     int cap_style;            /* CapNotLast, CapButt, CapRound, CapProjecting */
+///     int join_style;           /* JoinMiter, JoinRound, JoinBevel */
+///     int fill_style;           /* FillSolid, FillTiled, FillStippled FillOpaqueStippled*/
+///     int fill_rule;            /* EvenOddRule, WindingRule */
+///     int arc_mode;             /* ArcChord, ArcPieSlice */
+///     Pixmap tile;              /* tile pixmap for tiling operations */
+///     Pixmap stipple;           /* stipple 1 plane pixmap for stippling */
+///     int ts_x_origin;          /* offset for tile or stipple operations */
+///     int ts_y_origin;
+///     Font font;                /* default text font for text operations */
+///     int subwindow_mode;       /* ClipByChildren, IncludeInferiors */
+///     Bool graphics_exposures;  /* boolean, should exposures be generated */
+///     int clip_x_origin;        /* origin for clipping */
+///     int clip_y_origin;
+///     Pixmap clip_mask;         /* bitmap clipping; other calls for rects */
+///     int dash_offset;          /* patterned/dashed line information */
+///     char dashes;
+/// } XGCValues;
+///
+/// The function attributes of a GC are used when you update a section of a
+/// drawable (the destination) with bits from somewhere else (the source). The
+/// function in a GC defines how the new destination bits are to be computed
+/// from the source bits and the old destination bits. GXcopy is typically the
+/// most useful because it will work on a color display, but special
+/// applications may use other functions, particularly in concert with
+/// particular planes of a color display.
+///
+/// Many graphics operations depend on either pixel values or planes in a GC.
+/// The planes attribute is of type long, and it specifies which planes of the
+/// destination are to be modified, one bit per plane. A monochrome display has
+/// only one plane and will be the least significant bit of the word. As planes
+/// are added to the display hardware, they will occupy more significant bits
+/// in the plane mask.
+///
+/// In graphics operations, given a source and destination pixel, the result is
+/// computed bitwise on corresponding bits of the pixels. That is, a Boolean
+/// operation is performed in each bit plane. The plane_mask restricts the
+/// operation to a subset of planes. A macro constant AllPlanes can be used to
+/// refer to all planes of the screen simultaneously. The result is computed by
+/// the following:
+///
+/// ((src FUNC dst) AND plane-mask) OR (dst AND (NOT plane-mask))
+///
+/// Range checking is not performed on the values for foreground, background,
+/// or plane_mask. They are simply truncated to the appropriate number of bits.
+/// The line-width is measured in pixels and either can be greater than or
+/// equal to one (wide line) or can be the special value zero (thin line).
+///
+/// Wide lines are drawn centered on the path described by the graphics
+/// request. Unless otherwise specified by the join-style or cap-style, the
+/// bounding box of a wide line with endpoints [x1, y1], [x2, y2] and width w
+/// is a rectangle with vertices at the following real coordinates:
+///
+/// [x1-(w*sn/2), y1+(w*cs/2)], [x1+(w*sn/2), y1-(w*cs/2)], [x2-(w*sn/2),
+/// y2+(w*cs/2)], [x2+(w*sn/2), y2-(w*cs/2)]
+///
+/// Here sn is the sine of the angle of the line, and cs is the cosine of the
+/// angle of the line. A pixel is part of the line and so is drawn if the
+/// center of the pixel is fully inside the bounding box (which is viewed as
+/// having infinitely thin edges). If the center of the pixel is exactly on the
+/// bounding box, it is part of the line if and only if the interior is
+/// immediately to its right (x increasing direction). Pixels with centers on a
+/// horizontal edge are a special case and are part of the line if and only if
+/// the interior or the boundary is immediately below (y increasing direction)
+/// and the interior or the boundary is immediately to the right (x increasing
+/// direction).
+///
+/// Thin lines (zero line-width) are one-pixel-wide lines drawn using an
+/// unspecified, device-dependent algorithm. There are only two constraints on
+/// this algorithm.
+///
+/// 1. If a line is drawn unclipped from [x1,y1] to [x2,y2] and if another line is
+///    drawn unclipped from [x1+dx,y1+dy] to [x2+dx,y2+dy], a point [x,y] is touched
+///    by drawing the first line if and only if the point [x+dx,y+dy] is touched by
+///    drawing the second line.
+///
+/// 2. The effective set of points comprising a line cannot be affected by clipping.
+///    That is, a point is touched in a clipped line if and only if the point lies
+///    inside the clipping region and the point would be touched by the line when
+///    drawn unclipped.
+///
+/// A wide line drawn from [x1,y1] to [x2,y2] always draws the same pixels as a
+/// wide line drawn from [x2,y2] to [x1,y1], not counting cap-style and
+/// join-style. It is recommended that this property be true for thin lines,
+/// but this is not required. A line-width of zero may differ from a line-width
+/// of one in which pixels are drawn. This permits the use of many
+/// manufacturers' line drawing hardware, which may run many times faster than
+/// the more precisely specified wide lines.
+///
+/// In general, drawing a thin line will be faster than drawing a wide line of
+/// width one. However, because of their different drawing algorithms, thin
+/// lines may not mix well aesthetically with wide lines. If it is desirable to
+/// obtain precise and uniform results across all displays, a client should
+/// always use a line-width of one rather than a line-width of zero.
+///
+/// For a line with coincident endpoints (x1=x2, y1=y2), when the join-style is
+/// applied at one or both endpoints, the effect is as if the line was removed
+/// from the overall path. However, if the total path consists of or is reduced
+/// to a single point joined with itself, the effect is the same as when the
+/// cap-style is applied at both endpoints.
+///
+/// The tile/stipple represents an infinite two-dimensional plane, with the
+/// tile/stipple replicated in all dimensions. When that plane is superimposed
+/// on the drawable for use in a graphics operation, the upper-left corner of
+/// some instance of the tile/stipple is at the coordinates within the drawable
+/// specified by the tile/stipple origin. The tile/stipple and clip origins are
+/// interpreted relative to the origin of whatever destination drawable is
+/// specified in a graphics request. The tile pixmap must have the same root
+/// and depth as the GC, or a BadMatch error results. The stipple pixmap must
+/// have depth one and must have the same root as the GC, or a BadMatch error
+/// results. For stipple operations where the fill-style is FillStippled but
+/// not FillOpaqueStippled, the stipple pattern is tiled in a single plane and
+/// acts as an additional clip mask to be ANDed with the clip-mask. Although
+/// some sizes may be faster to use than others, any size pixmap can be used
+/// for tiling or stippling.
+///
+/// Storing a pixmap in a GC might or might not result in a copy being made. If
+/// the pixmap is later used as the destination for a graphics request, the
+/// change might or might not be reflected in the GC. If the pixmap is used
+/// simultaneously in a graphics request both as a destination and as a tile or
+/// stipple, the results are undefined.
+///
+/// For optimum performance, you should draw as much as possible with the same
+/// GC (without changing its components). The costs of changing GC components
+/// relative to using different GCs depend on the display hardware and the
+/// server implementation. It is quite likely that some amount of GC
+/// information will be cached in display hardware and that such hardware can
+/// only cache a small number of GCs.
+///
+/// The dashes value is actually a simplified form of the more general patterns
+/// that can be set with XSetDashes. Specifying a value of N is equivalent to
+/// specifying the two-element list [N, N] in XSetDashes. The value must be
+/// nonzero, or a BadValue error results.
+///
+/// The clip-mask restricts writes to the destination drawable. If the
+/// clip-mask is set to a pixmap, it must have depth one and have the same root
+/// as the GC, or a BadMatch error results. If clip-mask is set to None, the
+/// pixels are always drawn regardless of the clip origin. The clip-mask also
+/// can be set by calling the XSetClipRectangles or XSetRegion functions. Only
+/// pixels where the clip-mask has a bit set to 1 are drawn. Pixels are not
+/// drawn outside the area covered by the clip-mask or where the clip-mask has
+/// a bit set to 0. The clip-mask affects all graphics requests. The clip-mask
+/// does not clip sources. The clip-mask origin is interpreted relative to the
+/// origin of whatever destination drawable is specified in a graphics request.
+///
+/// You can set the subwindow-mode to ClipByChildren or IncludeInferiors. For
+/// ClipByChildren, both source and destination windows are additionally
+/// clipped by all viewable InputOutput children. For IncludeInferiors, neither
+/// source nor destination window is clipped by inferiors. This will result in
+/// including subwindow contents in the source and drawing through subwindow
+/// boundaries of the destination. The use of IncludeInferiors on a window of
+/// one depth with mapped inferiors of differing depth is not illegal, but the
+/// semantics are undefined by the core protocol.
+///
+/// The fill-rule defines what pixels are inside (drawn) for paths given in
+/// XFillPolygon requests and can be set to EvenOddRule or WindingRule. For
+/// EvenOddRule, a point is inside if an infinite ray with the point as origin
+/// crosses the path an odd number of times. For WindingRule, a point is inside
+/// if an infinite ray with the point as origin crosses an unequal number of
+/// clockwise and counterclockwise directed path segments. A clockwise directed
+/// path segment is one that crosses the ray from left to right as observed
+/// from the point. A counterclockwise segment is one that crosses the ray from
+/// right to left as observed from the point. The case where a directed line
+/// segment is coincident with the ray is uninteresting because you can simply
+/// choose a different ray that is not coincident with a segment.
+///
+/// For both EvenOddRule and WindingRule, a point is infinitely small, and the
+/// path is an infinitely thin line. A pixel is inside if the center point of
+/// the pixel is inside and the center point is not on the boundary. If the
+/// center point is on the boundary, the pixel is inside if and only if the
+/// polygon interior is immediately to its right (x increasing direction).
+/// Pixels with centers on a horizontal edge are a special case and are inside
+/// if and only if the polygon interior is immediately below (y increasing
+/// direction).
+///
+/// The arc-mode controls filling in the XFillArcs function and can be set to
+/// ArcPieSlice or ArcChord. For ArcPieSlice, the arcs are pie-slice filled.
+/// For ArcChord, the arcs are chord filled.
+///
+/// The graphics-exposure flag controls GraphicsExpose event generation for
+/// XCopyArea and XCopyPlane requests (and any similar requests defined by
+/// extensions).
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XCreateGC.3.xhtml
+pub const XGCValues = X.XGCValues;
+
+/// Glyphs are stored in the server, so these definitions are passed from the
+/// client to the library and on to the server as glyphs are rasterized and
+/// transmitted over the wire.
+///
+/// ```c
+/// typedef struct _XGlyphInfo {
+///     unsigned short  width;
+///     unsigned short  height;
+///     short           x;
+///     short           y;
+///     short           xOff;
+///     short           yOff;
+/// } XGlyphInfo;
+/// ```
+///
+/// source: https://x.org/releases/X11R7.7/doc/libXrender/libXrender.txt
+pub const XGlyphInfo = X.XGlyphInfo;
+
+/// ```c
+/// typedef struct {
+///     int type;             /* KeyPress or KeyRelease */
+///     unsigned long serial; /* # of last request processed by server */
+///     Bool send_event;      /* true if this came from a SendEvent request */
+///     Display *display;     /* Display the event was read from */
+///     Window window;        /* "event" window it is reported relative to */
+///     Window root;          /* root window that the event occurred on */
+///     Window subwindow;     /* child window */
+///     Time time;            /* milliseconds */
+///     int x, y;             /* pointer x, y coordinates in event window */
+///     int x_root, y_root;   /* coordinates relative to root */
+///     unsigned int state;   /* key or button mask */
+///     unsigned int keycode; /* detail */
+///     Bool same_screen;     /* same screen flag */
+/// } XKeyEvent;
+/// ```
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XButtonEvent.3.xhtml
+pub const XKeyEvent = X.XKeyEvent;
+
+/// The structure for MappingNotify events is:
+///
+/// ```c
+/// typedef struct {
+///     int type;             /* MappingNotify */
+///     unsigned long serial; /* # of last request processed by server */
+///     Bool send_event;      /* true if this came from a SendEvent request */
+///     Display *display;     /* Display the event was read from */
+///     Window window;        /* unused */
+///     int request;          /* one of MappingModifier, MappingKeyboard, MappingPointer */
+///     int first_keycode;    /* first keycode */
+///     int count;            /* defines range of change w. first_keycode*/
+/// } XMappingEvent;
+/// ```
+///
+/// The type member is set to the event type constant name that uniquely
+/// identifies it. For example, when the X server reports a GraphicsExpose
+/// event to a client application, it sends an XGraphicsExposeEvent structure
+/// with the type member set to GraphicsExpose. The display member is set to a
+/// pointer to the display the event was read on. The send_event member is set
+/// to True if the event came from a SendEvent protocol request. The serial
+/// member is set from the serial number reported in the protocol but expanded
+/// from the 16-bit least-significant bits to a full 32-bit value. The window
+/// member is set to the window that is most useful to toolkit dispatchers.
+///
+/// The request member is set to indicate the kind of mapping change that
+/// occurred and can be MappingModifier, MappingKeyboard, MappingPointer. If it
+/// is MappingModifier, the modifier mapping was changed. If it is
+/// MappingKeyboard, the keyboard mapping was changed. If it is MappingPointer,
+/// the pointer button mapping was changed. The first_keycode and count members
+/// are set only if the request member was set to MappingKeyboard. The number
+/// in first_keycode represents the first number in the range of the altered
+/// mapping, and count represents the number of keycodes altered.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XMapEvent.3.xhtml
+pub const XMappingEvent = X.XMappingEvent;
+
+/// The structure for MapRequest events contains:
+///
+/// ```c
+/// typedef struct {
+///     int type;             /* MapRequest */
+///     unsigned long serial; /* # of last request processed by server */
+///     Bool send_event;      /* true if this came from a SendEvent request */
+///     Display *display;     /* Display the event was read from */
+///     Window parent;
+///     Window window;
+/// } XMapRequestEvent;
+/// ```
+///
+/// When you receive this event, the structure members are set as follows.
+///
+/// The type member is set to the event type constant name that uniquely
+/// identifies it. For example, when the X server reports a GraphicsExpose
+/// event to a client application, it sends an XGraphicsExposeEvent structure
+/// with the type member set to GraphicsExpose. The display member is set to a
+/// pointer to the display the event was read on. The send_event member is set
+/// to True if the event came from a SendEvent protocol request. The serial
+/// member is set from the serial number reported in the protocol but expanded
+/// from the 16-bit least-significant bits to a full 32-bit value. The window
+/// member is set to the window that is most useful to toolkit dispatchers.
+///
+/// The parent member is set to the parent window. The window member is set to
+/// the window to be mapped.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XMapRequestEvent.3.xhtml
+pub const XMapRequestEvent = X.XMapRequestEvent;
+
 /// The XModifierKeymap structure contains:
 ///
 /// ```c
 /// typedef struct {
-///     int max_keypermod; /* This server's max number of keys per modifier */
+///     int max_keypermod;    /* This server's max number of keys per modifier */
 ///     KeyCode *modifiermap; /* An 8 by max_keypermod array of the modifiers */
 /// } XModifierKeymap;
 /// ```
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XChangeKeyboardMapping.3.xhtml
 pub const XModifierKeymap = X.XModifierKeymap;
+
+/// ```c
+/// typedef struct {
+///     int type;             /* MotionNotify */
+///     unsigned long serial; /* # of last request processed by server */
+///     Bool send_event;      /* true if this came from a SendEvent request */
+///     Display *display;     /* Display the event was read from */
+///     Window window;        /* "event" window reported relative to */
+///     Window root;          /* root window that the event occurred on */
+///     Window subwindow;     /* child window */
+///     Time time;            /* milliseconds */
+///     int x, y;             /* pointer x, y coordinates in event window */
+///     int x_root, y_root;   /* coordinates relative to root */
+///     unsigned int state;   /* key or button mask */
+///     char is_hint;         /* detail */
+///     Bool same_screen;     /* same screen flag */
+/// } XMotionEvent;
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XButtonEvent.3.xhtml
+pub const XMotionEvent = X.XMotionEvent;
+
+/// The structure for PropertyNotify events contains:
+///
+/// ```c
+/// typedef struct {
+///     int type;             /* PropertyNotify */
+///     unsigned long serial; /* # of last request processed by server */
+///     Bool send_event;      /* true if this came from a SendEvent request */
+///     Display *display;     /* Display the event was read from */
+///     Window window;
+///     Atom atom;
+///     Time time;
+///     int state;            /* PropertyNewValue or PropertyDelete */
+/// } XPropertyEvent;
+/// ```
+///
+/// When you receive this event, the structure members are set as follows.
+///
+/// The type member is set to the event type constant name that uniquely
+/// identifies it. For example, when the X server reports a GraphicsExpose
+/// event to a client application, it sends an XGraphicsExposeEvent structure
+/// with the type member set to GraphicsExpose. The display member is set to a
+/// pointer to the display the event was read on. The send_event member is set
+/// to True if the event came from a SendEvent protocol request. The serial
+/// member is set from the serial number reported in the protocol but expanded
+/// from the 16-bit least-significant bits to a full 32-bit value. The window
+/// member is set to the window that is most useful to toolkit dispatchers.
+///
+/// The window member is set to the window whose associated property was
+/// changed. The atom member is set to the property's atom and indicates which
+/// property was changed or desired. The time member is set to the server time
+/// when the property was changed. The state member is set to indicate whether
+/// the property was changed to a new value or deleted and can be
+/// PropertyNewValue or PropertyDelete. The state member is set to
+/// PropertyNewValue when a property of the window is changed using
+/// XChangeProperty or XRotateWindowProperties (even when adding zero-length
+/// data using XChangeProperty) and when replacing all or part of a property
+/// with identical data using XChangeProperty or XRotateWindowProperties. The
+/// state member is set to PropertyDelete when a property of the window is
+/// deleted using XDeleteProperty or, if the delete argument is True,
+/// XGetWindowProperty.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XPropertyEvent.3.xhtml
+pub const XPropertyEvent = X.XPropertyEvent;
 
 /// The XSetWindowAttributes structure contains:
 ///
@@ -343,8 +955,6 @@ pub const XTextProperty = X.XTextProperty;
 ///     Bool from_configure;
 /// } XUnmapEvent;
 /// ```
-///
-/// When you receive this event, the structure members are set as follows.
 ///
 /// The type member is set to the event type constant name that uniquely
 /// identifies it. For example, when the X server reports a GraphicsExpose
@@ -546,6 +1156,34 @@ pub const XWMHints = X.XWMHints;
 ///
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/Xft.3.xhtml
 pub const XftColor = X.XftColor;
+
+/// It's an opaque object which holds information used to render to an X
+/// drawable using either the core protocol or the X Rendering extension.
+///
+/// XftDraw objects are created with any of XftDrawCreate() (which associates
+/// an XftDraw with an existing X drawable), XftDrawCreateBitmap(), or
+/// XftDrawCreateAlpha(), and destroyed with XftDrawDestroy(). The X drawable
+/// associated with an XftDraw can be changed with XftDrawChange(). XftDraw
+/// objects are internally allocated and freed by Xft; the programmer does not
+/// ordinarily need to allocate or free storage for them.
+///
+/// The X Display, Drawable, Colormap, and Visual properties of an XftDraw can
+/// be queried with XftDrawDisplay(), XftDrawDrawable(), XftDrawColormap(), and
+/// XftDrawVisual(), respectively.
+///
+/// Several functions use XftDraw objects: XftDrawCharFontSpec(),
+/// XftDrawCharSpec(), XftDrawGlyphFontSpec(), XftDrawGlyphSpec(),
+/// XftDrawGlyphs(), XftDrawRect(), XftDrawSetClip(),
+/// XftDrawSetClipRectangles(), XftDrawSetSubwindowMode(), and the
+/// XftDrawString*() family.
+///
+/// The X Rendering Extension Picture associated with an XftDraw is returned by
+/// XftDrawPicture(), and XftDrawSrcPicture(). It is used by
+/// XftCharFontSpecRender(), XftCharSpecRender(), XftGlyphFontSpecRender(),
+/// XftGlyphRender(), XftGlyphSpecRender(), and the XftTextRender*() family.
+///
+/// source: https://man.archlinux.org/man/XftColorAllocName.3
+pub const XftDraw = X.XftDraw;
 
 /// An XftFont is the primary data structure of interest to programmers using
 /// Xft; it contains general font metrics and pointers to the Fontconfig
@@ -811,6 +1449,121 @@ pub inline fn XCopyArea(
     );
 }
 
+/// X provides a set of standard cursor shapes in a special font named cursor.
+/// Applications are encouraged to use this interface for their cursors because
+/// the font can be customized for the individual display type. The shape
+/// argument specifies which glyph of the standard fonts to use.
+///
+/// The hotspot comes from the information stored in the cursor font. The
+/// initial colors of a cursor are a black foreground and a white background
+/// (see XRecolorCursor).
+///
+/// XCreateFontCursor can generate BadAlloc and BadValue errors.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XCreateFontCursor.3.xhtml
+pub inline fn XCreateFontCursor(display: *Display, shape: PointerShape) Cursor {
+    return X.XCreateFontCursor(display, @intFromEnum(shape));
+}
+
+/// The XCreateGC function creates a graphics context and returns a GC. The GC
+/// can be used with any destination drawable having the same root and depth as
+/// the specified drawable. Use with other drawables results in a BadMatch
+/// error.
+///
+/// XCreateGC can generate BadAlloc, BadDrawable, BadFont, BadMatch, BadPixmap,
+/// and BadValue errors.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XCreateGC.3.xhtml
+pub inline fn XCreateGC(
+    display: *Display,
+    drawable: Drawable,
+    valuemask: c_ulong,
+    values: *XGCValues,
+) GC {
+    return X.XCreateGC(display, drawable, valuemask, values);
+}
+
+/// The XCreatePixmap function creates a pixmap of the width, height, and depth
+/// you specified and returns a pixmap ID that identifies it. It is valid to
+/// pass an InputOnly window to the drawable argument. The width and height
+/// arguments must be nonzero, or a BadValue error results. The depth argument
+/// must be one of the depths supported by the screen of the specified
+/// drawable, or a BadValue error results.
+///
+/// The server uses the specified drawable to determine on which screen to
+/// create the pixmap. The pixmap can be used only on this screen and only with
+/// other drawables of the same depth (see XCopyPlane for an exception to this
+/// rule). The initial contents of the pixmap are undefined.
+///
+/// XCreatePixmap can generate BadAlloc, BadDrawable, and BadValue errors.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XCreatePixmap.3.xhtml
+pub inline fn XCreatePixmap(
+    display: *Display,
+    drawable: Drawable,
+    width: c_uint,
+    height: c_uint,
+    depth: c_uint,
+) Pixmap {
+    return X.XCreatePixmap(display, drawable, width, height, depth);
+}
+
+/// The XCreateWindow function creates an unmapped subwindow for a specified
+/// parent window, returns the window ID of the created window, and causes the
+/// X server to generate a CreateNotify event. The created window is placed on
+/// top in the stacking order with respect to siblings.
+///
+/// The coordinate system has the X axis horizontal and the Y axis vertical
+/// with the origin [0, 0] at the upper-left corner. Coordinates are integral,
+/// in terms of pixels, and coincide with pixel centers. Each window and pixmap
+/// has its own coordinate system. For a window, the origin is inside the
+/// border at the inside, upper-left corner.
+///
+/// The border_width for an InputOnly window must be zero, or a BadMatch error
+/// results. For class InputOutput, the visual type and depth must be a
+/// combination supported for the screen, or a BadMatch error results. The
+/// depth need not be the same as the parent, but the parent must not be a
+/// window of class InputOnly, or a BadMatch error results. For an InputOnly
+/// window, the depth must be zero, and the visual must be one supported by the
+/// screen. If either condition is not met, a BadMatch error results. The
+/// parent window, however, may have any depth and class. If you specify any
+/// invalid window attribute for a window, a BadMatch error results.
+///
+/// The created window is not yet displayed (mapped) on the user's display. To
+/// display the window, call XMapWindow. The new window initially uses the same
+/// cursor as its parent. A new cursor can be defined for the new window by
+/// calling XDefineCursor. The window will not be visible on the screen unless
+/// it and all of its ancestors are mapped and it is not obscured by any of its
+/// ancestors.
+///
+/// XCreateWindow can generate BadAlloc BadColor, BadCursor, BadMatch,
+/// BadPixmap, BadValue, and BadWindow errors.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XCreateSimpleWindow.3.xhtml
+pub inline fn XCreateSimpleWindow(
+    display: *Display,
+    parent: Window,
+    rect: Rect,
+    /// Specifies the width of the created window's border in pixels.
+    border_width: c_uint,
+    /// Specifies the border pixel value of the window.
+    border: c_ulong,
+    /// Specifies the background pixel value of the window.
+    background: c_ulong,
+) Window {
+    return X.XCreateSimpleWindow(
+        display,
+        parent,
+        rect.x,
+        rect.y,
+        rect.w,
+        rect.h,
+        border_width,
+        border,
+        background,
+    );
+}
+
 /// The XCreateWindow function creates an unmapped subwindow for a specified
 /// parent window, returns the window ID of the created window, and causes the
 /// X server to generate a CreateNotify event. The created window is placed on
@@ -869,6 +1622,130 @@ pub inline fn XCreateWindow(
     );
 }
 
+/// If a cursor is set, it will be used when the pointer is in the window. If
+/// the cursor is None, it is equivalent to XUndefineCursor.
+///
+/// XDefineCursor can generate BadCursor and BadWindow errors.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XDefineCursor.3.xhtml
+pub inline fn XDefineCursor(display: *Display, window: Window, cursor: Cursor) void {
+    // The meaning of the return value was not specified in documentation.
+    _ = X.XDefineCursor(display, window, cursor);
+}
+
+/// The XDeleteProperty function deletes the specified property only if the
+/// property was defined on the specified window and causes the X server to
+/// generate a PropertyNotify event on the window unless the property does not
+/// exist.
+///
+/// XDeleteProperty can generate BadAtom and BadWindow errors.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XGetWindowProperty.3.xhtml
+pub inline fn XDeleteProperty(display: *Display, window: Window, atom: Atom) void {
+    // The meaning of the return value was not specified in documentation.
+    _ = X.XDeleteProperty(display, window, atom);
+}
+
+/// The XDestroyWindow function destroys the specified window as well as all of
+/// its subwindows and causes the X server to generate a DestroyNotify event
+/// for each window. The window should never be referenced again. If the window
+/// specified by the w argument is mapped, it is unmapped automatically. The
+/// ordering of the DestroyNotify events is such that for any given window
+/// being destroyed, DestroyNotify is generated on any inferiors of the window
+/// before being generated on the window itself. The ordering among siblings
+/// and across subhierarchies is not otherwise constrained. If the window you
+/// specified is a root window, no windows are destroyed. Destroying a mapped
+/// window will generate Expose events on other windows that were obscured by
+/// the window being destroyed.
+///
+/// XDestroyWindow can generate a BadWindow error.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XDestroyWindow.3.xhtml
+pub inline fn XDestroyWindow(display: *Display, window: Window) void {
+    // The meaning of the return value was not specified in documentation.
+    _ = X.XDestroyWindow(display, window);
+}
+
+/// The XDisplayKeycodes function returns the min-keycodes and max-keycodes
+/// supported by the specified display. The minimum number of KeyCodes returned
+/// is never less than 8, and the maximum number of KeyCodes returned is never
+/// greater than 255. Not all KeyCodes in this range are required to have
+/// corresponding keys.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XChangeKeyboardMapping.3.xhtml
+pub inline fn XDisplayKeycodes(
+    display: *Display,
+    min_keycodes_return: *c_int,
+    max_keycodes_return: *c_int,
+) void {
+    // The meaning of the return value was not specified in documentation.
+    _ = X.XDisplayKeycodes(display, min_keycodes_return, max_keycodes_return);
+}
+
+/// The XDrawRectangle and XDrawRectangles functions draw the outlines of the
+/// specified rectangle or rectangles as if a five-point PolyLine protocol
+/// request were specified for each rectangle:
+///
+/// [x,y] [x+width,y] [x+width,y+height] [x,y+height] [x,y]
+///
+/// For the specified rectangle or rectangles, these functions do not draw a
+/// pixel more than once. XDrawRectangles draws the rectangles in the order
+/// listed in the array. If rectangles intersect, the intersecting pixels are
+/// drawn multiple times.
+///
+/// Both functions use these GC components: function, plane-mask, line-width,
+/// line-style, cap-style, join-style, fill-style, subwindow-mode,
+/// clip-x-origin, clip-y-origin, and clip-mask. They also use these GC
+/// mode-dependent components: foreground, background, tile, stipple,
+/// tile-stipple-x-origin, tile-stipple-y-origin, dash-offset, and dash-list.
+///
+/// XDrawRectangle and XDrawRectangles can generate BadDrawable, BadGC, and
+/// BadMatch errors.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XDrawRectangle.3.xhtml
+pub inline fn XDrawRectangle(
+    display: *Display,
+    drawable: Drawable,
+    gc: GC,
+    rect: Rect,
+) void {
+    // The meaning of the return value was not specified in documentation.
+    _ = X.XDrawRectangle(display, drawable, gc, rect.x, rect.y, rect.w, rect.h);
+}
+
+/// The XFillRectangle and XFillRectangles functions fill the specified
+/// rectangle or rectangles as if a four-point FillPolygon protocol request
+/// were specified for each rectangle:
+///
+/// [x,y] [x+width,y] [x+width,y+height] [x,y+height]
+///
+/// Each function uses the x and y coordinates, width and height dimensions,
+/// and GC you specify.
+///
+/// XFillRectangles fills the rectangles in the order listed in the array. For
+/// any given rectangle, XFillRectangle and XFillRectangles do not draw a pixel
+/// more than once. If rectangles intersect, the intersecting pixels are drawn
+/// multiple times.
+///
+/// Both functions use these GC components: function, plane-mask, fill-style,
+/// subwindow-mode, clip-x-origin, clip-y-origin, and clip-mask. They also use
+/// these GC mode-dependent components: foreground, background, tile, stipple,
+/// tile-stipple-x-origin, and tile-stipple-y-origin.
+///
+/// XFillRectangle and XFillRectangles can generate BadDrawable, BadGC, and
+/// BadMatch errors.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XFillRectangle.3.xhtml
+pub inline fn XFillRectangle(
+    display: *Display,
+    drawable: Drawable,
+    gc: GC,
+    rect: Rect,
+) void {
+    // The meaning of the return value was not specified in documentation.
+    _ = X.XFillRectangle(display, drawable, gc, rect.x, rect.y, rect.w, rect.h);
+}
+
 /// The XFree function is a general-purpose Xlib routine that frees the
 /// specified data. You must use it to free any objects that were allocated by
 /// Xlib, unless an alternate function is explicitly specified for the object.
@@ -880,11 +1757,48 @@ pub inline fn XFree(ptr: ?*anyopaque) void {
     _ = X.XFree(ptr);
 }
 
+/// The XFreeCursor function deletes the association between the cursor
+/// resource ID and the specified cursor. The cursor storage is freed when no
+/// other resource references it. The specified cursor ID should not be
+/// referred to again.
+///
+/// XFreeCursor can generate a BadCursor error.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XRecolorCursor.3.xhtml
+pub inline fn XFreeCursor(display: *Display, cursor: Cursor) void {
+    // The meaning of the return value was not specified in documentation.
+    _ = X.XFreeCursor(display, cursor);
+}
+
+/// The XFreeGC function destroys the specified GC as well as all the
+/// associated storage.
+///
+/// XFreeGC can generate a BadGC error.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XCreateGC.3.xhtml
+pub inline fn XFreeGC(display: *Display, gc: GC) void {
+    // The meaning of the return value was not specified in documentation.
+    _ = X.XFreeGC(display, gc);
+}
+
 /// The XFreeModifiermap function frees the specified XModifierKeymap structure.
 ///
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XChangeKeyboardMapping.3.xhtml
-pub inline fn XFreeModifiermap(modmap: [*c]X.XModifierKeymap) void {
-    X.XFreeModifiermap(modmap);
+pub inline fn XFreeModifiermap(modmap: *XModifierKeymap) void {
+    // The meaning of the return value was not specified in documentation.
+    _ = X.XFreeModifiermap(modmap);
+}
+
+/// The XFreePixmap function first deletes the association between the pixmap
+/// ID and the pixmap. Then, the X server frees the pixmap storage when there
+/// are no references to it. The pixmap should never be referenced again.
+///
+/// XFreePixmap can generate a BadPixmap error.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XCreatePixmap.3.xhtml
+pub inline fn XFreePixmap(display: *Display, pixmap: Pixmap) void {
+    // The meaning of the return value was not specified in documentation.
+    _ = X.XFreePixmap(display, pixmap);
 }
 
 /// The XFreeStringList function releases memory allocated by
@@ -915,35 +1829,56 @@ pub inline fn XGetClassHint(display: *Display, window: Window) ?XClassHint {
     return class_hints_return;
 }
 
-/// The XGetWMNormalHints function returns the size hints stored in the
-/// WM_NORMAL_HINTS property on the specified window. If the property is of
-/// type WM_SIZE_HINTS, is of format 32, and is long enough to contain either
-/// an old (pre-ICCCM) or new size hints structure, XGetWMNormalHints sets the
-/// various fields of the XSizeHints structure, sets the supplied_return
-/// argument to the list of fields that were supplied by the user (whether or
-/// not they contained defined values), and returns a nonzero status.
-/// Otherwise, it returns a zero status.
+/// The XGetKeyboardMapping function returns the symbols for the specified
+/// number of KeyCodes starting with first_keycode. The value specified in
+/// first_keycode must be greater than or equal to min_keycode as returned by
+/// XDisplayKeycodes, or a BadValue error results. In addition, the following
+/// expression must be less than or equal to max_keycode as returned by
+/// XDisplayKeycodes:
 ///
-/// If XGetWMNormalHints returns successfully and a pre-ICCCM size hints
-/// property is read, the supplied_return argument will contain the following
-/// bits:
+/// first_keycode + keycode_count − 1
 ///
-/// (USPosition|USSize|PPosition|PSize|PMinSize|PMaxSize|PResizeInc|PAspect)
+/// If this is not the case, a BadValue error results. The number of elements
+/// in the KeySyms list is:
 ///
-/// If the property is large enough to contain the base size and window gravity
-/// fields as well, the supplied_return argument will also contain the
-/// following bits:
+/// keycode_count * keysyms_per_keycode_return
 ///
-/// PBaseSize|PWinGravity
+/// KeySym number N, counting from zero, for KeyCode K has the following index
+/// in the list, counting from zero: (K − first_code) * keysyms_per_code_return
+/// + N
 ///
-/// XGetWMNormalHints can generate a PN BadWindow error.
-/// source: https://x.org/releases/X11R7.7/doc/man/man3/XAllocSizeHints.3.xhtml
-pub inline fn XGetWMNormalHints(display: *Display, window: Window) ?XSizeHints {
-    var hints_return: XSizeHints = undefined;
-    var supplied_return: c_long = undefined;
-    const status = X.XGetWMNormalHints(display, window, &hints_return, &supplied_return);
-    if (status == 0) return null;
-    return hints_return;
+/// The X server arbitrarily chooses the keysyms_per_keycode_return value to be
+/// large enough to report all requested symbols. A special KeySym value of
+/// NoSymbol is used to fill in unused elements for individual KeyCodes. To
+/// free the storage returned by XGetKeyboardMapping, use XFree.
+///
+/// XGetKeyboardMapping can generate a BadValue error.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XChangeKeyboardMapping.3.xhtml
+pub inline fn XGetKeyboardMapping(
+    display: *Display,
+    first_keycode: KeyCode,
+    keycode_count: c_int,
+    keysyms_per_keycode_return: *c_int,
+) ?[*]KeySym {
+    // Meaning of return value is not specified in documentation.
+    return X.XGetKeyboardMapping(
+        display,
+        first_keycode,
+        keycode_count,
+        keysyms_per_keycode_return,
+    );
+}
+
+/// The XGetModifierMapping function returns a pointer to a newly created
+/// XModifierKeymap structure that contains the keys being used as modifiers.
+/// The structure should be freed after use by calling XFreeModifiermap. If
+/// only zero values appear in the set for any modifier, that modifier is
+/// disabled.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XChangeKeyboardMapping.3.xhtml
+pub inline fn XGetModifierMapping(display: *Display) ?*XModifierKeymap {
+    return X.XGetModifierMapping(display);
 }
 
 /// The XGetTextProperty function reads the specified property from the window
@@ -986,6 +1921,22 @@ pub inline fn XGetTransientForHint(display: *Display, window: Window) ?Window {
     var prop_window_return: Window = X.None;
     if (X.XGetTransientForHint(display, window, &prop_window_return) == 0) return null;
     return prop_window_return;
+}
+
+/// The XGetWindowAttributes function returns the current attributes for the
+/// specified window to an XWindowAttributes structure. It returns true upon
+/// success.
+///
+/// XGetWindowAttributes can generate BadDrawable and BadWindow errors.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XGetWindowAttributes.3.xhtml
+pub inline fn XGetWindowAttributes(
+    display: *Display,
+    window: Window,
+    window_attributes_return: *XWindowAttributes,
+) bool {
+    // It returns a nonzero status on success; otherwise, it returns a zero status.
+    return X.XGetWindowAttributes(display, window, window_attributes_return) != 0;
 }
 
 pub const YGetWindowPropertyResult = struct {
@@ -1135,6 +2086,38 @@ pub inline fn XGetWindowProperty(
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XAllocWMHints.3.xhtml
 pub inline fn XGetWMHints(display: *Display, window: Window) ?*XWMHints {
     return X.XGetWMHints(display, window);
+}
+
+/// The XGetWMNormalHints function returns the size hints stored in the
+/// WM_NORMAL_HINTS property on the specified window. If the property is of
+/// type WM_SIZE_HINTS, is of format 32, and is long enough to contain either
+/// an old (pre-ICCCM) or new size hints structure, XGetWMNormalHints sets the
+/// various fields of the XSizeHints structure, sets the supplied_return
+/// argument to the list of fields that were supplied by the user (whether or
+/// not they contained defined values), and returns a nonzero status.
+/// Otherwise, it returns a zero status.
+///
+/// If XGetWMNormalHints returns successfully and a pre-ICCCM size hints
+/// property is read, the supplied_return argument will contain the following
+/// bits:
+///
+/// (USPosition|USSize|PPosition|PSize|PMinSize|PMaxSize|PResizeInc|PAspect)
+///
+/// If the property is large enough to contain the base size and window gravity
+/// fields as well, the supplied_return argument will also contain the
+/// following bits:
+///
+/// PBaseSize|PWinGravity
+///
+/// XGetWMNormalHints can generate a PN BadWindow error.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XAllocSizeHints.3.xhtml
+pub inline fn XGetWMNormalHints(display: *Display, window: Window) ?XSizeHints {
+    var hints_return: XSizeHints = undefined;
+    var supplied_return: c_long = undefined;
+    const status = X.XGetWMNormalHints(display, window, &hints_return, &supplied_return);
+    if (status == 0) return null;
+    return hints_return;
 }
 
 /// The XGetWMProtocols function returns the list of atoms stored in the
@@ -1390,6 +2373,16 @@ pub inline fn XGrabPointer(
     return result == X.GrabSuccess;
 }
 
+/// The XGrabServer function disables processing of requests and close downs on
+/// all other connections than the one this request arrived on. You should not
+/// grab the X server any more than is absolutely necessary.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XGrabServer.3.xhtml
+pub inline fn XGrabServer(display: *Display) void {
+    // Meaning of return value is not specified in documentation.
+    _ = X.XGrabServer(display);
+}
+
 /// The XInternAtom function returns the atom identifier associated with the
 /// specified atom_name. If the atom name is not in the Host Portable Character
 /// Encoding, the result is implementation-dependent. Uppercase and lowercase
@@ -1414,6 +2407,156 @@ pub inline fn XInternAtom(
     // #endif
     // ```
     return if (atom == X.None) null else atom;
+}
+
+/// If the specified KeySym is not defined for any KeyCode, XKeysymToKeycode
+/// returns zero.
+///
+/// The inverse function would be `XkbKeycodeToKeysym`.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XStringToKeysym.3.xhtml
+pub inline fn XKeysymToKeycode(display: *Display, keysym: KeySym) KeyCode {
+    return X.XKeysymToKeycode(display, keysym);
+}
+
+/// The XKeycodeToKeysym function uses internal Xlib tables and returns the
+/// KeySym defined for the specified KeyCode and the element of the KeyCode
+/// vector. If no symbol is defined, XKeycodeToKeysym returns NoSymbol.
+/// XKeycodeToKeysym predates the XKB extension. If you want to lookup a KeySym
+/// while using XKB you have to use XkbKeycodeToKeysym.
+///
+/// The inverse function would be `XKeysymToKeycode`.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XStringToKeysym.3.xhtml
+pub inline fn XkbKeycodeToKeysym(
+    display: *Display,
+    keycode: KeyCode,
+    group: c_uint,
+    level: c_uint,
+) KeySym {
+    return X.XkbKeycodeToKeysym(display, keycode, group, level);
+}
+
+/// The XKillClient function forces a close down of the client that created the
+/// resource if a valid resource is specified. If the client has already
+/// terminated in either RetainPermanent or RetainTemporary mode, all of the
+/// client's resources are destroyed. If AllTemporary is specified, the
+/// resources of all clients that have terminated in RetainTemporary are
+/// destroyed (see section 2.5). This permits implementation of window manager
+/// facilities that aid debugging. A client can set its close-down mode to
+/// RetainTemporary. If the client then crashes, its windows would not be
+/// destroyed. The programmer can then inspect the application's window tree
+/// and use the window manager to destroy the zombie windows.
+///
+/// XKillClient can generate a BadValue error.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XSetCloseDownMode.3.xhtml
+pub inline fn XKillClient(display: *Display, resource: XID) void {
+    // Meaning of return value is not specified in documentation.
+    _ = X.XKillClient(display, resource);
+}
+
+/// The XMapWindow function maps the window and all of its subwindows that have
+/// had map requests. Mapping a window that has an unmapped ancestor does not
+/// display the window but marks it as eligible for display when the ancestor
+/// becomes mapped. Such a window is called unviewable. When all its ancestors
+/// are mapped, the window becomes viewable and will be visible on the screen
+/// if it is not obscured by another window. This function has no effect if the
+/// window is already mapped.
+///
+/// If the override-redirect of the window is False and if some other client
+/// has selected SubstructureRedirectMask on the parent window, then the X
+/// server generates a MapRequest event, and the XMapWindow function does not
+/// map the window. Otherwise, the window is mapped, and the X server generates
+/// a MapNotify event.
+///
+/// If the window becomes viewable and no earlier contents for it are
+/// remembered, the X server tiles the window with its background. If the
+/// window's background is undefined, the existing screen contents are not
+/// altered, and the X server generates zero or more Expose events. If
+/// backing-store was maintained while the window was unmapped, no Expose
+/// events are generated. If backing-store will now be maintained, a
+/// full-window exposure is always generated. Otherwise, only visible regions
+/// may be reported. Similar tiling and exposure take place for any newly
+/// viewable inferiors.
+///
+/// If the window is an InputOutput window, XMapWindow generates Expose events
+/// on each InputOutput window that it causes to be displayed. If the client
+/// maps and paints the window and if the client begins processing events, the
+/// window is painted twice. To avoid this, first ask for Expose events and
+/// then map the window, so the client processes input events as usual. The
+/// event list will include Expose for each window that has appeared on the
+/// screen. The client's normal response to an Expose event should be to
+/// repaint the window. This method usually leads to simpler programs and to
+/// proper interaction with window managers.
+///
+/// XMapWindow can generate a BadWindow error.
+///
+/// The XMapRaised function essentially is similar to XMapWindow in that it
+/// maps the window and all of its subwindows that have had map requests.
+/// However, it also raises the specified window to the top of the stack.
+///
+/// XMapRaised can generate a BadWindow error.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XMapWindow.3.xhtml
+pub inline fn XMapRaised(display: *Display, window: Window) void {
+    // Meaning of return value is not specified in documentation.
+    _ = X.XMapRaised(display, window);
+}
+
+/// The XMapWindow function maps the window and all of its subwindows that have
+/// had map requests. Mapping a window that has an unmapped ancestor does not
+/// display the window but marks it as eligible for display when the ancestor
+/// becomes mapped. Such a window is called unviewable. When all its ancestors
+/// are mapped, the window becomes viewable and will be visible on the screen
+/// if it is not obscured by another window. This function has no effect if the
+/// window is already mapped.
+///
+/// If the override-redirect of the window is False and if some other client
+/// has selected SubstructureRedirectMask on the parent window, then the X
+/// server generates a MapRequest event, and the XMapWindow function does not
+/// map the window. Otherwise, the window is mapped, and the X server generates
+/// a MapNotify event.
+///
+/// If the window becomes viewable and no earlier contents for it are
+/// remembered, the X server tiles the window with its background. If the
+/// window's background is undefined, the existing screen contents are not
+/// altered, and the X server generates zero or more Expose events. If
+/// backing-store was maintained while the window was unmapped, no Expose
+/// events are generated. If backing-store will now be maintained, a
+/// full-window exposure is always generated. Otherwise, only visible regions
+/// may be reported. Similar tiling and exposure take place for any newly
+/// viewable inferiors.
+///
+/// If the window is an InputOutput window, XMapWindow generates Expose events
+/// on each InputOutput window that it causes to be displayed. If the client
+/// maps and paints the window and if the client begins processing events, the
+/// window is painted twice. To avoid this, first ask for Expose events and
+/// then map the window, so the client processes input events as usual. The
+/// event list will include Expose for each window that has appeared on the
+/// screen. The client's normal response to an Expose event should be to
+/// repaint the window. This method usually leads to simpler programs and to
+/// proper interaction with window managers.
+///
+/// XMapWindow can generate a BadWindow error.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XMapWindow.3.xhtml
+pub inline fn XMapWindow(display: *Display, window: Window) void {
+    // Meaning of return value is not specified in documentation.
+    _ = X.XMapWindow(display, window);
+}
+
+/// The XMaskEvent function searches the event queue for the events associated
+/// with the specified mask. When it finds a match, XMaskEvent removes that
+/// event and copies it into the specified XEvent structure. The other events
+/// stored in the queue are not discarded. If the event you requested is not in
+/// the queue, XMaskEvent flushes the output buffer and blocks until one is
+/// received.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XNextEvent.3.xhtml
+pub inline fn XMaskEvent(display: *Display, window: Window, event_return: *XEvent) void {
+    // Meaning of return value is not specified in documentation.
+    _ = X.XMaskEvent(display, window, event_return);
 }
 
 /// The XMoveResizeWindow function changes the size and location of the
@@ -1589,6 +2732,65 @@ pub inline fn XQueryPointer(
     return r;
 }
 
+/// The XQueryTree function returns the root ID, the parent window ID, a
+/// pointer to the list of children windows (NULL when there are no children),
+/// and the number of children in the list for the specified window. The
+/// children are listed in current stacking order, from bottom-most (first) to
+/// top-most (last). XQueryTree returns zero if it fails and nonzero if it
+/// succeeds. To free a non-NULL children list when it is no longer needed, use
+/// XFree.
+///
+/// XQueryTree can generate a BadWindow error.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XQueryTree.3.xhtml
+pub inline fn XQueryTree(
+    display: *Display,
+    window: Window,
+    root_return: *Window,
+    parent_return: *Window,
+) ?[]Window {
+    var c_opt: ?[*]Window = undefined;
+    var n: c_uint = undefined;
+    const status = X.XQueryTree(display, window, root_return, parent_return, &c_opt, &n);
+    if (status == 0) return null;
+    var children: []Window = undefined;
+    children.ptr = c_opt orelse return null;
+    children.len = @intCast(n);
+    return children;
+}
+
+/// The XRaiseWindow function raises the specified window to the top of the
+/// stack so that no sibling window obscures it. If the windows are regarded as
+/// overlapping sheets of paper stacked on a desk, then raising a window is
+/// analogous to moving the sheet to the top of the stack but leaving its x and
+/// y location on the desk constant. Raising a mapped window may generate
+/// Expose events for the window and any mapped subwindows that were formerly
+/// obscured.
+///
+/// If the override-redirect attribute of the window is False and some other
+/// client has selected SubstructureRedirectMask on the parent, the X server
+/// generates a ConfigureRequest event, and no processing is performed.
+/// Otherwise, the window is raised.
+///
+/// XRaiseWindow can generate a BadWindow error.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XRaiseWindow.3.xhtml
+pub inline fn XRaiseWindow(display: *Display, window: Window) void {
+    // Meaning of return value is not specified in documentation.
+    _ = X.XRaiseWindow(display, window);
+}
+
+/// The XRefreshKeyboardMapping function refreshes the stored modifier and
+/// keymap information. You usually call this function when a MappingNotify
+/// event with a request member of MappingKeyboard or MappingModifier occurs.
+/// The result is to update Xlib's knowledge of the keyboard.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XLookupKeysym.3.xhtml
+pub inline fn XRefreshKeyboardMapping(ev: *XMappingEvent) void {
+    // Meaning of return value is not specified in documentation.
+    _ = X.XRefreshKeyboardMapping(ev);
+}
+
 /// The XSelectInput function requests that the X server report the events
 /// associated with the specified event mask. Initially, X will not report any
 /// of these events. Events are reported relative to a window. If a window is
@@ -1677,6 +2879,73 @@ pub inline fn XSendEvent(
     _ = X.XSendEvent(display, window, @intFromBool(propagate), event_mask, event);
 }
 
+/// The XSetClassHint function sets the class hint for the specified window. If
+/// the strings are not in the Host Portable Character Encoding, the result is
+/// implementation-dependent.
+///
+/// XSetClassHint can generate BadAlloc and BadWindow errors.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XAllocClassHint.3.xhtml
+pub inline fn XSetClassHint(
+    display: *Display,
+    window: Window,
+    class_hint: *XClassHint,
+) void {
+    // Meaning of return value is not specified in documentation.
+    _ = X.XSetClassHint(display, window, class_hint);
+}
+
+/// The XSetCloseDownMode defines what will happen to the client's resources at
+/// connection close. A connection starts in DestroyAll mode. For information
+/// on what happens to the client's resources when the close_mode argument is
+/// RetainPermanent or RetainTemporary, see section 2.6.
+///
+/// XSetCloseDownMode can generate a BadValue error.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XSetCloseDownMode.3.xhtml
+pub inline fn XSetCloseDownMode(
+    display: *Display,
+    /// Specifies the client close-down mode. You can pass DestroyAll,
+    /// RetainPermanent, or RetainTemporary.
+    close_mode: CloseMode,
+) void {
+    // Meaning of return value is not specified in documentation.
+    _ = X.XSetCloseDownMode(display, @intFromEnum(close_mode));
+}
+
+const ErrHandler = *const fn (?*Display, [*c]XErrorEvent) callconv(.c) c_int;
+
+/// Xlib generally calls the program's supplied error handler whenever an error
+/// is received. It is not called on BadName errors from OpenFont, LookupColor,
+/// or AllocNamedColor protocol requests or on BadFont errors from a QueryFont
+/// protocol request. These errors generally are reflected back to the program
+/// through the procedural interface. Because this condition is not assumed to
+/// be fatal, it is acceptable for your error handler to return; the returned
+/// value is ignored. However, the error handler should not call any functions
+/// (directly or indirectly) on the display that will generate protocol
+/// requests or that will look for input events. The previous error handler is
+/// returned.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XSetErrorHandler.3.xhtml
+pub inline fn XSetErrorHandler(f: ?ErrHandler) (?ErrHandler) {
+    return X.XSetErrorHandler(f);
+}
+
+/// The XSetForeground function sets the foreground in the specified GC.
+///
+/// XSetForeground can generate BadAlloc and BadGC errors.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XSetState.3.xhtml
+pub inline fn XSetForeground(
+    display: *Display,
+    gc: GC,
+    /// Specifies the foreground you want to set for the specified GC.
+    foreground: c_ulong,
+) void {
+    // Meaning of return value is not specified in documentation.
+    _ = X.XSetForeground(display, gc, foreground);
+}
+
 /// The XSetInputFocus function changes the input focus and the
 /// last-focus-change time. It has no effect if the specified time is earlier
 /// than the current last-focus-change time or is later than the current X
@@ -1720,6 +2989,46 @@ pub inline fn XSetInputFocus(
 ) void {
     // Meaning of return value is not specified in documentation.
     _ = X.XSetInputFocus(display, window, @intFromEnum(revert_to), time);
+}
+
+/// The XSetLineAttributes function sets the line drawing components in the specified GC.
+///
+/// XSetLineAttributes can generate BadAlloc, BadGC, and BadValue errors.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XSetLineAttributes.3.xhtml
+pub inline fn XSetLineAttributes(
+    display: *Display,
+    gc: GC,
+    line_width: c_uint,
+    line_style: LineStyle,
+    cap_style: CapStyle,
+    join_style: JoinStyle,
+) void {
+    // Meaning of return value is not specified in documentation.
+    _ = X.XSetLineAttributes(
+        display,
+        gc,
+        line_width,
+        @intFromEnum(line_style),
+        @intFromEnum(cap_style),
+        @intFromEnum(join_style),
+    );
+}
+
+/// The XSetWindowBorder function sets the border of the window to the pixel
+/// value you specify. If you attempt to perform this on an InputOnly window, a
+/// BadMatch error results.
+///
+/// XSetWindowBorder can generate BadMatch and BadWindow errors.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XChangeWindowAttributes.3.xhtml
+pub inline fn XSetWindowBorder(
+    display: *Display,
+    window: Window,
+    border_pixel: c_ulong,
+) void {
+    // Meaning of return value is not specified in documentation.
+    _ = X.XSetWindowBorder(display, window, border_pixel);
 }
 
 /// The XSetWMHints function sets the window manager hints that include icon
@@ -1785,8 +3094,31 @@ pub inline fn XUngrabButton(
     modifiers: c_uint,
     grab_window: Window,
 ) void {
-    // According to the docs, the return value is not used.
+    // The meaning of the return value was not specified in documentation.
     _ = X.XUngrabButton(display, button, modifiers, grab_window);
+}
+
+/// The XUngrabKey function releases the key combination on the specified
+/// window if it was grabbed by this client. It has no effect on an active
+/// grab. A modifiers of AnyModifier is equivalent to issuing the request for
+/// all possible modifier combinations (including the combination of no
+/// modifiers). A keycode argument of AnyKey is equivalent to issuing the
+/// request for all possible key codes.
+///
+/// XUngrabKey can generate BadValue and BadWindow error.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XGrabKey.3.xhtml
+pub inline fn XUngrabKey(
+    display: *Display,
+    /// Specifies the KeyCode or AnyKey.
+    keycode: c_uint,
+    /// Specifies the set of keymasks or AnyModifier. The mask is the bitwise
+    /// inclusive OR of the valid keymask bits.
+    modifiers: c_uint,
+    grab_window: Window,
+) void {
+    // The meaning of the return value was not specified in documentation.
+    _ = X.XUngrabKey(display, keycode, modifiers, grab_window);
 }
 
 /// The XUngrabPointer function releases the pointer and any queued events if
@@ -1802,8 +3134,18 @@ pub inline fn XUngrabButton(
 ///
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XGrabPointer.3.xhtml
 pub inline fn XUngrabPointer(display: *Display, time: Time) void {
-    // According to the docs, the return value is not used.
+    // The meaning of the return value was not specified in documentation.
     _ = X.XUngrabPointer(display, time);
+}
+
+/// The XUngrabServer function restarts processing of requests and close downs
+/// on other connections. You should avoid grabbing the X server as much as
+/// possible.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XGrabServer.3.xhtml
+pub inline fn XUngrabServer(display: *Display) void {
+    // Meaning of return value is not specified in documentation.
+    _ = X.XUngrabServer(display);
 }
 
 /// The XUnmapWindow function unmaps the specified window and causes the X
@@ -1818,8 +3160,44 @@ pub inline fn XUngrabPointer(display: *Display, time: Time) void {
 /// XUnmapWindow can generate a BadWindow error.
 ///
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XUnmapWindow.3.xhtml
-pub inline fn XUnmapWindow(display: *Display, window: Window) c_int {
-    return X.XUnmapWindow(display, window);
+pub inline fn XUnmapWindow(display: *Display, window: Window) void {
+    // Meaning of return value is not specified in documentation.
+    _ = X.XUnmapWindow(display, window);
+}
+
+/// If dest_w is None, XWarpPointer moves the pointer by the offsets (dest_x,
+/// dest_y) relative to the current position of the pointer. If dest_w is a
+/// window, XWarpPointer moves the pointer to the offsets (dest_x, dest_y)
+/// relative to the origin of dest_w. However, if src_w is a window, the move
+/// only takes place if the window src_w contains the pointer and if the
+/// specified rectangle of src_w contains the pointer.
+///
+/// The src_x and src_y coordinates are relative to the origin of src_w. If
+/// src_height is zero, it is replaced with the current height of src_w minus
+/// src_y. If src_width is zero, it is replaced with the current width of src_w
+/// minus src_x.
+///
+/// There is seldom any reason for calling this function. The pointer should
+/// normally be left to the user. If you do use this function, however, it
+/// generates events just as if the user had instantaneously moved the pointer
+/// from one position to another. Note that you cannot use XWarpPointer to move
+/// the pointer outside the confine_to window of an active pointer grab. An
+/// attempt to do so will only move the pointer as far as the closest edge of
+/// the confine_to window.
+///
+/// XWarpPointer can generate a BadWindow error.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XWarpPointer.3.xhtml
+pub inline fn XWarpPointer(
+    display: *Display,
+    src_w: Window,
+    dest_w: Window,
+    src: Rect,
+    dest_x: c_int,
+    dest_y: c_int,
+) void {
+    // Meaning of return value is not specified in documentation.
+    _ = X.XWarpPointer(display, src_w, dest_w, src.x, src.y, src.w, src.h, dest_x, dest_y);
 }
 
 /// The XmbTextPropertyToTextList, XwcTextPropertyToTextList and
@@ -1892,6 +3270,166 @@ pub inline fn XmbTextPropertyToTextList(
 }
 
 // -----------------------------------------------------------------------------
+// ++ Xft Functions
+// -----------------------------------------------------------------------------
+
+/// An XftFont's glyph or character coverage can be determined with
+/// XftFontCheckGlyph() or XftCharExists(). XftCharIndex() returns the
+/// XftFont-specific character index corresponding to a given Unicode
+/// codepoint.
+///
+/// source: https://github.com
+pub inline fn XftCharExists(
+    display: *Display,
+    font: *XftFont,
+    codepoint: c_uint,
+) bool {
+    return X.XftCharExists(display, font, codepoint) != 0;
+}
+
+/// Use XAllocNamedColor() to look up the named color name for the screen
+/// associated with the colormap cmap.
+///
+/// If XAllocNamedColor() returns nonzero, XftColorAllocName() fills in the
+/// resulting XftColor pixel field with the closest color supported by the
+/// screen, as well as the exact red, green and blue fields from the database,
+/// and returns True.
+///
+/// If XAllocNamedColor() returns zero, XftColorAllocName() returns False, and
+/// does not update the XftColor referenced by result.
+///
+/// The visual parameter is unused.
+///
+/// source: https://man.archlinux.org/man/XftColorAllocName.3
+pub inline fn XftColorAllocName(
+    display: *Display,
+    visual: *Visual,
+    cmap: Colormap,
+    name: []const u8,
+    result: *XftColor,
+) bool {
+    const status = X.XftColorAllocName(display, visual, cmap, name.ptr, result);
+    return status != X.False;
+}
+
+/// If the visual class is not TrueColor, Xft calls XFreeColors() to free the
+/// entry from the colormap cmap whose pixel value in the color parameter was
+/// allocated by XftColorAllocName().
+///
+/// source: https://man.archlinux.org/man/XftColorAllocName.3
+pub inline fn XftColorFree(
+    display: *Display,
+    visual: *Visual,
+    cmap: Colormap,
+    color: *XftColor,
+) void {
+    // Meaning of return value is not specified in documentation.
+    _ = X.XftColorFree(display, visual, cmap, color);
+}
+
+/// XftDrawCreate creates a structure that can be used to render text and
+/// rectangles using the specified drawable, visual, and colormap on display.
+///
+/// source: https://man.archlinux.org/man/XftColorAllocName.3
+pub inline fn XftDrawCreate(
+    display: *Display,
+    drawable: Drawable,
+    visual: *Visual,
+    cmap: Colormap,
+) ?*XftDraw {
+    return X.XftDrawCreate(display, drawable, visual, cmap);
+}
+
+/// XftDrawDestroy destroys draw (created by one of the XftDrawCreate*()
+/// functions) and frees the memory that was allocated for it.
+///
+/// source: https://man.archlinux.org/man/Xft.3
+pub inline fn XftDrawDestroy(draw: *XftDraw) void {
+    X.XftDrawDestroy(draw);
+}
+
+/// Draws no more than len glyphs of string to Xft drawable d using font in
+/// color at position x, y.
+///
+/// source: https://man.archlinux.org/man/Xft.3
+pub inline fn XftDrawStringUtf8(
+    d: *XftDraw,
+    color: *const XftColor,
+    font: *XftFont,
+    x: c_int,
+    y: c_int,
+    text: []const u8,
+    len: c_int,
+) void {
+    X.XftDrawStringUtf8(d, color, font, x, y, text.ptr, len);
+}
+
+/// XftFonts are populated with any of XftFontOpen(), XftFontOpenName(),
+/// XftFontOpenXlfd(), XftFontOpenInfo(), or XftFontOpenPattern().
+/// XftFontCopy() is used to duplicate XftFonts, and XftFontClose() is used to
+/// mark an XftFont as unused. XftFonts are internally allocated,
+/// reference-counted, and freed by Xft; the programmer does not ordinarily
+/// need to allocate or free storage for them.
+///
+/// source: https://man.archlinux.org/man/Xft.3
+pub inline fn XftFontClose(display: *Display, font: *XftFont) void {
+    X.XftFontClose(display, font);
+}
+
+/// Also used internally by the XftFontOpen* functions, XftFontMatch can also
+/// be used directly to determine the Fontconfig font pattern resulting from an
+/// Xft font open request.
+///
+/// source: https://man.archlinux.org/man/Xft.3
+pub inline fn XftFontMatch(
+    display: *Display,
+    screen: c_int,
+    pattern: *FcPattern,
+    result: *FcResult,
+) ?*FcPattern {
+    return X.XftFontMatch(display, screen, pattern, result);
+}
+
+/// XftFontOpenName behaves as XftFontOpen does, except that it takes a
+/// Fontconfig pattern string (which is passed to the Fontconfig library's
+/// FcNameParse() function).
+///
+/// source: https://man.archlinux.org/man/Xft.3
+pub inline fn XftFontOpenName(
+    display: *Display,
+    screen: c_int,
+    name: []const u8,
+) ?*XftFont {
+    return X.XftFontOpenName(display, screen, name.ptr);
+}
+
+/// XftFonts are populated with any of XftFontOpen(), XftFontOpenName(),
+/// XftFontOpenXlfd(), XftFontOpenInfo(), or XftFontOpenPattern().
+/// XftFontCopy() is used to duplicate XftFonts, and XftFontClose() is used to
+/// mark an XftFont as unused. XftFonts are internally allocated,
+/// reference-counted, and freed by Xft; the programmer does not ordinarily
+/// need to allocate or free storage for them.
+///
+/// source: https://man.archlinux.org/man/Xft.3
+pub inline fn XftFontOpenPattern(display: *Display, pattern: *FcPattern) ?*XftFont {
+    return X.XftFontOpenPattern(display, pattern);
+}
+
+/// XftTextExtentsUtf8 computes the pixel extents on display dpy of no more
+/// than len bytes of a UTF-8 encoded string when drawn with font, storing them
+/// in extents.
+///
+/// source: https://man.archlinux.org/man/Xft.3
+pub inline fn XftTextExtentsUtf8(
+    display: *Display,
+    font: *XftFont,
+    text: []const u8,
+    extents: *XGlyphInfo,
+) void {
+    X.XftTextExtentsUtf8(display, font, text.ptr, @intCast(text.len), extents);
+}
+
+// -----------------------------------------------------------------------------
 // ++ Enums
 // -----------------------------------------------------------------------------
 
@@ -1916,7 +3454,6 @@ pub const Atom = X.Atom;
 
 pub const Below = X.Below;
 pub const ButtonPress = X.ButtonPress;
-pub const CapButt = X.CapButt;
 pub const ClientMessage = X.ClientMessage;
 pub const ConfigureNotify = X.ConfigureNotify;
 pub const ConfigureRequest = X.ConfigureRequest;
@@ -1929,14 +3466,13 @@ pub const Expose = X.Expose;
 pub const FocusIn = X.FocusIn;
 pub const IconicState = X.IconicState;
 pub const IsViewable = X.IsViewable;
-pub const JoinMiter = X.JoinMiter;
 pub const KeyPress = X.KeyPress;
-pub const LineSolid = X.LineSolid;
 pub const LockMask = X.LockMask;
 pub const MapRequest = X.MapRequest;
 pub const MappingKeyboard = X.MappingKeyboard;
 pub const MappingNotify = X.MappingNotify;
 pub const MotionNotify = X.MotionNotify;
+pub const ButtonRelease = X.ButtonRelease;
 pub const NormalState = X.NormalState;
 pub const ParentRelative = X.ParentRelative;
 pub const PointerRoot = X.PointerRoot;
@@ -1959,6 +3495,9 @@ pub const XA_WM_HINTS = X.XA_WM_HINTS;
 pub const XA_WM_NAME = X.XA_WM_NAME;
 pub const XA_WM_NORMAL_HINTS = X.XA_WM_NORMAL_HINTS;
 pub const XA_WM_TRANSIENT_FOR = X.XA_WM_TRANSIENT_FOR;
+
+pub const AnyButton = X.AnyButton;
+pub const AnyKey = X.AnyKey;
 
 /// Specifies whether the data should be viewed as a list of 8-bit, 16-bit, or
 /// 32-bit quantities. Used in XGetWindowProperty, among other places.
@@ -2034,6 +3573,12 @@ pub const WindowState = enum(c_int) {
     IconicState = X.IconicState,
 };
 
+pub const CloseMode = enum(c_int) {
+    DestroyAll = X.DestroyAll,
+    RetainPermanent = X.RetainPermanent,
+    RetainTemporary = X.RetainTemporary,
+};
+
 /// There are many more enums than this, just check out any of the X.XC_* stuff.
 /// and the rest should be adjacent.
 pub const PointerShape = enum(@TypeOf(X.XC_left_ptr)) {
@@ -2042,6 +3587,25 @@ pub const PointerShape = enum(@TypeOf(X.XC_left_ptr)) {
     Fleur = X.XC_fleur,
     Left_ptr = X.XC_left_ptr,
     Sizing = X.XC_sizing,
+};
+
+pub const JoinStyle = enum(c_int) {
+    Miter = X.JoinMiter,
+    Round = X.JoinRound,
+    Bevel = X.JoinBevel,
+};
+
+pub const LineStyle = enum(c_int) {
+    Solid = X.LineSolid,
+    OnOffDash = X.LineOnOffDash,
+    DoubleDash = X.LineDoubleDash,
+};
+
+pub const CapStyle = enum(c_int) {
+    NotLast = X.CapNotLast,
+    Butt = X.CapButt,
+    Round = X.CapRound,
+    Projecting = X.CapProjecting,
 };
 
 pub const None = X.None;
@@ -2071,7 +3635,11 @@ pub const masks = struct {
     pub const CWHeight = X.CWHeight;
     pub const CWBorderWidth = X.CWBorderWidth;
     pub const CWCursor = X.CWCursor;
+    pub const CWBackPixmap = X.CWBackPixmap;
     pub const CWEventMask = X.CWEventMask;
+    pub const CWOverrideRedirect = X.CWOverrideRedirect;
+    pub const CWSibling = X.CWSibling;
+    pub const CWStackMode = X.CWStackMode;
 
     // For XSelectInput
     pub const EnterWindowMask = X.EnterWindowMask;
@@ -2095,6 +3663,7 @@ pub const masks = struct {
 
     pub const InputHint = X.InputHint;
     pub const XUrgencyHint = X.XUrgencyHint;
+    pub const AnyModifier = X.AnyModifier;
 };
 
 // -----------------------------------------------------------------------------
@@ -2128,6 +3697,7 @@ pub const keys = struct {
     pub const XK_minus = X.XK_minus;
     pub const XK_period = X.XK_period;
     pub const XK_space = X.XK_space;
+    pub const XK_Num_Lock = X.XK_Num_Lock;
 
     // AwesomeWM provides a very helpful graphic here:
     // https://awesomewm.org/doc/api/libraries/mouse.html
@@ -2165,6 +3735,23 @@ pub const err = struct {
     pub const BadDrawable = X.BadDrawable;
     pub const BadGC = X.BadGC;
     pub const BadMatch = X.BadMatch;
+    pub const BadWindow = X.BadWindow;
+};
+
+// -----------------------------------------------------------------------------
+// ++ RequestCodes
+// -----------------------------------------------------------------------------
+
+/// Request Code of a XErrorEvent.
+pub const rq = struct {
+    pub const ConfigureWindow = X.X_ConfigureWindow;
+    pub const GrabButton = X.X_GrabButton;
+    pub const GrabKey = X.X_GrabKey;
+    pub const SetInputFocus = X.X_SetInputFocus;
+    pub const CopyArea = X.X_CopyArea;
+    pub const PolySegment = X.X_PolySegment;
+    pub const PolyFillRectangle = X.X_PolyFillRectangle;
+    pub const PolyText8 = X.X_PolyText8;
 };
 
 // -----------------------------------------------------------------------------
@@ -2175,6 +3762,7 @@ pub const err = struct {
 /// as a result of a constant set or from running out of memory.
 ///
 /// source: https://xorg.freedesktop.org/archive/X11R7.0/doc/html/FcCharSetAddChar.3.html
+/// source: https://fontconfig.pages.freedesktop.org/fontconfig/fontconfig-devel/
 pub inline fn FcCharSetAddChar(fcs: *FcCharSet, ucs4: c_uint) bool {
     return X.FcCharSetAddChar(fcs, ucs4) != X.FcFalse;
 }
@@ -2227,7 +3815,7 @@ pub inline fn FcDefaultSubstitute(p: *FcPattern) void {
 ///
 /// source: https://xorg.freedesktop.org/archive/X11R7.0/doc/html/FcNameParse.3.html
 pub inline fn FcNameParse(name: []const u8) ?*FcPattern {
-    return X.FcNameParse(@ptrCast(name));
+    return X.FcNameParse(name.ptr);
 }
 
 /// [FcPatternAdd-Type] These are all convenience functions that insert objects
@@ -2260,7 +3848,7 @@ pub inline fn FcPatternDestroy(p: *FcPattern) void {
 /// Copy a pattern, returning a new pattern that matches p. Each pattern may be
 /// modified without affecting the other.
 ///
-/// source: https://www.freedesktop.org/software/fontconfig/fontconfig-devel/fcpatternduplicate.html
+/// source: https://freedesktop.org/software/fontconfig/fontconfig-devel/fcpatternduplicate.html
 pub inline fn FcPatternDuplicate(p: *const FcPattern) ?*FcPattern {
     return X.FcPatternDuplicate(p);
 }

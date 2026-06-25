@@ -1,8 +1,7 @@
 const std = @import("std");
-const X = @import("c_lib.zig").X;
-const Xt = @import("x_tutorial.zig");
-const k = @import("x_tutorial.zig").keys;
-const m = @import("x_tutorial.zig").masks;
+const X = @import("x11.zig");
+const k = @import("x11.zig").keys;
+const m = @import("x11.zig").masks;
 const lt = @import("layout.zig");
 const Layout = @import("layout.zig").Layout;
 const SchemeState = @import("enums.zig").SchemeState;
@@ -37,7 +36,7 @@ pub const borderpx: u32 = 1;
 
 pub const Tag = struct {
     text: []const u8,
-    key: Xt.KeySym,
+    key: X.KeySym,
 };
 
 /// The tags. These will determine which clients are visible on the screen.
