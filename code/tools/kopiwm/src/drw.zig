@@ -24,7 +24,7 @@ pub const Fnt = struct {
             return;
         }
         var ext: Xt.XGlyphInfo = undefined;
-        X.XftTextExtentsUtf8(self.dpy, self.xfont, text.ptr, @intCast(text.len), &ext);
+        Xt.XftTextExtentsUtf8(self.dpy, self.xfont, text, &ext);
         if (w) |w_ptr| {
             w_ptr.* = @intCast(ext.xOff);
         }

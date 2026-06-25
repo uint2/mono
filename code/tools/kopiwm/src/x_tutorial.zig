@@ -3405,6 +3405,20 @@ pub inline fn XftFontOpenPattern(display: *Display, pattern: *FcPattern) ?*XftFo
     return X.XftFontOpenPattern(display, pattern);
 }
 
+/// XftTextExtentsUtf8 computes the pixel extents on display dpy of no more
+/// than len bytes of a UTF-8 encoded string when drawn with font, storing them
+/// in extents.
+///
+/// source: https://man.archlinux.org/man/Xft.3
+pub inline fn XftTextExtentsUtf8(
+    display: *Display,
+    font: *XftFont,
+    text: []const u8,
+    extents: *XGlyphInfo,
+) void {
+    X.XftTextExtentsUtf8(display, font, text.ptr, @intCast(text.len), extents);
+}
+
 // -----------------------------------------------------------------------------
 // ++ Enums
 // -----------------------------------------------------------------------------
