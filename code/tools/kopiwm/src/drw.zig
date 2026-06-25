@@ -362,7 +362,7 @@ pub const Drw = struct {
 
         const invert_ = invert != 0; // just the boolean version of `invert`.
 
-        var d: ?*X.XftDraw = null;
+        var d: ?*Xt.XftDraw = null;
         if (!render) {
             // When NOT rendering, treat `invert` as a different kind of value
             // altogether.

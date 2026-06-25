@@ -1145,6 +1145,34 @@ pub const XWMHints = X.XWMHints;
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/Xft.3.xhtml
 pub const XftColor = X.XftColor;
 
+/// It's an opaque object which holds information used to render to an X
+/// drawable using either the core protocol or the X Rendering extension.
+///
+/// XftDraw objects are created with any of XftDrawCreate() (which associates
+/// an XftDraw with an existing X drawable), XftDrawCreateBitmap(), or
+/// XftDrawCreateAlpha(), and destroyed with XftDrawDestroy(). The X drawable
+/// associated with an XftDraw can be changed with XftDrawChange(). XftDraw
+/// objects are internally allocated and freed by Xft; the programmer does not
+/// ordinarily need to allocate or free storage for them.
+///
+/// The X Display, Drawable, Colormap, and Visual properties of an XftDraw can
+/// be queried with XftDrawDisplay(), XftDrawDrawable(), XftDrawColormap(), and
+/// XftDrawVisual(), respectively.
+///
+/// Several functions use XftDraw objects: XftDrawCharFontSpec(),
+/// XftDrawCharSpec(), XftDrawGlyphFontSpec(), XftDrawGlyphSpec(),
+/// XftDrawGlyphs(), XftDrawRect(), XftDrawSetClip(),
+/// XftDrawSetClipRectangles(), XftDrawSetSubwindowMode(), and the
+/// XftDrawString*() family.
+///
+/// The X Rendering Extension Picture associated with an XftDraw is returned by
+/// XftDrawPicture(), and XftDrawSrcPicture(). It is used by
+/// XftCharFontSpecRender(), XftCharSpecRender(), XftGlyphFontSpecRender(),
+/// XftGlyphRender(), XftGlyphSpecRender(), and the XftTextRender*() family.
+///
+/// source: https://man.archlinux.org/man/XftColorAllocName.3
+pub const XftDraw = X.XftDraw;
+
 /// An XftFont is the primary data structure of interest to programmers using
 /// Xft; it contains general font metrics and pointers to the Fontconfig
 /// character set and pattern associated with the font. The FcCharSet and
