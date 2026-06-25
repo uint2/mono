@@ -374,13 +374,12 @@ pub const Drw = struct {
             if (w < lpad) {
                 return x + @as(i32, @intCast(w));
             }
-            d = X.XftDrawCreate(
+            d = Xt.XftDrawCreate(
                 self.dpy,
                 self.drawable,
                 Xt.DefaultVisual(self.dpy, self.screen),
                 Xt.DefaultColormap(self.dpy, self.screen),
             );
-            if (d == null) log.err("XftDrawCreate yielded a null", .{});
             x += @intCast(lpad);
             w -= lpad;
         }

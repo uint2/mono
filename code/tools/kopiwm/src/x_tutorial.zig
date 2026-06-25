@@ -3301,6 +3301,19 @@ pub inline fn XftColorFree(
     _ = X.XftColorFree(display, visual, cmap, color);
 }
 
+/// XftDrawCreate creates a structure that can be used to render text and
+/// rectangles using the specified drawable, visual, and colormap on display.
+///
+/// source: https://man.archlinux.org/man/XftColorAllocName.3
+pub inline fn XftDrawCreate(
+    display: *Display,
+    drawable: Drawable,
+    visual: *Visual,
+    cmap: Colormap,
+) ?*XftDraw {
+    return X.XftDrawCreate(display, drawable, visual, cmap);
+}
+
 // -----------------------------------------------------------------------------
 // ++ Enums
 // -----------------------------------------------------------------------------
