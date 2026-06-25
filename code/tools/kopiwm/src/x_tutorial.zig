@@ -3335,6 +3335,22 @@ pub inline fn XftDrawDestroy(draw: *XftDraw) void {
     X.XftDrawDestroy(draw);
 }
 
+/// Draws no more than len glyphs of string to Xft drawable d using font in
+/// color at position x, y.
+///
+/// source: https://man.archlinux.org/man/Xft.3
+pub inline fn XftDrawStringUtf8(
+    d: *XftDraw,
+    color: *const XftColor,
+    font: *XftFont,
+    x: c_int,
+    y: c_int,
+    text: []const u8,
+    len: c_int,
+) void {
+    X.XftDrawStringUtf8(d, color, font, x, y, text.ptr, len);
+}
+
 // -----------------------------------------------------------------------------
 // ++ Enums
 // -----------------------------------------------------------------------------
