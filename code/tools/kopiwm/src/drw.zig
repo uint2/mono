@@ -254,14 +254,14 @@ pub const Drw = struct {
 
     /// (dwm) drw_clr_create
     pub fn clrCreate(self: *Self, dest: *Xt.XftColor, color_name: []const u8) void {
-        const result = X.XftColorAllocName(
+        const result = Xt.XftColorAllocName(
             self.dpy,
             Xt.DefaultVisual(self.dpy, self.screen),
             Xt.DefaultColormap(self.dpy, self.screen),
-            color_name.ptr,
+            color_name,
             dest,
         );
-        if (result == 0) {
+        if (!result) {
             std.debug.print("error, cannot allocate color '{s}'\n", .{color_name});
             std.process.exit(1);
         }

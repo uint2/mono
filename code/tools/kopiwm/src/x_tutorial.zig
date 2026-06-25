@@ -11,6 +11,7 @@ const Rect = @import("rect.zig").Rect;
 // ++ XID aliases
 // -----------------------------------------------------------------------------
 
+pub const Colormap = X.Colormap;
 /// See the XC_* defines in X11. The usual cursor would be `XC_left_ptr`.
 pub const Cursor = X.Cursor;
 pub const Drawable = X.Drawable;
@@ -3229,6 +3230,35 @@ pub inline fn XmbTextPropertyToTextList(
 }
 
 // -----------------------------------------------------------------------------
+// ++ Xft Functions
+// -----------------------------------------------------------------------------
+
+/// Use XAllocNamedColor() to look up the named color name for the screen
+/// associated with the colormap cmap.
+///
+/// If XAllocNamedColor() returns nonzero, XftColorAllocName() fills in the
+/// resulting XftColor pixel field with the closest color supported by the
+/// screen, as well as the exact red, green and blue fields from the database,
+/// and returns True.
+///
+/// If XAllocNamedColor() returns zero, XftColorAllocName() returns False, and
+/// does not update the XftColor referenced by result.
+///
+/// The visual parameter is unused.
+///
+/// source: https://man.archlinux.org/man/XftColorAllocName.3
+pub inline fn XftColorAllocName(
+    display: *Display,
+    visual: *Visual,
+    cmap: Colormap,
+    name: []const u8,
+    result: *XftColor,
+) bool {
+    const status = X.XftColorAllocName(display, visual, cmap, name.ptr, result);
+    return status != X.False;
+}
+
+// -----------------------------------------------------------------------------
 // ++ Enums
 // -----------------------------------------------------------------------------
 
@@ -3551,6 +3581,7 @@ pub const rq = struct {
 /// as a result of a constant set or from running out of memory.
 ///
 /// source: https://xorg.freedesktop.org/archive/X11R7.0/doc/html/FcCharSetAddChar.3.html
+/// https://fontconfig.pages.freedesktop.org/fontconfig/fontconfig-devel/
 pub inline fn FcCharSetAddChar(fcs: *FcCharSet, ucs4: c_uint) bool {
     return X.FcCharSetAddChar(fcs, ucs4) != X.FcFalse;
 }
