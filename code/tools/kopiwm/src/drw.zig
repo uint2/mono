@@ -1,5 +1,5 @@
 const std = @import("std");
-const Xt = @import("x11.zig");
+const X = @import("x11.zig");
 const Rect = @import("rect.zig").Rect;
 const mem = std.mem;
 const Allocator = mem.Allocator;
@@ -10,10 +10,10 @@ const log = std.log;
 pub const Fnt = struct {
     const Self = @This();
 
-    dpy: *Xt.Display,
+    dpy: *X.Display,
     h: u16,
-    xfont: *Xt.XftFont,
-    pattern: ?*Xt.FcPattern,
+    xfont: *X.XftFont,
+    pattern: ?*X.FcPattern,
     next: ?*Fnt,
 
     /// (dwm) drw_font_getexts
@@ -21,8 +21,8 @@ pub const Fnt = struct {
         if (text.len == 0) {
             return;
         }
-        var ext: Xt.XGlyphInfo = undefined;
-        Xt.XftTextExtentsUtf8(self.dpy, self.xfont, text, &ext);
+        var ext: X.XGlyphInfo = undefined;
+        X.XftTextExtentsUtf8(self.dpy, self.xfont, text, &ext);
         if (w) |w_ptr| {
             w_ptr.* = @intCast(ext.xOff);
         }
@@ -44,17 +44,17 @@ pub fn Scheme(comptime T: type) type {
     };
 }
 
-pub const ColorScheme = Scheme(Xt.XftColor);
+pub const ColorScheme = Scheme(X.XftColor);
 
 /// (dwm) xfont_create
 fn xfontCreate(
     allocator: Allocator,
     drw: *const Drw,
     fontname: []const u8,
-    font_pattern: ?*Xt.FcPattern,
+    font_pattern: ?*X.FcPattern,
 ) error{ OutOfMemory, FontCreateError }!*Fnt {
-    var xfont: ?*Xt.XftFont = null;
-    var pattern: ?*Xt.FcPattern = null;
+    var xfont: ?*X.XftFont = null;
+    var pattern: ?*X.FcPattern = null;
 
     if (fontname.len > 0) {
         // Using the pattern found at font->xfont->pattern does not yield the
@@ -62,17 +62,17 @@ fn xfontCreate(
         // FcNameParse; using the latter results in the desired fallback
         // behaviour whereas the former just results in missing-character
         // rectangles being drawn, at least with some fonts.
-        xfont = Xt.XftFontOpenName(drw.dpy, drw.screen, fontname) orelse {
+        xfont = X.XftFontOpenName(drw.dpy, drw.screen, fontname) orelse {
             std.debug.print("error, cannot load font from name: '{s}'\n", .{fontname});
             return error.FontCreateError;
         };
-        pattern = Xt.FcNameParse(fontname) orelse {
+        pattern = X.FcNameParse(fontname) orelse {
             std.debug.print("error, cannot parse font name to pattern: '{s}'\n", .{fontname});
-            Xt.XftFontClose(drw.dpy, xfont.?);
+            X.XftFontClose(drw.dpy, xfont.?);
             return error.FontCreateError;
         };
     } else if (font_pattern) |fp| {
-        xfont = Xt.XftFontOpenPattern(drw.dpy, fp) orelse {
+        xfont = X.XftFontOpenPattern(drw.dpy, fp) orelse {
             std.debug.print("error, cannot load font from pattern\n", .{});
             return error.FontCreateError;
         };
@@ -94,9 +94,9 @@ fn xfontCreate(
 /// (dwm) xfont_free
 fn xfontFree(allocator: Allocator, font: *Fnt) void {
     if (font.pattern) |pattern| {
-        Xt.FcPatternDestroy(pattern);
+        X.FcPatternDestroy(pattern);
     }
-    Xt.XftFontClose(font.dpy, font.xfont);
+    X.XftFontClose(font.dpy, font.xfont);
     log.warn("Deallocate font: {*}", .{font});
     allocator.destroy(font);
 }
@@ -144,9 +144,9 @@ fn utf8decode(s: []const u8, codepoint: *u64, err: *bool) u3 {
 
 fn print_draw_error(res: c_int) void {
     switch (res) {
-        Xt.err.BadDrawable => log.err("Bad drawable error", .{}),
-        Xt.err.BadGC => log.err("Bad GC error", .{}),
-        Xt.err.BadMatch => log.err("Bad match error", .{}),
+        X.err.BadDrawable => log.err("Bad drawable error", .{}),
+        X.err.BadGC => log.err("Bad GC error", .{}),
+        X.err.BadMatch => log.err("Bad match error", .{}),
         else => {},
     }
 }
@@ -158,11 +158,11 @@ pub const Drw = struct {
     w: u32,
     /// Height.
     h: u32,
-    dpy: *Xt.Display,
+    dpy: *X.Display,
     screen: c_int,
-    root: Xt.Window,
-    drawable: Xt.Drawable,
-    gc: Xt.GC,
+    root: X.Window,
+    drawable: X.Drawable,
+    gc: X.GC,
     scheme: ?*ColorScheme = null,
     /// A linked list of fonts. Guaranteed to have at least one after calling
     /// fontsetCreate.
@@ -171,9 +171,9 @@ pub const Drw = struct {
     /// (dwm) drw_create
     pub fn init(
         allocator: Allocator,
-        dpy: *Xt.Display,
+        dpy: *X.Display,
         screen: c_int,
-        root: Xt.Window,
+        root: X.Window,
         /// width
         w: u32,
         /// height
@@ -186,11 +186,11 @@ pub const Drw = struct {
             .dpy = dpy,
             .screen = screen,
             .root = root,
-            .drawable = Xt.XCreatePixmap(dpy, root, w, h, @intCast(Xt.DefaultDepth(dpy, screen))),
-            .gc = Xt.XCreateGC(dpy, root, 0, undefined),
+            .drawable = X.XCreatePixmap(dpy, root, w, h, @intCast(X.DefaultDepth(dpy, screen))),
+            .gc = X.XCreateGC(dpy, root, 0, undefined),
             .fonts = undefined,
         };
-        Xt.XSetLineAttributes(dpy, drw.gc, 1, .Solid, .Butt, .Miter);
+        X.XSetLineAttributes(dpy, drw.gc, 1, .Solid, .Butt, .Miter);
         drw.fonts = try drw.fontsetCreate(allocator, fonts) orelse {
             // Empty linked list. No fonts loaded.
             std.debug.print("no fonts could be loaded.\n", .{});
@@ -201,8 +201,8 @@ pub const Drw = struct {
 
     /// (dwm) drw_free
     pub fn deinit(self: *Self, allocator: Allocator) void {
-        Xt.XFreePixmap(self.dpy, self.drawable);
-        Xt.XFreeGC(self.dpy, self.gc);
+        X.XFreePixmap(self.dpy, self.drawable);
+        X.XFreeGC(self.dpy, self.gc);
         fontsetFree(allocator, self.fonts);
     }
 
@@ -212,14 +212,14 @@ pub const Drw = struct {
         self.w = w;
         self.h = h;
         if (self.drawable != 0) {
-            Xt.XFreePixmap(self.dpy, self.drawable);
+            X.XFreePixmap(self.dpy, self.drawable);
         }
-        self.drawable = Xt.XCreatePixmap(
+        self.drawable = X.XCreatePixmap(
             self.dpy,
             self.root,
             w,
             h,
-            @intCast(Xt.DefaultDepth(self.dpy, self.screen)),
+            @intCast(X.DefaultDepth(self.dpy, self.screen)),
         );
     }
 
@@ -251,11 +251,11 @@ pub const Drw = struct {
     }
 
     /// (dwm) drw_clr_create
-    pub fn clrCreate(self: *Self, dest: *Xt.XftColor, color_name: []const u8) void {
-        const result = Xt.XftColorAllocName(
+    pub fn clrCreate(self: *Self, dest: *X.XftColor, color_name: []const u8) void {
+        const result = X.XftColorAllocName(
             self.dpy,
-            Xt.DefaultVisual(self.dpy, self.screen),
-            Xt.DefaultColormap(self.dpy, self.screen),
+            X.DefaultVisual(self.dpy, self.screen),
+            X.DefaultColormap(self.dpy, self.screen),
             color_name,
             dest,
         );
@@ -267,11 +267,11 @@ pub const Drw = struct {
     }
 
     /// (dwm) drw_clr_free
-    pub fn clrFree(self: *Self, c: *Xt.XftColor) void {
-        Xt.XftColorFree(
+    pub fn clrFree(self: *Self, c: *X.XftColor) void {
+        X.XftColorFree(
             self.dpy,
-            Xt.DefaultVisual(self.dpy, self.screen),
-            Xt.DefaultColormap(self.dpy, self.screen),
+            X.DefaultVisual(self.dpy, self.screen),
+            X.DefaultColormap(self.dpy, self.screen),
             c,
         );
     }
@@ -312,11 +312,11 @@ pub const Drw = struct {
     pub fn drawRect(self: *Self, rect: Rect, filled: bool, invert: bool) void {
         const scheme = self.scheme orelse return;
         const color = if (invert) scheme.bg.pixel else scheme.fg.pixel;
-        Xt.XSetForeground(self.dpy, self.gc, color);
+        X.XSetForeground(self.dpy, self.gc, color);
         if (filled) {
-            Xt.XFillRectangle(self.dpy, self.drawable, self.gc, rect);
+            X.XFillRectangle(self.dpy, self.drawable, self.gc, rect);
         } else {
-            Xt.XDrawRectangle(self.dpy, self.drawable, self.gc, .{
+            X.XDrawRectangle(self.dpy, self.drawable, self.gc, .{
                 .x = rect.x,
                 .y = rect.y,
                 .w = rect.w - 1,
@@ -360,29 +360,29 @@ pub const Drw = struct {
 
         const invert_ = invert != 0; // just the boolean version of `invert`.
 
-        var d: ?*Xt.XftDraw = null;
+        var d: ?*X.XftDraw = null;
         if (!render) {
             // When NOT rendering, treat `invert` as a different kind of value
             // altogether.
             w = if (invert_) invert else ~invert;
         } else {
             const color = if (invert_) &self.scheme.?.fg else &self.scheme.?.bg;
-            Xt.XSetForeground(self.dpy, self.gc, color.pixel);
-            Xt.XFillRectangle(self.dpy, self.drawable, self.gc, .{ .x = x, .y = y, .w = w, .h = h });
+            X.XSetForeground(self.dpy, self.gc, color.pixel);
+            X.XFillRectangle(self.dpy, self.drawable, self.gc, .{ .x = x, .y = y, .w = w, .h = h });
             if (w < lpad) {
                 return x + @as(i32, @intCast(w));
             }
-            d = Xt.XftDrawCreate(
+            d = X.XftDrawCreate(
                 self.dpy,
                 self.drawable,
-                Xt.DefaultVisual(self.dpy, self.screen),
-                Xt.DefaultColormap(self.dpy, self.screen),
+                X.DefaultVisual(self.dpy, self.screen),
+                X.DefaultColormap(self.dpy, self.screen),
             );
             x += @intCast(lpad);
             w -= lpad;
         }
         defer {
-            if (d) |draw| Xt.XftDrawDestroy(draw);
+            if (d) |draw| X.XftDrawDestroy(draw);
         }
 
         if (state.ellipsis_width == null and render) {
@@ -402,8 +402,8 @@ pub const Drw = struct {
         var utf8str: []const u8 = undefined;
         var ty: i32 = 0;
         var charexists = false;
-        var match_opt: ?*Xt.FcPattern = null;
-        var result: Xt.XftResult = undefined;
+        var match_opt: ?*X.FcPattern = null;
+        var result: X.XftResult = undefined;
         var utf8charlen: u3 = undefined;
         var ew: u32 = undefined;
         var utf8strlen: u32 = undefined;
@@ -423,7 +423,7 @@ pub const Drw = struct {
                 charexists = false;
                 var tmpw: u32 = undefined;
                 while (curfont_opt) |curfont| : (curfont_opt = curfont.next) {
-                    charexists |= Xt.XftCharExists(self.dpy, curfont.xfont, @intCast(utf8codepoint));
+                    charexists |= X.XftCharExists(self.dpy, curfont.xfont, @intCast(utf8codepoint));
                     if (!charexists) {
                         continue;
                     }
@@ -469,7 +469,7 @@ pub const Drw = struct {
                     ty = y + @divTrunc(@as(i32, @intCast(h - usedfont.h)), 2) + usedfont.xfont.ascent;
                     const color = if (invert_) &self.scheme.?.bg else &self.scheme.?.fg;
                     if (d) |drw| {
-                        Xt.XftDrawStringUtf8(drw, color, usedfont.xfont, x, ty, utf8str, @intCast(utf8strlen));
+                        X.XftDrawStringUtf8(drw, color, usedfont.xfont, x, ty, utf8str, @intCast(utf8strlen));
                     }
                 }
                 x += @intCast(ew);
@@ -511,24 +511,24 @@ pub const Drw = struct {
                     continue;
                 }
 
-                const fccharset = Xt.FcCharSetCreate() orelse unreachable;
-                _ = Xt.FcCharSetAddChar(fccharset, @intCast(utf8codepoint));
+                const fccharset = X.FcCharSetCreate() orelse unreachable;
+                _ = X.FcCharSetAddChar(fccharset, @intCast(utf8codepoint));
 
                 const self_fonts_pattern = self.fonts.pattern orelse {
                     // Refer to the comment in xfont_create for more information.
                     @panic("the first font in the cache must be loaded from a font string.");
                 };
 
-                const fcpattern = Xt.FcPatternDuplicate(self_fonts_pattern) orelse unreachable;
-                _ = Xt.FcPatternAddCharSet(fcpattern, Xt.FC_CHARSET, fccharset);
-                _ = Xt.FcPatternAddBool(fcpattern, Xt.FC_SCALABLE, true);
+                const fcpattern = X.FcPatternDuplicate(self_fonts_pattern) orelse unreachable;
+                _ = X.FcPatternAddCharSet(fcpattern, X.FC_CHARSET, fccharset);
+                _ = X.FcPatternAddBool(fcpattern, X.FC_SCALABLE, true);
 
-                _ = Xt.FcConfigSubstitute(null, fcpattern, .Pattern);
-                Xt.FcDefaultSubstitute(fcpattern);
-                match_opt = Xt.XftFontMatch(self.dpy, self.screen, fcpattern, &result);
+                _ = X.FcConfigSubstitute(null, fcpattern, .Pattern);
+                X.FcDefaultSubstitute(fcpattern);
+                match_opt = X.XftFontMatch(self.dpy, self.screen, fcpattern, &result);
 
-                Xt.FcCharSetDestroy(fccharset);
-                Xt.FcPatternDestroy(fcpattern);
+                X.FcCharSetDestroy(fccharset);
+                X.FcPatternDestroy(fcpattern);
 
                 if (match_opt) |match| {
                     const j = if (state.nomatches[h0] > 0) h1 else h0;
@@ -536,7 +536,7 @@ pub const Drw = struct {
                         state.nomatches[j] = utf8codepoint;
                         continue;
                     };
-                    if (Xt.XftCharExists(self.dpy, usedfont.xfont, @intCast(utf8codepoint))) {
+                    if (X.XftCharExists(self.dpy, usedfont.xfont, @intCast(utf8codepoint))) {
                         var curfont: *Fnt = self.fonts;
                         while (curfont.next) |next| : (curfont = next) {}
                         curfont.next = usedfont;
@@ -557,8 +557,8 @@ pub const Drw = struct {
     }
 
     /// (dwm) drw_map
-    pub fn map(self: *Self, w: Xt.Window, r: Rect) void {
-        Xt.XCopyArea(self.dpy, self.drawable, w, self.gc, r, r.toCoordinates());
-        Xt.XSync(self.dpy, false);
+    pub fn map(self: *Self, w: X.Window, r: Rect) void {
+        X.XCopyArea(self.dpy, self.drawable, w, self.gc, r, r.toCoordinates());
+        X.XSync(self.dpy, false);
     }
 };
