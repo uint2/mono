@@ -425,7 +425,7 @@ pub const Drw = struct {
                 charexists = false;
                 var tmpw: u32 = undefined;
                 while (curfont_opt) |curfont| : (curfont_opt = curfont.next) {
-                    charexists |= X.XftCharExists(self.dpy, curfont.xfont, @intCast(utf8codepoint)) != 0;
+                    charexists |= Xt.XftCharExists(self.dpy, curfont.xfont, @intCast(utf8codepoint));
                     if (!charexists) {
                         continue;
                     }
@@ -536,7 +536,7 @@ pub const Drw = struct {
                         state.nomatches[j] = utf8codepoint;
                         continue;
                     };
-                    if (X.XftCharExists(self.dpy, usedfont.xfont, @intCast(utf8codepoint)) != 0) {
+                    if (Xt.XftCharExists(self.dpy, usedfont.xfont, @intCast(utf8codepoint))) {
                         var curfont: *Fnt = self.fonts;
                         while (curfont.next) |next| : (curfont = next) {}
                         curfont.next = usedfont;

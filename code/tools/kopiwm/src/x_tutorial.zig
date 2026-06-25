@@ -3261,6 +3261,19 @@ pub inline fn XmbTextPropertyToTextList(
 // ++ Xft Functions
 // -----------------------------------------------------------------------------
 
+/// Somehow documentation can't be found.
+///
+/// I guess it checks if a unicode codepoint exists in the font.
+///
+/// source: https://github.com
+pub inline fn XftCharExists(
+    display: *Display,
+    font: *XftFont,
+    codepoint: c_uint,
+) bool {
+    return X.XftCharExists(display, font, codepoint) != 0;
+}
+
 /// Use XAllocNamedColor() to look up the named color name for the screen
 /// associated with the colormap cmap.
 ///
