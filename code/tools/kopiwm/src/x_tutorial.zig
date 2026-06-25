@@ -3462,6 +3462,7 @@ pub const MapRequest = X.MapRequest;
 pub const MappingKeyboard = X.MappingKeyboard;
 pub const MappingNotify = X.MappingNotify;
 pub const MotionNotify = X.MotionNotify;
+pub const ButtonRelease = X.ButtonRelease;
 pub const NormalState = X.NormalState;
 pub const ParentRelative = X.ParentRelative;
 pub const PointerRoot = X.PointerRoot;
@@ -3484,6 +3485,9 @@ pub const XA_WM_HINTS = X.XA_WM_HINTS;
 pub const XA_WM_NAME = X.XA_WM_NAME;
 pub const XA_WM_NORMAL_HINTS = X.XA_WM_NORMAL_HINTS;
 pub const XA_WM_TRANSIENT_FOR = X.XA_WM_TRANSIENT_FOR;
+
+pub const AnyButton = X.AnyButton;
+pub const AnyKey = X.AnyKey;
 
 /// Specifies whether the data should be viewed as a list of 8-bit, 16-bit, or
 /// 32-bit quantities. Used in XGetWindowProperty, among other places.
@@ -3621,7 +3625,11 @@ pub const masks = struct {
     pub const CWHeight = X.CWHeight;
     pub const CWBorderWidth = X.CWBorderWidth;
     pub const CWCursor = X.CWCursor;
+    pub const CWBackPixmap = X.CWBackPixmap;
     pub const CWEventMask = X.CWEventMask;
+    pub const CWOverrideRedirect = X.CWOverrideRedirect;
+    pub const CWSibling = X.CWSibling;
+    pub const CWStackMode = X.CWStackMode;
 
     // For XSelectInput
     pub const EnterWindowMask = X.EnterWindowMask;
@@ -3645,6 +3653,7 @@ pub const masks = struct {
 
     pub const InputHint = X.InputHint;
     pub const XUrgencyHint = X.XUrgencyHint;
+    pub const AnyModifier = X.AnyModifier;
 };
 
 // -----------------------------------------------------------------------------
@@ -3716,6 +3725,7 @@ pub const err = struct {
     pub const BadDrawable = X.BadDrawable;
     pub const BadGC = X.BadGC;
     pub const BadMatch = X.BadMatch;
+    pub const BadWindow = X.BadWindow;
 };
 
 // -----------------------------------------------------------------------------

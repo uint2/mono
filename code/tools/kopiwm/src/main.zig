@@ -73,7 +73,7 @@ fn xerror(_dpy: ?*Xt.Display, err_event: [*c]Xt.XErrorEvent) callconv(.c) c_int 
     const e = err_event.*;
     const rc = e.request_code;
     const ec = e.error_code;
-    if (ec == X.BadWindow or
+    if (ec == Xt.err.BadWindow or
         (rc == Xt.rq.SetInputFocus and ec == Xt.err.BadMatch) or
         (rc == Xt.rq.PolyText8 and ec == Xt.err.BadDrawable) or
         (rc == Xt.rq.PolyFillRectangle and ec == Xt.err.BadDrawable) or
@@ -280,7 +280,7 @@ fn manage(allocator: Allocator, w: Xt.Window, wa: *Xt.XWindowAttributes) error{O
     c.bw.set(cfg.borderpx);
 
     var wc = Xt.XWindowChanges{ .border_width = @intCast(c.bw.now) };
-    Xt.XConfigureWindow(z.dpy, w, X.CWBorderWidth, &wc);
+    Xt.XConfigureWindow(z.dpy, w, M.CWBorderWidth, &wc);
     Xt.XSetWindowBorder(z.dpy, w, z.scheme.get(.Normal).border.pixel);
 
     c.configure(z.dpy); // propagates border_width, if size doesn't change
@@ -343,8 +343,8 @@ fn unmanage(allocator: Allocator, c: *Client, destroyed: bool) void {
         _ = Xt.XSetErrorHandler(xerrordummy);
         Xt.XSelectInput(z.dpy, c.win, Xt.masks.NoEventMask);
         var wc = Xt.XWindowChanges{ .border_width = @intCast(c.bw.prev) };
-        Xt.XConfigureWindow(z.dpy, c.win, X.CWBorderWidth, &wc); // restore border
-        Xt.XUngrabButton(z.dpy, X.AnyButton, X.AnyModifier, c.win);
+        Xt.XConfigureWindow(z.dpy, c.win, M.CWBorderWidth, &wc); // restore border
+        Xt.XUngrabButton(z.dpy, Xt.AnyButton, M.AnyModifier, c.win);
         c.setState(.WithdrawnState);
         Xt.XSync(z.dpy, false);
         _ = Xt.XSetErrorHandler(xerror);
@@ -407,7 +407,7 @@ fn restack(allocator: Allocator, m: *Monitor) void {
         var c_opt = m.stack;
         while (c_opt) |c| : (c_opt = c.snext) {
             if (!c.is_floating.now and c.isVisible()) {
-                Xt.XConfigureWindow(z.dpy, c.win, X.CWSibling | X.CWStackMode, &wc);
+                Xt.XConfigureWindow(z.dpy, c.win, M.CWSibling | M.CWStackMode, &wc);
                 wc.sibling = c.win;
             }
         }
@@ -532,23 +532,23 @@ fn configureRequest(e: *Xt.XEvent) void {
     const vmask = ev.value_mask;
 
     if (winToClient(ev.window)) |c| {
-        if (vmask & X.CWBorderWidth != 0) {
+        if (vmask & M.CWBorderWidth != 0) {
             c.bw.set(@intCast(ev.border_width));
         } else if (c.is_floating.now or z.selmon.lt.now.arrange == null) {
             const m = c.mon;
-            if (vmask & X.CWX != 0) {
+            if (vmask & M.CWX != 0) {
                 c.pos.prev.x = c.pos.now.x;
                 c.pos.now.x = m.m.x + ev.x;
             }
-            if (vmask & X.CWY != 0) {
+            if (vmask & M.CWY != 0) {
                 c.pos.prev.y = c.pos.now.y;
                 c.pos.now.y = m.m.y + ev.y;
             }
-            if (vmask & X.CWWidth != 0) {
+            if (vmask & M.CWWidth != 0) {
                 c.pos.prev.w = c.pos.now.w;
                 c.pos.now.w = @intCast(ev.width);
             }
-            if (vmask & X.CWHeight != 0) {
+            if (vmask & M.CWHeight != 0) {
                 c.pos.prev.h = c.pos.now.h;
                 c.pos.now.h = @intCast(ev.height);
             }
@@ -562,7 +562,7 @@ fn configureRequest(e: *Xt.XEvent) void {
                 c.pos.prev.y = c.pos.now.y;
                 c.pos.now.y = m.m.y + (@divFloor(@as(i32, @intCast(m.m.h)), 2) - @divFloor(c.height(), 2));
             }
-            if ((vmask & (X.CWX | X.CWY) != 0) and (vmask & (X.CWWidth | X.CWHeight)) == 0) {
+            if ((vmask & (M.CWX | M.CWY) != 0) and (vmask & (M.CWWidth | M.CWHeight)) == 0) {
                 c.configure(z.dpy);
             }
             if (c.isVisible()) {
@@ -954,7 +954,7 @@ pub fn moveMouse(_: *const Arg) DwmError!void {
                     c.hintAndResize(r, true);
                 }
             },
-            X.ButtonRelease => break,
+            Xt.ButtonRelease => break,
             else => {},
         }
     }
@@ -1071,7 +1071,7 @@ pub fn resizeMouse(_: *const Arg) DwmError!void {
                     c.hintAndResize(r, true);
                 }
             },
-            X.ButtonRelease => break,
+            Xt.ButtonRelease => break,
             else => {},
         }
     }
@@ -1319,12 +1319,12 @@ fn drawbars(allocator: Allocator) void {
 fn grabbuttons(c: *Client, focused: bool) void {
     updatenumlockmask();
     const modifiers: [4]c_uint = .{ 0, Xt.LockMask, z.numlockmask, z.numlockmask | Xt.LockMask };
-    Xt.XUngrabButton(z.dpy, X.AnyButton, X.AnyModifier, c.win);
+    Xt.XUngrabButton(z.dpy, Xt.AnyButton, M.AnyModifier, c.win);
     if (!focused) {
         Xt.XGrabButton(
             z.dpy,
-            X.AnyButton,
-            X.AnyModifier,
+            Xt.AnyButton,
+            M.AnyModifier,
             c.win,
             false,
             M.ButtonPressMask | M.ButtonReleaseMask,
@@ -1363,7 +1363,7 @@ fn grabkeys() void {
     var end: c_int = undefined; // or, Xt.KeyCode
     var skip: c_int = undefined;
 
-    Xt.XUngrabKey(z.dpy, X.AnyKey, X.AnyModifier, z.root);
+    Xt.XUngrabKey(z.dpy, Xt.AnyKey, M.AnyModifier, z.root);
     Xt.XDisplayKeycodes(z.dpy, &start, &end);
     const syms = Xt.XGetKeyboardMapping(z.dpy, @intCast(start), end - start + 1, &skip) orelse return;
     defer Xt.XFree(syms);
@@ -1412,7 +1412,7 @@ fn cleanup(allocator: Allocator, wmcheckwin: *Xt.Window) void {
             unmanage(allocator, c, false);
         }
     }
-    Xt.XUngrabKey(z.dpy, X.AnyKey, X.AnyModifier, z.root);
+    Xt.XUngrabKey(z.dpy, Xt.AnyKey, M.AnyModifier, z.root);
     while (z.mons) |mon| {
         cleanupmon(allocator, mon);
     }
@@ -1473,7 +1473,7 @@ fn updateBars() void {
             Xt.DefaultDepth(z.dpy, z.screen),
             Xt.CopyFromParent,
             Xt.DefaultVisual(z.dpy, z.screen),
-            X.CWOverrideRedirect | X.CWBackPixmap | X.CWEventMask,
+            M.CWOverrideRedirect | M.CWBackPixmap | M.CWEventMask,
             &wa,
         );
         log.info("Create bar window({d}): (x={d}, y={d}, w={d}, h={d})", .{
