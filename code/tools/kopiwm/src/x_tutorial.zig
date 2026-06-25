@@ -3261,9 +3261,10 @@ pub inline fn XmbTextPropertyToTextList(
 // ++ Xft Functions
 // -----------------------------------------------------------------------------
 
-/// Somehow documentation can't be found.
-///
-/// I guess it checks if a unicode codepoint exists in the font.
+/// An XftFont's glyph or character coverage can be determined with
+/// XftFontCheckGlyph() or XftCharExists(). XftCharIndex() returns the
+/// XftFont-specific character index corresponding to a given Unicode
+/// codepoint.
 ///
 /// source: https://github.com
 pub inline fn XftCharExists(
@@ -3349,6 +3350,18 @@ pub inline fn XftDrawStringUtf8(
     len: c_int,
 ) void {
     X.XftDrawStringUtf8(d, color, font, x, y, text.ptr, len);
+}
+
+/// XftFonts are populated with any of XftFontOpen(), XftFontOpenName(),
+/// XftFontOpenXlfd(), XftFontOpenInfo(), or XftFontOpenPattern().
+/// XftFontCopy() is used to duplicate XftFonts, and XftFontClose() is used to
+/// mark an XftFont as unused. XftFonts are internally allocated,
+/// reference-counted, and freed by Xft; the programmer does not ordinarily
+/// need to allocate or free storage for them.
+///
+/// source: https://man.archlinux.org/man/Xft.3
+pub inline fn XftFontClose(display: *Display, font: *XftFont) void {
+    X.XftFontClose(display, font);
 }
 
 // -----------------------------------------------------------------------------

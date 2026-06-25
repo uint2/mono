@@ -12,7 +12,7 @@ const log = std.log;
 pub const Fnt = struct {
     const Self = @This();
 
-    dpy: ?*Xt.Display,
+    dpy: *Xt.Display,
     h: u16,
     xfont: *Xt.XftFont,
     pattern: ?*Xt.FcPattern,
@@ -70,7 +70,7 @@ fn xfontCreate(
         };
         pattern = Xt.FcNameParse(fontname) orelse {
             std.debug.print("error, cannot parse font name to pattern: '{s}'\n", .{fontname});
-            X.XftFontClose(drw.dpy, xfont);
+            Xt.XftFontClose(drw.dpy, xfont.?);
             return error.FontCreateError;
         };
     } else if (font_pattern) |fp| {
@@ -98,7 +98,7 @@ fn xfontFree(allocator: Allocator, font: *Fnt) void {
     if (font.pattern) |pattern| {
         Xt.FcPatternDestroy(pattern);
     }
-    X.XftFontClose(font.dpy, font.xfont);
+    Xt.XftFontClose(font.dpy, font.xfont);
     log.warn("Deallocate font: {*}", .{font});
     allocator.destroy(font);
 }
