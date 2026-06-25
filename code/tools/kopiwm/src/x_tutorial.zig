@@ -3392,6 +3392,18 @@ pub inline fn XftFontOpenName(
     return X.XftFontOpenName(display, screen, name.ptr);
 }
 
+/// XftFonts are populated with any of XftFontOpen(), XftFontOpenName(),
+/// XftFontOpenXlfd(), XftFontOpenInfo(), or XftFontOpenPattern().
+/// XftFontCopy() is used to duplicate XftFonts, and XftFontClose() is used to
+/// mark an XftFont as unused. XftFonts are internally allocated,
+/// reference-counted, and freed by Xft; the programmer does not ordinarily
+/// need to allocate or free storage for them.
+///
+/// source: https://man.archlinux.org/man/Xft.3
+pub inline fn XftFontOpenPattern(display: *Display, pattern: *FcPattern) ?*XftFont {
+    return X.XftFontOpenPattern(display, pattern);
+}
+
 // -----------------------------------------------------------------------------
 // ++ Enums
 // -----------------------------------------------------------------------------

@@ -74,7 +74,7 @@ fn xfontCreate(
             return error.FontCreateError;
         };
     } else if (font_pattern) |fp| {
-        xfont = X.XftFontOpenPattern(drw.dpy, fp) orelse {
+        xfont = Xt.XftFontOpenPattern(drw.dpy, fp) orelse {
             std.debug.print("error, cannot load font from pattern\n", .{});
             return error.FontCreateError;
         };
