@@ -3650,7 +3650,7 @@ pub const rq = struct {
 /// as a result of a constant set or from running out of memory.
 ///
 /// source: https://xorg.freedesktop.org/archive/X11R7.0/doc/html/FcCharSetAddChar.3.html
-/// https://fontconfig.pages.freedesktop.org/fontconfig/fontconfig-devel/
+/// source: https://fontconfig.pages.freedesktop.org/fontconfig/fontconfig-devel/
 pub inline fn FcCharSetAddChar(fcs: *FcCharSet, ucs4: c_uint) bool {
     return X.FcCharSetAddChar(fcs, ucs4) != X.FcFalse;
 }
