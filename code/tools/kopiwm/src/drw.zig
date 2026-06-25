@@ -384,7 +384,7 @@ pub const Drw = struct {
             w -= lpad;
         }
         defer {
-            if (d) |draw| X.XftDrawDestroy(draw);
+            if (d) |draw| Xt.XftDrawDestroy(draw);
         }
 
         if (state.ellipsis_width == null and render) {

@@ -3327,6 +3327,14 @@ pub inline fn XftDrawCreate(
     return X.XftDrawCreate(display, drawable, visual, cmap);
 }
 
+/// XftDrawDestroy destroys draw (created by one of the XftDrawCreate*()
+/// functions) and frees the memory that was allocated for it.
+///
+/// source: https://man.archlinux.org/man/Xft.3
+pub inline fn XftDrawDestroy(draw: *XftDraw) void {
+    X.XftDrawDestroy(draw);
+}
+
 // -----------------------------------------------------------------------------
 // ++ Enums
 // -----------------------------------------------------------------------------
