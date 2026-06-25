@@ -3768,7 +3768,7 @@ pub inline fn FcDefaultSubstitute(p: *FcPattern) void {
 ///
 /// source: https://xorg.freedesktop.org/archive/X11R7.0/doc/html/FcNameParse.3.html
 pub inline fn FcNameParse(name: []const u8) ?*FcPattern {
-    return X.FcNameParse(@ptrCast(name));
+    return X.FcNameParse(name.ptr);
 }
 
 /// [FcPatternAdd-Type] These are all convenience functions that insert objects
