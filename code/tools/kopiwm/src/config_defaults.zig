@@ -1,5 +1,5 @@
 const std = @import("std");
-const k = @import("x_tutorial.zig").keys;
+const k = @import("x11.zig").keys;
 const Layout = @import("layout.zig").Layout;
 const SchemeState = @import("enums.zig").SchemeState;
 const Scheme = @import("drw.zig").Scheme;

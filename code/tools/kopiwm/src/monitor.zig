@@ -8,7 +8,7 @@ const Layout = lt.Layout;
 const Client = @import("client.zig").Client;
 const BarPosition = @import("enums.zig").BarPosition;
 
-const Xt = @import("x_tutorial.zig");
+const Xt = @import("x11.zig");
 const Allocator = std.mem.Allocator;
 const Rect = @import("rect.zig").Rect;
 

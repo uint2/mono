@@ -11,7 +11,6 @@ quick: x quick-make-command
 
 x:
 	rg '^\/\/ \+\+ '
-	python3 $(MAKEFILE_DIR)/scripts/tutorial.py
 
 x-rg:
 	rg 'X\.' --glob '!*x_tutorial*' --stats

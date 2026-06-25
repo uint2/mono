@@ -1,4 +1,4 @@
-const Xt = @import("x_tutorial.zig");
+const Xt = @import("x11.zig");
 const App = @import("app.zig");
 const Layout = @import("layout.zig").Layout;
 const DwmError = @import("errors.zig").DwmError;

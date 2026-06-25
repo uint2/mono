@@ -20,8 +20,8 @@ const MOUSEMASK = @import("config.zig").MOUSEMASK;
 const DwmError = @import("errors.zig").DwmError;
 const HandlerFn = @import("enums.zig").HandlerFn;
 const atoms = @import("atoms.zig");
-const M = @import("x_tutorial.zig").masks;
-const Xt = @import("x_tutorial.zig");
+const M = @import("x11.zig").masks;
+const Xt = @import("x11.zig");
 
 const NAME = @import("build_opts").name;
 const VERSION = @import("build_opts").version;
@@ -31,9 +31,12 @@ const LINE = "------------------------------------------------------------------
 // This exists because of config callbacks.
 var global_allocator: Allocator = undefined;
 
-// X11 stuff.
-const X = @import("c_lib.zig").X;
-const C = @import("c_lib.zig").C;
+/// C standard library.
+const C = @cImport({
+    @cInclude("locale.h");
+    @cInclude("signal.h");
+    @cInclude("unistd.h");
+});
 
 var z: App = .init();
 
@@ -1835,7 +1838,7 @@ pub fn main() !void {
     try run(allocator);
 }
 
-const X_TUTORIAL_SOURCE: []const u8 = @embedFile("x_tutorial.zig");
+const X_TUTORIAL_SOURCE: []const u8 = @embedFile("x11.zig");
 
 test "All inline functions for docs" {
     var iter = std.mem.splitScalar(u8, X_TUTORIAL_SOURCE, '\n');

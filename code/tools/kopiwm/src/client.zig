@@ -8,8 +8,8 @@ const Rect = @import("rect.zig").Rect;
 const toggle = @import("toggle.zig").toggle;
 const cfg = @import("config.zig");
 const Size = @import("enums.zig").Size;
-const Xt = @import("x_tutorial.zig");
-const M = @import("x_tutorial.zig").masks;
+const Xt = @import("x11.zig");
+const M = @import("x11.zig").masks;
 const atoms = @import("atoms.zig");
 
 const ClientSizes = struct {

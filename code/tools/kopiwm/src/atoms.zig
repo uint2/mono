@@ -3,7 +3,7 @@
 // A good place to start reading is
 // https://x.org/releases/X11R7.6/doc/xorg-docs/specs/ICCCM/icccm.html
 
-const Xt = @import("x_tutorial.zig");
+const Xt = @import("x11.zig");
 const EnumArray = @import("enum_array.zig").EnumArray;
 const std = @import("std");
 

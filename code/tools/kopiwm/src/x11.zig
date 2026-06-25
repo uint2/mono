@@ -2,7 +2,17 @@
 //!
 //! https://x.org/releases/X11R7.7/doc/man/man3/
 
-const X = @import("c_lib.zig").X;
+const X = @cImport({
+    @cInclude("X11/Xlib.h");
+    @cInclude("X11/cursorfont.h");
+    @cInclude("X11/keysym.h");
+    @cInclude("X11/Xatom.h");
+    @cInclude("X11/Xproto.h");
+    @cInclude("X11/Xutil.h");
+    @cInclude("X11/Xft/Xft.h");
+    @cInclude("X11/XKBlib.h");
+});
+
 const Coordinates = @import("enums.zig").Coordinates;
 const log = @import("std").log;
 const Rect = @import("rect.zig").Rect;
