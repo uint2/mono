@@ -97,8 +97,10 @@ fn xerror(_dpy: ?*X.Display, err_event: [*c]X.XErrorEvent) callconv(.c) c_int {
 
 var xerrorlib: ?*const fn (?*X.Display, [*c]X.XErrorEvent) callconv(.c) c_int = null;
 
+/// Ensures that there are no other window managers currently running.
+///
 /// (dwm) checkotherwm
-fn check_other_wm() void {
+fn checkOtherWM() void {
     xerrorlib = X.XSetErrorHandler(xerrorstart);
     // this causes an error if some other window manager is running
     X.XSelectInput(z.dpy, X.DefaultRootWindow(z.dpy), M.SubstructureRedirectMask);
@@ -1826,7 +1828,7 @@ pub fn main() !void {
     };
     defer X.XCloseDisplay(z.dpy);
 
-    check_other_wm();
+    checkOtherWM();
 
     var wmcheckwin: X.Window = undefined;
     try setup(allocator, &wmcheckwin);
