@@ -49,13 +49,13 @@ fn CLEANMASK(mask: u32) u32 {
 /// Ensures that there are no other window managers currently running.
 ///
 /// (dwm) checkotherwm
-fn checkOtherWM() void {
+fn checkOtherWM(dpy: *X.Display) void {
     E.xerrorlib = X.XSetErrorHandler(E.xerrorstart);
     // this causes an error if some other window manager is running
-    X.XSelectInput(z.dpy, X.DefaultRootWindow(z.dpy), M.SubstructureRedirectMask);
-    X.XSync(z.dpy, false);
+    X.XSelectInput(dpy, X.DefaultRootWindow(dpy), M.SubstructureRedirectMask);
+    X.XSync(dpy, false);
     _ = X.XSetErrorHandler(E.xerror);
-    X.XSync(z.dpy, false);
+    X.XSync(dpy, false);
 }
 
 /// (dwm) dirtomon
@@ -1703,12 +1703,12 @@ pub fn main() !void {
     if (C.setlocale(C.LC_CTYPE, "") == null or !X.XSupportsLocale()) {
         std.debug.print("warning: no locale support\n", .{});
     }
-    z.dpy = X.XOpenDisplay(null) orelse {
+    const dpy = X.XOpenDisplay(null) orelse {
         return std.debug.print(NAME ++ ": cannot open display\n", .{});
     };
-    defer X.XCloseDisplay(z.dpy);
+    defer X.XCloseDisplay(dpy);
 
-    checkOtherWM();
+    checkOtherWM(dpy);
 
     // Begin setup =============================================================
 
@@ -1726,12 +1726,13 @@ pub fn main() !void {
     // docs: https://man7.org/linux/man-pages/man2/waitpid.2.html
     while (std.c.waitpid(-1, null, std.c.W.NOHANG) > 0) {}
 
-    z.screen = X.DefaultScreen(z.dpy);
+    z.dpy = dpy;
+    z.screen = X.DefaultScreen(dpy);
     z.s = .{
-        .w = @intCast(X.DisplayWidth(z.dpy, z.screen)),
-        .h = @intCast(X.DisplayHeight(z.dpy, z.screen)),
+        .w = @intCast(X.DisplayWidth(dpy, z.screen)),
+        .h = @intCast(X.DisplayHeight(dpy, z.screen)),
     };
-    z.root = X.RootWindow(z.dpy, z.screen);
+    z.root = X.RootWindow(dpy, z.screen);
 
     z.drw = try .init(allocator, z.dpy, z.screen, z.root, z.s.w, z.s.h, &cfg.fonts);
     z.lrpad = z.drw.fonts.h;
