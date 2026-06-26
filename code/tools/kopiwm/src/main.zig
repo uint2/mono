@@ -1741,6 +1741,8 @@ pub fn main() !void {
         if (try handleCliArgs(&buffer)) return;
     }
 
+    // Initialize the global allocator.
+    // TODO: remove the global allocator entirely.
     var gpa: std.heap.GeneralPurposeAllocator(.{}) = .init;
     defer _ = gpa.deinit();
     const allocator = gpa.allocator();
