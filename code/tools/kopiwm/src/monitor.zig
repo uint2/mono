@@ -89,7 +89,8 @@ pub const Monitor = struct {
                 .bottom => m.w.y,
             };
         } else {
-            m.by = -@as(c_int, @intCast(bar_height));
+            // Send it far away.
+            m.by = 1000000;
         }
     }
 };

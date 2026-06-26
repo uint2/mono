@@ -141,6 +141,7 @@ const my_keys = [_]Key{
     .init(MODKEY,                       k.XK_q,      .f(M.killClient,     undefined              )),
     .init(MODKEY|ControlMask,           k.XK_f,      .f(M.toggleFloating, undefined              )),
     .init(HyperMask,                    k.XK_q,      .f(M.quit,           undefined              )),
+    .init(HyperMask,                    k.XK_b,      .f(M.toggleBar,      undefined              )),
 };
 // zig fmt: on
 
