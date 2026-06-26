@@ -28,9 +28,6 @@ const VERSION = @import("build_opts").version;
 
 const LINE = "----------------------------------------------------------------------";
 
-// This exists because of config callbacks.
-var global_allocator: Allocator = undefined;
-
 /// C standard library.
 const C = @cImport({
     @cInclude("locale.h");
@@ -134,7 +131,7 @@ fn directionToMonitor(direction: Direction) ?*Monitor {
 }
 
 /// (dwm) focusmon
-pub fn focusMon(arg: *const Arg) void {
+pub fn focusMon(allocator: Allocator, arg: *const Arg) void {
     // Skip base case where there are no monitors to change focus to.
     // TODO: see if we can guarantee that `z.mons` is non-null.
     const mons = z.mons orelse return;
@@ -144,12 +141,12 @@ pub fn focusMon(arg: *const Arg) void {
     if (m_opt) |m| {
         unfocus(z.selmon.sel, false);
         z.selmon = m;
-        focus(global_allocator, null);
+        focus(allocator, null);
     }
 }
 
 /// (dwm) focusstack
-pub fn focusStack(arg: *const Arg) void {
+pub fn focusStack(allocator: Allocator, arg: *const Arg) void {
     const sel = z.selmon.sel orelse return;
     if (sel.isfullscreen and cfg.lockfullscreen) return;
     var c_opt: ?*Client = null;
@@ -186,8 +183,8 @@ pub fn focusStack(arg: *const Arg) void {
         },
     }
     if (c_opt) |c| {
-        focus(global_allocator, c);
-        restack(global_allocator, z.selmon);
+        focus(allocator, c);
+        restack(allocator, z.selmon);
     }
 }
 
@@ -842,13 +839,13 @@ fn scan(allocator: Allocator) error{OutOfMemory}!void {
 }
 
 /// (dwm) incnmaster
-pub fn incNMaster(arg: *const Arg) void {
+pub fn incNMaster(allocator: Allocator, arg: *const Arg) void {
     const i = switch (arg.*) {
         .i => |v| v,
         else => return,
     };
     z.selmon.nmaster = @intCast(@max(@as(i32, @intCast(z.selmon.nmaster)) + i, 0));
-    arrange(global_allocator, z.selmon);
+    arrange(allocator, z.selmon);
 }
 
 /// (dwm) killclient
@@ -891,10 +888,10 @@ pub fn monocle(m: *Monitor) void {
 }
 
 /// (dwm) movemouse
-pub fn moveMouse(_: *const Arg) DwmError!void {
+pub fn moveMouse(allocator: Allocator, _: *const Arg) DwmError!void {
     var c = z.selmon.sel orelse return;
     if (c.isfullscreen) return; // No support moving fullscreen windows by mouse.
-    restack(global_allocator, z.selmon);
+    restack(allocator, z.selmon);
 
     // Old client x and y coordinates.
     const ocx = c.pos.now.x;
@@ -911,7 +908,7 @@ pub fn moveMouse(_: *const Arg) DwmError!void {
     while (true) {
         X.XMaskEvent(z.dpy, MOUSEMASK | M.ExposureMask | M.SubstructureRedirectMask, &ev);
         switch (ev.type) {
-            X.Expose | X.MapRequest | X.ConfigureRequest => try runOne(global_allocator, &ev),
+            X.Expose | X.MapRequest | X.ConfigureRequest => try runOne(allocator, &ev),
             X.MotionNotify => {
                 if (ev.xmotion.time - lasttime <= @divFloor(1000, cfg.refreshrate)) {
                     continue;
@@ -934,7 +931,7 @@ pub fn moveMouse(_: *const Arg) DwmError!void {
                     (@abs(nx - c.pos.now.x) > cfg.snap or
                         @abs(ny - c.pos.now.y) > cfg.snap))
                 {
-                    toggleFloating(undefined);
+                    toggleFloating(allocator, undefined);
                 }
                 if (z.selmon.lt.now.arrange != null or c.is_floating.now) {
                     var r = c.pos.now;
@@ -951,15 +948,15 @@ pub fn moveMouse(_: *const Arg) DwmError!void {
     const m_opt = c.pos.now.toMonitor(z.mons);
     if (m_opt != z.selmon) {
         if (m_opt) |m| {
-            sendMon(global_allocator, c, m);
+            sendMon(allocator, c, m);
             z.selmon = m;
-            focus(global_allocator, null);
+            focus(allocator, null);
         }
     }
 }
 
 /// (dwm) setlayout
-pub fn setLayout(arg: *const Arg) void {
+pub fn setLayout(allocator: Allocator, arg: *const Arg) void {
     // TODO: check all other instances of tagged access of args. Make sure to
     // use a switch statement before indexing.
     const lt = switch (arg.*) {
@@ -969,14 +966,14 @@ pub fn setLayout(arg: *const Arg) void {
     z.selmon.lt.now = lt;
     z.selmon.layout_symbol = lt.symbol;
     if (z.selmon.sel) |_| {
-        arrange(global_allocator, z.selmon);
+        arrange(allocator, z.selmon);
     } else {
-        drawbar(global_allocator, z.selmon);
+        drawbar(allocator, z.selmon);
     }
 }
 
 /// (dwm) setmfact
-pub fn setMFact(arg: *const Arg) void {
+pub fn setMFact(allocator: Allocator, arg: *const Arg) void {
     if (z.selmon.lt.now.arrange == null) return;
     const f: f32 = switch (arg.*) {
         .f => |v| v,
@@ -984,15 +981,15 @@ pub fn setMFact(arg: *const Arg) void {
     };
     if (0.05 <= f and f <= 0.95) {
         z.selmon.mfact = f;
-        arrange(global_allocator, z.selmon);
+        arrange(allocator, z.selmon);
     }
 }
 
 /// (dwm) resizemouse
-pub fn resizeMouse(_: *const Arg) DwmError!void {
+pub fn resizeMouse(allocator: Allocator, _: *const Arg) DwmError!void {
     var c = z.selmon.sel orelse return;
     if (c.isfullscreen) return; // No support moving fullscreen windows by mouse.
-    restack(global_allocator, z.selmon);
+    restack(allocator, z.selmon);
 
     // Old client x and y coordinates.
     const ocx = c.pos.now.x;
@@ -1024,7 +1021,7 @@ pub fn resizeMouse(_: *const Arg) DwmError!void {
     while (true) {
         X.XMaskEvent(z.dpy, MOUSEMASK | M.ExposureMask | M.SubstructureRedirectMask, &ev);
         switch (ev.type) {
-            X.Expose | X.MapRequest | X.ConfigureRequest => try runOne(global_allocator, &ev),
+            X.Expose | X.MapRequest | X.ConfigureRequest => try runOne(allocator, &ev),
             X.MotionNotify => {
                 if (ev.xmotion.time - lasttime <= @divFloor(1000, cfg.refreshrate)) {
                     continue;
@@ -1037,7 +1034,7 @@ pub fn resizeMouse(_: *const Arg) DwmError!void {
                         @as(f32, @floatFromInt(z.selmon.m.w));
                     if (0.05 <= f and f <= 0.95) {
                         z.selmon.mfact = f;
-                        arrange(global_allocator, z.selmon);
+                        arrange(allocator, z.selmon);
                     }
                     // toggleFloating(undefined);
                 } else if (c.mon.w.x + nw >= z.selmon.w.l() and
@@ -1050,7 +1047,7 @@ pub fn resizeMouse(_: *const Arg) DwmError!void {
                         (@abs(nw - @as(i32, @intCast(c.pos.now.w))) > cfg.snap or
                             @abs(nh - @as(i32, @intCast(c.pos.now.h))) > cfg.snap))
                     {
-                        toggleFloating(undefined);
+                        toggleFloating(allocator, undefined);
                     }
                 }
                 if (z.selmon.lt.now.arrange == null or c.is_floating.now) {
@@ -1074,9 +1071,9 @@ pub fn resizeMouse(_: *const Arg) DwmError!void {
     const m_opt = c.pos.now.toMonitor(z.mons);
     if (m_opt != z.selmon) {
         if (m_opt) |m| {
-            sendMon(global_allocator, c, m);
+            sendMon(allocator, c, m);
             z.selmon = m;
-            focus(global_allocator, null);
+            focus(allocator, null);
         }
     }
 }
@@ -1099,14 +1096,14 @@ fn sendMon(allocator: Allocator, c: *Client, m: *Monitor) void {
 }
 
 /// (dwm) togglefloating
-pub fn toggleFloating(_: *const Arg) void {
+pub fn toggleFloating(allocator: Allocator, _: *const Arg) void {
     const sel = z.selmon.sel orelse return;
     if (sel.isfullscreen) return; // No support for making fullscreen windows float.
     sel.is_floating.set(!sel.is_floating.now or sel.is_fixed);
     if (sel.is_floating.now) {
         sel.hintAndResize(sel.pos.now, false);
     }
-    arrange(global_allocator, z.selmon);
+    arrange(allocator, z.selmon);
 }
 
 /// (dwm) wintomon
@@ -1338,7 +1335,7 @@ fn cleanup(allocator: Allocator, wmcheckwin: X.Window) void {
     // View all clients at once. ~0 yields a bitmask of all high bits. I don't
     // fully understand why we do this yet, but I think it helps with clearing
     // out the clients.
-    view(&.{ .ui = ~@as(u32, 0) });
+    view(allocator, &.{ .ui = ~@as(u32, 0) });
     z.selmon.lt.set(&.{ .symbol = "", .arrange = null });
 
     var m_opt = z.mons;
@@ -1457,20 +1454,20 @@ pub fn spawn(arg: *const Arg) void {
 }
 
 /// (dwm) tag
-pub fn tag(arg: *const Arg) void {
+pub fn tag(allocator: Allocator, arg: *const Arg) void {
     const mask = switch (arg.*) {
         .ui => |v| if (v & cfg.TAGMASK != 0) v else return,
         else => return,
     };
     if (z.selmon.sel) |c| {
         c.tags = mask & cfg.TAGMASK;
-        focus(global_allocator, null);
-        arrange(global_allocator, z.selmon);
+        focus(allocator, null);
+        arrange(allocator, z.selmon);
     }
 }
 
 /// (dwm) tagmon
-pub fn tagMonitor(arg: *const Arg) void {
+pub fn tagMonitor(allocator: Allocator, arg: *const Arg) void {
     const direction = switch (arg.*) {
         .d => |v| v,
         else => return,
@@ -1481,13 +1478,13 @@ pub fn tagMonitor(arg: *const Arg) void {
     if (mons.next == null) return;
 
     if (directionToMonitor(direction)) |m| {
-        sendMon(global_allocator, sel, m);
+        sendMon(allocator, sel, m);
     }
 }
 
 /// (dwm) view
 /// Views a certain tag mask.
-pub fn view(arg: *const Arg) void {
+pub fn view(allocator: Allocator, arg: *const Arg) void {
     const mask = switch (arg.*) {
         .ui => |mask| b: {
             // This mask is expected to only have one high bit.
@@ -1504,8 +1501,8 @@ pub fn view(arg: *const Arg) void {
     } else if (mask != 0) {
         z.selmon.tags = mask;
     }
-    focus(global_allocator, null);
-    arrange(global_allocator, z.selmon);
+    focus(allocator, null);
+    arrange(allocator, z.selmon);
 }
 
 /// (dwm) tile
@@ -1558,22 +1555,22 @@ pub fn tile(m: *Monitor) void {
 }
 
 /// (dwm) togglebar
-pub fn toggleBar(_: *const Arg) void {
+pub fn toggleBar(allocator: Allocator, _: *const Arg) void {
     z.selmon.show_bar = !z.selmon.show_bar;
     z.selmon.updateBarPosition(z.bar_height);
     X.XMoveResizeWindow2(z.dpy, z.selmon.barwin, z.barRect());
-    arrange(global_allocator, z.selmon);
+    arrange(allocator, z.selmon);
 }
 
-pub fn toggleBarPosition(_: *const Arg) void {
+pub fn toggleBarPosition(allocator: Allocator, _: *const Arg) void {
     z.selmon.bar_pos = z.selmon.bar_pos.toggle();
     z.selmon.updateBarPosition(z.bar_height);
     X.XMoveResizeWindow2(z.dpy, z.selmon.barwin, z.barRect());
-    arrange(global_allocator, z.selmon);
+    arrange(allocator, z.selmon);
 }
 
 /// (dwm) toggletag
-pub fn toggleTag(arg: *const Arg) void {
+pub fn toggleTag(allocator: Allocator, arg: *const Arg) void {
     const mask = switch (arg.*) {
         .ui => |v| v,
         else => return,
@@ -1582,13 +1579,13 @@ pub fn toggleTag(arg: *const Arg) void {
     const newtags = sel.tags ^ (mask & cfg.TAGMASK);
     if (newtags != 0) {
         sel.tags = newtags;
-        focus(global_allocator, null);
-        arrange(global_allocator, z.selmon);
+        focus(allocator, null);
+        arrange(allocator, z.selmon);
     }
 }
 
 /// (dwm) toggleview
-pub fn toggleView(arg: *const Arg) void {
+pub fn toggleView(allocator: Allocator, arg: *const Arg) void {
     const mask = switch (arg.*) {
         .ui => |v| v & cfg.TAGMASK,
         else => return,
@@ -1596,8 +1593,8 @@ pub fn toggleView(arg: *const Arg) void {
     const newtagset = z.selmon.tags ^ mask;
     if (newtagset != 0) {
         z.selmon.tags = newtagset;
-        focus(global_allocator, null);
-        arrange(global_allocator, z.selmon);
+        focus(allocator, null);
+        arrange(allocator, z.selmon);
     }
 }
 
@@ -1617,7 +1614,7 @@ pub fn quit(_: *const Arg) void {
 }
 
 /// (dwm) zoom
-pub fn zoom(_: *const Arg) void {
+pub fn zoom(allocator: Allocator, _: *const Arg) void {
     var c: ?*Client = z.selmon.sel orelse return;
     if (c.?.is_floating.now or z.selmon.lt.now.arrange == null) return;
     const nextTiled: ?*Client = if (z.selmon.clients) |x| x.nextTiled() else null;
@@ -1627,7 +1624,7 @@ pub fn zoom(_: *const Arg) void {
             return;
         }
     }
-    pop(global_allocator, c.?);
+    pop(allocator, c.?);
 }
 
 /// (dwm) drawbar
@@ -1750,7 +1747,6 @@ pub fn main() !void {
     var gpa: std.heap.GeneralPurposeAllocator(.{}) = .init;
     defer _ = gpa.deinit();
     const allocator = gpa.allocator();
-    global_allocator = allocator;
 
     if (C.setlocale(C.LC_CTYPE, "") == null or !X.XSupportsLocale()) {
         std.debug.print("warning: no locale support\n", .{});

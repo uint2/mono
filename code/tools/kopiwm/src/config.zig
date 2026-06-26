@@ -139,23 +139,23 @@ const my_keys = [_]Key{
     .init(MODKEY,                   k.XK_Return, .f(M.spawn,               .{ .args = termcmd    })),
     // .init(MODKEY,                   k.XK_j,      .f(M.focusStack,          .{ .d = .Next         })),
     // .init(MODKEY,                   k.XK_k,      .f(M.focusStack,          .{ .d = .Prev         })),
-    .init(MODKEY|m.ctrl|m.shft,     k.XK_equal,  .f(M.setMFact,            .{ .f =  0.04         })),
-    .init(MODKEY|m.ctrl|m.shft,     k.XK_minus,  .f(M.setMFact,            .{ .f = -0.04         })),
-    .init(MODKEY,                   k.XK_Return, .f(M.zoom,                undefined              )),
-    .init(MODKEY,                   k.XK_Tab,    .f(M.focusStack,          .{ .d = .Next         })),
+    .init(MODKEY|m.ctrl|m.shft,     k.XK_equal,  .a(M.setMFact,            .{ .f =  0.04         })),
+    .init(MODKEY|m.ctrl|m.shft,     k.XK_minus,  .a(M.setMFact,            .{ .f = -0.04         })),
+    .init(MODKEY,                   k.XK_Return, .a(M.zoom,                undefined              )),
+    .init(MODKEY,                   k.XK_Tab,    .a(M.focusStack,          .{ .d = .Next         })),
     .init(MODKEY,                   k.XK_q,      .f(M.killClient,          undefined              )),
-    .init(MODKEY|m.ctrl,            k.XK_f,      .f(M.toggleFloating,      undefined              )),
+    .init(MODKEY|m.ctrl,            k.XK_f,      .a(M.toggleFloating,      undefined              )),
     .init(m.hyper,                  k.XK_q,      .f(M.quit,                undefined              )),
-    .init(m.bot3,                   k.XK_b,      .f(M.toggleBar,           undefined              )),
-    .init(m.hyper,                  k.XK_b,      .f(M.toggleBarPosition,   undefined              )),
+    .init(m.bot3,                   k.XK_b,      .a(M.toggleBar,           undefined              )),
+    .init(m.hyper,                  k.XK_b,      .a(M.toggleBarPosition,   undefined              )),
 };
 // zig fmt: on
 
 /// A template of what's to be mapped for each tag available.
 // zig fmt: off
 const my_tag_keys = [_]Key{
-    .init(MODKEY,           0, .f(M.view,       .{ .ui = 0 })),
-    .init(MODKEY|m.shft,    0, .f(M.tag,        .{ .ui = 0 })),
+    .init(MODKEY,           0, .a(M.view,       .{ .ui = 0 })),
+    .init(MODKEY|m.shft,    0, .a(M.tag,        .{ .ui = 0 })),
 };
 // zig fmt: on
 
@@ -185,10 +185,10 @@ pub const keys = initKeys(
 
 // zig fmt: off
 pub const my_buttons = [_]Button{
-.init(.ClientWin,    MODKEY,   k.Button1,   .F( M.moveMouse,        undefined)),
-.init(.ClientWin,    MODKEY,   k.Button3,   .F( M.resizeMouse,      undefined)),
-.init(.TagBar,       0,        k.Button1,   .f( M.view,             undefined)),
-.init(.TagBar,       0,        k.Button3,   .f( M.toggleView,       undefined)),
+.init(.ClientWin,    MODKEY,   k.Button1,   .A( M.moveMouse,        undefined)),
+.init(.ClientWin,    MODKEY,   k.Button3,   .A( M.resizeMouse,      undefined)),
+.init(.TagBar,       0,        k.Button1,   .a( M.view,             undefined)),
+.init(.TagBar,       0,        k.Button3,   .a( M.toggleView,       undefined)),
 };
 // zig fmt: on
 pub const buttons: []const Button = if (USE_DEFAULT_CONFIG) &defaults.buttons else &my_buttons;
