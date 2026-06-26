@@ -1791,14 +1791,15 @@ fn handleCliArgs(buffer: []u8) error{WriteFailed}!bool {
         try stdout.flush();
         return true;
     }
-    // Otherwise, if there are any CLI args at all, print the super-minimal help
-    // text, which is to either run the binary with no flags, or run it with the
-    // "-v" flag.
+    // If there are any CLI args at all, print the super-minimal help text,
+    // which is to either run the binary with no flags, or run it with the "-v"
+    // flag.
     else if (argv.len != 1) {
         try stdout.print("usage: {s} [-v]\n", .{NAME});
         try stdout.flush();
         return true;
     }
+    // Otherwise, we continue execution.
     return false;
 }
 
