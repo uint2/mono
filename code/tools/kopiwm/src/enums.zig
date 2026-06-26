@@ -64,7 +64,19 @@ pub const Button = struct {
     }
 };
 
-pub const BarPosition = enum { top, bottom };
+pub const BarPosition = enum {
+    const Self = @This();
+
+    top,
+    bottom,
+
+    pub fn toggle(self: *const Self) Self {
+        return switch (self.*) {
+            .top => .bottom,
+            .bottom => .top,
+        };
+    }
+};
 
 pub const Rule = struct {
     class: ?[]const u8,

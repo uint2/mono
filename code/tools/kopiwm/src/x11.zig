@@ -2581,9 +2581,20 @@ pub inline fn XMoveResizeWindow(
     width: c_uint,
     height: c_uint,
 ) void {
-    // It is not specified in documentation what the return value of XMoveWindow
-    // is, so we shall discard it.
+    // Meaning of return value is not specified in documentation.
     _ = X.XMoveResizeWindow(display, window, x, y, width, height);
+}
+
+/// See XMoveResizeWindow.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XConfigureWindow.3.xhtml
+pub inline fn XMoveResizeWindow2(
+    display: *Display,
+    window: Window,
+    rect: Rect,
+) void {
+    // Meaning of return value is not specified in documentation.
+    _ = X.XMoveResizeWindow(display, window, rect.x, rect.y, rect.w, rect.h);
 }
 
 /// The XMoveWindow function moves the specified window to the specified x and
@@ -2612,8 +2623,7 @@ pub inline fn XMoveWindow(
     // the window's border or the window itself if it has no border or define
     // the new position of the window relative to its parent.
 
-    // It is not specified in documentation what the return value of XMoveWindow
-    // is, so we shall discard it.
+    // Meaning of return value is not specified in documentation.
     _ = X.XMoveWindow(display, window, x, y);
 }
 

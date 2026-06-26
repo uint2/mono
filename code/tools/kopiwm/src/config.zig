@@ -1,7 +1,6 @@
 const std = @import("std");
 const X = @import("x11.zig");
 const k = @import("x11.zig").keys;
-const m = @import("x11.zig").masks;
 const lt = @import("layout.zig");
 const Layout = @import("layout.zig").Layout;
 const SchemeState = @import("enums.zig").SchemeState;
@@ -22,8 +21,8 @@ const defaults = @import("config_defaults.zig");
 // those functions.
 const USE_DEFAULT_CONFIG = false;
 
-pub const BUTTONMASK = m.ButtonPressMask | m.ButtonReleaseMask;
-pub const MOUSEMASK = BUTTONMASK | m.PointerMotionMask;
+pub const BUTTONMASK = X.masks.ButtonPressMask | X.masks.ButtonReleaseMask;
+pub const MOUSEMASK = BUTTONMASK | X.masks.PointerMotionMask;
 
 // AwesomeWM provides a very helpful graphic here:
 // https://awesomewm.org/doc/api/libraries/mouse.html
@@ -117,12 +116,18 @@ fn initColors() EnumArray(SchemeState, Scheme([]const u8)) {
 
 pub const colors = initColors();
 
-const AltMask = m.Mod1Mask;
-const ControlMask = m.ControlMask;
-const ShiftMask = m.ShiftMask;
-const HyperMask = AltMask | ControlMask | ShiftMask | m.Mod4Mask;
+const m = struct {
+    pub const alt = X.masks.Mod1Mask;
+    pub const ctrl = X.masks.ControlMask;
+    pub const shft = X.masks.ShiftMask;
+    pub const gui = X.masks.Mod4Mask;
 
-const MODKEY = m.Mod4Mask;
+    pub const hyper = alt | ctrl | shft | gui;
+    /// The 3 keys on the bottom row. Ctrl + Alt + GUI.
+    pub const bot3 = alt | ctrl | gui;
+};
+
+const MODKEY = m.gui;
 const launchcmd: [*:null]const ?[*:0]const u8 = &.{ "rofi", "-show", "run", "-matching", "fuzzy", "-sort", "-sorting-method", "fzf" };
 const termcmd: [*:null]const ?[*:0]const u8 = &.{"kitty"};
 
@@ -130,18 +135,19 @@ const termcmd: [*:null]const ?[*:0]const u8 = &.{"kitty"};
 const my_keys = [_]Key{
     // TODO: test to see if we DON'T specify null at the end of an args array,
     // will there still be a null there thanks to Zig?
-    .init(MODKEY,                       k.XK_space,  .f(M.spawn,          .{ .args = launchcmd  })),
-    .init(MODKEY,                       k.XK_Return, .f(M.spawn,          .{ .args = termcmd    })),
-    // .init(MODKEY,                       k.XK_j,      .f(M.focusStack,     .{ .d = .Next         })),
-    // .init(MODKEY,                       k.XK_k,      .f(M.focusStack,     .{ .d = .Prev         })),
-    .init(MODKEY|ControlMask|ShiftMask, k.XK_equal,  .f(M.setMFact,       .{ .f =  0.04         })),
-    .init(MODKEY|ControlMask|ShiftMask, k.XK_minus,  .f(M.setMFact,       .{ .f = -0.04         })),
-    .init(MODKEY,                       k.XK_Return, .f(M.zoom,           undefined              )),
-    .init(MODKEY,                       k.XK_Tab,    .f(M.focusStack,     .{ .d = .Next         })),
-    .init(MODKEY,                       k.XK_q,      .f(M.killClient,     undefined              )),
-    .init(MODKEY|ControlMask,           k.XK_f,      .f(M.toggleFloating, undefined              )),
-    .init(HyperMask,                    k.XK_q,      .f(M.quit,           undefined              )),
-    .init(HyperMask,                    k.XK_b,      .f(M.toggleBar,      undefined              )),
+    .init(MODKEY,                   k.XK_space,  .f(M.spawn,               .{ .args = launchcmd  })),
+    .init(MODKEY,                   k.XK_Return, .f(M.spawn,               .{ .args = termcmd    })),
+    // .init(MODKEY,                   k.XK_j,      .f(M.focusStack,          .{ .d = .Next         })),
+    // .init(MODKEY,                   k.XK_k,      .f(M.focusStack,          .{ .d = .Prev         })),
+    .init(MODKEY|m.ctrl|m.shft,     k.XK_equal,  .f(M.setMFact,            .{ .f =  0.04         })),
+    .init(MODKEY|m.ctrl|m.shft,     k.XK_minus,  .f(M.setMFact,            .{ .f = -0.04         })),
+    .init(MODKEY,                   k.XK_Return, .f(M.zoom,                undefined              )),
+    .init(MODKEY,                   k.XK_Tab,    .f(M.focusStack,          .{ .d = .Next         })),
+    .init(MODKEY,                   k.XK_q,      .f(M.killClient,          undefined              )),
+    .init(MODKEY|m.ctrl,            k.XK_f,      .f(M.toggleFloating,      undefined              )),
+    .init(m.hyper,                  k.XK_q,      .f(M.quit,                undefined              )),
+    .init(m.bot3,                   k.XK_b,      .f(M.toggleBar,           undefined              )),
+    .init(m.hyper,                  k.XK_b,      .f(M.toggleBarPosition,   undefined              )),
 };
 // zig fmt: on
 
@@ -149,7 +155,7 @@ const my_keys = [_]Key{
 // zig fmt: off
 const my_tag_keys = [_]Key{
     .init(MODKEY,           0, .f(M.view,       .{ .ui = 0 })),
-    .init(MODKEY|ShiftMask, 0, .f(M.tag,        .{ .ui = 0 })),
+    .init(MODKEY|m.shft,    0, .f(M.tag,        .{ .ui = 0 })),
 };
 // zig fmt: on
 

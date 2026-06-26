@@ -21,7 +21,7 @@ pub const Monitor = struct {
     /// Number of master windows.
     nmaster: u32 = cfg.nmaster,
     /// Status bar's y-coordinate.
-    by: i32 = undefined,
+    by: c_int = undefined,
     /// The Rect that every pixel on the monitor lives in.
     m: Rect = .zero,
     /// The Rect that windows live in. This is simply the monitor's Rect minus
@@ -76,22 +76,29 @@ pub const Monitor = struct {
     }
 
     /// (dwm) updatebarpos
-    pub fn updateBarPosition(m: *Monitor, bar_height: c_uint, bar_pos: BarPosition) void {
-        m.w.y = m.m.y;
-        m.w.h = m.m.h;
-        if (m.show_bar) {
-            m.w.h -= bar_height;
-            m.by = switch (bar_pos) {
-                .top => m.w.y,
-                .bottom => m.w.b(),
-            };
-            m.w.y = switch (m.bar_pos) {
-                .top => m.w.y + @as(c_int, @intCast(bar_height)),
-                .bottom => m.w.y,
-            };
-        } else {
-            // Send it far away.
-            m.by = 1000000;
+    pub fn updateBarPosition(self: *Monitor, bar_height: c_uint) void {
+        if (!self.show_bar) {
+            // If the bar is not shown, then the dimensions of the windows
+            // display area simply become the entire monitor.
+            self.w = self.m;
+            // Send the bar out of the screen.
+            self.by = self.m.y - 2 * @as(c_int, @intCast(bar_height));
+            return;
+        }
+
+        // Otherwise, the height of the display area is shortened by precisely
+        // the bar height.
+        self.w.h = self.m.h - bar_height;
+
+        switch (self.bar_pos) {
+            .top => {
+                self.by = self.m.y;
+                self.w.y = self.m.y + @as(c_int, @intCast(bar_height));
+            },
+            .bottom => {
+                self.by = self.m.b() - @as(c_int, @intCast(bar_height));
+                self.w.y = self.m.y;
+            },
         }
     }
 };

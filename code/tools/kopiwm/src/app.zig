@@ -3,6 +3,7 @@ const std = @import("std");
 const log = std.log;
 const build_opts = @import("build_opts");
 const X = @import("x11.zig");
+const Rect = @import("rect.zig").Rect;
 const SchemeState = @import("enums.zig").SchemeState;
 const CursorState = @import("enums.zig").CursorState;
 const Size = @import("enums.zig").Size;
@@ -112,4 +113,14 @@ pub fn getTextProp(self: *const Self, w: X.Window, atom: X.Atom, buffer: []u8) ?
     }
     X.XFree(text_property.value);
     return l;
+}
+
+/// Gets the Rect for the status bar (window).
+pub fn barRect(self: *const Self) Rect {
+    return .{
+        .x = self.selmon.w.x,
+        .y = self.selmon.by,
+        .w = self.selmon.w.w,
+        .h = self.bar_height,
+    };
 }

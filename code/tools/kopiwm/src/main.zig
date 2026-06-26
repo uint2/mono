@@ -552,8 +552,7 @@ fn configureRequest(e: *X.XEvent) void {
                 c.configure(z.dpy);
             }
             if (c.isVisible()) {
-                const r = &c.pos.now;
-                X.XMoveResizeWindow(z.dpy, c.win, r.x, r.y, r.w, r.h);
+                X.XMoveResizeWindow2(z.dpy, c.win, c.pos.now);
             }
         } else {
             c.configure(z.dpy);
@@ -1140,7 +1139,7 @@ fn updategeom(allocator: Allocator, selmon: *?*Monitor) error{OutOfMemory}!bool 
             mons.w.h = z.s.h;
             mons.m.w = z.s.w;
             mons.m.h = z.s.h;
-            mons.updateBarPosition(z.bar_height, cfg.bar_pos);
+            mons.updateBarPosition(z.bar_height);
         }
     }
     if (dirty) {
@@ -1651,15 +1650,15 @@ pub fn tile(m: *Monitor) void {
 /// (dwm) togglebar
 pub fn toggleBar(_: *const Arg) void {
     z.selmon.show_bar = !z.selmon.show_bar;
-    z.selmon.updateBarPosition(z.bar_height, cfg.bar_pos);
-    X.XMoveResizeWindow(
-        z.dpy,
-        z.selmon.barwin,
-        z.selmon.w.x,
-        z.selmon.by,
-        z.selmon.w.w,
-        z.bar_height,
-    );
+    z.selmon.updateBarPosition(z.bar_height);
+    X.XMoveResizeWindow2(z.dpy, z.selmon.barwin, z.barRect());
+    arrange(global_allocator, z.selmon);
+}
+
+pub fn toggleBarPosition(_: *const Arg) void {
+    z.selmon.bar_pos = z.selmon.bar_pos.toggle();
+    z.selmon.updateBarPosition(z.bar_height);
+    X.XMoveResizeWindow2(z.dpy, z.selmon.barwin, z.barRect());
     arrange(global_allocator, z.selmon);
 }
 
