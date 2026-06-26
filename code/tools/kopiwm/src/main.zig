@@ -1229,7 +1229,6 @@ fn setup(allocator: Allocator, wmcheckwin: *X.Window) DwmError!void {
     z.root = X.RootWindow(z.dpy, z.screen);
     z.drw = try .init(allocator, z.dpy, z.screen, z.root, z.s.w, z.s.h, &cfg.fonts);
     z.lrpad = z.drw.fonts.h;
-    z.bar_height = 20;
 
     var selmon: ?*Monitor = null;
     // Make sure that `selmon` is initialized.

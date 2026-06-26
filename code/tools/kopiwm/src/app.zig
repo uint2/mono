@@ -11,6 +11,7 @@ const fstr = @import("fstr.zig").fstr;
 const Client = @import("client.zig").Client;
 const Allocator = std.mem.Allocator;
 const EnumArray = @import("enum_array.zig").EnumArray;
+const cfg = @import("config.zig");
 
 const Drw = @import("drw.zig").Drw;
 const ColorScheme = @import("drw.zig").ColorScheme;
@@ -34,7 +35,7 @@ drw: Drw = undefined,
 /// Left-right padding.
 lrpad: u32 = 0,
 
-bar_height: u32 = 0,
+bar_height: u32 = cfg.bar_height,
 
 mons: ?*Monitor = null,
 

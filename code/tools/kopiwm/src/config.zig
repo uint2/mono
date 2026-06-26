@@ -91,6 +91,8 @@ pub const show_bar: bool = true;
 
 pub const bar_pos: BarPosition = .top;
 
+pub const bar_height: u32 = 20;
+
 pub const layouts = [_]Layout{
     .{ .symbol = "[]=", .arrange = M.tile },
     .{ .symbol = "[M]", .arrange = M.monocle },
