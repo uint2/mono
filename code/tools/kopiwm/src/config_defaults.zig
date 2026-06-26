@@ -1,5 +1,6 @@
 const std = @import("std");
 const k = @import("x11.zig").keys;
+const m = @import("x11.zig").masks;
 const Layout = @import("layout.zig").Layout;
 const SchemeState = @import("enums.zig").SchemeState;
 const Scheme = @import("drw.zig").Scheme;
@@ -34,10 +35,10 @@ fn initColors() EnumArray(SchemeState, Scheme([]const u8)) {
 
 pub const colors = initColors();
 
-const ShiftMask = k.ShiftMask;
-const ControlMask = k.ControlMask;
+const ShiftMask = m.ShiftMask;
+const ControlMask = m.ControlMask;
 
-const MODKEY = k.Mod4Mask;
+const MODKEY = m.Mod4Mask;
 const launchcmd: [*:null]const ?[*:0]const u8 = &.{ "rofi", "-show", "run", "-matching", "fuzzy", "-sort", "-sorting-method", "fzf" };
 const termcmd: [*:null]const ?[*:0]const u8 = &.{"xterm"};
 
