@@ -19,6 +19,7 @@ const HandlerFn = @import("enums.zig").HandlerFn;
 const atoms = @import("atoms.zig");
 const X = @import("x11.zig");
 const M = @import("x11.zig").masks;
+const E = @import("errors.zig");
 
 const NAME = @import("build_opts").name;
 const VERSION = @import("build_opts").version;
@@ -45,61 +46,15 @@ fn CLEANMASK(mask: u32) u32 {
         (M.ShiftMask | M.ControlMask | M.Mod1Mask | M.Mod2Mask | M.Mod3Mask | M.Mod4Mask | M.Mod5Mask);
 }
 
-fn xerrordummy(_: ?*X.Display, _: [*c]X.XErrorEvent) callconv(.c) c_int {
-    return 0;
-}
-
-/// (dwm) xerrorstart
-fn xerrorstart(_dpy: ?*X.Display, _event: [*c]X.XErrorEvent) callconv(.c) c_int {
-    _ = _dpy;
-    _ = _event;
-    std.debug.print(NAME ++ ": another window manager is already running\n", .{});
-    std.process.exit(1);
-}
-
-/// (dwm) xerror
-fn xerror(_dpy: ?*X.Display, err_event: [*c]X.XErrorEvent) callconv(.c) c_int {
-    _ = _dpy;
-    if (err_event == null) {
-        std.debug.print(NAME ++ ": called xerror with null X.XErrorEvent value\n", .{});
-        if (xerrorlib) |f| {
-            return f(z.dpy, err_event);
-        }
-        @panic("xerror called but xerrorlib not defined yet.");
-    }
-    const e = err_event.*;
-    const rc = e.request_code;
-    const ec = e.error_code;
-    if (ec == X.err.BadWindow or
-        (rc == X.rq.SetInputFocus and ec == X.err.BadMatch) or
-        (rc == X.rq.PolyText8 and ec == X.err.BadDrawable) or
-        (rc == X.rq.PolyFillRectangle and ec == X.err.BadDrawable) or
-        (rc == X.rq.PolySegment and ec == X.err.BadDrawable) or
-        (rc == X.rq.ConfigureWindow and ec == X.err.BadMatch) or
-        (rc == X.rq.GrabButton and ec == X.err.BadAccess) or
-        (rc == X.rq.GrabKey and ec == X.err.BadAccess) or
-        (rc == X.rq.CopyArea and ec == X.err.BadDrawable))
-    {
-        return 0;
-    }
-    std.debug.print(NAME ++ ": fatal error: request code={d}, error code={d}\n", .{ rc, ec });
-    if (xerrorlib) |f| {
-        return f(z.dpy, err_event);
-    }
-    @panic("xerror called but xerrorlib not defined yet.");
-}
-
-var xerrorlib: ?*const fn (?*X.Display, [*c]X.XErrorEvent) callconv(.c) c_int = null;
-
 /// Ensures that there are no other window managers currently running.
 ///
 /// (dwm) checkotherwm
 fn checkOtherWM() void {
-    xerrorlib = X.XSetErrorHandler(xerrorstart);
+    E.xerrorlib = X.XSetErrorHandler(E.xerrorstart);
     // this causes an error if some other window manager is running
     X.XSelectInput(z.dpy, X.DefaultRootWindow(z.dpy), M.SubstructureRedirectMask);
     X.XSync(z.dpy, false);
-    _ = X.XSetErrorHandler(xerror);
+    _ = X.XSetErrorHandler(E.xerror);
     X.XSync(z.dpy, false);
 }
 
@@ -320,14 +275,14 @@ fn unmanage(allocator: Allocator, c: *Client, destroyed: bool) void {
 
     if (!destroyed) {
         X.XGrabServer(z.dpy); // dwm: Avoid race conditions.
-        _ = X.XSetErrorHandler(xerrordummy);
+        _ = X.XSetErrorHandler(E.xerrordummy);
         X.XSelectInput(z.dpy, c.win, X.masks.NoEventMask);
         var wc = X.XWindowChanges{ .border_width = @intCast(c.bw.prev) };
         X.XConfigureWindow(z.dpy, c.win, M.CWBorderWidth, &wc); // restore border
         X.XUngrabButton(z.dpy, X.AnyButton, M.AnyModifier, c.win);
         c.setState(.WithdrawnState);
         X.XSync(z.dpy, false);
-        _ = X.XSetErrorHandler(xerror);
+        _ = X.XSetErrorHandler(E.xerror);
         X.XUngrabServer(z.dpy);
     }
     log.warn("Deallocate client: {*} (will arrange monitor {*})", .{ c, c.mon });
@@ -852,11 +807,11 @@ pub fn killClient(_: *const Arg) void {
     if (!sel.sendEvent(atoms.wm(.Delete))) {
         log.info("Kill effective", .{});
         X.XGrabServer(z.dpy);
-        _ = X.XSetErrorHandler(xerrordummy);
+        _ = X.XSetErrorHandler(E.xerrordummy);
         X.XSetCloseDownMode(z.dpy, .DestroyAll);
         X.XKillClient(z.dpy, sel.win);
         X.XSync(z.dpy, false);
-        _ = X.XSetErrorHandler(xerror);
+        _ = X.XSetErrorHandler(E.xerror);
         X.XUngrabServer(z.dpy);
     } else {
         log.info("Kill ineffective", .{});
