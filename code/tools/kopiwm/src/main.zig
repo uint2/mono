@@ -1706,15 +1706,13 @@ pub fn main() !void {
     if (C.setlocale(C.LC_CTYPE, "") == null or !X.XSupportsLocale()) {
         std.debug.print("warning: no locale support\n", .{});
     }
+
     const dpy = X.XOpenDisplay(null) orelse {
-        return std.debug.print(NAME ++ ": cannot open display\n", .{});
+        return std.debug.print(NAME ++ ": cannot open X display\n", .{});
     };
     defer X.XCloseDisplay(dpy);
 
     checkOtherWM(dpy);
-
-    // Begin setup =============================================================
-
     setupTerminationHandling();
 
     // Clean up any zombies (inherited from .xinitrc etc) immediately.
@@ -1737,7 +1735,7 @@ pub fn main() !void {
     };
     z.root = X.RootWindow(dpy, z.screen);
 
-    z.drw = try .init(allocator, z.dpy, z.screen, z.root, z.s.w, z.s.h, &cfg.fonts);
+    z.drw = try .init(allocator, dpy, z.screen, z.root, z.s.w, z.s.h, &cfg.fonts);
     z.lrpad = z.drw.fonts.h;
 
     var selmon: ?*Monitor = null;
@@ -1751,14 +1749,26 @@ pub fn main() !void {
     }
 
     // Initialize atoms.
-    const utf8string = X.XInternAtom(z.dpy, "UTF8_STRING", false).?;
-    atoms.initializeAtomsForEnum(z.dpy, atoms.WM, &atoms.__WM);
-    atoms.initializeAtomsForEnum(z.dpy, atoms.Net, &atoms.__NET);
+    atoms.initializeAtomsForEnum(dpy, atoms.WM, &atoms.__WM);
+    atoms.initializeAtomsForEnum(dpy, atoms.Net, &atoms.__NET);
+
+    // Supporting window for _NET_SUPPORTING_WM_CHECK. For more information,
+    // see the documentation for the .WMCheck enum.
+    const checkWin = X.XCreateSimpleWindow(dpy, z.root, .{ .x = 0, .y = 0, .w = 1, .h = 1 }, 0, 0, 0);
+    defer X.XDestroyWindow(dpy, checkWin);
+    {
+        const utf8string = X.XInternAtom(dpy, "UTF8_STRING", false) orelse {
+            return std.debug.print("XInternAtom failed on \"UTF8_STRING\"\n", .{});
+        };
+        X.XChangeProperty(dpy, z.root, atoms.net(.WMCheck), X.XA_WINDOW, 32, .Replace, @ptrCast(&checkWin), 1);
+        X.XChangeProperty(dpy, checkWin, atoms.net(.WMCheck), X.XA_WINDOW, 32, .Replace, @ptrCast(&checkWin), 1);
+        X.XChangeProperty(dpy, checkWin, atoms.net(.WMName), utf8string, 8, .Replace, NAME.ptr, NAME.len);
+    }
 
     // Initialize cursors.
-    z.cursors.set(.Normal, X.XCreateFontCursor(z.dpy, .Left_ptr));
-    z.cursors.set(.Resize, X.XCreateFontCursor(z.dpy, .Sizing));
-    z.cursors.set(.Move, X.XCreateFontCursor(z.dpy, .Fleur));
+    z.cursors.set(.Normal, X.XCreateFontCursor(dpy, .Left_ptr));
+    z.cursors.set(.Resize, X.XCreateFontCursor(dpy, .Sizing));
+    z.cursors.set(.Move, X.XCreateFontCursor(dpy, .Fleur));
 
     // Initialize appearance.
     for (std.enums.values(SchemeState)) |ss| {
@@ -1771,19 +1781,10 @@ pub fn main() !void {
     updateBars();
     updateStatus(allocator);
 
-    // Supporting window for NetWMCheck.
-    const smol = Rect{ .x = 0, .y = 0, .w = 1, .h = 1 };
-    const wmcheckwin = X.XCreateSimpleWindow(z.dpy, z.root, smol, 0, 0, 0);
-    defer cleanup(allocator, wmcheckwin);
-    // The @ptrCast is hella sus from dwm. This is supposed to be a const char* in C.
-    X.XChangeProperty(z.dpy, wmcheckwin, atoms.net(.WMCheck), X.XA_WINDOW, 32, .Replace, @ptrCast(&wmcheckwin), 1);
-    X.XChangeProperty(z.dpy, wmcheckwin, atoms.net(.WMName), utf8string, 8, .Replace, "dwm", 3);
-    X.XChangeProperty(z.dpy, z.root, atoms.net(.WMCheck), X.XA_WINDOW, 32, .Replace, @ptrCast(&wmcheckwin), 1);
-
     // EWMH support per view.
     // https://specifications.freedesktop.org/wm/latest/
     X.XChangeProperty(
-        z.dpy,
+        dpy,
         z.root,
         atoms.net(.Supported),
         X.XA_ATOM,
@@ -1792,7 +1793,7 @@ pub fn main() !void {
         @ptrCast(&atoms.__NET.values),
         @intCast(atoms.__NET.values.len),
     );
-    X.XDeleteProperty(z.dpy, z.root, atoms.net(.ClientList));
+    X.XDeleteProperty(dpy, z.root, atoms.net(.ClientList));
 
     // Select events.
     {
@@ -1802,8 +1803,8 @@ pub fn main() !void {
             | M.ButtonPressMask | M.PointerMotionMask | M.EnterWindowMask //
             | M.LeaveWindowMask | M.StructureNotifyMask | M.PropertyChangeMask,
         };
-        X.XChangeWindowAttributes(z.dpy, z.root, M.CWEventMask | M.CWCursor, &wa);
-        X.XSelectInput(z.dpy, z.root, wa.event_mask);
+        X.XChangeWindowAttributes(dpy, z.root, M.CWEventMask | M.CWCursor, &wa);
+        X.XSelectInput(dpy, z.root, wa.event_mask);
     }
 
     grabkeys();

@@ -37,12 +37,35 @@ pub const WM = enum {
 };
 
 /// (dwm) Net* atoms.
+///
+/// See
+///
+///   https://specifications.freedesktop.org/wm/1.5/
+///
+/// For more details.
 pub const Net = enum {
     const Self = @This();
 
     ActiveWindow,
     ClientList,
     Supported,
+    /// The Window Manager MUST set this property on the root window to be the
+    /// ID of a child window created by himself, to indicate that a compliant
+    /// window manager is active. The child window MUST also have the
+    /// _NET_SUPPORTING_WM_CHECK property set to the ID of the child window.
+    /// The child window MUST also have the _NET_WM_NAME property set to the
+    /// name of the Window Manager.
+    ///
+    /// Rationale: The child window is used to distinguish an active Window
+    /// Manager from a stale _NET_SUPPORTING_WM_CHECK property that happens to
+    /// point to another window. If the _NET_SUPPORTING_WM_CHECK window on the
+    /// client window is missing or not properly set, clients SHOULD assume
+    /// that no conforming Window Manager is present.
+    ///
+    /// source: https://specifications.freedesktop.org/wm/1.5/
+    ///
+    /// Look for "_NET_SUPPORTING_WM_CHECK" in the subpages (for the subpage,
+    /// look for "Root Window Properties (and Related Messages)").
     WMCheck,
     WMFullscreen,
     WMName,
