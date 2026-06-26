@@ -3730,6 +3730,8 @@ pub const ConnectionNumber = X.ConnectionNumber;
 pub const DefaultColormap = X.DefaultColormap;
 pub const DefaultDepth = X.DefaultDepth;
 pub const DefaultRootWindow = X.DefaultRootWindow;
+/// The DefaultScreen macro returns the default screen number referenced in the
+/// XOpenDisplay routine.
 pub const DefaultScreen = X.DefaultScreen;
 pub const DefaultVisual = X.DefaultVisual;
 pub const DisplayHeight = X.DisplayHeight;
