@@ -22,9 +22,10 @@ pub const Monitor = struct {
     nmaster: u32 = cfg.nmaster,
     /// Status bar's y-coordinate.
     by: i32 = undefined,
-    /// Current monitor rect.
+    /// The Rect that every pixel on the monitor lives in.
     m: Rect = .zero,
-    /// Current window rect.
+    /// The Rect that windows live in. This is simply the monitor's Rect minus
+    /// the status bar's Rect.
     w: Rect = .zero,
     /// The bitmask of visible tags. Initialize with the first tag visible.
     tags: u32 = cfg.tagMask(0),
