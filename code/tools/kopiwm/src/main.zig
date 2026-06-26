@@ -191,25 +191,6 @@ pub fn focusStack(arg: *const Arg) void {
     }
 }
 
-/// (dwm) updatebarpos
-fn updateBarPosition(m: *Monitor) void {
-    m.w.y = m.m.y;
-    m.w.h = m.m.h;
-    if (m.show_bar) {
-        m.w.h -= z.bar_height;
-        m.by = switch (m.bar_pos) {
-            .top => m.w.y,
-            .bottom => m.w.b(),
-        };
-        m.w.y = switch (m.bar_pos) {
-            .top => m.w.y + @as(i32, @intCast(z.bar_height)),
-            .bottom => m.w.y,
-        };
-    } else {
-        m.by = -@as(i32, @intCast(z.bar_height));
-    }
-}
-
 /// (dwm) INTERSECT
 fn intersect(x: i32, y: i32, w: i32, h: i32, m: *Monitor) i32 {
     return @max(0, @min(x + w, m.wx + @as(i32, @intCast(m.ww))) - @max(x, m.wx)) *
@@ -1159,7 +1140,7 @@ fn updategeom(allocator: Allocator, selmon: *?*Monitor) error{OutOfMemory}!bool 
             mons.w.h = z.s.h;
             mons.m.w = z.s.w;
             mons.m.h = z.s.h;
-            updateBarPosition(mons);
+            mons.updateBarPosition(z.bar_height, cfg.bar_pos);
         }
     }
     if (dirty) {
@@ -1670,7 +1651,7 @@ pub fn tile(m: *Monitor) void {
 /// (dwm) togglebar
 pub fn toggleBar(_: *const Arg) void {
     z.selmon.show_bar = !z.selmon.show_bar;
-    updateBarPosition(z.selmon);
+    z.selmon.updateBarPosition(z.bar_height, cfg.bar_pos);
     X.XMoveResizeWindow(
         z.dpy,
         z.selmon.barwin,

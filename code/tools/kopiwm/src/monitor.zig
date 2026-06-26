@@ -73,4 +73,23 @@ pub const Monitor = struct {
         }
         return n;
     }
+
+    /// (dwm) updatebarpos
+    pub fn updateBarPosition(m: *Monitor, bar_height: c_uint, bar_pos: BarPosition) void {
+        m.w.y = m.m.y;
+        m.w.h = m.m.h;
+        if (m.show_bar) {
+            m.w.h -= bar_height;
+            m.by = switch (bar_pos) {
+                .top => m.w.y,
+                .bottom => m.w.b(),
+            };
+            m.w.y = switch (m.bar_pos) {
+                .top => m.w.y + @as(c_int, @intCast(bar_height)),
+                .bottom => m.w.y,
+            };
+        } else {
+            m.by = -@as(c_int, @intCast(bar_height));
+        }
+    }
 };
