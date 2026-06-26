@@ -1330,7 +1330,7 @@ fn updatenumlockmask() void {
 
 /// (dwm) cleanup
 // Continue to build this up as we go.
-fn cleanup(allocator: Allocator, wmcheckwin: *X.Window) void {
+fn cleanup(allocator: Allocator, wmcheckwin: X.Window) void {
     // View all clients at once. ~0 yields a bitmask of all high bits. I don't
     // fully understand why we do this yet, but I think it helps with clearing
     // out the clients.
@@ -1353,7 +1353,7 @@ fn cleanup(allocator: Allocator, wmcheckwin: *X.Window) void {
     for (std.enums.values(SchemeState)) |ss| {
         z.drw.scmFree(allocator, z.scheme.get(ss));
     }
-    X.XDestroyWindow(z.dpy, wmcheckwin.*);
+    X.XDestroyWindow(z.dpy, wmcheckwin);
     z.drw.deinit(allocator);
     X.XSync(z.dpy, false);
     X.XSetInputFocus(z.dpy, X.PointerRoot, .PointerRoot, X.CurrentTime);
@@ -1756,9 +1756,6 @@ pub fn main() !void {
 
     checkOtherWM();
 
-    var wmcheckwin: X.Window = undefined;
-    defer cleanup(allocator, &wmcheckwin);
-
     // Begin setup =============================================================
 
     setupTerminationHandling();
@@ -1818,11 +1815,12 @@ pub fn main() !void {
 
     // Supporting window for NetWMCheck.
     const smol = Rect{ .x = 0, .y = 0, .w = 1, .h = 1 };
-    wmcheckwin.* = X.XCreateSimpleWindow(z.dpy, z.root, smol, 0, 0, 0);
+    const wmcheckwin = X.XCreateSimpleWindow(z.dpy, z.root, smol, 0, 0, 0);
+    defer cleanup(allocator, wmcheckwin);
     // The @ptrCast is hella sus from dwm. This is supposed to be a const char* in C.
-    X.XChangeProperty(z.dpy, wmcheckwin.*, atoms.net(.WMCheck), X.XA_WINDOW, 32, .Replace, @ptrCast(wmcheckwin), 1);
-    X.XChangeProperty(z.dpy, wmcheckwin.*, atoms.net(.WMName), utf8string, 8, .Replace, "dwm", 3);
-    X.XChangeProperty(z.dpy, z.root, atoms.net(.WMCheck), X.XA_WINDOW, 32, .Replace, @ptrCast(wmcheckwin), 1);
+    X.XChangeProperty(z.dpy, wmcheckwin, atoms.net(.WMCheck), X.XA_WINDOW, 32, .Replace, @ptrCast(&wmcheckwin), 1);
+    X.XChangeProperty(z.dpy, wmcheckwin, atoms.net(.WMName), utf8string, 8, .Replace, "dwm", 3);
+    X.XChangeProperty(z.dpy, z.root, atoms.net(.WMCheck), X.XA_WINDOW, 32, .Replace, @ptrCast(&wmcheckwin), 1);
 
     // EWMH support per view.
     // https://specifications.freedesktop.org/wm/latest/
