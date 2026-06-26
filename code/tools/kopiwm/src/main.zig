@@ -1186,100 +1186,6 @@ fn setupTerminationHandling() void {
     _ = C.sigaction(C.SIGCHLD, &sa, null);
 }
 
-/// (dwm) setup
-fn setup(allocator: Allocator, wmcheckwin: *X.Window) DwmError!void {
-    setupTerminationHandling();
-
-    // Clean up any zombies (inherited from .xinitrc etc) immediately.
-    //
-    // pid=-1 means to wait for any child process.
-    //
-    // On success, `waitpid` returns the pid of the child whose state has
-    // changed; if WNOHANG was specified and one or more child(ren) specified
-    // by pid exist, but have not yet changed state, then 0 is returned. On
-    // failure, -1 is returned.
-    //
-    // docs: https://man7.org/linux/man-pages/man2/waitpid.2.html
-    while (std.c.waitpid(-1, null, std.c.W.NOHANG) > 0) {}
-
-    z.screen = X.DefaultScreen(z.dpy);
-    z.s = .{
-        .w = @intCast(X.DisplayWidth(z.dpy, z.screen)),
-        .h = @intCast(X.DisplayHeight(z.dpy, z.screen)),
-    };
-    z.root = X.RootWindow(z.dpy, z.screen);
-    z.drw = try .init(allocator, z.dpy, z.screen, z.root, z.s.w, z.s.h, &cfg.fonts);
-    z.lrpad = z.drw.fonts.h;
-
-    var selmon: ?*Monitor = null;
-    // Make sure that `selmon` is initialized.
-    _ = try updategeom(allocator, &selmon);
-    if (selmon) |m| {
-        z.selmon = m;
-    } else {
-        std.debug.print("App could not find the first selected monitor (dwm: selmon)\n", .{});
-        return;
-    }
-
-    // Initialize atoms.
-    const utf8string = X.XInternAtom(z.dpy, "UTF8_STRING", false).?;
-    atoms.initializeAtomsForEnum(z.dpy, atoms.WM, &atoms.__WM);
-    atoms.initializeAtomsForEnum(z.dpy, atoms.Net, &atoms.__NET);
-
-    // Initialize cursors.
-    z.cursors.set(.Normal, X.XCreateFontCursor(z.dpy, .Left_ptr));
-    z.cursors.set(.Resize, X.XCreateFontCursor(z.dpy, .Sizing));
-    z.cursors.set(.Move, X.XCreateFontCursor(z.dpy, .Fleur));
-
-    // Initialize appearance.
-    for (std.enums.values(SchemeState)) |ss| {
-        const s = z.scheme.getPtr(ss);
-        s.* = try z.drw.scmCreate(allocator, cfg.colors.get(ss));
-        log.info("fg: {x}, bg: {x}, border: {x}", .{ s.*.fg.pixel, s.*.bg.pixel, s.*.border.pixel });
-    }
-
-    // Initialize bars.
-    updateBars();
-    updateStatus(allocator);
-
-    // Supporting window for NetWMCheck.
-    const smol = Rect{ .x = 0, .y = 0, .w = 1, .h = 1 };
-    wmcheckwin.* = X.XCreateSimpleWindow(z.dpy, z.root, smol, 0, 0, 0);
-    // The @ptrCast is hella sus from dwm. This is supposed to be a const char* in C.
-    X.XChangeProperty(z.dpy, wmcheckwin.*, atoms.net(.WMCheck), X.XA_WINDOW, 32, .Replace, @ptrCast(wmcheckwin), 1);
-    X.XChangeProperty(z.dpy, wmcheckwin.*, atoms.net(.WMName), utf8string, 8, .Replace, "dwm", 3);
-    X.XChangeProperty(z.dpy, z.root, atoms.net(.WMCheck), X.XA_WINDOW, 32, .Replace, @ptrCast(wmcheckwin), 1);
-
-    // EWMH support per view.
-    // https://specifications.freedesktop.org/wm/latest/
-    X.XChangeProperty(
-        z.dpy,
-        z.root,
-        atoms.net(.Supported),
-        X.XA_ATOM,
-        32,
-        .Replace,
-        @ptrCast(&atoms.__NET.values),
-        @intCast(atoms.__NET.values.len),
-    );
-    X.XDeleteProperty(z.dpy, z.root, atoms.net(.ClientList));
-
-    // Select events.
-    {
-        var wa: X.XSetWindowAttributes = .{
-            .cursor = z.cursors.get(.Normal),
-            .event_mask = M.SubstructureRedirectMask | M.SubstructureNotifyMask //
-            | M.ButtonPressMask | M.PointerMotionMask | M.EnterWindowMask //
-            | M.LeaveWindowMask | M.StructureNotifyMask | M.PropertyChangeMask,
-        };
-        X.XChangeWindowAttributes(z.dpy, z.root, M.CWEventMask | M.CWCursor, &wa);
-        X.XSelectInput(z.dpy, z.root, wa.event_mask);
-    }
-
-    grabkeys();
-    focus(allocator, null);
-}
-
 /// (dwm) unfocus
 fn unfocus(client: ?*Client, setfocus: bool) void {
     const c = client orelse return;
@@ -1851,8 +1757,103 @@ pub fn main() !void {
     checkOtherWM();
 
     var wmcheckwin: X.Window = undefined;
-    try setup(allocator, &wmcheckwin);
     defer cleanup(allocator, &wmcheckwin);
+
+    // Begin setup =============================================================
+
+    setupTerminationHandling();
+
+    // Clean up any zombies (inherited from .xinitrc etc) immediately.
+    //
+    // pid=-1 means to wait for any child process.
+    //
+    // On success, `waitpid` returns the pid of the child whose state has
+    // changed; if WNOHANG was specified and one or more child(ren) specified
+    // by pid exist, but have not yet changed state, then 0 is returned. On
+    // failure, -1 is returned.
+    //
+    // docs: https://man7.org/linux/man-pages/man2/waitpid.2.html
+    while (std.c.waitpid(-1, null, std.c.W.NOHANG) > 0) {}
+
+    z.screen = X.DefaultScreen(z.dpy);
+    z.s = .{
+        .w = @intCast(X.DisplayWidth(z.dpy, z.screen)),
+        .h = @intCast(X.DisplayHeight(z.dpy, z.screen)),
+    };
+    z.root = X.RootWindow(z.dpy, z.screen);
+
+    z.drw = try .init(allocator, z.dpy, z.screen, z.root, z.s.w, z.s.h, &cfg.fonts);
+    z.lrpad = z.drw.fonts.h;
+
+    var selmon: ?*Monitor = null;
+    // Make sure that `selmon` is initialized.
+    _ = try updategeom(allocator, &selmon);
+    if (selmon) |m| {
+        z.selmon = m;
+    } else {
+        std.debug.print("App could not find the first selected monitor (dwm: selmon)\n", .{});
+        return;
+    }
+
+    // Initialize atoms.
+    const utf8string = X.XInternAtom(z.dpy, "UTF8_STRING", false).?;
+    atoms.initializeAtomsForEnum(z.dpy, atoms.WM, &atoms.__WM);
+    atoms.initializeAtomsForEnum(z.dpy, atoms.Net, &atoms.__NET);
+
+    // Initialize cursors.
+    z.cursors.set(.Normal, X.XCreateFontCursor(z.dpy, .Left_ptr));
+    z.cursors.set(.Resize, X.XCreateFontCursor(z.dpy, .Sizing));
+    z.cursors.set(.Move, X.XCreateFontCursor(z.dpy, .Fleur));
+
+    // Initialize appearance.
+    for (std.enums.values(SchemeState)) |ss| {
+        const s = z.scheme.getPtr(ss);
+        s.* = try z.drw.scmCreate(allocator, cfg.colors.get(ss));
+        log.info("fg: {x}, bg: {x}, border: {x}", .{ s.*.fg.pixel, s.*.bg.pixel, s.*.border.pixel });
+    }
+
+    // Initialize bars.
+    updateBars();
+    updateStatus(allocator);
+
+    // Supporting window for NetWMCheck.
+    const smol = Rect{ .x = 0, .y = 0, .w = 1, .h = 1 };
+    wmcheckwin.* = X.XCreateSimpleWindow(z.dpy, z.root, smol, 0, 0, 0);
+    // The @ptrCast is hella sus from dwm. This is supposed to be a const char* in C.
+    X.XChangeProperty(z.dpy, wmcheckwin.*, atoms.net(.WMCheck), X.XA_WINDOW, 32, .Replace, @ptrCast(wmcheckwin), 1);
+    X.XChangeProperty(z.dpy, wmcheckwin.*, atoms.net(.WMName), utf8string, 8, .Replace, "dwm", 3);
+    X.XChangeProperty(z.dpy, z.root, atoms.net(.WMCheck), X.XA_WINDOW, 32, .Replace, @ptrCast(wmcheckwin), 1);
+
+    // EWMH support per view.
+    // https://specifications.freedesktop.org/wm/latest/
+    X.XChangeProperty(
+        z.dpy,
+        z.root,
+        atoms.net(.Supported),
+        X.XA_ATOM,
+        32,
+        .Replace,
+        @ptrCast(&atoms.__NET.values),
+        @intCast(atoms.__NET.values.len),
+    );
+    X.XDeleteProperty(z.dpy, z.root, atoms.net(.ClientList));
+
+    // Select events.
+    {
+        var wa: X.XSetWindowAttributes = .{
+            .cursor = z.cursors.get(.Normal),
+            .event_mask = M.SubstructureRedirectMask | M.SubstructureNotifyMask //
+            | M.ButtonPressMask | M.PointerMotionMask | M.EnterWindowMask //
+            | M.LeaveWindowMask | M.StructureNotifyMask | M.PropertyChangeMask,
+        };
+        X.XChangeWindowAttributes(z.dpy, z.root, M.CWEventMask | M.CWCursor, &wa);
+        X.XSelectInput(z.dpy, z.root, wa.event_mask);
+    }
+
+    grabkeys();
+    focus(allocator, null);
+
+    // End of setup ============================================================
 
     try scan(allocator);
     log.info("{s}", .{LINE});
