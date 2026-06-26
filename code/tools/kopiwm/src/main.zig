@@ -1169,17 +1169,57 @@ fn updategeom(allocator: Allocator, selmon: *?*Monitor) error{OutOfMemory}!bool 
     return dirty;
 }
 
-/// (dwm) setup
-fn setup(allocator: Allocator, wmcheckwin: *X.Window) DwmError!void {
+/// Do not let children turn into zombies when they terminate.
+fn setupTerminationHandling() void {
     var sa: C.struct_sigaction = undefined;
 
-    // Do not transform children into zombies when they terminate.
+    // Initialize and empty a signal set.
     _ = C.sigemptyset(&sa.sa_mask);
-    sa.sa_flags = C.SA_NOCLDSTOP | C.SA_NOCLDWAIT | C.SA_RESTART;
+
+    // source: https://man7.org/linux/man-pages/man2/sigaction.2.html
+    sa.sa_flags =
+        // Do not receive notification when child processes stop or resume.
+        C.SA_NOCLDSTOP |
+        // Do not transform children into zombies when they terminate.
+        //
+        // If the SA_NOCLDWAIT flag is set when establishing a handler for
+        // SIGCHLD, POSIX.1 leaves it unspecified whether a SIGCHLD signal is
+        // generated when a child process terminates.  On Linux, a SIGCHLD
+        // signal is generated in this case; on some other implementations, it
+        // is not.
+        C.SA_NOCLDWAIT |
+        // Provide behavior compatible with BSD signal semantics by making
+        // certain system calls restartable across signals. This flag is
+        // meaningful only when establishing a signal handler.
+        C.SA_RESTART;
+
+    // sa_handler specifies the action to be associated with _signum_ and can be
+    // one of the following:
+    //   *  SIG_DFL for the default action.
+    //   *  SIG_IGN to ignore this signal.
+    //   *  A pointer to a signal handling function.  This function receives
+    //      the signal number as its only argument.
     sa.__sigaction_handler.sa_handler = C.SIG_IGN;
+
+    // The sigaction() system call is used to change the action taken by a
+    // process on receipt of a specific signal.
     _ = C.sigaction(C.SIGCHLD, &sa, null);
+}
+
+/// (dwm) setup
+fn setup(allocator: Allocator, wmcheckwin: *X.Window) DwmError!void {
+    setupTerminationHandling();
 
     // Clean up any zombies (inherited from .xinitrc etc) immediately.
+    //
+    // pid=-1 means to wait for any child process.
+    //
+    // On success, `waitpid` returns the pid of the child whose state has
+    // changed; if WNOHANG was specified and one or more child(ren) specified
+    // by pid exist, but have not yet changed state, then 0 is returned. On
+    // failure, -1 is returned.
+    //
+    // docs: https://man7.org/linux/man-pages/man2/waitpid.2.html
     while (std.c.waitpid(-1, null, std.c.W.NOHANG) > 0) {}
 
     z.screen = X.DefaultScreen(z.dpy);
