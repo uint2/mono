@@ -1153,7 +1153,7 @@ fn updategeom(allocator: Allocator, selmon: *?*Monitor) error{OutOfMemory}!bool 
             z.mons = try Monitor.init(allocator);
             break :m z.mons.?;
         };
-        if (mons.w.w != z.s.w or mons.m.h != z.s.h) {
+        if (mons.m.w != z.s.w or mons.m.h != z.s.h) {
             dirty = true;
             mons.w.w = z.s.w;
             mons.w.h = z.s.h;
