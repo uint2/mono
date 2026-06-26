@@ -8,10 +8,9 @@ const EnumArray = @import("enum_array.zig").EnumArray;
 const std = @import("std");
 
 pub fn initializeAtomsForEnum(
-    comptime Key: type,
-    comptime Value: type,
-    array: *EnumArray(Key, Value),
     dpy: *X.Display,
+    comptime Key: type,
+    array: *EnumArray(Key, X.Atom),
 ) void {
     for (std.enums.values(Key)) |key| {
         array.set(key, X.XInternAtom(dpy, key.asStr(), false).?);

@@ -1223,8 +1223,8 @@ fn setup(allocator: Allocator, wmcheckwin: *X.Window) DwmError!void {
 
     // Initialize atoms.
     const utf8string = X.XInternAtom(z.dpy, "UTF8_STRING", false).?;
-    atoms.initializeAtomsForEnum(atoms.WM, X.Atom, &atoms.__WM, z.dpy);
-    atoms.initializeAtomsForEnum(atoms.Net, X.Atom, &atoms.__NET, z.dpy);
+    atoms.initializeAtomsForEnum(z.dpy, atoms.WM, &atoms.__WM);
+    atoms.initializeAtomsForEnum(z.dpy, atoms.Net, &atoms.__NET);
 
     // Initialize cursors.
     z.cursors.set(.Normal, X.XCreateFontCursor(z.dpy, .Left_ptr));
