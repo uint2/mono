@@ -1223,9 +1223,10 @@ fn setup(allocator: Allocator, wmcheckwin: *X.Window) DwmError!void {
     while (std.c.waitpid(-1, null, std.c.W.NOHANG) > 0) {}
 
     z.screen = X.DefaultScreen(z.dpy);
-    z.s.w = @intCast(X.DisplayWidth(z.dpy, z.screen));
-    z.s.h = @intCast(X.DisplayHeight(z.dpy, z.screen));
-    log.info("width: {d}, height: {d}", .{ z.s.w, z.s.h });
+    z.s = .{
+        .w = @intCast(X.DisplayWidth(z.dpy, z.screen)),
+        .h = @intCast(X.DisplayHeight(z.dpy, z.screen)),
+    };
     z.root = X.RootWindow(z.dpy, z.screen);
     z.drw = try .init(allocator, z.dpy, z.screen, z.root, z.s.w, z.s.h, &cfg.fonts);
     z.lrpad = z.drw.fonts.h;
