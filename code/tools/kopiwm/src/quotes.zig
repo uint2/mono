@@ -1,0 +1,5 @@
+pub const Q_APOSTROPHE = '’';
+pub const Q_LEFT_SINGLE_QUOTATION_MARK = '‘';
+pub const Q_RIGHT_SINGLE_QUOTATION_MARK = '’';
+pub const Q_LEFT_DOUBLE_QUOTATION_MARK = '“';
+pub const Q_RIGHT_DOUBLE_QUOTATION_MARK = '”';

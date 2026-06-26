@@ -1886,9 +1886,10 @@ test "All inline functions have sources" {
 // }
 
 test "Don't use weird quotes" {
-    try std.testing.expect(!std.mem.containsAtLeast(u8, X_TUTORIAL_SOURCE, 1, "“"));
-    try std.testing.expect(!std.mem.containsAtLeast(u8, X_TUTORIAL_SOURCE, 1, "”"));
-    try std.testing.expect(!std.mem.containsAtLeast(u8, X_TUTORIAL_SOURCE, 1, "‘"));
-    try std.testing.expect(!std.mem.containsAtLeast(u8, X_TUTORIAL_SOURCE, 1, "’"));
-    try std.testing.expect(!std.mem.containsAtLeast(u8, X_TUTORIAL_SOURCE, 1, "’"));
+    const q = @import("quotes.zig");
+    try std.testing.expect(!std.mem.containsAtLeastScalar(u8, X_TUTORIAL_SOURCE, 1, q.Q_APOSTROPHE));
+    try std.testing.expect(!std.mem.containsAtLeastScalar(u8, X_TUTORIAL_SOURCE, 1, q.Q_RIGHT_SINGLE_QUOTATION_MARK));
+    try std.testing.expect(!std.mem.containsAtLeastScalar(u8, X_TUTORIAL_SOURCE, 1, q.Q_LEFT_SINGLE_QUOTATION_MARK));
+    try std.testing.expect(!std.mem.containsAtLeastScalar(u8, X_TUTORIAL_SOURCE, 1, q.Q_RIGHT_DOUBLE_QUOTATION_MARK));
+    try std.testing.expect(!std.mem.containsAtLeastScalar(u8, X_TUTORIAL_SOURCE, 1, q.Q_LEFT_DOUBLE_QUOTATION_MARK));
 }
