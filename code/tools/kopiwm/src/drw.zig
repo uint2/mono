@@ -7,14 +7,14 @@ const log = std.log;
 
 // TODO: change this to Font when all is said and done.
 /// This represents a linked list of fonts.
-pub const Fnt = struct {
+pub const Font = struct {
     const Self = @This();
 
     dpy: *X.Display,
     h: u16,
     xfont: *X.XftFont,
     pattern: ?*X.FcPattern,
-    next: ?*Fnt,
+    next: ?*Font,
 
     /// (dwm) drw_font_getexts
     pub fn getExts(self: *Self, text: []const u8, w: ?*u32, h: ?*u32) void {
@@ -52,7 +52,7 @@ fn xfontCreate(
     drw: *const Drw,
     fontname: []const u8,
     font_pattern: ?*X.FcPattern,
-) error{ OutOfMemory, FontCreateError }!*Fnt {
+) error{ OutOfMemory, FontCreateError }!*Font {
     var xfont: ?*X.XftFont = null;
     var pattern: ?*X.FcPattern = null;
 
@@ -81,7 +81,7 @@ fn xfontCreate(
         return error.FontCreateError;
     }
 
-    var font = try allocator.create(Fnt);
+    var font = try allocator.create(Font);
     font.xfont = xfont orelse unreachable;
     font.pattern = pattern;
     font.h = @intCast(xfont.?.ascent);
@@ -92,7 +92,7 @@ fn xfontCreate(
 }
 
 /// (dwm) xfont_free
-fn xfontFree(allocator: Allocator, font: *Fnt) void {
+fn xfontFree(allocator: Allocator, font: *Font) void {
     if (font.pattern) |pattern| {
         X.FcPatternDestroy(pattern);
     }
@@ -166,7 +166,7 @@ pub const Drw = struct {
     scheme: ?*ColorScheme = null,
     /// A linked list of fonts. Guaranteed to have at least one after calling
     /// fontsetCreate.
-    fonts: *Fnt,
+    fonts: *Font,
 
     /// (dwm) drw_create
     pub fn init(
@@ -230,9 +230,9 @@ pub const Drw = struct {
         self: *const Self,
         allocator: Allocator,
         fonts: []const []const u8,
-    ) error{ OutOfMemory, FontCreateError }!?*Fnt {
+    ) error{ OutOfMemory, FontCreateError }!?*Font {
         if (fonts.len == 0) return null;
-        var ret: ?*Fnt = null;
+        var ret: ?*Font = null;
         var it = std.mem.reverseIterator(fonts);
         while (it.next()) |font| {
             const cur = try xfontCreate(allocator, self, font, null);
@@ -243,7 +243,7 @@ pub const Drw = struct {
     }
 
     /// (dwm) drw_fontset_free
-    pub fn fontsetFree(allocator: Allocator, set: ?*Fnt) void {
+    pub fn fontsetFree(allocator: Allocator, set: ?*Font) void {
         if (set) |f| {
             fontsetFree(allocator, f.next);
             xfontFree(allocator, f);
@@ -304,7 +304,7 @@ pub const Drw = struct {
     }
 
     /// (dwm) drw_setfontset
-    pub fn setFontSet(self: *Self, set: *Fnt) void {
+    pub fn setFontSet(self: *Self, set: *Font) void {
         self.fonts = set;
     }
 
@@ -392,7 +392,7 @@ pub const Drw = struct {
             state.invalid_width = self.fontSetGetWidth(allocator, INVALID);
         }
 
-        var nextfont: ?*Fnt = null;
+        var nextfont: ?*Font = null;
         var utf8err: bool = undefined;
         var utf8codepoint: u64 = undefined;
         var ellipsis_x: i32 = 0;
@@ -419,7 +419,7 @@ pub const Drw = struct {
             utf8str = text;
             while (text.len > 0) {
                 utf8charlen = utf8decode(text, &utf8codepoint, &utf8err);
-                var curfont_opt: ?*Fnt = self.fonts;
+                var curfont_opt: ?*Font = self.fonts;
                 charexists = false;
                 var tmpw: u32 = undefined;
                 while (curfont_opt) |curfont| : (curfont_opt = curfont.next) {
@@ -537,7 +537,7 @@ pub const Drw = struct {
                         continue;
                     };
                     if (X.XftCharExists(self.dpy, usedfont.xfont, @intCast(utf8codepoint))) {
-                        var curfont: *Fnt = self.fonts;
+                        var curfont: *Font = self.fonts;
                         while (curfont.next) |next| : (curfont = next) {}
                         curfont.next = usedfont;
                     } else {

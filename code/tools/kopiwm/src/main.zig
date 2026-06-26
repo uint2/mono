@@ -1684,6 +1684,10 @@ fn handleCliArgs(buffer: []u8) error{WriteFailed}!bool {
     return false;
 }
 
+/// TODO: rearrange the setup calls such that the `Drw` struct gets initialized
+/// cleanly.
+/// TODO: Move both setup() and cleanup() into main() so that we can rely on
+/// `defer` calls to clean up resources.
 pub fn main() !void {
     log.info("{s}", .{LINE});
     log.info("Started execution of {s}", .{NAME});
@@ -1695,7 +1699,6 @@ pub fn main() !void {
     }
 
     // Initialize the global allocator.
-    // TODO: remove the global allocator entirely.
     var gpa: std.heap.GeneralPurposeAllocator(.{}) = .init;
     defer _ = gpa.deinit();
     const allocator = gpa.allocator();

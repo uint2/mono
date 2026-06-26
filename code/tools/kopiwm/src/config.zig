@@ -133,7 +133,6 @@ const termcmd: [*:null]const ?[*:0]const u8 = &.{"kitty"};
 
 // zig fmt: off
 const my_keys = [_]Key{
-    // TODO: test to see if we DON'T specify null at the end of an args array,
     // will there still be a null there thanks to Zig?
     .init(MODKEY,                   k.XK_space,  .f(M.spawn,               .{ .args = launchcmd  })),
     .init(MODKEY,                   k.XK_Return, .f(M.spawn,               .{ .args = termcmd    })),
