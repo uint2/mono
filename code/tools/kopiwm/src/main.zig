@@ -486,6 +486,8 @@ fn buttonPress(allocator: Allocator, e: *X.XEvent) DwmError!void {
             switch (button.lf.func) {
                 .MightError => |f| try f(arg2),
                 .NoError => |f| f(arg2),
+                .MightErrorA => |f| try f(allocator, arg2),
+                .NoErrorA => |f| f(allocator, arg2),
             }
         }
     }
@@ -641,7 +643,7 @@ fn focusIn(e: *X.XEvent) void {
 }
 
 /// (dwm) keypress
-fn keyPress(e: *X.XEvent) DwmError!void {
+fn keyPress(allocator: Allocator, e: *X.XEvent) DwmError!void {
     const ev: X.XKeyEvent = e.xkey;
     const keysym = X.XkbKeycodeToKeysym(z.dpy, @intCast(ev.keycode), 0, 0);
     for (cfg.keys) |key| {
@@ -649,6 +651,8 @@ fn keyPress(e: *X.XEvent) DwmError!void {
             switch (key.lf.func) {
                 .MightError => |f| try f(&key.lf.arg),
                 .NoError => |f| f(&key.lf.arg),
+                .MightErrorA => |f| try f(allocator, &key.lf.arg),
+                .NoErrorA => |f| f(allocator, &key.lf.arg),
             }
         }
     }
@@ -786,7 +790,7 @@ fn createHandler() [X.LASTEvent]?HandlerFn {
             X.EnterNotify      => .{ .Alloc    = enterNotify },
             X.Expose           => .{ .Alloc    = expose },
             X.FocusIn          => .{ .NoAlloc  = focusIn },
-            X.KeyPress         => .{ .NoAllocE = keyPress },
+            X.KeyPress         => .{ .AllocE   = keyPress },
             X.MapRequest       => .{ .AllocE   = mapRequest },
             X.MappingNotify    => .{ .NoAlloc  = mappingNotify },
             X.MotionNotify     => .{ .Alloc    = motionNotify },

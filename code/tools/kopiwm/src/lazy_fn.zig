@@ -1,5 +1,6 @@
 const DwmError = @import("errors.zig").DwmError;
 const Layout = @import("layout.zig").Layout;
+const Allocator = @import("std").mem.Allocator;
 
 /// Symbolizes a movement, used for navigating to the next/previous entity
 /// (Monitor/Client/Window).
@@ -39,11 +40,15 @@ pub const Arg = union(ArgTag) {
 const FnType = enum {
     MightError,
     NoError,
+    MightErrorA,
+    NoErrorA,
 };
 
 const Fn = union(FnType) {
     MightError: *const fn (*const Arg) DwmError!void,
     NoError: *const fn (*const Arg) void,
+    MightErrorA: *const fn (alloc: Allocator, *const Arg) DwmError!void,
+    NoErrorA: *const fn (alloc: Allocator, *const Arg) void,
 };
 
 /// The general lazy function.
@@ -59,5 +64,13 @@ pub const LazyFn = struct {
 
     pub fn F(func: *const fn (*const Arg) DwmError!void, arg: Arg) Self {
         return .{ .func = .{ .MightError = func }, .arg = arg };
+    }
+
+    pub fn a(func: *const fn (alloc: Allocator, *const Arg) void, arg: Arg) Self {
+        return .{ .func = .{ .NoErrorA = func }, .arg = arg };
+    }
+
+    pub fn A(func: *const fn (alloc: Allocator, *const Arg) DwmError!void, arg: Arg) Self {
+        return .{ .func = .{ .MightErrorA = func }, .arg = arg };
     }
 };
