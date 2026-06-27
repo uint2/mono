@@ -32,13 +32,6 @@ pub const CursorState = enum {
     Move,
 };
 
-/// Represents a possible which one might be in that warrants a unique color scheme.
-pub const SchemeState = enum {
-    Normal,
-    Selected,
-    Bar,
-};
-
 pub const Key = struct {
     /// Modifier keys, in any.
     mod: c_uint,

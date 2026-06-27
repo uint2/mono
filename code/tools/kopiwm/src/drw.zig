@@ -4,10 +4,12 @@ const unicode = std.unicode;
 const X = @import("x11.zig");
 const Rect = @import("rect.zig").Rect;
 const EnumArray = @import("enum_array.zig").EnumArray;
-const SchemeState = @import("enums.zig").SchemeState;
+const SchemeState = @import("color_scheme.zig").SchemeState;
 const mem = std.mem;
 const Allocator = mem.Allocator;
 const Font = @import("font.zig").Font;
+const ColorScheme = @import("color_scheme.zig").ColorScheme;
+const Scheme = @import("color_scheme.zig").Scheme;
 
 /// A simple hashset implementation specifically to store unicode codepoints
 /// (and hence u21).
@@ -23,20 +25,6 @@ const SimpleHashSet = struct {
         return hash;
     }
 };
-
-pub fn Scheme(comptime T: type) type {
-    return struct {
-        const Self = @This();
-        /// Foreground color.
-        fg: T,
-        /// Background color.
-        bg: T,
-        /// Border color.
-        border: T,
-    };
-}
-
-pub const ColorScheme = Scheme(X.XftColor);
 
 pub const DrwInitParams = struct {
     dpy: *X.Display,

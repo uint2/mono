@@ -4,7 +4,7 @@ const log = std.log;
 const build_opts = @import("build_opts");
 const X = @import("x11.zig");
 const Rect = @import("rect.zig").Rect;
-const SchemeState = @import("enums.zig").SchemeState;
+const SchemeState = @import("color_scheme.zig").SchemeState;
 const CursorState = @import("enums.zig").CursorState;
 const Size = @import("enums.zig").Size;
 const Coordinates = @import("enums.zig").Coordinates;
@@ -15,7 +15,7 @@ const EnumArray = @import("enum_array.zig").EnumArray;
 const cfg = @import("config.zig");
 
 const Drw = @import("drw.zig").Drw;
-const ColorScheme = @import("drw.zig").ColorScheme;
+const ColorScheme = @import("color_scheme.zig").ColorScheme;
 const Monitor = @import("monitor.zig").Monitor;
 
 const Self = @This();
