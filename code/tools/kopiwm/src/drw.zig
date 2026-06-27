@@ -364,9 +364,8 @@ pub const Drw = struct {
         const state = struct {
             var ellipsis_width: ?u32 = null;
             var invalid_width: ?u32 = null;
-            var nomatches: [128]usize = undefined;
+            var nomatches: [128]usize = std.mem.zeroes([128]usize);
         };
-        for (&state.nomatches) |*v| v.* = 0;
 
         const invert_ = invert != 0; // just the boolean version of `invert`.
 

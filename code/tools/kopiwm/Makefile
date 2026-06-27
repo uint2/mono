@@ -31,7 +31,7 @@ install:
 run: debug-run log
 
 # Runs kopiwm in debug mode, and logs the stderr to a log file.
-debug-run: install
+debug-run: debug-install
 	mkdir -p $(LOG_DIR)
 	-$(STARTX_ENV) startx -- -keeptty \
 		>$(LOG_DIR)/Xorg.0.log \
