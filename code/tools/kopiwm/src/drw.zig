@@ -357,8 +357,7 @@ pub const Drw = struct {
 
         if (text.len == 0) return 0;
 
-        // TODO: figure out why dwm requires x and y to be non-zero.
-        const render: bool = x != 0 or y != 0 or w != 0 or h != 0;
+        const render: bool = w != 0 and h != 0;
 
         if (render and (self.scheme == null or w == 0)) return 0;
 
