@@ -1,6 +1,8 @@
 const std = @import("std");
 const X = @import("x11.zig");
 const Rect = @import("rect.zig").Rect;
+const EnumArray = @import("enum_array.zig").EnumArray;
+const SchemeState = @import("enums.zig").SchemeState;
 const mem = std.mem;
 const Allocator = mem.Allocator;
 const log = std.log;
@@ -46,10 +48,31 @@ pub fn Scheme(comptime T: type) type {
 
 pub const ColorScheme = Scheme(X.XftColor);
 
+/// (dwm) drw_fontset_create
+/// Builds the list of fonts such that the first font provided in the
+/// `fonts` slice is at the head of the linked list.
+pub fn fontsetCreate(
+    allocator: Allocator,
+    dpy: *X.Display,
+    screen: c_int,
+    fonts: []const []const u8,
+) error{ OutOfMemory, FontCreateError }!?*Font {
+    if (fonts.len == 0) return null;
+    var ret: ?*Font = null;
+    var it = std.mem.reverseIterator(fonts);
+    while (it.next()) |font| {
+        const cur = try xfontCreate(allocator, dpy, screen, font, null);
+        cur.next = ret;
+        ret = cur;
+    }
+    return ret;
+}
+
 /// (dwm) xfont_create
 fn xfontCreate(
     allocator: Allocator,
-    drw: *const Drw,
+    dpy: *X.Display,
+    screen: c_int,
     fontname: []const u8,
     font_pattern: ?*X.FcPattern,
 ) error{ OutOfMemory, FontCreateError }!*Font {
@@ -62,17 +85,17 @@ fn xfontCreate(
         // FcNameParse; using the latter results in the desired fallback
         // behaviour whereas the former just results in missing-character
         // rectangles being drawn, at least with some fonts.
-        xfont = X.XftFontOpenName(drw.dpy, drw.screen, fontname) orelse {
+        xfont = X.XftFontOpenName(dpy, screen, fontname) orelse {
             std.debug.print("error, cannot load font from name: '{s}'\n", .{fontname});
             return error.FontCreateError;
         };
         pattern = X.FcNameParse(fontname) orelse {
             std.debug.print("error, cannot parse font name to pattern: '{s}'\n", .{fontname});
-            X.XftFontClose(drw.dpy, xfont.?);
+            X.XftFontClose(dpy, xfont.?);
             return error.FontCreateError;
         };
     } else if (font_pattern) |fp| {
-        xfont = X.XftFontOpenPattern(drw.dpy, fp) orelse {
+        xfont = X.XftFontOpenPattern(dpy, fp) orelse {
             std.debug.print("error, cannot load font from pattern\n", .{});
             return error.FontCreateError;
         };
@@ -86,7 +109,7 @@ fn xfontCreate(
     font.pattern = pattern;
     font.h = @intCast(xfont.?.ascent);
     font.h += @intCast(xfont.?.descent);
-    font.dpy = drw.dpy;
+    font.dpy = dpy;
 
     return font;
 }
@@ -151,51 +174,54 @@ fn print_draw_error(res: c_int) void {
     }
 }
 
+pub const DrwInitParams = struct {
+    dpy: *X.Display,
+    screen: c_int,
+    /// Root Window.
+    root: X.Window,
+    width: c_uint,
+    height: c_uint,
+    fonts: []const []const u8,
+    colors: *const EnumArray(SchemeState, Scheme([]const u8)),
+};
+
+/// TODO: use an array for fonts instead of linked list.
 pub const Drw = struct {
     const Self = @This();
 
-    /// Width.
-    w: u32,
-    /// Height.
-    h: u32,
     dpy: *X.Display,
     screen: c_int,
     root: X.Window,
     drawable: X.Drawable,
     gc: X.GC,
+
+    /// Width.
+    w: c_uint,
+    /// Height.
+    h: c_uint,
+    /// The current state of scheme.
     scheme: ?*ColorScheme = null,
-    /// A linked list of fonts. Guaranteed to have at least one after calling
-    /// fontsetCreate.
+    /// A linked list of fonts.
     fonts: *Font,
 
-    /// (dwm) drw_create
-    pub fn init(
-        allocator: Allocator,
-        dpy: *X.Display,
-        screen: c_int,
-        root: X.Window,
-        /// width
-        w: u32,
-        /// height
-        h: u32,
-        fonts: []const []const u8,
-    ) error{ OutOfMemory, FontCreateError }!Self {
-        var drw: Self = .{
-            .w = w,
-            .h = h,
-            .dpy = dpy,
-            .screen = screen,
-            .root = root,
-            .drawable = X.XCreatePixmap(dpy, root, w, h, @intCast(X.DefaultDepth(dpy, screen))),
-            .gc = X.XCreateGC(dpy, root, 0, undefined),
-            .fonts = undefined,
-        };
-        X.XSetLineAttributes(dpy, drw.gc, 1, .Solid, .Butt, .Miter);
-        drw.fonts = try drw.fontsetCreate(allocator, fonts) orelse {
+    pub fn init(allocator: Allocator, p: DrwInitParams) error{ OutOfMemory, FontCreateError }!Self {
+        const depth = X.DefaultDepth(p.dpy, p.screen);
+        const fonts = try fontsetCreate(allocator, p.dpy, p.screen, p.fonts) orelse {
             // Empty linked list. No fonts loaded.
             std.debug.print("no fonts could be loaded.\n", .{});
             return error.FontCreateError;
         };
+        const drw: Self = .{
+            .dpy = p.dpy,
+            .screen = p.screen,
+            .root = p.root,
+            .drawable = X.XCreatePixmap(p.dpy, p.root, p.width, p.height, @intCast(depth)),
+            .gc = X.XCreateGC(p.dpy, p.root, 0, undefined),
+            .w = p.width,
+            .h = p.height,
+            .fonts = fonts,
+        };
+        X.XSetLineAttributes(p.dpy, drw.gc, 1, .Solid, .Butt, .Miter);
         return drw;
     }
 
@@ -221,25 +247,6 @@ pub const Drw = struct {
             h,
             @intCast(X.DefaultDepth(self.dpy, self.screen)),
         );
-    }
-
-    /// (dwm) drw_fontset_create
-    /// Builds the list of fonts such that the first font provided in the
-    /// `fonts` slice is at the head of the linked list.
-    pub fn fontsetCreate(
-        self: *const Self,
-        allocator: Allocator,
-        fonts: []const []const u8,
-    ) error{ OutOfMemory, FontCreateError }!?*Font {
-        if (fonts.len == 0) return null;
-        var ret: ?*Font = null;
-        var it = std.mem.reverseIterator(fonts);
-        while (it.next()) |font| {
-            const cur = try xfontCreate(allocator, self, font, null);
-            cur.next = ret;
-            ret = cur;
-        }
-        return ret;
     }
 
     /// (dwm) drw_fontset_free
@@ -532,7 +539,7 @@ pub const Drw = struct {
 
                 if (match_opt) |match| {
                     const j = if (state.nomatches[h0] > 0) h1 else h0;
-                    usedfont = xfontCreate(allocator, self, "", match) catch {
+                    usedfont = xfontCreate(allocator, self.dpy, self.screen, "", match) catch {
                         state.nomatches[j] = utf8codepoint;
                         continue;
                     };

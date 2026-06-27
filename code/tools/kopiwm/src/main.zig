@@ -1141,6 +1141,20 @@ fn setupTerminationHandling() void {
     _ = C.sigaction(C.SIGCHLD, &sa, null);
 }
 
+/// Clean up any zombies (inherited from .xinitrc etc).
+///
+/// pid=-1 means to wait for any child process.
+///
+/// On success, `waitpid` returns the pid of the child whose state has
+/// changed; if WNOHANG was specified and one or more child(ren) specified
+/// by pid exist, but have not yet changed state, then 0 is returned. On
+/// failure, -1 is returned.
+///
+/// docs: https://man7.org/linux/man-pages/man2/waitpid.2.html
+fn setupClearZombies() void {
+    while (std.c.waitpid(-1, null, std.c.W.NOHANG) > 0) {}
+}
+
 /// (dwm) unfocus
 fn unfocus(client: ?*Client, setfocus: bool) void {
     const c = client orelse return;
@@ -1716,18 +1730,7 @@ pub fn main() !void {
 
     checkOtherWM(dpy);
     setupTerminationHandling();
-
-    // Clean up any zombies (inherited from .xinitrc etc) immediately.
-    //
-    // pid=-1 means to wait for any child process.
-    //
-    // On success, `waitpid` returns the pid of the child whose state has
-    // changed; if WNOHANG was specified and one or more child(ren) specified
-    // by pid exist, but have not yet changed state, then 0 is returned. On
-    // failure, -1 is returned.
-    //
-    // docs: https://man7.org/linux/man-pages/man2/waitpid.2.html
-    while (std.c.waitpid(-1, null, std.c.W.NOHANG) > 0) {}
+    setupClearZombies();
 
     z.dpy = dpy;
     z.screen = X.DefaultScreen(dpy);
@@ -1762,7 +1765,15 @@ pub fn main() !void {
         X.XChangeProperty(dpy, checkWin, atoms.net(.WMName), utf8string, 8, .Replace, NAME.ptr, NAME.len);
     }
 
-    z.drw = try .init(allocator, dpy, z.screen, z.root, z.s.w, z.s.h, &cfg.fonts);
+    z.drw = try .init(allocator, .{
+        .dpy = dpy,
+        .screen = z.screen,
+        .root = z.root,
+        .width = z.s.w,
+        .height = z.s.h,
+        .fonts = &cfg.fonts,
+        .colors = &cfg.colors,
+    });
     z.lrpad = z.drw.fonts.h;
 
     // Initialize appearance.
