@@ -54,8 +54,6 @@ updatebars_buffer: fstr(16) = .empty,
 /// Status bar text.
 stext: fstr(256) = .empty,
 
-numlockmask: c_uint = 0,
-
 running: bool = true,
 
 pub fn init() Self {

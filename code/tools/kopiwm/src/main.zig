@@ -22,6 +22,7 @@ const M = @import("x11.zig").masks;
 const EM = @import("x11.zig").eventMask;
 const CW = @import("x11.zig").CW;
 const E = @import("errors.zig");
+const NumLockMask = @import("numlockmask.zig").NumLockMask;
 
 const NAME = @import("build_opts").name;
 const VERSION = @import("build_opts").version;
@@ -36,17 +37,12 @@ const C = @cImport({
 });
 
 var z: App = .init();
+var numlockmask: NumLockMask = .empty;
 
 pub const std_options: std.Options = .{
     .log_level = .debug,
     .logFn = @import("logger.zig").customLog,
 };
-
-/// (dwm) CLEANMASK
-fn CLEANMASK(mask: u32) u32 {
-    return (mask & ~(z.numlockmask | X.LockMask)) &
-        (M.ShiftMask | M.ControlMask | M.Mod1Mask | M.Mod2Mask | M.Mod3Mask | M.Mod4Mask | M.Mod5Mask);
-}
 
 /// Ensures that there are no other window managers currently running.
 ///
@@ -429,7 +425,7 @@ fn buttonPress(allocator: Allocator, e: *X.XEvent) DwmError!void {
     // Search the `buttons` map for a hit.
     for (cfg.buttons) |*button| {
         if (button.click != click or button.button != ev.button) continue;
-        if (CLEANMASK(button.mask) == CLEANMASK(ev.state)) {
+        if (numlockmask.cleanMask(button.mask) == numlockmask.cleanMask(ev.state)) {
             const arg2 = switch (click) {
                 .TagBar => &arg,
                 else => &button.lf.arg,
@@ -598,7 +594,7 @@ fn keyPress(allocator: Allocator, e: *X.XEvent) DwmError!void {
     const ev: X.XKeyEvent = e.xkey;
     const keysym = X.XkbKeycodeToKeysym(z.dpy, @intCast(ev.keycode), 0, 0);
     for (cfg.keys) |key| {
-        if (keysym == key.sym and CLEANMASK(key.mod) == CLEANMASK(ev.state)) {
+        if (keysym == key.sym and numlockmask.cleanMask(key.mod) == numlockmask.cleanMask(ev.state)) {
             switch (key.lf.func) {
                 .MightError => |f| try f(&key.lf.arg),
                 .NoError => |f| f(&key.lf.arg),
@@ -1217,8 +1213,7 @@ fn drawbars(allocator: Allocator) void {
 
 /// (dwm) grabbuttons
 fn grabbuttons(c: *Client, focused: bool) void {
-    updatenumlockmask();
-    const modifiers: [4]c_uint = .{ 0, X.LockMask, z.numlockmask, z.numlockmask | X.LockMask };
+    numlockmask.update(z.dpy);
     X.XUngrabButton(z.dpy, X.AnyButton, M.AnyModifier, c.win);
     const bmask = EM.ButtonPressMask | EM.ButtonReleaseMask;
     if (!focused) {
@@ -1226,7 +1221,7 @@ fn grabbuttons(c: *Client, focused: bool) void {
     }
     for (cfg.buttons) |button| {
         if (button.click == .ClientWin) {
-            for (modifiers) |modifier| {
+            for (numlockmask.modifiers) |modifier| {
                 X.XGrabButton(z.dpy, button.button, button.mask | modifier, c.win, false, bmask, .Async, .Sync, X.None, X.None);
             }
         }
@@ -1235,8 +1230,7 @@ fn grabbuttons(c: *Client, focused: bool) void {
 
 /// (dwm) grabkeys
 fn grabkeys() void {
-    updatenumlockmask();
-    const modifiers: [4]c_uint = .{ 0, X.LockMask, z.numlockmask, z.numlockmask | X.LockMask };
+    numlockmask.update(z.dpy);
 
     var start: c_int = undefined; // or, X.KeyCode
     var end: c_int = undefined; // or, X.KeyCode
@@ -1252,25 +1246,9 @@ fn grabkeys() void {
         for (cfg.keys) |key| {
             // Skip modifier codes, we do that ourselves.
             if (key.sym == syms[@intCast((keycode - start) * skip)]) {
-                for (modifiers) |mod| {
+                for (numlockmask.modifiers) |mod| {
                     _ = X.XGrabKey(z.dpy, keycode, key.mod | mod, z.root, true, .Async, .Async);
                 }
-            }
-        }
-    }
-}
-
-/// (dwm) updatenumlockmask
-fn updatenumlockmask() void {
-    z.numlockmask = 0;
-    const modmap = X.XGetModifierMapping(z.dpy) orelse return;
-    defer X.XFreeModifiermap(modmap);
-    const mkpm: usize = @intCast(modmap.*.max_keypermod);
-    for (0..8) |i| {
-        for (0..mkpm) |j| {
-            const keycode = modmap.*.modifiermap[i * mkpm + j];
-            if (keycode == X.XKeysymToKeycode(z.dpy, X.keys.XK_Num_Lock)) {
-                z.numlockmask = @as(u32, 1) << @intCast(i);
             }
         }
     }
