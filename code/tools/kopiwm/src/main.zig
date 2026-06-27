@@ -23,6 +23,7 @@ const EM = @import("x11.zig").eventMask;
 const CW = @import("x11.zig").CW;
 const E = @import("errors.zig");
 const NumLockMask = @import("numlockmask.zig").NumLockMask;
+const Font = @import("font.zig").Font;
 
 const NAME = @import("build_opts").name;
 const VERSION = @import("build_opts").version;
@@ -1670,16 +1671,22 @@ pub fn main() !void {
         X.XChangeProperty(dpy, checkWin, atoms.net(.WMName), utf8string, 8, .Replace, NAME.ptr, NAME.len);
     }
 
-    z.drw = try .init(allocator, .{
+    // Initialize all the fonts specified in the config.
+    const fonts = try Font.initMany(allocator, dpy, z.screen, &cfg.fonts) orelse {
+        @panic("Not a single font was valid.");
+    };
+    defer fonts.free(allocator);
+
+    z.drw = try .init(.{
         .dpy = dpy,
         .screen = z.screen,
         .root = z.root,
         .width = z.s.w,
         .height = z.s.h,
-        .fonts = &cfg.fonts,
+        .fonts = fonts,
         .colors = &cfg.colors,
     });
-    defer z.drw.deinit(allocator);
+    defer z.drw.deinit();
     z.lrpad = @intCast(z.drw.fonts.height);
 
     // Initialize appearance.

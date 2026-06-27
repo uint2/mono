@@ -15,7 +15,7 @@ pub const Font = struct {
     /// Standardized height of the font as computed at initialization.
     height: c_int,
     xfont: *X.XftFont,
-    next: ?*Font,
+    next: ?*Self,
 
     pub fn deinit(self: *Self, allocator: Allocator) void {
         if (self.xfont.pattern) |pattern| {
@@ -24,6 +24,14 @@ pub const Font = struct {
         X.XftFontClose(self.dpy, self.xfont);
         log.warn("Deallocate font: {*}", .{self});
         allocator.destroy(self);
+    }
+
+    /// Frees the entire linked list of fonts.
+    ///
+    /// (dwm) drw_fontset_free
+    pub fn free(self: *Self, allocator: Allocator) void {
+        if (self.next) |next| next.free(allocator);
+        self.deinit(allocator);
     }
 
     /// (dwm) drw_font_getexts
@@ -79,5 +87,26 @@ pub const Font = struct {
         self.xfont = xfont;
         self.height = xfont.ascent + xfont.descent;
         self.dpy = dpy;
+    }
+
+    /// (dwm) drw_fontset_create
+    /// Builds the linked list of fonts such that the first font provided in
+    /// the `fonts` slice is at the head of the linked list.
+    pub fn initMany(
+        allocator: Allocator,
+        dpy: *X.Display,
+        screen: c_int,
+        fonts: []const []const u8,
+    ) error{ OutOfMemory, FontCreateError }!?*Self {
+        if (fonts.len == 0) return null;
+        var ret: ?*Font = null;
+        var it = std.mem.reverseIterator(fonts);
+        while (it.next()) |fontName| {
+            var cur = try allocator.create(Font);
+            try cur.fromName(dpy, screen, fontName);
+            cur.next = ret;
+            ret = cur;
+        }
+        return ret;
     }
 };

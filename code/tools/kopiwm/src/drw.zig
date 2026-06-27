@@ -38,27 +38,6 @@ pub fn Scheme(comptime T: type) type {
 
 pub const ColorScheme = Scheme(X.XftColor);
 
-/// (dwm) drw_fontset_create
-/// Builds the list of fonts such that the first font provided in the
-/// `fonts` slice is at the head of the linked list.
-pub fn fontsetCreate(
-    allocator: Allocator,
-    dpy: *X.Display,
-    screen: c_int,
-    fonts: []const []const u8,
-) error{ OutOfMemory, FontCreateError }!?*Font {
-    if (fonts.len == 0) return null;
-    var ret: ?*Font = null;
-    var it = std.mem.reverseIterator(fonts);
-    while (it.next()) |fontName| {
-        var cur = try allocator.create(Font);
-        try cur.fromName(dpy, screen, fontName);
-        cur.next = ret;
-        ret = cur;
-    }
-    return ret;
-}
-
 pub const DrwInitParams = struct {
     dpy: *X.Display,
     screen: c_int,
@@ -66,7 +45,7 @@ pub const DrwInitParams = struct {
     root: X.Window,
     width: c_uint,
     height: c_uint,
-    fonts: []const []const u8,
+    fonts: *Font,
     colors: *const EnumArray(SchemeState, Scheme([]const u8)),
 };
 
@@ -89,13 +68,8 @@ pub const Drw = struct {
     /// A linked list of fonts.
     fonts: *Font,
 
-    pub fn init(allocator: Allocator, p: DrwInitParams) error{ OutOfMemory, FontCreateError }!Self {
+    pub fn init(p: DrwInitParams) error{ OutOfMemory, FontCreateError }!Self {
         const depth = X.DefaultDepth(p.dpy, p.screen);
-        const fonts = try fontsetCreate(allocator, p.dpy, p.screen, p.fonts) orelse {
-            // Empty linked list. No fonts loaded.
-            std.debug.print("no fonts could be loaded.\n", .{});
-            return error.FontCreateError;
-        };
         const drw: Self = .{
             .dpy = p.dpy,
             .screen = p.screen,
@@ -104,25 +78,16 @@ pub const Drw = struct {
             .gc = X.XCreateGC(p.dpy, p.root, 0, undefined),
             .w = p.width,
             .h = p.height,
-            .fonts = fonts,
+            .fonts = p.fonts,
         };
         X.XSetLineAttributes(p.dpy, drw.gc, 1, .Solid, .Butt, .Miter);
         return drw;
     }
 
     /// (dwm) drw_free
-    pub fn deinit(self: *Self, allocator: Allocator) void {
+    pub fn deinit(self: *Self) void {
         X.XFreePixmap(self.dpy, self.drawable);
         X.XFreeGC(self.dpy, self.gc);
-        fontsetFree(allocator, self.fonts);
-    }
-
-    /// (dwm) drw_fontset_free
-    pub fn fontsetFree(allocator: Allocator, set: ?*Font) void {
-        if (set) |f| {
-            fontsetFree(allocator, f.next);
-            f.deinit(allocator);
-        }
     }
 
     /// (dwm) drw_resize
