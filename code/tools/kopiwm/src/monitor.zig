@@ -1,7 +1,8 @@
 const std = @import("std");
 const mem = std.mem;
-const cfg = @import("config.zig");
+const log = std.log;
 
+const cfg = @import("config.zig");
 const toggle = @import("toggle.zig").toggle;
 const lt = @import("layout.zig");
 const Layout = lt.Layout;
@@ -42,6 +43,9 @@ pub const Monitor = struct {
     lt: toggle(*const Layout),
 
     /// (dwm) createmon
+    ///
+    /// As of this initialization, there are no ties to anything X-related yet.
+    /// So this can be called even without a Display ready.
     pub fn init(allocator: Allocator) error{OutOfMemory}!*Self {
         const m = try allocator.create(Self);
         m.* = .{
@@ -49,6 +53,13 @@ pub const Monitor = struct {
         };
         std.log.info("Initialized a monitor!", .{});
         return m;
+    }
+
+    pub fn deinit(self: *Self, allocator: Allocator, dpy: *X.Display) void {
+        X.XUnmapWindow(dpy, self.barwin);
+        X.XDestroyWindow(dpy, self.barwin);
+        log.warn("Deallocate monitor: {*}", .{self});
+        allocator.destroy(self);
     }
 
     /// Checks if the currently selected client.

@@ -148,7 +148,7 @@ fn intersect(x: i32, y: i32, w: i32, h: i32, m: *Monitor) i32 {
 /// Searches all the monitors and all of their clients for one that matches
 /// the window search query. Returns the first hit.
 fn winToClient(w: X.Window) ?*Client {
-    var m_opt = z.mons;
+    var m_opt: ?*Monitor = z.mons;
     var c_opt: ?*Client = null;
     while (m_opt) |m| : (m_opt = m.next) {
         c_opt = m.clients;
@@ -294,7 +294,7 @@ fn unmanage(allocator: Allocator, c: *Client, destroyed: bool) void {
 /// (dwm) updateclientlist
 /// Updates the ClientList property in the X server.
 fn updateClientList() void {
-    var m_opt = z.mons;
+    var m_opt: ?*Monitor = z.mons;
     var c_opt: ?*Client = undefined;
     // Delete the existing list.
     X.XDeleteProperty(z.dpy, z.root, atoms.net(.ClientList));
@@ -470,13 +470,12 @@ const R = struct {
         z.s.w = @intCast(ev.width);
         z.s.h = @intCast(ev.height);
 
-        var selmon: ?*Monitor = z.selmon;
         // TODO: (dwm) updategeom handling sucks, needs to be simplified
-        if ((try updategeom(allocator, &selmon)) or dirty) {
+        if ((try updategeom()) or dirty) {
             z.drw.resize(z.s.w, z.bar_height);
             updateBars();
-            var m_opt = z.mons;
-            var c_opt: ?*Client = null;
+            var m_opt: ?*Monitor = z.mons;
+            var c_opt: ?*Client = undefined;
             while (m_opt) |m| : (m_opt = m.next) {
                 c_opt = m.clients;
                 while (c_opt) |c| : (c_opt = c.next) {
@@ -1041,13 +1040,13 @@ pub fn toggleFloating(allocator: Allocator, _: *const Arg) void {
 fn wintomon(w: X.Window) *Monitor {
     if (w == z.root) {
         if (z.getRootPtr()) |coords| {
-            const r = Rect{ .x = @intCast(coords.x), .y = @intCast(coords.y), .w = 1, .h = 1 };
+            const r = Rect{ .x = coords.x, .y = coords.y, .w = 1, .h = 1 };
             // To guarantee a non-null return of `*Monitor`, we deviate a tad from
             // dwm's behaviour and return `selmon` if nothing is found.
-            return r.toMonitor(z.mons) orelse (z.mons orelse unreachable);
+            return r.toMonitor(z.mons) orelse z.selmon;
         }
     }
-    var m_opt = z.mons;
+    var m_opt: ?*Monitor = z.mons;
     while (m_opt) |m| : (m_opt = m.next) {
         if (w == m.barwin) return m;
     }
@@ -1056,27 +1055,20 @@ fn wintomon(w: X.Window) *Monitor {
 }
 
 /// (dwm) updategeom
-fn updategeom(allocator: Allocator, selmon: *?*Monitor) error{OutOfMemory}!bool {
+fn updategeom() error{OutOfMemory}!bool {
     var dirty = false;
-    var mons: *Monitor = undefined;
-    {
-        // default monitor setup
-        mons = z.mons orelse m: {
-            z.mons = try Monitor.init(allocator);
-            break :m z.mons.?;
-        };
-        if (mons.m.w != z.s.w or mons.m.h != z.s.h) {
-            dirty = true;
-            mons.w.w = z.s.w;
-            mons.w.h = z.s.h;
-            mons.m.w = z.s.w;
-            mons.m.h = z.s.h;
-            mons.updateBarPosition(z.bar_height);
-        }
+    var mons = z.mons;
+    if (mons.m.w != z.s.w or mons.m.h != z.s.h) {
+        dirty = true;
+        mons.w.w = z.s.w;
+        mons.w.h = z.s.h;
+        mons.m.w = z.s.w;
+        mons.m.h = z.s.h;
+        mons.updateBarPosition(z.bar_height);
     }
     if (dirty) {
-        selmon.* = mons;
-        selmon.* = wintomon(z.root);
+        z.selmon = mons;
+        z.selmon = wintomon(z.root);
     }
     return dirty;
 }
@@ -1238,44 +1230,28 @@ fn grabkeys() void {
 /// (dwm) cleanup
 // Continue to build this up as we go.
 fn cleanup(allocator: Allocator) void {
+    log.info("Start cleaning up monitors!", .{});
     // View all clients at once. ~0 yields a bitmask of all high bits. I don't
     // fully understand why we do this yet, but I think it helps with clearing
     // out the clients.
     view(allocator, &.{ .ui = ~@as(u32, 0) });
     z.selmon.lt.set(&.{ .symbol = "", .arrange = null });
 
-    var m_opt = z.mons;
+    var m_opt: ?*Monitor = z.mons;
     while (m_opt) |m| : (m_opt = m.next) {
         while (m.stack) |c| {
             unmanage(allocator, c, false);
         }
     }
-    while (z.mons) |mon| {
-        cleanupmon(allocator, mon);
+    while (z.mons.next) |m| {
+        // Remove `m` from the linked list that is `z.mons`.
+        z.mons.next = m.next;
+        m.deinit(allocator, z.dpy);
     }
+    z.mons.deinit(allocator, z.dpy);
     X.XSync(z.dpy, false);
     X.XSetInputFocus(z.dpy, X.PointerRoot, .PointerRoot, X.CurrentTime);
     X.XDeleteProperty(z.dpy, z.root, atoms.net(.ActiveWindow));
-}
-
-/// (dwm) cleanupmon
-fn cleanupmon(allocator: Allocator, mon: *Monitor) void {
-    // First, remove `mon` from the linked list that is `z.mons`.
-    if (mon == z.mons) {
-        z.mons = z.mons.?.next;
-    } else {
-        var m_opt = z.mons;
-        while (m_opt) |m| : (m_opt = m.next) {
-            if (m.next == mon) {
-                m.next = mon.next;
-                break;
-            }
-        }
-    }
-    X.XUnmapWindow(z.dpy, mon.barwin);
-    X.XDestroyWindow(z.dpy, mon.barwin);
-    log.warn("Deallocate monitor: {*}", .{mon});
-    allocator.destroy(mon);
 }
 
 /// (dwm) updatebars
@@ -1294,7 +1270,7 @@ fn updateBars() void {
         }
     };
     var ch: X.XClassHint = .{ .res_class = &static.name, .res_name = &static.name };
-    var m_opt = z.mons;
+    var m_opt: ?*Monitor = z.mons;
     while (m_opt) |m| : (m_opt = m.next) {
         if (m.barwin != 0) {
             continue;
@@ -1676,14 +1652,10 @@ pub fn main() !void {
         .h = @intCast(X.DisplayHeight(dpy, z.screen)),
     };
     z.root = X.RootWindow(dpy, z.screen);
+    z.selmon = try Monitor.init(allocator);
+    z.mons = z.selmon;
+    _ = try updategeom();
 
-    { // Initialize selmon, and make sure it's non-null.
-        var selmon: ?*Monitor = null;
-        _ = try updategeom(allocator, &selmon);
-        z.selmon = selmon orelse {
-            return std.debug.print(NAME ++ ": could not find the first selected monitor\n", .{});
-        };
-    }
     defer cleanup(allocator);
 
     // Initialize atoms.

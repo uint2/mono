@@ -38,7 +38,8 @@ lrpad: u32 = 0,
 
 bar_height: u32 = cfg.bar_height,
 
-mons: ?*Monitor = null,
+/// TODO: change this to Monitor.init with RAII.
+mons: *Monitor = undefined,
 
 /// Selected monitor.
 selmon: *Monitor = undefined,
