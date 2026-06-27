@@ -1,5 +1,6 @@
 const std = @import("std");
 const log = std.log;
+const unicode = std.unicode;
 const X = @import("x11.zig");
 const Rect = @import("rect.zig").Rect;
 const EnumArray = @import("enum_array.zig").EnumArray;
@@ -22,7 +23,7 @@ pub const Font = struct {
     /// (dwm) drw_font_getexts
     ///
     /// Gets the extents of an utf-8 encoded string. It is on the user to ensure
-    /// that `utf8str` is indeed utf-8 encoded.
+    /// that `utf8.str` is indeed utf-8 encoded.
     pub fn getExtents(self: *Self, utf8str: []const u8, w: ?*u32, h: ?*u32) void {
         if (utf8str.len == 0) {
             if (w) |w_ptr| w_ptr.* = 0;
@@ -363,6 +364,8 @@ pub const Drw = struct {
         const utf8 = struct {
             var codepoint: u21 = 0;
             var charlen: u3 = 0;
+            var str: []const u8 = undefined;
+            var strlen: u32 = 0;
         };
 
         var nextfont: ?*Font = null;
@@ -371,32 +374,30 @@ pub const Drw = struct {
         var ellipsis_len: u32 = undefined;
         var ellipsis_w: u32 = 0;
         var overflow: bool = false;
-        var utf8str: []const u8 = undefined;
         var ty: i32 = 0;
         var charexists = false;
         var match_opt: ?*X.FcPattern = null;
         var result: X.XftResult = undefined;
         // The number of bytes that the next UTF-8 char uses.
         var ew: u32 = undefined;
-        var utf8strlen: u32 = undefined;
 
         // Main loop for printing text to completion. Breaks only when text runs
         // out or if there is overflow.
         while (true) {
             utf8err = false;
             ellipsis_len = 0;
-            utf8strlen = 0;
+            utf8.strlen = 0;
             ew = 0;
-            utf8str = text;
+            utf8.str = text;
             utf8.codepoint = 0;
             utf8.charlen = 0;
             while (text.len > 0) {
-                utf8.charlen = std.unicode.utf8ByteSequenceLength(text[0]) catch unreachable;
+                utf8.charlen = unicode.utf8ByteSequenceLength(text[0]) catch unreachable;
                 utf8.codepoint = switch (utf8.charlen) {
                     1 => @intCast(text[0]),
-                    2 => std.unicode.utf8Decode2(text[0..2].*) catch unreachable,
-                    3 => std.unicode.utf8Decode3(text[0..3].*) catch unreachable,
-                    4 => std.unicode.utf8Decode4(text[0..4].*) catch unreachable,
+                    2 => unicode.utf8Decode2(text[0..2].*) catch unreachable,
+                    3 => unicode.utf8Decode3(text[0..3].*) catch unreachable,
+                    4 => unicode.utf8Decode4(text[0..4].*) catch unreachable,
                     else => unreachable,
                 };
                 var curfont_opt: ?*Font = self.fonts;
@@ -413,7 +414,7 @@ pub const Drw = struct {
                         // keep track where the ellipsis still fits
                         ellipsis_x = x + @as(i32, @intCast(ew));
                         ellipsis_w = w - ew;
-                        ellipsis_len = utf8strlen;
+                        ellipsis_len = utf8.strlen;
                     }
 
                     if (ew + tmpw > w) {
@@ -423,11 +424,11 @@ pub const Drw = struct {
                         if (!render) {
                             x += @intCast(tmpw);
                         } else {
-                            utf8strlen = ellipsis_len;
+                            utf8.strlen = ellipsis_len;
                         }
                     } else if (curfont == usedfont) {
                         text = text[utf8.charlen..];
-                        utf8strlen += if (utf8err) 0 else utf8.charlen;
+                        utf8.strlen += if (utf8err) 0 else utf8.charlen;
                         ew += if (utf8err) 0 else tmpw;
                     } else {
                         nextfont = curfont;
@@ -442,12 +443,12 @@ pub const Drw = struct {
                 }
             }
 
-            if (utf8strlen > 0) {
+            if (utf8.strlen > 0) {
                 if (render) {
                     ty = y + @divTrunc(@as(i32, @intCast(h - usedfont.height)), 2) + usedfont.xfont.ascent;
                     const color = if (invert_) &self.scheme.?.bg else &self.scheme.?.fg;
                     if (d) |drw| {
-                        X.XftDrawStringUtf8(drw, color, usedfont.xfont, x, ty, utf8str, @intCast(utf8strlen));
+                        X.XftDrawStringUtf8(drw, color, usedfont.xfont, x, ty, utf8.str, @intCast(utf8.strlen));
                     }
                 }
                 x += @intCast(ew);
