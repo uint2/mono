@@ -126,56 +126,6 @@ fn xfontFree(allocator: Allocator, font: *Font) void {
     allocator.destroy(font);
 }
 
-/// (dwm) utf8decode
-/// Gets the number of bytes required to represent the first utf-8 character in
-/// the string `s` provided.
-fn utf8decode(s: []const u8, codepoint: *u64, err: *bool) u3 {
-    const UTF_INVALID: u32 = 0xFFFD;
-    const leading_mask: [4]u8 = .{ 0x7F, 0x1F, 0x0F, 0x07 };
-    const overlong: [4]u32 = .{ 0x0, 0x80, 0x0800, 0x10000 };
-    const len: u3 = switch (s[0] >> 3) {
-        0b00000...0b01111 => 1, // 0XXXX
-        0b10000...0b10111 => 0, // 10XXX (invalid)
-        0b11000...0b11011 => 2, // 110XX
-        0b11100...0b11101 => 3, // 110XX
-        0b11110 => 4,
-        0b11111 => 0, // (invalid)
-        else => unreachable, // because s[0] is 8 bits, so the switch input is 5 bits.
-    };
-    codepoint.* = UTF_INVALID;
-    err.* = true;
-    if (len == 0) {
-        return 1;
-    }
-
-    // Codepoint
-    var cp: u64 = s[0] & leading_mask[len - 1];
-
-    for (1..len) |i| {
-        if (s[i] == 0 or (s[i] & 0xC0) != 0x80) {
-            return @intCast(i);
-        }
-        cp = (cp << 6) | (s[i] & 0x3F);
-    }
-
-    // out of range, surrogate, overlong encoding
-    if (cp > 0x10FFFF or (cp >> 11) == 0x1B or cp < overlong[len - 1]) {
-        return len;
-    }
-    err.* = false;
-    codepoint.* = cp;
-    return len;
-}
-
-fn print_draw_error(res: c_int) void {
-    switch (res) {
-        X.err.BadDrawable => log.err("Bad drawable error", .{}),
-        X.err.BadGC => log.err("Bad GC error", .{}),
-        X.err.BadMatch => log.err("Bad match error", .{}),
-        else => {},
-    }
-}
-
 pub const DrwInitParams = struct {
     dpy: *X.Display,
     screen: c_int,
@@ -401,9 +351,13 @@ pub const Drw = struct {
             state.invalid_width = self.fontSetGetWidth(allocator, INVALID);
         }
 
+        const utf8 = struct {
+            var codepoint: u21 = 0;
+            var charlen: u3 = 0;
+        };
+
         var nextfont: ?*Font = null;
         var utf8err: bool = undefined;
-        var utf8codepoint: u64 = undefined;
         var ellipsis_x: i32 = 0;
         var ellipsis_len: u32 = undefined;
         var ellipsis_w: u32 = 0;
@@ -414,7 +368,6 @@ pub const Drw = struct {
         var match_opt: ?*X.FcPattern = null;
         var result: X.XftResult = undefined;
         // The number of bytes that the next UTF-8 char uses.
-        var utf8charlen: u3 = undefined;
         var ew: u32 = undefined;
         var utf8strlen: u32 = undefined;
 
@@ -423,21 +376,29 @@ pub const Drw = struct {
         while (true) {
             utf8err = false;
             ellipsis_len = 0;
-            utf8charlen = 0;
             utf8strlen = 0;
             ew = 0;
             utf8str = text;
+            utf8.codepoint = 0;
+            utf8.charlen = 0;
             while (text.len > 0) {
-                utf8charlen = utf8decode(text, &utf8codepoint, &utf8err);
+                utf8.charlen = std.unicode.utf8ByteSequenceLength(text[0]) catch unreachable;
+                utf8.codepoint = switch (utf8.charlen) {
+                    1 => @intCast(text[0]),
+                    2 => std.unicode.utf8Decode2(text[0..2].*) catch unreachable,
+                    3 => std.unicode.utf8Decode3(text[0..3].*) catch unreachable,
+                    4 => std.unicode.utf8Decode4(text[0..4].*) catch unreachable,
+                    else => unreachable,
+                };
                 var curfont_opt: ?*Font = self.fonts;
                 charexists = false;
                 var tmpw: u32 = undefined;
                 while (curfont_opt) |curfont| : (curfont_opt = curfont.next) {
-                    charexists |= X.XftCharExists(self.dpy, curfont.xfont, @intCast(utf8codepoint));
+                    charexists |= X.XftCharExists(self.dpy, curfont.xfont, @intCast(utf8.codepoint));
                     if (!charexists) {
                         continue;
                     }
-                    curfont.getExtents(text[0..utf8charlen], &tmpw, null);
+                    curfont.getExtents(text[0..utf8.charlen], &tmpw, null);
 
                     if (ew + (state.ellipsis_width orelse 0) <= w) {
                         // keep track where the ellipsis still fits
@@ -456,8 +417,8 @@ pub const Drw = struct {
                             utf8strlen = ellipsis_len;
                         }
                     } else if (curfont == usedfont) {
-                        text = text[utf8charlen..];
-                        utf8strlen += if (utf8err) 0 else utf8charlen;
+                        text = text[utf8.charlen..];
+                        utf8strlen += if (utf8err) 0 else utf8.charlen;
                         ew += if (utf8err) 0 else tmpw;
                     } else {
                         nextfont = curfont;
@@ -509,7 +470,7 @@ pub const Drw = struct {
                 // character must be drawn.
                 charexists = true;
 
-                var hash: usize = @intCast(utf8codepoint);
+                var hash: usize = @intCast(utf8.codepoint);
                 hash = ((hash >> 16) ^ hash) *% 0x21F0AAAD;
                 hash = ((hash >> 15) ^ hash) *% 0xD35A2D97;
                 const l = state.nomatches.len;
@@ -517,13 +478,13 @@ pub const Drw = struct {
                 const h1 = (hash >> 17) % l;
                 // avoid expensive XftFontMatch call when we know we won't find
                 // a match
-                if (state.nomatches[h0] == utf8codepoint or state.nomatches[h1] == utf8codepoint) {
+                if (state.nomatches[h0] == utf8.codepoint or state.nomatches[h1] == utf8.codepoint) {
                     usedfont = self.fonts;
                     continue;
                 }
 
                 const fccharset = X.FcCharSetCreate() orelse unreachable;
-                _ = X.FcCharSetAddChar(fccharset, @intCast(utf8codepoint));
+                _ = X.FcCharSetAddChar(fccharset, @intCast(utf8.codepoint));
 
                 const self_fonts_pattern = self.fonts.pattern orelse {
                     // Refer to the comment in xfont_create for more information.
@@ -544,15 +505,15 @@ pub const Drw = struct {
                 if (match_opt) |match| {
                     const j = if (state.nomatches[h0] > 0) h1 else h0;
                     usedfont = xfontCreate(allocator, self.dpy, self.screen, "", match) catch {
-                        state.nomatches[j] = utf8codepoint;
+                        state.nomatches[j] = utf8.codepoint;
                         continue;
                     };
-                    if (X.XftCharExists(self.dpy, usedfont.xfont, @intCast(utf8codepoint))) {
+                    if (X.XftCharExists(self.dpy, usedfont.xfont, @intCast(utf8.codepoint))) {
                         var curfont: *Font = self.fonts;
                         while (curfont.next) |next| : (curfont = next) {}
                         curfont.next = usedfont;
                     } else {
-                        state.nomatches[j] = utf8codepoint;
+                        state.nomatches[j] = utf8.codepoint;
                         xfontFree(allocator, usedfont);
                     }
                 }
