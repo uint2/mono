@@ -10,6 +10,7 @@ const cfg = @import("config.zig");
 const Size = @import("enums.zig").Size;
 const X = @import("x11.zig");
 const M = @import("x11.zig").masks;
+const EM = @import("x11.zig").eventMask;
 const atoms = @import("atoms.zig");
 
 const ClientSizes = struct {
@@ -196,7 +197,7 @@ pub const Client = struct {
             };
             ev.xclient.data.l[0] = @intCast(proto);
             ev.xclient.data.l[1] = X.CurrentTime;
-            X.XSendEvent(z.dpy, self.win, false, X.masks.NoEventMask, &ev);
+            X.XSendEvent(z.dpy, self.win, false, EM.NoEventMask, &ev);
         }
         return exists;
     }
@@ -222,7 +223,7 @@ pub const Client = struct {
         xconf.above = X.None;
         xconf.override_redirect = X.False;
         var event = X.XEvent{ .xconfigure = xconf };
-        X.XSendEvent(dpy, self.win, false, M.StructureNotifyMask, &event);
+        X.XSendEvent(dpy, self.win, false, EM.StructureNotifyMask, &event);
     }
 
     /// (dwm) getatomprop

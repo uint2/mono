@@ -3627,11 +3627,39 @@ pub const True = X.True;
 // ++ Bitmasks
 // -----------------------------------------------------------------------------
 
+/// Event masks.
+///
+/// source: https://xorg.freedesktop.org/releases/current/doc/libX11/libX11/libX11.html#Event_Masks
+pub const eventMask = struct {
+    /// No events wanted.
+    pub const NoEventMask = X.NoEventMask;
+    /// Pointer button down events wanted.
+    pub const ButtonPressMask = X.ButtonPressMask;
+    /// Pointer button up events wanted.
+    pub const ButtonReleaseMask = X.ButtonReleaseMask;
+    /// Pointer window entry events wanted.
+    pub const EnterWindowMask = X.EnterWindowMask;
+    /// Pointer window leave events wanted.
+    pub const LeaveWindowMask = X.LeaveWindowMask;
+    /// Pointer motion events wanted.
+    pub const PointerMotionMask = X.PointerMotionMask;
+    /// Any exposure wanted.
+    pub const ExposureMask = X.ExposureMask;
+    /// Any change in window structure wanted.
+    pub const StructureNotifyMask = X.StructureNotifyMask;
+    /// Any change in window structure wanted.
+    pub const SubstructureNotifyMask = X.SubstructureNotifyMask;
+    /// Redirect structure requests on children.
+    pub const SubstructureRedirectMask = X.SubstructureRedirectMask;
+    /// Any change in input focus wanted.
+    pub const FocusChangeMask = X.FocusChangeMask;
+    /// Any change in property wanted.
+    pub const PropertyChangeMask = X.PropertyChangeMask;
+};
+
 pub const masks = struct {
     pub const ShiftMask = X.ShiftMask;
     pub const ControlMask = X.ControlMask;
-    pub const ButtonPressMask = X.ButtonPressMask;
-    pub const ButtonReleaseMask = X.ButtonReleaseMask;
 
     pub const Mod1Mask = X.Mod1Mask;
     pub const Mod2Mask = X.Mod2Mask;
@@ -3650,19 +3678,6 @@ pub const masks = struct {
     pub const CWOverrideRedirect = X.CWOverrideRedirect;
     pub const CWSibling = X.CWSibling;
     pub const CWStackMode = X.CWStackMode;
-
-    // For XSelectInput
-    pub const EnterWindowMask = X.EnterWindowMask;
-    pub const FocusChangeMask = X.FocusChangeMask;
-    pub const PropertyChangeMask = X.PropertyChangeMask;
-    pub const StructureNotifyMask = X.StructureNotifyMask;
-
-    pub const ExposureMask = X.ExposureMask;
-    pub const LeaveWindowMask = X.LeaveWindowMask;
-    pub const PointerMotionMask = X.PointerMotionMask;
-    pub const SubstructureNotifyMask = X.SubstructureNotifyMask;
-    pub const SubstructureRedirectMask = X.SubstructureRedirectMask;
-    pub const NoEventMask = X.NoEventMask;
 
     pub const PAspect = X.PAspect;
     pub const PBaseSize = X.PBaseSize;

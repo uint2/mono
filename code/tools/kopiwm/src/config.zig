@@ -13,6 +13,7 @@ const Key = @import("enums.zig").Key;
 const Button = @import("enums.zig").Button;
 const Rule = @import("enums.zig").Rule;
 const M = @import("main.zig");
+const EM = @import("x11.zig").eventMask;
 const defaults = @import("config_defaults.zig");
 
 // False means use custom config. Defaults are kept because Zig does very
@@ -21,8 +22,8 @@ const defaults = @import("config_defaults.zig");
 // those functions.
 const USE_DEFAULT_CONFIG = false;
 
-pub const BUTTONMASK = X.masks.ButtonPressMask | X.masks.ButtonReleaseMask;
-pub const MOUSEMASK = BUTTONMASK | X.masks.PointerMotionMask;
+pub const BUTTONMASK = EM.ButtonPressMask | EM.ButtonReleaseMask;
+pub const MOUSEMASK = BUTTONMASK | EM.PointerMotionMask;
 
 // AwesomeWM provides a very helpful graphic here:
 // https://awesomewm.org/doc/api/libraries/mouse.html

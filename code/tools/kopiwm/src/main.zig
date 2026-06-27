@@ -19,6 +19,7 @@ const HandlerFn = @import("enums.zig").HandlerFn;
 const atoms = @import("atoms.zig");
 const X = @import("x11.zig");
 const M = @import("x11.zig").masks;
+const EM = @import("x11.zig").eventMask;
 const E = @import("errors.zig");
 
 const NAME = @import("build_opts").name;
@@ -52,7 +53,7 @@ fn CLEANMASK(mask: u32) u32 {
 fn checkOtherWM(dpy: *X.Display) void {
     E.xerrorlib = X.XSetErrorHandler(E.xerrorstart);
     // this causes an error if some other window manager is running
-    X.XSelectInput(dpy, X.DefaultRootWindow(dpy), M.SubstructureRedirectMask);
+    X.XSelectInput(dpy, X.DefaultRootWindow(dpy), EM.SubstructureRedirectMask);
     X.XSync(dpy, false);
     _ = X.XSetErrorHandler(E.xerror);
     X.XSync(dpy, false);
@@ -223,7 +224,7 @@ fn manage(allocator: Allocator, w: X.Window, wa: *X.XWindowAttributes) error{Out
     c.updateSizeHints();
     c.updateWMHints();
 
-    const mask = M.EnterWindowMask | M.FocusChangeMask | M.PropertyChangeMask | M.StructureNotifyMask;
+    const mask = EM.EnterWindowMask | EM.FocusChangeMask | EM.PropertyChangeMask | EM.StructureNotifyMask;
     X.XSelectInput(z.dpy, w, mask);
 
     grabbuttons(c, false);
@@ -276,7 +277,7 @@ fn unmanage(allocator: Allocator, c: *Client, destroyed: bool) void {
     if (!destroyed) {
         X.XGrabServer(z.dpy); // dwm: Avoid race conditions.
         _ = X.XSetErrorHandler(E.xerrordummy);
-        X.XSelectInput(z.dpy, c.win, X.masks.NoEventMask);
+        X.XSelectInput(z.dpy, c.win, EM.NoEventMask);
         var wc = X.XWindowChanges{ .border_width = @intCast(c.bw.prev) };
         X.XConfigureWindow(z.dpy, c.win, M.CWBorderWidth, &wc); // restore border
         X.XUngrabButton(z.dpy, X.AnyButton, M.AnyModifier, c.win);
@@ -350,7 +351,7 @@ fn restack(allocator: Allocator, m: *Monitor) void {
 
     X.XSync(z.dpy, false);
     var ev: X.XEvent = undefined;
-    while (X.XCheckMaskEvent(z.dpy, M.EnterWindowMask, &ev)) {}
+    while (X.XCheckMaskEvent(z.dpy, EM.EnterWindowMask, &ev)) {}
 }
 
 /// (dwm) arrange
@@ -858,7 +859,7 @@ pub fn moveMouse(allocator: Allocator, _: *const Arg) DwmError!void {
     var ev: X.XEvent = undefined;
     var lasttime: X.Time = 0;
     while (true) {
-        X.XMaskEvent(z.dpy, MOUSEMASK | M.ExposureMask | M.SubstructureRedirectMask, &ev);
+        X.XMaskEvent(z.dpy, MOUSEMASK | EM.ExposureMask | EM.SubstructureRedirectMask, &ev);
         switch (ev.type) {
             X.Expose | X.MapRequest | X.ConfigureRequest => try runOne(allocator, &ev),
             X.MotionNotify => {
@@ -971,7 +972,7 @@ pub fn resizeMouse(allocator: Allocator, _: *const Arg) DwmError!void {
     var ev: X.XEvent = undefined;
     var lasttime: X.Time = 0;
     while (true) {
-        X.XMaskEvent(z.dpy, MOUSEMASK | M.ExposureMask | M.SubstructureRedirectMask, &ev);
+        X.XMaskEvent(z.dpy, MOUSEMASK | EM.ExposureMask | EM.SubstructureRedirectMask, &ev);
         switch (ev.type) {
             X.Expose | X.MapRequest | X.ConfigureRequest => try runOne(allocator, &ev),
             X.MotionNotify => {
@@ -1019,7 +1020,7 @@ pub fn resizeMouse(allocator: Allocator, _: *const Arg) DwmError!void {
             @intCast(c.pos.now.h + c.bw.now - 1));
     }
     X.XUngrabPointer(z.dpy, X.CurrentTime);
-    while (X.XCheckMaskEvent(z.dpy, M.EnterWindowMask, &ev)) {}
+    while (X.XCheckMaskEvent(z.dpy, EM.EnterWindowMask, &ev)) {}
     const m_opt = c.pos.now.toMonitor(z.mons);
     if (m_opt != z.selmon) {
         if (m_opt) |m| {
@@ -1211,7 +1212,7 @@ fn grabbuttons(c: *Client, focused: bool) void {
             M.AnyModifier,
             c.win,
             false,
-            M.ButtonPressMask | M.ButtonReleaseMask,
+            EM.ButtonPressMask | EM.ButtonReleaseMask,
             .Sync,
             .Sync,
             X.None,
@@ -1227,7 +1228,7 @@ fn grabbuttons(c: *Client, focused: bool) void {
                     button.mask | modifier,
                     c.win,
                     false,
-                    M.ButtonPressMask | M.ButtonReleaseMask,
+                    EM.ButtonPressMask | EM.ButtonReleaseMask,
                     .Async,
                     .Sync,
                     X.None,
@@ -1338,7 +1339,7 @@ fn updateBars() void {
     var wa: X.XSetWindowAttributes = .{
         .override_redirect = X.True,
         .background_pixmap = X.ParentRelative,
-        .event_mask = M.ButtonPressMask | M.ExposureMask,
+        .event_mask = EM.ButtonPressMask | EM.ExposureMask,
     };
     var ch = z.classHint();
     var m_opt = z.mons;
@@ -1790,9 +1791,9 @@ pub fn main() !void {
     { // Select events.
         var wa: X.XSetWindowAttributes = .{
             .cursor = z.cursors.get(.Normal),
-            .event_mask = M.SubstructureRedirectMask | M.SubstructureNotifyMask //
-            | M.ButtonPressMask | M.PointerMotionMask | M.EnterWindowMask //
-            | M.LeaveWindowMask | M.StructureNotifyMask | M.PropertyChangeMask,
+            .event_mask = EM.SubstructureRedirectMask | EM.SubstructureNotifyMask //
+            | EM.ButtonPressMask | EM.PointerMotionMask | EM.EnterWindowMask //
+            | EM.LeaveWindowMask | EM.StructureNotifyMask | EM.PropertyChangeMask,
         };
         X.XChangeWindowAttributes(dpy, z.root, M.CWEventMask | M.CWCursor, &wa);
         X.XSelectInput(dpy, z.root, wa.event_mask);
