@@ -3432,6 +3432,9 @@ pub inline fn XftFontOpenPattern(display: *Display, pattern: *FcPattern) ?*XftFo
 /// The extents describe a user-space rectangle that encloses the "inked"
 /// portion of the glyphs
 ///
+/// In Zig, we shall use the length of the slice of `text` as the number of
+/// bytes.
+///
 /// source: https://man.archlinux.org/man/Xft.3
 pub inline fn XftTextExtentsUtf8(
     display: *Display,

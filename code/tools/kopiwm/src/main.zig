@@ -1513,8 +1513,8 @@ fn drawbar(allocator: Allocator, m: *Monitor) void {
     if (!m.show_bar) return;
 
     var tw: u32 = 0;
-    const boxs = z.drw.fonts.h / 9;
-    const boxw = z.drw.fonts.h / 6 + 2;
+    const boxs = z.drw.fonts.height / 9;
+    const boxw = z.drw.fonts.height / 6 + 2;
 
     const occ = m.getOccupiedBitmask();
     const urg = m.getUrgentBitmask();
@@ -1680,7 +1680,7 @@ pub fn main() !void {
         .colors = &cfg.colors,
     });
     defer z.drw.deinit(allocator);
-    z.lrpad = z.drw.fonts.h;
+    z.lrpad = z.drw.fonts.height;
 
     // Initialize appearance.
     for (std.enums.values(SchemeState)) |ss|

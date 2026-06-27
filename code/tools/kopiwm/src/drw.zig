@@ -13,24 +13,26 @@ pub const Font = struct {
     const Self = @This();
 
     dpy: *X.Display,
-    h: u16,
+    /// Standardized height of the font as computed at initialization.
+    height: u16,
     xfont: *X.XftFont,
     pattern: ?*X.FcPattern,
     next: ?*Font,
 
     /// (dwm) drw_font_getexts
-    pub fn getExts(self: *Self, text: []const u8, w: ?*u32, h: ?*u32) void {
-        if (text.len == 0) {
+    ///
+    /// Gets the extents of an utf-8 encoded string. It is on the user to ensure
+    /// that `utf8str` is indeed utf-8 encoded.
+    pub fn getExtents(self: *Self, utf8str: []const u8, w: ?*u32, h: ?*u32) void {
+        if (utf8str.len == 0) {
+            if (w) |w_ptr| w_ptr.* = 0;
+            if (h) |h_ptr| h_ptr.* = 0;
             return;
         }
         var ext: X.XGlyphInfo = undefined;
-        X.XftTextExtentsUtf8(self.dpy, self.xfont, text, &ext);
-        if (w) |w_ptr| {
-            w_ptr.* = @intCast(ext.xOff);
-        }
-        if (h) |h_ptr| {
-            h_ptr.* = self.h;
-        }
+        X.XftTextExtentsUtf8(self.dpy, self.xfont, utf8str, &ext);
+        if (w) |w_ptr| w_ptr.* = @intCast(ext.xOff);
+        if (h) |h_ptr| h_ptr.* = self.height; // Standardized height.
     }
 };
 
@@ -107,8 +109,8 @@ fn xfontCreate(
     var font = try allocator.create(Font);
     font.xfont = xfont orelse unreachable;
     font.pattern = pattern;
-    font.h = @intCast(xfont.?.ascent);
-    font.h += @intCast(xfont.?.descent);
+    font.height = @intCast(xfont.?.ascent);
+    font.height += @intCast(xfont.?.descent);
     font.dpy = dpy;
 
     return font;
@@ -411,6 +413,7 @@ pub const Drw = struct {
         var charexists = false;
         var match_opt: ?*X.FcPattern = null;
         var result: X.XftResult = undefined;
+        // The number of bytes that the next UTF-8 char uses.
         var utf8charlen: u3 = undefined;
         var ew: u32 = undefined;
         var utf8strlen: u32 = undefined;
@@ -434,7 +437,7 @@ pub const Drw = struct {
                     if (!charexists) {
                         continue;
                     }
-                    curfont.getExts(text[0..utf8charlen], &tmpw, null);
+                    curfont.getExtents(text[0..utf8charlen], &tmpw, null);
 
                     if (ew + (state.ellipsis_width orelse 0) <= w) {
                         // keep track where the ellipsis still fits
@@ -471,7 +474,7 @@ pub const Drw = struct {
 
             if (utf8strlen > 0) {
                 if (render) {
-                    ty = y + @divTrunc(@as(i32, @intCast(h - usedfont.h)), 2) + usedfont.xfont.ascent;
+                    ty = y + @divTrunc(@as(i32, @intCast(h - usedfont.height)), 2) + usedfont.xfont.ascent;
                     const color = if (invert_) &self.scheme.?.bg else &self.scheme.?.fg;
                     if (d) |drw| {
                         X.XftDrawStringUtf8(drw, color, usedfont.xfont, x, ty, utf8str, @intCast(utf8strlen));
@@ -499,6 +502,9 @@ pub const Drw = struct {
                 charexists = false;
                 usedfont = f;
             } else {
+                // TODO: break all this out into a separate function and call it
+                // something related to fallback.
+
                 // Regardless of whether or not a fallback font is found, the
                 // character must be drawn.
                 charexists = true;
