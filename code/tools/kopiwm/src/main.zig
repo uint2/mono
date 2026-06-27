@@ -711,43 +711,24 @@ fn run(allocator: Allocator) DwmError!void {
     }
 }
 
-inline fn runOne(allocator: Allocator, ev: *X.XEvent) DwmError!void {
-    if (handler[@intCast(ev.type)]) |handler_fn| {
-        switch (handler_fn) {
-            .NoAllocE => |f| try f(ev),
-            .AllocE => |f| try f(allocator, ev),
-            .NoAlloc => |f| f(ev),
-            .Alloc => |f| f(allocator, ev),
-        }
+inline fn runOne(alloc: Allocator, ev: *X.XEvent) DwmError!void {
+    switch (ev.type) {
+        X.ButtonPress => try buttonPress(alloc, ev),
+        X.ClientMessage => clientMessage(ev),
+        X.ConfigureNotify => try configureNotify(alloc, ev),
+        X.ConfigureRequest => configureRequest(ev),
+        X.DestroyNotify => destroyNotify(alloc, ev),
+        X.EnterNotify => enterNotify(alloc, ev),
+        X.Expose => expose(alloc, ev),
+        X.FocusIn => focusIn(ev),
+        X.KeyPress => try keyPress(alloc, ev),
+        X.MapRequest => try mapRequest(alloc, ev),
+        X.MappingNotify => mappingNotify(ev),
+        X.MotionNotify => motionNotify(alloc, ev),
+        X.PropertyNotify => propertyNotify(alloc, ev),
+        X.UnmapNotify => unmapNotify(alloc, ev),
+        else => {},
     }
-}
-
-const handler: [X.LASTEvent]?HandlerFn = createHandler();
-fn createHandler() [X.LASTEvent]?HandlerFn {
-    var ret: [X.LASTEvent]?HandlerFn = undefined;
-    var i: c_int = 0;
-    while (i < ret.len) : (i += 1) {
-        ret[@intCast(i)] = switch (i) {
-            // zig fmt: off
-            X.ButtonPress      => .{ .AllocE   = buttonPress },
-            X.ClientMessage    => .{ .NoAlloc  = clientMessage },
-            X.ConfigureNotify  => .{ .AllocE   = configureNotify },
-            X.ConfigureRequest => .{ .NoAlloc  = configureRequest },
-            X.DestroyNotify    => .{ .Alloc    = destroyNotify },
-            X.EnterNotify      => .{ .Alloc    = enterNotify },
-            X.Expose           => .{ .Alloc    = expose },
-            X.FocusIn          => .{ .NoAlloc  = focusIn },
-            X.KeyPress         => .{ .AllocE   = keyPress },
-            X.MapRequest       => .{ .AllocE   = mapRequest },
-            X.MappingNotify    => .{ .NoAlloc  = mappingNotify },
-            X.MotionNotify     => .{ .Alloc    = motionNotify },
-            X.PropertyNotify   => .{ .Alloc    = propertyNotify },
-            X.UnmapNotify      => .{ .Alloc    = unmapNotify },
-            // zig fmt: on
-            else => null,
-        };
-    }
-    return ret;
 }
 
 /// (dwm) scan
