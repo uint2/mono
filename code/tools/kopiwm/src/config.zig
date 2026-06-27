@@ -98,23 +98,20 @@ pub const layouts = [_]Layout{
     .{ .symbol = "[M]", .arrange = M.monocle },
 };
 
-const col_gray1: []const u8 = "#222222";
-const col_gray2: []const u8 = "#444444";
-const col_gray3: []const u8 = "#bbbbbb";
-const col_gray4: []const u8 = "#eeeeee";
-const col_accent_400: []const u8 = "#d8b4fe";
-const col_accent_900: []const u8 = "#581c87";
-
 fn initColors() EnumArray(SchemeState, Scheme([]const u8)) {
+    const gray1: []const u8 = "#222222";
+    const gray2: []const u8 = "#444444";
+    const gray3: []const u8 = "#bbbbbb";
+    const accent_400: []const u8 = "#d8b4fe";
+
     var c: EnumArray(SchemeState, Scheme([]const u8)) = undefined;
     // zig fmt: off
-    c.set(.Normal,   .{ .fg = col_gray3, .bg = col_gray1,      .border = col_gray2      });
-    c.set(.Selected, .{ .fg = col_gray1, .bg = col_accent_400, .border = col_accent_400 });
-    c.set(.Bar,      .{ .fg = col_gray3, .bg = col_gray2,      .border = col_gray2      });
+    c.set(.Normal,   .{ .fg = gray3, .bg = gray1,      .border = gray2      });
+    c.set(.Selected, .{ .fg = gray1, .bg = accent_400, .border = accent_400 });
+    c.set(.Bar,      .{ .fg = gray3, .bg = gray2,      .border = gray2      });
     // zig fmt: on
     return c;
 }
-
 pub const colors = initColors();
 
 const m = struct {
