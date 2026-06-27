@@ -67,12 +67,6 @@ pub fn TEXTW(self: *Self, allocator: Allocator, text: []const u8) u32 {
     return self.drw.fontSetGetWidth(allocator, text) + self.lrpad;
 }
 
-pub fn setStatusText(self: *Self, text: []const u8) void {
-    const n = @min(text.len, self.stext_buf.len);
-    @memcpy(self.stext_buf[0..n], text[0..n]);
-    self.stext = self.stext_buf[0..n];
-}
-
 pub fn classHint(self: *Self) X.XClassHint {
     log.info("Class Hint: {s}", .{self.updatebars_buffer.get()});
     const slice = self.updatebars_buffer.cstr().?;
