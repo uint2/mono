@@ -109,4 +109,26 @@ pub const Monitor = struct {
             },
         }
     }
+
+    /// Gets the occupancy bitmask. A high bit indicates that there exists a
+    /// client at that tag.
+    pub fn getOccupiedBitmask(self: *const Self) u32 {
+        var mask: u32 = 0;
+        var c_opt = self.clients;
+        while (c_opt) |c| : (c_opt = c.next) {
+            mask |= c.tags;
+        }
+        return mask;
+    }
+
+    /// Gets the urgent bitmask. A high bit indicates that there exists a client
+    /// flagged as urgent at that tag.
+    pub fn getUrgentBitmask(self: *const Self) u32 {
+        var mask: u32 = 0;
+        var c_opt = self.clients;
+        while (c_opt) |c| : (c_opt = c.next) {
+            if (c.isurgent) mask |= c.tags;
+        }
+        return mask;
+    }
 };

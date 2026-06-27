@@ -1515,49 +1515,44 @@ fn drawbar(allocator: Allocator, m: *Monitor) void {
     var tw: u32 = 0;
     const boxs = z.drw.fonts.h / 9;
     const boxw = z.drw.fonts.h / 6 + 2;
-    var occ: u32 = 0; // it's a bitmask.
-    var urg: u32 = 0; // it's a bitmask.
 
-    // draw status first so it can be overdrawn by tags later
-    if (m == z.selmon) { // status is only drawn on selected monitor
+    const occ = m.getOccupiedBitmask();
+    const urg = m.getUrgentBitmask();
+
+    // draw status text first so it can be overdrawn by tags later
+    if (m == z.selmon) { // status text is only drawn on selected monitor
         z.drw.setScheme(z.scheme.get(.Normal));
         tw = z.TEXTW(allocator, z.stext.get());
         _ = z.drw.drawText(allocator, .{
-            .x = @as(i32, @intCast(m.w.w)) - @as(i32, @intCast(tw)),
+            .x = @as(c_int, @intCast(m.w.w)) - @as(c_int, @intCast(tw)),
             .y = 0,
             .w = tw,
             .h = z.bar_height,
         }, 0, z.stext.get(), 0);
     }
 
-    var c_opt = m.clients;
-    while (c_opt) |c| : (c_opt = c.next) {
-        occ |= c.tags;
-        if (c.isurgent) urg |= c.tags;
-    }
-
     var x: i32 = 0;
     var w: u32 = 0;
     for (0..cfg.tags.len) |i| {
         w = z.TEXTW(allocator, cfg.tags[i].text);
-        const tag_mask = @as(u32, 1) << @intCast(i);
-        const selected = m.tags & tag_mask != 0;
+        const current_tag = @as(u32, 1) << @intCast(i);
+        const selected = m.tags & current_tag != 0;
         z.drw.setScheme(z.scheme.get(if (selected) .Selected else .Normal));
         _ = z.drw.drawText(
             allocator,
             .{ .x = x, .y = 0, .w = w, .h = z.bar_height },
             z.lrpad / 2,
             cfg.tags[i].text,
-            urg & tag_mask,
+            urg & current_tag,
         );
-        if ((occ & tag_mask) != 0) {
+        if ((occ & current_tag) != 0) {
             z.drw.drawRect(
                 .{ .x = x + boxs, .y = boxs, .w = boxw, .h = boxw },
                 filled: {
                     const client = z.selmon.sel orelse break :filled false;
-                    break :filled m == z.selmon and (client.tags & tag_mask) != 0;
+                    break :filled m == z.selmon and (client.tags & current_tag) != 0;
                 },
-                (urg & tag_mask) != 0,
+                (urg & current_tag) != 0,
             );
         }
         x += @intCast(w);

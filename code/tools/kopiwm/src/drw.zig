@@ -335,6 +335,10 @@ pub const Drw = struct {
     /// (dwm) drw_text
     /// Question: Is `invert` a bitmask? or a boolean? or a numerical value?
     /// Because based on dwm's source code all three cases kinda doesn't fit.
+    ///
+    /// This draws the text onto the abstract drawable first, not directly to
+    /// any screen, and so the coordinates will (later) be made relative
+    /// to whichever screen the drawable gets mapped to.
     pub fn drawText(
         self: *Self,
         allocator: Allocator,
@@ -388,9 +392,7 @@ pub const Drw = struct {
             x += @intCast(lpad);
             w -= lpad;
         }
-        defer {
-            if (d) |draw| X.XftDrawDestroy(draw);
-        }
+        defer if (d) |draw| X.XftDrawDestroy(draw);
 
         if (state.ellipsis_width == null and render) {
             state.ellipsis_width = self.fontSetGetWidth(allocator, "...");
