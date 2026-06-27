@@ -1622,6 +1622,7 @@ fn handleCliArgs(buffer: []u8) error{WriteFailed}!bool {
 /// TODO: Move both setup() and cleanup() into main() so that we can rely on
 /// `defer` calls to clean up resources.
 pub fn main() !void {
+    defer log.info("This is the final message from " ++ NAME ++ "!", .{});
     log.info("{s}", .{LINE});
     log.info("Started execution of {s}", .{NAME});
     log.info("{s}", .{LINE});
