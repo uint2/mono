@@ -34,6 +34,15 @@ pub const Font = struct {
         if (w) |w_ptr| w_ptr.* = @intCast(ext.xOff);
         if (h) |h_ptr| h_ptr.* = self.height; // Standardized height.
     }
+
+    pub fn deinit(self: *Self, allocator: Allocator) void {
+        if (self.pattern) |pattern| {
+            X.FcPatternDestroy(pattern);
+        }
+        X.XftFontClose(self.dpy, self.xfont);
+        log.warn("Deallocate font: {*}", .{self});
+        allocator.destroy(self);
+    }
 };
 
 pub fn Scheme(comptime T: type) type {
@@ -184,6 +193,14 @@ pub const Drw = struct {
         fontsetFree(allocator, self.fonts);
     }
 
+    /// (dwm) drw_fontset_free
+    pub fn fontsetFree(allocator: Allocator, set: ?*Font) void {
+        if (set) |f| {
+            fontsetFree(allocator, f.next);
+            f.deinit(allocator);
+        }
+    }
+
     /// (dwm) drw_resize
     /// Resize drawing area.
     pub fn resize(self: *Self, w: u32, h: u32) void {
@@ -199,14 +216,6 @@ pub const Drw = struct {
             h,
             @intCast(X.DefaultDepth(self.dpy, self.screen)),
         );
-    }
-
-    /// (dwm) drw_fontset_free
-    pub fn fontsetFree(allocator: Allocator, set: ?*Font) void {
-        if (set) |f| {
-            fontsetFree(allocator, f.next);
-            xfontFree(allocator, f);
-        }
     }
 
     /// (dwm) drw_clr_create
