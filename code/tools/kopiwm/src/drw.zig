@@ -9,6 +9,21 @@ const mem = std.mem;
 const Allocator = mem.Allocator;
 const Font = @import("font.zig").Font;
 
+/// A simple hashset implementation specifically to store unicode codepoints
+/// (and hence u21).
+const SimpleHashSet = struct {
+    const N: usize = 128;
+
+    data: [N]u21,
+
+    fn hashedIndex(codepoint: u21) usize {
+        var hash: usize = @intCast(codepoint);
+        hash = ((hash >> 16) ^ hash) *% 0x21F0AAAD;
+        hash = ((hash >> 15) ^ hash) *% 0xD35A2D97;
+        return hash;
+    }
+};
+
 pub fn Scheme(comptime T: type) type {
     return struct {
         const Self = @This();
@@ -243,6 +258,8 @@ pub const Drw = struct {
             var ellipsis_width: ?u32 = null;
             var invalid_width: ?u32 = null;
             var nomatches: [128]usize = std.mem.zeroes([128]usize);
+            var nomatch: std.AutoHashMap() = .init(allocator);
+            // var nomatch: std.AutoArrayHashMap() = .init
         };
 
         const invert_ = invert != 0; // just the boolean version of `invert`.
@@ -395,9 +412,8 @@ pub const Drw = struct {
                 var hash: usize = @intCast(utf8.codepoint);
                 hash = ((hash >> 16) ^ hash) *% 0x21F0AAAD;
                 hash = ((hash >> 15) ^ hash) *% 0xD35A2D97;
-                const l = state.nomatches.len;
-                const h0 = ((hash >> 15) ^ hash) % l;
-                const h1 = (hash >> 17) % l;
+                const h0 = ((hash >> 15) ^ hash) % state.nomatches.len;
+                const h1 = (hash >> 17) % state.nomatches.len;
                 // avoid expensive XftFontMatch call when we know we won't find
                 // a match
                 if (state.nomatches[h0] == utf8.codepoint or state.nomatches[h1] == utf8.codepoint) {
