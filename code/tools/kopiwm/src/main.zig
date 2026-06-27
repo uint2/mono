@@ -36,7 +36,7 @@ const C = @cImport({
     @cInclude("unistd.h");
 });
 
-var z: App = .init();
+var z: App = .init;
 var numlockmask: NumLockMask = .empty;
 
 pub const std_options: std.Options = .{
@@ -1296,7 +1296,15 @@ fn updateBars() void {
         .background_pixmap = X.ParentRelative,
         .event_mask = EM.ButtonPressMask | EM.ExposureMask,
     };
-    var ch = z.classHint();
+    const static = struct {
+        var name: [NAME.len]u8 = init();
+        fn init() [NAME.len]u8 {
+            var buf: [NAME.len]u8 = undefined;
+            @memcpy(&buf, NAME);
+            return buf;
+        }
+    };
+    var ch: X.XClassHint = .{ .res_class = &static.name, .res_name = &static.name };
     var m_opt = z.mons;
     while (m_opt) |m| : (m_opt = m.next) {
         if (m.barwin != 0) {

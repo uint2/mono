@@ -48,29 +48,16 @@ root: X.Window = 0,
 cursors: EnumArray(CursorState, X.Cursor) = .empty,
 scheme: EnumArray(SchemeState, *ColorScheme) = .empty,
 
-/// The only purpose for this is to patch for `updatebars`.
-updatebars_buffer: fstr(16) = .empty,
-
 /// Status bar text.
 stext: fstr(256) = .empty,
 
 running: bool = true,
 
-pub fn init() Self {
-    var z = Self{};
-    z.updatebars_buffer.set(build_opts.name);
-    return z;
-}
+pub const init: Self = .{};
 
 /// (dwm) TEXTW
 pub fn TEXTW(self: *Self, allocator: Allocator, text: []const u8) u32 {
     return self.drw.fontSetGetWidth(allocator, text) + self.lrpad;
-}
-
-pub fn classHint(self: *Self) X.XClassHint {
-    log.info("Class Hint: {s}", .{self.updatebars_buffer.get()});
-    const slice = self.updatebars_buffer.cstr().?;
-    return .{ .res_class = slice, .res_name = slice };
 }
 
 /// (dwm) getrootptr
