@@ -373,7 +373,7 @@ pub const Drw = struct {
         if (!render) {
             // When NOT rendering, treat `invert` as a different kind of value
             // altogether.
-            w = if (invert_) invert else ~invert;
+            w = ~@as(c_uint, 0);
         } else {
             const color = if (invert_) &self.scheme.?.fg else &self.scheme.?.bg;
             X.XSetForeground(self.dpy, self.gc, color.pixel);
