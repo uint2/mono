@@ -2763,10 +2763,7 @@ pub inline fn XQueryTree(
     var n: c_uint = undefined;
     const status = X11.XQueryTree(display, window, root_return, parent_return, &c_opt, &n);
     if (status == 0) return null;
-    var children: []Window = undefined;
-    children.ptr = c_opt orelse return null;
-    children.len = @intCast(n);
-    return children;
+    return (c_opt orelse return null)[0..@intCast(n)];
 }
 
 /// The XRaiseWindow function raises the specified window to the top of the

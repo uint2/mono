@@ -1692,6 +1692,7 @@ pub fn main() !void {
         @panic("Not a single font was valid.");
     };
     defer fonts.free(allocator);
+    z.lrpad = @intCast(fonts.height);
 
     z.drw = try .init(.{
         .dpy = dpy,
@@ -1703,7 +1704,6 @@ pub fn main() !void {
         .colors = &cfg.colors,
     });
     defer z.drw.deinit();
-    z.lrpad = @intCast(z.drw.fonts.height);
 
     // Initialize cursors.
     z.cursors.set(.Normal, X.XCreateFontCursor(dpy, .Left_ptr));
