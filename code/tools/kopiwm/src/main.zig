@@ -375,325 +375,327 @@ fn arrange(allocator: Allocator, monitor: ?*Monitor) void {
     }
 }
 
-/// (dwm) buttonpress
-fn buttonPress(allocator: Allocator, e: *X.XEvent) DwmError!void {
-    const ev: X.XButtonPressedEvent = e.xbutton;
-    var click: Clk = .RootWin;
-    var arg: Arg = undefined;
+/// Functions that are called in [r]eaction to events.
+const R = struct {
+    /// (dwm) buttonpress
+    fn buttonPress(allocator: Allocator, e: *X.XEvent) DwmError!void {
+        const ev: X.XButtonPressedEvent = e.xbutton;
+        var click: Clk = .RootWin;
+        var arg: Arg = undefined;
 
-    // Focus monitor if necessary.
-    const m = wintomon(ev.window);
-    if (m != z.selmon) {
-        if (z.selmon.sel) |c| unfocus(c, true);
-        z.selmon = m;
-        focus(allocator, null);
-    }
+        // Focus monitor if necessary.
+        const m = wintomon(ev.window);
+        if (m != z.selmon) {
+            if (z.selmon.sel) |c| unfocus(c, true);
+            z.selmon = m;
+            focus(allocator, null);
+        }
 
-    // Locate the click, and populate the `click` variable.
-    // This block searches for the click location in the bar window.
-    if (ev.window == z.selmon.barwin) {
-        var i: usize = 0;
-        var x: u32 = 0;
-        while (true) {
-            x += z.TEXTW(allocator, cfg.tags[i].text);
-            if (ev.x >= x) {
-                i += 1;
-                if (i < cfg.tags.len) continue;
+        // Locate the click, and populate the `click` variable.
+        // This block searches for the click location in the bar window.
+        if (ev.window == z.selmon.barwin) {
+            var i: usize = 0;
+            var x: u32 = 0;
+            while (true) {
+                x += z.TEXTW(allocator, cfg.tags[i].text);
+                if (ev.x >= x) {
+                    i += 1;
+                    if (i < cfg.tags.len) continue;
+                }
+                break;
             }
-            break;
-        }
-        if (i < cfg.tags.len) {
-            click = .TagBar;
-            arg = .{ .ui = @as(u32, 1) << @intCast(i) };
-        } else if (ev.x < x + z.TEXTW(allocator, z.selmon.layout_symbol)) {
-            click = .LtSymbol;
-        } else if (ev.x > z.selmon.w.w - z.TEXTW(allocator, z.stext.get()) + z.lrpad - 2) {
-            click = .StatusText;
-        } else {
-            click = .WinTitle;
-        }
-    }
-    // Locate the click, and populate the `click` variable.
-    // This block searches for the click location in the client.
-    if (winToClient(ev.window)) |c| {
-        focus(allocator, c);
-        restack(allocator, z.selmon);
-        X.XAllowEvents(z.dpy, .ReplayPointer, X.CurrentTime);
-        click = .ClientWin;
-    }
-
-    // Search the `buttons` map for a hit.
-    for (cfg.buttons) |*button| {
-        if (button.click != click or button.button != ev.button) continue;
-        if (numlockmask.cleanMask(button.mask) == numlockmask.cleanMask(ev.state)) {
-            const arg2 = switch (click) {
-                .TagBar => &arg,
-                else => &button.lf.arg,
-            };
-            switch (button.lf.func) {
-                .MightError => |f| try f(arg2),
-                .NoError => |f| f(arg2),
-                .MightErrorA => |f| try f(allocator, arg2),
-                .NoErrorA => |f| f(allocator, arg2),
+            if (i < cfg.tags.len) {
+                click = .TagBar;
+                arg = .{ .ui = @as(u32, 1) << @intCast(i) };
+            } else if (ev.x < x + z.TEXTW(allocator, z.selmon.layout_symbol)) {
+                click = .LtSymbol;
+            } else if (ev.x > z.selmon.w.w - z.TEXTW(allocator, z.stext.get()) + z.lrpad - 2) {
+                click = .StatusText;
+            } else {
+                click = .WinTitle;
             }
         }
-    }
-}
-
-/// (dwm) clientmessage
-fn clientMessage(e: *X.XEvent) void {
-    const ev: X.XClientMessageEvent = e.xclient;
-    var c: *Client = winToClient(ev.window) orelse return;
-
-    if (ev.message_type == atoms.net(.WMState)) {
-        const fs_atom = atoms.net(.WMFullscreen);
-        if (ev.data.l[1] == fs_atom or ev.data.l[2] == fs_atom) {
-            c.setFullscreen(switch (ev.data.l[0]) {
-                1 => true, // _NET_WM_STATE_ADD
-                2 => !c.isfullscreen, // _NET_WM_STATE_TOGGLE
-                else => false,
-            });
+        // Locate the click, and populate the `click` variable.
+        // This block searches for the click location in the client.
+        if (winToClient(ev.window)) |c| {
+            focus(allocator, c);
+            restack(allocator, z.selmon);
+            X.XAllowEvents(z.dpy, .ReplayPointer, X.CurrentTime);
+            click = .ClientWin;
         }
-    } else if (ev.message_type == atoms.net(.ActiveWindow)) {
-        if (c != z.selmon.sel and c.isurgent) {
-            c.setUrgent(z.dpy, true);
-        }
-    }
-}
 
-/// (dwm) configurerequest
-fn configureRequest(e: *X.XEvent) void {
-    const ev = e.xconfigurerequest;
-    const vmask = ev.value_mask;
-
-    if (winToClient(ev.window)) |c| {
-        if (vmask & CW.BorderWidth != 0) {
-            c.bw.set(@intCast(ev.border_width));
-        } else if (c.is_floating.now or z.selmon.lt.now.arrange == null) {
-            const m = c.mon;
-            if (vmask & CW.X != 0) {
-                c.pos.prev.x = c.pos.now.x;
-                c.pos.now.x = m.m.x + ev.x;
-            }
-            if (vmask & CW.Y != 0) {
-                c.pos.prev.y = c.pos.now.y;
-                c.pos.now.y = m.m.y + ev.y;
-            }
-            if (vmask & CW.Width != 0) {
-                c.pos.prev.w = c.pos.now.w;
-                c.pos.now.w = @intCast(ev.width);
-            }
-            if (vmask & CW.Height != 0) {
-                c.pos.prev.h = c.pos.now.h;
-                c.pos.now.h = @intCast(ev.height);
-            }
-            if (c.pos.now.r() > m.m.r() and c.is_floating.now) {
-                // Center in x-direction.
-                c.pos.prev.x = c.pos.now.x;
-                c.pos.now.x = m.m.x + (@divFloor(@as(i32, @intCast(m.m.w)), 2) - @divFloor(c.width(), 2));
-            }
-            if (c.pos.now.b() > m.m.b() and c.is_floating.now) {
-                // Center in y-direction.
-                c.pos.prev.y = c.pos.now.y;
-                c.pos.now.y = m.m.y + (@divFloor(@as(i32, @intCast(m.m.h)), 2) - @divFloor(c.height(), 2));
-            }
-            if ((vmask & (CW.X | CW.Y) != 0) and (vmask & (CW.Width | CW.Height)) == 0) {
-                c.configure(z.dpy);
-            }
-            if (c.isVisible()) {
-                X.XMoveResizeWindow2(z.dpy, c.win, c.pos.now);
-            }
-        } else {
-            c.configure(z.dpy);
-        }
-    } else {
-        var wc = X.XWindowChanges{
-            .x = ev.x,
-            .y = ev.y,
-            .width = ev.width,
-            .height = ev.height,
-            .border_width = ev.border_width,
-            .sibling = ev.above,
-            .stack_mode = ev.detail,
-        };
-        X.XConfigureWindow(z.dpy, ev.window, @intCast(vmask), &wc);
-    }
-    X.XSync(z.dpy, false);
-}
-
-/// (dwm) configurenotify
-fn configureNotify(allocator: Allocator, e: *X.XEvent) error{OutOfMemory}!void {
-    const ev: X.XConfigureEvent = e.xconfigure;
-    if (ev.window != z.root) return;
-    const dirty = z.s.w != ev.width or z.s.h != ev.height;
-    z.s.w = @intCast(ev.width);
-    z.s.h = @intCast(ev.height);
-
-    var selmon: ?*Monitor = z.selmon;
-    // TODO: (dwm) updategeom handling sucks, needs to be simplified
-    if ((try updategeom(allocator, &selmon)) or dirty) {
-        z.drw.resize(z.s.w, z.bar_height);
-        updateBars();
-        var m_opt = z.mons;
-        var c_opt: ?*Client = null;
-        while (m_opt) |m| : (m_opt = m.next) {
-            c_opt = m.clients;
-            while (c_opt) |c| : (c_opt = c.next) {
-                if (c.isfullscreen) {
-                    c.resize(m.m);
+        // Search the `buttons` map for a hit.
+        for (cfg.buttons) |*button| {
+            if (button.click != click or button.button != ev.button) continue;
+            if (numlockmask.cleanMask(button.mask) == numlockmask.cleanMask(ev.state)) {
+                const arg2 = switch (click) {
+                    .TagBar => &arg,
+                    else => &button.lf.arg,
+                };
+                switch (button.lf.func) {
+                    .MightError => |f| try f(arg2),
+                    .NoError => |f| f(arg2),
+                    .MightErrorA => |f| try f(allocator, arg2),
+                    .NoErrorA => |f| f(allocator, arg2),
                 }
             }
-            X.XMoveResizeWindow(z.dpy, m.barwin, m.w.x, m.w.y, m.w.w, z.bar_height);
         }
-        focus(allocator, null);
-        arrange(allocator, null);
     }
-}
 
-/// (dwm) destroynotify
-fn destroyNotify(allocator: Allocator, e: *X.XEvent) void {
-    const ev: X.XDestroyWindowEvent = e.xdestroywindow;
-    if (winToClient(ev.window)) |c| unmanage(allocator, c, true);
-}
+    /// (dwm) clientmessage
+    fn clientMessage(e: *X.XEvent) void {
+        const ev: X.XClientMessageEvent = e.xclient;
+        var c: *Client = winToClient(ev.window) orelse return;
 
-/// (dwm) enternotify
-fn enterNotify(allocator: Allocator, e: *X.XEvent) void {
-    const ev: X.XCrossingEvent = e.xcrossing;
-    if ((ev.mode != X.NotifyNormal or ev.detail == X.NotifyInferior) and ev.window != z.root) {
-        return;
-    }
-    const c = winToClient(ev.window);
-    const m = if (c) |client| client.mon else wintomon(ev.window);
-    if (m != z.selmon) {
-        unfocus(z.selmon.sel, true);
-        z.selmon = m;
-    } else if (c == null or c == z.selmon.sel) {
-        return;
-    }
-    focus(allocator, c);
-}
-
-/// (dwm) expose
-fn expose(allocator: Allocator, e: *X.XEvent) void {
-    const ev: X.XExposeEvent = e.xexpose;
-    if (ev.count == 0) {
-        drawbar(allocator, wintomon(ev.window));
-    }
-}
-
-/// (dwm) focusin
-fn focusIn(e: *X.XEvent) void {
-    const ev: X.XFocusChangeEvent = e.xfocus;
-    if (z.selmon.sel) |sel| {
-        if (ev.window != sel.win) sel.setFocus();
-    }
-}
-
-/// (dwm) keypress
-fn keyPress(allocator: Allocator, e: *X.XEvent) DwmError!void {
-    const ev: X.XKeyEvent = e.xkey;
-    const keysym = X.XkbKeycodeToKeysym(z.dpy, @intCast(ev.keycode), 0, 0);
-    for (cfg.keys) |key| {
-        if (keysym == key.sym and numlockmask.cleanMask(key.mod) == numlockmask.cleanMask(ev.state)) {
-            switch (key.lf.func) {
-                .MightError => |f| try f(&key.lf.arg),
-                .NoError => |f| f(&key.lf.arg),
-                .MightErrorA => |f| try f(allocator, &key.lf.arg),
-                .NoErrorA => |f| f(allocator, &key.lf.arg),
+        if (ev.message_type == atoms.net(.WMState)) {
+            const fs_atom = atoms.net(.WMFullscreen);
+            if (ev.data.l[1] == fs_atom or ev.data.l[2] == fs_atom) {
+                c.setFullscreen(switch (ev.data.l[0]) {
+                    1 => true, // _NET_WM_STATE_ADD
+                    2 => !c.isfullscreen, // _NET_WM_STATE_TOGGLE
+                    else => false,
+                });
+            }
+        } else if (ev.message_type == atoms.net(.ActiveWindow)) {
+            if (c != z.selmon.sel and c.isurgent) {
+                c.setUrgent(z.dpy, true);
             }
         }
     }
-}
 
-/// (dwm) mappingnotify
-fn mappingNotify(e: *X.XEvent) void {
-    const ev: *X.XMappingEvent = &e.xmapping;
-    X.XRefreshKeyboardMapping(ev);
-    if (ev.request == X.MappingKeyboard) {
-        grabkeys();
-    }
-}
+    /// (dwm) configurenotify
+    fn configureNotify(allocator: Allocator, e: *X.XEvent) error{OutOfMemory}!void {
+        const ev: X.XConfigureEvent = e.xconfigure;
+        if (ev.window != z.root) return;
+        const dirty = z.s.w != ev.width or z.s.h != ev.height;
+        z.s.w = @intCast(ev.width);
+        z.s.h = @intCast(ev.height);
 
-/// (dwm) maprequest
-fn mapRequest(allocator: Allocator, e: *X.XEvent) error{OutOfMemory}!void {
-    const ev: X.XMapRequestEvent = e.xmaprequest;
-    var wa: X.XWindowAttributes = undefined;
-
-    if (!X.XGetWindowAttributes(z.dpy, ev.window, &wa)) return;
-    if (wa.override_redirect != 0) return;
-
-    if (winToClient(ev.window) == null) {
-        log.info("Start managing window {d} (mapRequest)", .{ev.window});
-        try manage(allocator, ev.window, &wa);
-    }
-}
-
-/// (dwm) motionnotify
-fn motionNotify(allocator: Allocator, e: *X.XEvent) void {
-    const ev: X.XMotionEvent = e.xmotion;
-    const static = struct {
-        var mon: ?*Monitor = null;
-    };
-    if (ev.window != z.root) return;
-    const rect = Rect{ .x = ev.x_root, .y = ev.y_root, .w = 1, .h = 1 };
-    const m_opt = rect.toMonitor(z.selmon);
-    if (m_opt) |m| {
-        if (static.mon) |mon| {
-            if (m != mon) {
-                unfocus(z.selmon.sel, true);
-                z.selmon = m;
-                focus(allocator, null);
+        var selmon: ?*Monitor = z.selmon;
+        // TODO: (dwm) updategeom handling sucks, needs to be simplified
+        if ((try updategeom(allocator, &selmon)) or dirty) {
+            z.drw.resize(z.s.w, z.bar_height);
+            updateBars();
+            var m_opt = z.mons;
+            var c_opt: ?*Client = null;
+            while (m_opt) |m| : (m_opt = m.next) {
+                c_opt = m.clients;
+                while (c_opt) |c| : (c_opt = c.next) {
+                    if (c.isfullscreen) {
+                        c.resize(m.m);
+                    }
+                }
+                X.XMoveResizeWindow(z.dpy, m.barwin, m.w.x, m.w.y, m.w.w, z.bar_height);
             }
+            focus(allocator, null);
+            arrange(allocator, null);
         }
     }
-    static.mon = m_opt;
-}
+    /// (dwm) configurerequest
+    fn configureRequest(e: *X.XEvent) void {
+        const ev = e.xconfigurerequest;
+        const vmask = ev.value_mask;
 
-/// (dwm) propertynotify
-fn propertyNotify(allocator: Allocator, e: *X.XEvent) void {
-    const ev: X.XPropertyEvent = e.xproperty;
-    if (ev.window == z.root and ev.atom == X.XA_WM_NAME) {
-        updateStatus(allocator);
-    } else if (ev.state == X.PropertyDelete) {
-        return; // ignore.
-    } else if (winToClient(ev.window)) |c| {
-        switch (ev.atom) {
-            X.XA_WM_TRANSIENT_FOR => {
-                const trans_opt = X.XGetTransientForHint(z.dpy, c.win);
-                const b = !c.is_floating.now and trans_opt != null;
-                if (trans_opt) |t| c.is_floating.set(winToClient(t) != null);
-                if (b and c.is_floating.now) arrange(allocator, c.mon);
-            },
-            X.XA_WM_NORMAL_HINTS => c.hintsvalid = false,
-            X.XA_WM_HINTS => {
-                c.updateWMHints();
-                drawbars(allocator);
-            },
-            else => {},
-        }
-        if (ev.atom == X.XA_WM_NAME or ev.atom == atoms.net(.WMName)) {
-            c.updateTitle();
-            if (c == c.mon.sel) {
-                drawbar(allocator, c.mon);
+        if (winToClient(ev.window)) |c| {
+            if (vmask & CW.BorderWidth != 0) {
+                c.bw.set(@intCast(ev.border_width));
+            } else if (c.is_floating.now or z.selmon.lt.now.arrange == null) {
+                const m = c.mon;
+                if (vmask & CW.X != 0) {
+                    c.pos.prev.x = c.pos.now.x;
+                    c.pos.now.x = m.m.x + ev.x;
+                }
+                if (vmask & CW.Y != 0) {
+                    c.pos.prev.y = c.pos.now.y;
+                    c.pos.now.y = m.m.y + ev.y;
+                }
+                if (vmask & CW.Width != 0) {
+                    c.pos.prev.w = c.pos.now.w;
+                    c.pos.now.w = @intCast(ev.width);
+                }
+                if (vmask & CW.Height != 0) {
+                    c.pos.prev.h = c.pos.now.h;
+                    c.pos.now.h = @intCast(ev.height);
+                }
+                if (c.pos.now.r() > m.m.r() and c.is_floating.now) {
+                    // Center in x-direction.
+                    c.pos.prev.x = c.pos.now.x;
+                    c.pos.now.x = m.m.x + (@divFloor(@as(i32, @intCast(m.m.w)), 2) - @divFloor(c.width(), 2));
+                }
+                if (c.pos.now.b() > m.m.b() and c.is_floating.now) {
+                    // Center in y-direction.
+                    c.pos.prev.y = c.pos.now.y;
+                    c.pos.now.y = m.m.y + (@divFloor(@as(i32, @intCast(m.m.h)), 2) - @divFloor(c.height(), 2));
+                }
+                if ((vmask & (CW.X | CW.Y) != 0) and (vmask & (CW.Width | CW.Height)) == 0) {
+                    c.configure(z.dpy);
+                }
+                if (c.isVisible()) {
+                    X.XMoveResizeWindow2(z.dpy, c.win, c.pos.now);
+                }
+            } else {
+                c.configure(z.dpy);
             }
-        }
-        if (ev.atom == atoms.net(.WMWindowType)) {
-            c.updateWindowType();
-        }
-    }
-}
-
-/// (dwm) unmapnotify
-fn unmapNotify(allocator: Allocator, e: *X.XEvent) void {
-    const ev: X.XUnmapEvent = e.xunmap;
-    if (winToClient(ev.window)) |c| {
-        if (ev.send_event == 0) {
-            unmanage(allocator, c, false);
         } else {
-            c.setState(.WithdrawnState);
+            var wc = X.XWindowChanges{
+                .x = ev.x,
+                .y = ev.y,
+                .width = ev.width,
+                .height = ev.height,
+                .border_width = ev.border_width,
+                .sibling = ev.above,
+                .stack_mode = ev.detail,
+            };
+            X.XConfigureWindow(z.dpy, ev.window, @intCast(vmask), &wc);
+        }
+        X.XSync(z.dpy, false);
+    }
+
+    /// (dwm) destroynotify
+    fn destroyNotify(allocator: Allocator, e: *X.XEvent) void {
+        const ev: X.XDestroyWindowEvent = e.xdestroywindow;
+        if (winToClient(ev.window)) |c| unmanage(allocator, c, true);
+    }
+
+    /// (dwm) enternotify
+    fn enterNotify(allocator: Allocator, e: *X.XEvent) void {
+        const ev: X.XCrossingEvent = e.xcrossing;
+        if ((ev.mode != X.NotifyNormal or ev.detail == X.NotifyInferior) and ev.window != z.root) {
+            return;
+        }
+        const c = winToClient(ev.window);
+        const m = if (c) |client| client.mon else wintomon(ev.window);
+        if (m != z.selmon) {
+            unfocus(z.selmon.sel, true);
+            z.selmon = m;
+        } else if (c == null or c == z.selmon.sel) {
+            return;
+        }
+        focus(allocator, c);
+    }
+
+    /// (dwm) expose
+    fn expose(allocator: Allocator, e: *X.XEvent) void {
+        const ev: X.XExposeEvent = e.xexpose;
+        if (ev.count == 0) {
+            drawbar(allocator, wintomon(ev.window));
         }
     }
-}
+
+    /// (dwm) focusin
+    fn focusIn(e: *X.XEvent) void {
+        const ev: X.XFocusChangeEvent = e.xfocus;
+        if (z.selmon.sel) |sel| {
+            if (ev.window != sel.win) sel.setFocus();
+        }
+    }
+
+    /// (dwm) keypress
+    fn keyPress(allocator: Allocator, e: *X.XEvent) DwmError!void {
+        const ev: X.XKeyEvent = e.xkey;
+        const keysym = X.XkbKeycodeToKeysym(z.dpy, @intCast(ev.keycode), 0, 0);
+        for (cfg.keys) |key| {
+            if (keysym == key.sym and numlockmask.cleanMask(key.mod) == numlockmask.cleanMask(ev.state)) {
+                switch (key.lf.func) {
+                    .MightError => |f| try f(&key.lf.arg),
+                    .NoError => |f| f(&key.lf.arg),
+                    .MightErrorA => |f| try f(allocator, &key.lf.arg),
+                    .NoErrorA => |f| f(allocator, &key.lf.arg),
+                }
+            }
+        }
+    }
+
+    /// (dwm) mappingnotify
+    fn mappingNotify(e: *X.XEvent) void {
+        const ev: *X.XMappingEvent = &e.xmapping;
+        X.XRefreshKeyboardMapping(ev);
+        if (ev.request == X.MappingKeyboard) {
+            grabkeys();
+        }
+    }
+
+    /// (dwm) maprequest
+    fn mapRequest(allocator: Allocator, e: *X.XEvent) error{OutOfMemory}!void {
+        const ev: X.XMapRequestEvent = e.xmaprequest;
+        var wa: X.XWindowAttributes = undefined;
+
+        if (!X.XGetWindowAttributes(z.dpy, ev.window, &wa)) return;
+        if (wa.override_redirect != 0) return;
+
+        if (winToClient(ev.window) == null) {
+            log.info("Start managing window {d} (mapRequest)", .{ev.window});
+            try manage(allocator, ev.window, &wa);
+        }
+    }
+
+    /// (dwm) motionnotify
+    fn motionNotify(allocator: Allocator, e: *X.XEvent) void {
+        const ev: X.XMotionEvent = e.xmotion;
+        const static = struct {
+            var mon: ?*Monitor = null;
+        };
+        if (ev.window != z.root) return;
+        const rect = Rect{ .x = ev.x_root, .y = ev.y_root, .w = 1, .h = 1 };
+        const m_opt = rect.toMonitor(z.selmon);
+        if (m_opt) |m| {
+            if (static.mon) |mon| {
+                if (m != mon) {
+                    unfocus(z.selmon.sel, true);
+                    z.selmon = m;
+                    focus(allocator, null);
+                }
+            }
+        }
+        static.mon = m_opt;
+    }
+
+    /// (dwm) propertynotify
+    fn propertyNotify(allocator: Allocator, e: *X.XEvent) void {
+        const ev: X.XPropertyEvent = e.xproperty;
+        if (ev.window == z.root and ev.atom == X.XA_WM_NAME) {
+            updateStatus(allocator);
+        } else if (ev.state == X.PropertyDelete) {
+            return; // ignore.
+        } else if (winToClient(ev.window)) |c| {
+            switch (ev.atom) {
+                X.XA_WM_TRANSIENT_FOR => {
+                    const trans_opt = X.XGetTransientForHint(z.dpy, c.win);
+                    const b = !c.is_floating.now and trans_opt != null;
+                    if (trans_opt) |t| c.is_floating.set(winToClient(t) != null);
+                    if (b and c.is_floating.now) arrange(allocator, c.mon);
+                },
+                X.XA_WM_NORMAL_HINTS => c.hintsvalid = false,
+                X.XA_WM_HINTS => {
+                    c.updateWMHints();
+                    drawbars(allocator);
+                },
+                else => {},
+            }
+            if (ev.atom == X.XA_WM_NAME or ev.atom == atoms.net(.WMName)) {
+                c.updateTitle();
+                if (c == c.mon.sel) {
+                    drawbar(allocator, c.mon);
+                }
+            }
+            if (ev.atom == atoms.net(.WMWindowType)) {
+                c.updateWindowType();
+            }
+        }
+    }
+
+    /// (dwm) unmapnotify
+    fn unmapNotify(allocator: Allocator, e: *X.XEvent) void {
+        const ev: X.XUnmapEvent = e.xunmap;
+        if (winToClient(ev.window)) |c| {
+            if (ev.send_event == 0) {
+                unmanage(allocator, c, false);
+            } else {
+                c.setState(.WithdrawnState);
+            }
+        }
+    }
+};
 
 /// For debugging: implement an emergency timeout in case we can't back out.
 const TIMEOUT: bool = false;
@@ -713,20 +715,20 @@ fn run(allocator: Allocator) DwmError!void {
 
 inline fn runOne(alloc: Allocator, ev: *X.XEvent) DwmError!void {
     switch (ev.type) {
-        X.ButtonPress => try buttonPress(alloc, ev),
-        X.ClientMessage => clientMessage(ev),
-        X.ConfigureNotify => try configureNotify(alloc, ev),
-        X.ConfigureRequest => configureRequest(ev),
-        X.DestroyNotify => destroyNotify(alloc, ev),
-        X.EnterNotify => enterNotify(alloc, ev),
-        X.Expose => expose(alloc, ev),
-        X.FocusIn => focusIn(ev),
-        X.KeyPress => try keyPress(alloc, ev),
-        X.MapRequest => try mapRequest(alloc, ev),
-        X.MappingNotify => mappingNotify(ev),
-        X.MotionNotify => motionNotify(alloc, ev),
-        X.PropertyNotify => propertyNotify(alloc, ev),
-        X.UnmapNotify => unmapNotify(alloc, ev),
+        X.ButtonPress => try R.buttonPress(alloc, ev),
+        X.ClientMessage => R.clientMessage(ev),
+        X.ConfigureNotify => try R.configureNotify(alloc, ev),
+        X.ConfigureRequest => R.configureRequest(ev),
+        X.DestroyNotify => R.destroyNotify(alloc, ev),
+        X.EnterNotify => R.enterNotify(alloc, ev),
+        X.Expose => R.expose(alloc, ev),
+        X.FocusIn => R.focusIn(ev),
+        X.KeyPress => try R.keyPress(alloc, ev),
+        X.MapRequest => try R.mapRequest(alloc, ev),
+        X.MappingNotify => R.mappingNotify(ev),
+        X.MotionNotify => R.motionNotify(alloc, ev),
+        X.PropertyNotify => R.propertyNotify(alloc, ev),
+        X.UnmapNotify => R.unmapNotify(alloc, ev),
         else => {},
     }
 }
