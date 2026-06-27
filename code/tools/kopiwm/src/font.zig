@@ -18,6 +18,7 @@ pub const Font = struct {
     next: ?*Self,
 
     pub fn deinit(self: *Self, allocator: Allocator) void {
+        log.warn("Trying to deallocate font: {*}", .{self});
         if (self.xfont.pattern) |pattern| {
             X.FcPatternDestroy(pattern);
         }

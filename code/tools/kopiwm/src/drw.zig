@@ -95,54 +95,6 @@ pub const Drw = struct {
         );
     }
 
-    /// (dwm) drw_clr_create
-    pub fn clrCreate(self: *Self, dest: *X.XftColor, color_name: []const u8) void {
-        const result = X.XftColorAllocName(
-            self.dpy,
-            X.DefaultVisual(self.dpy, self.screen),
-            X.DefaultColormap(self.dpy, self.screen),
-            color_name,
-            dest,
-        );
-        if (!result) {
-            std.debug.print("error, cannot allocate color '{s}'\n", .{color_name});
-            std.process.exit(1);
-        }
-        dest.pixel |= 0xff << 24;
-    }
-
-    /// (dwm) drw_clr_free
-    pub fn clrFree(self: *Self, c: *X.XftColor) void {
-        X.XftColorFree(
-            self.dpy,
-            X.DefaultVisual(self.dpy, self.screen),
-            X.DefaultColormap(self.dpy, self.screen),
-            c,
-        );
-    }
-
-    /// (dwm) drw_scm_create
-    pub fn scmCreate(
-        self: *Self,
-        allocator: Allocator,
-        scheme: Scheme([]const u8),
-    ) error{OutOfMemory}!*ColorScheme {
-        var ret = try allocator.create(ColorScheme);
-        self.clrCreate(&ret.fg, scheme.fg);
-        self.clrCreate(&ret.bg, scheme.bg);
-        self.clrCreate(&ret.border, scheme.border);
-        return ret;
-    }
-
-    /// (dwm) drw_scm_free
-    pub fn scmFree(self: *Self, allocator: Allocator, scheme: *ColorScheme) void {
-        self.clrFree(&scheme.fg);
-        self.clrFree(&scheme.bg);
-        self.clrFree(&scheme.border);
-        log.warn("Deallocate color scheme: {*}", .{scheme});
-        allocator.destroy(scheme);
-    }
-
     /// (dwm) drw_setscheme
     pub fn setScheme(self: *Self, scheme: *ColorScheme) void {
         self.scheme = scheme;

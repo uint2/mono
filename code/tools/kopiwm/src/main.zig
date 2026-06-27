@@ -24,6 +24,7 @@ const CW = @import("x11.zig").CW;
 const E = @import("errors.zig");
 const NumLockMask = @import("numlockmask.zig").NumLockMask;
 const Font = @import("font.zig").Font;
+const ColorScheme = @import("color_scheme.zig").ColorScheme;
 
 const NAME = @import("build_opts").name;
 const VERSION = @import("build_opts").version;
@@ -1230,8 +1231,8 @@ fn grabkeys() void {
 }
 
 /// (dwm) cleanup
-// Continue to build this up as we go.
-fn cleanup(allocator: Allocator) void {
+// Cleanup monitors and their clients.
+fn cleanupMonitors(allocator: Allocator) void {
     var m_opt: ?*Monitor = undefined;
 
     // Hide all the bars so that we don't use fonts for cleanup.
@@ -1648,8 +1649,17 @@ pub fn main() !void {
     setupTerminationHandling();
     setupClearZombies();
 
-    z.dpy = dpy;
-    z.screen = X.DefaultScreen(dpy);
+    // Initialize the X Display and Screen.
+    z = .{ .dpy = dpy, .screen = X.DefaultScreen(dpy) };
+
+    // Initialize colors.
+    for (std.enums.values(SchemeState)) |ss| {
+        const color = try ColorScheme.init(allocator, dpy, z.screen, cfg.colors.get(ss));
+        z.scheme.set(ss, color);
+    }
+    defer for (std.enums.values(SchemeState)) |ss| z.scheme.get(ss).deinit(allocator, dpy, z.screen);
+
+    // Initialize dimensions, and establish first window and monitor.
     z.s = .{
         .w = @intCast(X.DisplayWidth(dpy, z.screen)),
         .h = @intCast(X.DisplayHeight(dpy, z.screen)),
@@ -1658,8 +1668,7 @@ pub fn main() !void {
     z.selmon = try Monitor.init(allocator);
     z.mons = z.selmon;
     _ = try updategeom();
-
-    defer cleanup(allocator);
+    defer cleanupMonitors(allocator);
 
     // Initialize atoms.
     atoms.initializeAtomsForEnum(dpy, atoms.WM, &atoms.__WM);
@@ -1696,17 +1705,11 @@ pub fn main() !void {
     defer z.drw.deinit();
     z.lrpad = @intCast(z.drw.fonts.height);
 
-    // Initialize appearance.
-    for (std.enums.values(SchemeState)) |ss| {
-        z.scheme.set(ss, try z.drw.scmCreate(allocator, cfg.colors.get(ss)));
-    }
-    defer for (std.enums.values(SchemeState)) |ss| z.drw.scmFree(allocator, z.scheme.get(ss));
-
     // Initialize cursors.
     z.cursors.set(.Normal, X.XCreateFontCursor(dpy, .Left_ptr));
     z.cursors.set(.Resize, X.XCreateFontCursor(dpy, .Sizing));
     z.cursors.set(.Move, X.XCreateFontCursor(dpy, .Fleur));
-    defer for (z.cursors.values) |cursor| X.XFreeCursor(z.dpy, cursor);
+    defer for (z.cursors.values) |cursor| X.XFreeCursor(dpy, cursor);
 
     // Initialize bars.
     updateBars();
@@ -1731,7 +1734,7 @@ pub fn main() !void {
     }
 
     grabkeys();
-    defer X.XUngrabKey(z.dpy, X.AnyKey, M.AnyModifier, z.root);
+    defer X.XUngrabKey(dpy, X.AnyKey, M.AnyModifier, z.root);
     focus(allocator, null);
 
     // End of setup ============================================================
