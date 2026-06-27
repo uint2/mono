@@ -38,7 +38,7 @@ lrpad: u32 = 0,
 
 bar_height: u32 = cfg.bar_height,
 
-/// TODO: change this to Monitor.init with RAII.
+/// Linked list of monitors.
 mons: *Monitor = undefined,
 
 /// Selected monitor.

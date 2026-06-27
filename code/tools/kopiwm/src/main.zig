@@ -473,7 +473,7 @@ const R = struct {
         z.s.h = @intCast(ev.height);
 
         // TODO: (dwm) updategeom handling sucks, needs to be simplified
-        if ((try updategeom()) or dirty) {
+        if (updategeom() or dirty) {
             z.drw.resize(z.s.w, z.bar_height);
             updateBars();
             var m_opt: ?*Monitor = z.mons;
@@ -1057,7 +1057,7 @@ fn wintomon(w: X.Window) *Monitor {
 }
 
 /// (dwm) updategeom
-fn updategeom() error{OutOfMemory}!bool {
+fn updategeom() bool {
     var dirty = false;
     var mons = z.mons;
     if (mons.m.w != z.s.w or mons.m.h != z.s.h) {
@@ -1667,7 +1667,7 @@ pub fn main() !void {
     z.root = X.RootWindow(dpy, z.screen);
     z.selmon = try Monitor.init(allocator);
     z.mons = z.selmon;
-    _ = try updategeom();
+    _ = updategeom();
     defer cleanupMonitors(allocator);
 
     // Initialize atoms.
