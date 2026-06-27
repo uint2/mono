@@ -1220,35 +1220,14 @@ fn grabbuttons(c: *Client, focused: bool) void {
     updatenumlockmask();
     const modifiers: [4]c_uint = .{ 0, X.LockMask, z.numlockmask, z.numlockmask | X.LockMask };
     X.XUngrabButton(z.dpy, X.AnyButton, M.AnyModifier, c.win);
+    const bmask = EM.ButtonPressMask | EM.ButtonReleaseMask;
     if (!focused) {
-        X.XGrabButton(
-            z.dpy,
-            X.AnyButton,
-            M.AnyModifier,
-            c.win,
-            false,
-            EM.ButtonPressMask | EM.ButtonReleaseMask,
-            .Sync,
-            .Sync,
-            X.None,
-            X.None,
-        );
+        X.XGrabButton(z.dpy, X.AnyButton, M.AnyModifier, c.win, false, bmask, .Sync, .Sync, X.None, X.None);
     }
     for (cfg.buttons) |button| {
         if (button.click == .ClientWin) {
             for (modifiers) |modifier| {
-                X.XGrabButton(
-                    z.dpy,
-                    button.button,
-                    button.mask | modifier,
-                    c.win,
-                    false,
-                    EM.ButtonPressMask | EM.ButtonReleaseMask,
-                    .Async,
-                    .Sync,
-                    X.None,
-                    X.None,
-                );
+                X.XGrabButton(z.dpy, button.button, button.mask | modifier, c.win, false, bmask, .Async, .Sync, X.None, X.None);
             }
         }
     }
