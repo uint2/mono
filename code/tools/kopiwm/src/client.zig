@@ -11,6 +11,7 @@ const Size = @import("enums.zig").Size;
 const X = @import("x11.zig");
 const M = @import("x11.zig").masks;
 const EM = @import("x11.zig").eventMask;
+const CW = @import("x11.zig").CW;
 const atoms = @import("atoms.zig");
 
 const ClientSizes = struct {
@@ -301,7 +302,7 @@ pub const Client = struct {
         const z = self.app;
         var wc = rect.toX(X.XWindowChanges);
         wc.border_width = @intCast(self.bw.now);
-        const flags = M.CWX | M.CWY | M.CWWidth | M.CWHeight | M.CWBorderWidth;
+        const flags = CW.X | CW.Y | CW.Width | CW.Height | CW.BorderWidth;
         X.XConfigureWindow(z.dpy, self.win, flags, &wc);
         self.pos.set(rect);
         self.configure(z.dpy);

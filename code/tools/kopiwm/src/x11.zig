@@ -2,7 +2,7 @@
 //!
 //! https://x.org/releases/X11R7.7/doc/man/man3/
 
-const X = @cImport({
+const X11 = @cImport({
     @cInclude("X11/Xlib.h");
     @cInclude("X11/cursorfont.h");
     @cInclude("X11/keysym.h");
@@ -21,24 +21,24 @@ const Rect = @import("rect.zig").Rect;
 // ++ XID aliases
 // -----------------------------------------------------------------------------
 
-pub const Colormap = X.Colormap;
+pub const Colormap = X11.Colormap;
 /// See the XC_* defines in X11. The usual cursor would be `XC_left_ptr`.
-pub const Cursor = X.Cursor;
-pub const Drawable = X.Drawable;
-pub const KeySym = X.KeySym;
-pub const Pixmap = X.Pixmap;
+pub const Cursor = X11.Cursor;
+pub const Drawable = X11.Drawable;
+pub const KeySym = X11.KeySym;
+pub const Pixmap = X11.Pixmap;
 /// To specify a null state, use `None`.
-pub const Window = X.Window;
+pub const Window = X11.Window;
 
 // -----------------------------------------------------------------------------
 // ++ Integer type aliases
 // -----------------------------------------------------------------------------
 
-pub const FcMatchKind = X.FcMatchKind;
-pub const KeyCode = X.KeyCode;
-pub const Time = X.Time;
-pub const XID = X.XID;
-pub const XftResult = X.XftResult;
+pub const FcMatchKind = X11.FcMatchKind;
+pub const KeyCode = X11.KeyCode;
+pub const Time = X11.Time;
+pub const XID = X11.XID;
+pub const XftResult = X11.XftResult;
 
 // -----------------------------------------------------------------------------
 // ++ Structs
@@ -48,15 +48,15 @@ pub const XftResult = X.XftResult;
 /// contains all the information about that X server.
 ///
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XOpenDisplay.3.xhtml
-pub const Display = X.Display;
+pub const Display = X11.Display;
 
-pub const FcCharSet = X.FcCharSet;
-pub const FcConfig = X.FcConfig;
-pub const FcPattern = X.FcPattern;
-pub const FcResult = X.FcResult;
+pub const FcCharSet = X11.FcCharSet;
+pub const FcConfig = X11.FcConfig;
+pub const FcPattern = X11.FcPattern;
+pub const FcResult = X11.FcResult;
 /// X Graphics Context.
-pub const GC = X.GC;
-pub const Visual = X.Visual;
+pub const GC = X11.GC;
+pub const Visual = X11.Visual;
 
 /// ```c
 /// typedef struct {
@@ -131,7 +131,7 @@ pub const Visual = X.Visual;
 /// be set to NotifyNormal or NotifyHint.
 ///
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XButtonEvent.3.xhtml
-pub const XButtonEvent = X.XButtonEvent;
+pub const XButtonEvent = X11.XButtonEvent;
 
 /// For more information, see the docs for `XButtonEvent`.
 pub const XButtonPressedEvent = XButtonEvent;
@@ -146,7 +146,7 @@ pub const XButtonPressedEvent = XButtonEvent;
 /// application's resources from the resource database.
 ///
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XAllocClassHint.3.xhtml
-pub const XClassHint = X.XClassHint;
+pub const XClassHint = X11.XClassHint;
 
 /// The structure for ClientMessage events contains:
 ///
@@ -187,7 +187,7 @@ pub const XClassHint = X.XClassHint;
 /// interpretation on the values in the window, message_type, or data members.
 ///
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XClientMessageEvent.3.xhtml
-pub const XClientMessageEvent = X.XClientMessageEvent;
+pub const XClientMessageEvent = X11.XClientMessageEvent;
 
 /// The structure for ConfigureNotify events contains:
 ///
@@ -239,7 +239,7 @@ pub const XClientMessageEvent = X.XClientMessageEvent;
 /// the override_redirect member is True.
 ///
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XConfigureEvent.3.xhtml
-pub const XConfigureEvent = X.XConfigureEvent;
+pub const XConfigureEvent = X11.XConfigureEvent;
 
 /// ```c
 /// typedef struct {
@@ -323,7 +323,7 @@ pub const XConfigureEvent = X.XConfigureEvent;
 /// NotifyNonlinearVirtual.
 ///
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XCrossingEvent.3.xhtml
-pub const XCrossingEvent = X.XCrossingEvent;
+pub const XCrossingEvent = X11.XCrossingEvent;
 
 /// The structure for DestroyNotify events contains:
 ///
@@ -353,7 +353,7 @@ pub const XCrossingEvent = X.XCrossingEvent;
 /// The window member is set to the window that is destroyed.
 ///
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XDestroyWindowEvent.3.xhtml
-pub const XDestroyWindowEvent = X.XDestroyWindowEvent;
+pub const XDestroyWindowEvent = X11.XDestroyWindowEvent;
 
 /// The XErrorEvent structure contains:
 ///
@@ -376,7 +376,7 @@ pub const XDestroyWindowEvent = X.XDestroyWindowEvent;
 /// defined in <X11/Xproto.h>.
 ///
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XErrorEvent.3.xhtml
-pub const XErrorEvent = X.XErrorEvent;
+pub const XErrorEvent = X11.XErrorEvent;
 
 /// An XEvent structure's first entry always is the type member, which is set
 /// to the event type. The second member always is the serial number of the
@@ -392,7 +392,7 @@ pub const XErrorEvent = X.XErrorEvent;
 /// other information in the structure.
 ///
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XAnyEvent.3.xhtml
-pub const XEvent = X.XEvent;
+pub const XEvent = X11.XEvent;
 
 /// The structure for Expose events contains:
 ///
@@ -432,7 +432,7 @@ pub const XEvent = X.XEvent;
 /// counts.
 ///
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XExposeEvent.3.xhtml
-pub const XExposeEvent = X.XExposeEvent;
+pub const XExposeEvent = X11.XExposeEvent;
 
 /// The structure for FocusIn and FocusOut events contains:
 ///
@@ -481,7 +481,7 @@ pub const XExposeEvent = X.XExposeEvent;
 /// or NotifyDetailNone.
 ///
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XFocusChangeEvent.3.xhtml
-pub const XFocusChangeEvent = X.XFocusChangeEvent;
+pub const XFocusChangeEvent = X11.XFocusChangeEvent;
 
 /// The XGCValues structure contains:
 ///
@@ -677,7 +677,7 @@ pub const XFocusChangeEvent = X.XFocusChangeEvent;
 /// extensions).
 ///
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XCreateGC.3.xhtml
-pub const XGCValues = X.XGCValues;
+pub const XGCValues = X11.XGCValues;
 
 /// Glyphs are stored in the server, so these definitions are passed from the
 /// client to the library and on to the server as glyphs are rasterized and
@@ -695,7 +695,7 @@ pub const XGCValues = X.XGCValues;
 /// ```
 ///
 /// source: https://x.org/releases/X11R7.7/doc/libXrender/libXrender.txt
-pub const XGlyphInfo = X.XGlyphInfo;
+pub const XGlyphInfo = X11.XGlyphInfo;
 
 /// ```c
 /// typedef struct {
@@ -716,7 +716,7 @@ pub const XGlyphInfo = X.XGlyphInfo;
 /// ```
 ///
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XButtonEvent.3.xhtml
-pub const XKeyEvent = X.XKeyEvent;
+pub const XKeyEvent = X11.XKeyEvent;
 
 /// The structure for MappingNotify events is:
 ///
@@ -753,7 +753,7 @@ pub const XKeyEvent = X.XKeyEvent;
 /// mapping, and count represents the number of keycodes altered.
 ///
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XMapEvent.3.xhtml
-pub const XMappingEvent = X.XMappingEvent;
+pub const XMappingEvent = X11.XMappingEvent;
 
 /// The structure for MapRequest events contains:
 ///
@@ -784,7 +784,7 @@ pub const XMappingEvent = X.XMappingEvent;
 /// the window to be mapped.
 ///
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XMapRequestEvent.3.xhtml
-pub const XMapRequestEvent = X.XMapRequestEvent;
+pub const XMapRequestEvent = X11.XMapRequestEvent;
 
 /// The XModifierKeymap structure contains:
 ///
@@ -795,7 +795,7 @@ pub const XMapRequestEvent = X.XMapRequestEvent;
 /// } XModifierKeymap;
 /// ```
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XChangeKeyboardMapping.3.xhtml
-pub const XModifierKeymap = X.XModifierKeymap;
+pub const XModifierKeymap = X11.XModifierKeymap;
 
 /// ```c
 /// typedef struct {
@@ -815,7 +815,7 @@ pub const XModifierKeymap = X.XModifierKeymap;
 /// } XMotionEvent;
 ///
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XButtonEvent.3.xhtml
-pub const XMotionEvent = X.XMotionEvent;
+pub const XMotionEvent = X11.XMotionEvent;
 
 /// The structure for PropertyNotify events contains:
 ///
@@ -859,7 +859,7 @@ pub const XMotionEvent = X.XMotionEvent;
 /// XGetWindowProperty.
 ///
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XPropertyEvent.3.xhtml
-pub const XPropertyEvent = X.XPropertyEvent;
+pub const XPropertyEvent = X11.XPropertyEvent;
 
 /// The XSetWindowAttributes structure contains:
 ///
@@ -884,7 +884,7 @@ pub const XPropertyEvent = X.XPropertyEvent;
 /// ```
 ///
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XCreateWindow.3.xhtml
-pub const XSetWindowAttributes = X.XSetWindowAttributes;
+pub const XSetWindowAttributes = X11.XSetWindowAttributes;
 
 /// The XSizeHints structure contains:
 ///
@@ -926,7 +926,7 @@ pub const XSetWindowAttributes = X.XSetWindowAttributes;
 /// Note that use of the PAllHints macro is highly discouraged.
 ///
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XAllocSizeHints.3.xhtml
-pub const XSizeHints = X.XSizeHints;
+pub const XSizeHints = X11.XSizeHints;
 
 /// The XTextProperty structure contains:
 ///
@@ -940,7 +940,7 @@ pub const XSizeHints = X.XSizeHints;
 /// ```
 ///
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XStringListToTextProperty.3.xhtml
-pub const XTextProperty = X.XTextProperty;
+pub const XTextProperty = X11.XTextProperty;
 
 /// The structure for UnmapNotify events contains:
 ///
@@ -974,7 +974,7 @@ pub const XTextProperty = X.XTextProperty;
 /// window's parent when the window itself had a win_gravity of UnmapGravity.
 ///
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XUnmapEvent.3.xhtml
-pub const XUnmapEvent = X.XUnmapEvent;
+pub const XUnmapEvent = X11.XUnmapEvent;
 
 /// The XWindowAttributes structure contains:
 ///
@@ -1047,7 +1047,7 @@ pub const XUnmapEvent = X.XUnmapEvent;
 /// field matches.
 ///
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XGetWindowAttributes.3.xhtml
-pub const XWindowAttributes = X.XWindowAttributes;
+pub const XWindowAttributes = X11.XWindowAttributes;
 
 /// The XWindowChanges structure contains:
 ///
@@ -1079,7 +1079,7 @@ pub const XWindowAttributes = X.XWindowAttributes;
 /// restacked and can be set to Above, Below, TopIf, BottomIf, or Opposite.
 ///
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XConfigureWindow.3.xhtml
-pub const XWindowChanges = X.XWindowChanges;
+pub const XWindowChanges = X11.XWindowChanges;
 
 /// X Window Manager Hints.
 ///
@@ -1137,7 +1137,7 @@ pub const XWindowChanges = X.XWindowChanges;
 /// shutting off the alarm) or the window to be withdrawn.
 ///
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XAllocWMHints.3.xhtml
-pub const XWMHints = X.XWMHints;
+pub const XWMHints = X11.XWMHints;
 
 /// An XftColor object permits text and other items to be rendered in a
 /// particular color (or the closest approximation offered by the X visual in
@@ -1155,7 +1155,7 @@ pub const XWMHints = X.XWMHints;
 /// to draw various objects using it.
 ///
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/Xft.3.xhtml
-pub const XftColor = X.XftColor;
+pub const XftColor = X11.XftColor;
 
 /// It's an opaque object which holds information used to render to an X
 /// drawable using either the core protocol or the X Rendering extension.
@@ -1183,7 +1183,7 @@ pub const XftColor = X.XftColor;
 /// XftGlyphRender(), XftGlyphSpecRender(), and the XftTextRender*() family.
 ///
 /// source: https://man.archlinux.org/man/XftColorAllocName.3
-pub const XftDraw = X.XftDraw;
+pub const XftDraw = X11.XftDraw;
 
 /// An XftFont is the primary data structure of interest to programmers using
 /// Xft; it contains general font metrics and pointers to the Fontconfig
@@ -1218,7 +1218,7 @@ pub const XftDraw = X.XftDraw;
 /// on the X server.
 ///
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/Xft.3.xhtml
-pub const XftFont = X.XftFont;
+pub const XftFont = X11.XftFont;
 
 // -----------------------------------------------------------------------------
 // ++ Functions
@@ -1234,7 +1234,7 @@ pub const XftFont = X.XftFont;
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XAllowEvents.3.xhtml
 pub inline fn XAllowEvents(display: *Display, event_mode: EventMode, time: Time) void {
     // Meaning of return value is not specified in documentation.
-    _ = X.XAllowEvents(display, @intFromEnum(event_mode), time);
+    _ = X11.XAllowEvents(display, @intFromEnum(event_mode), time);
 }
 
 /// The XChangeProperty function alters the property for the specified window
@@ -1278,7 +1278,7 @@ pub inline fn XChangeProperty(
     nelements: c_int,
 ) void {
     // Meaning of return value is not specified in documentation.
-    _ = X.XChangeProperty(
+    _ = X11.XChangeProperty(
         display,
         window,
         property,
@@ -1336,7 +1336,7 @@ pub inline fn XChangeWindowAttributes(
     attributes: *XSetWindowAttributes,
 ) void {
     // The meaning of the return value was not specified in documentation.
-    _ = X.XChangeWindowAttributes(display, window, valuemask, attributes);
+    _ = X11.XChangeWindowAttributes(display, window, valuemask, attributes);
 }
 
 /// The XCheckMaskEvent function searches the event queue and then any events
@@ -1353,7 +1353,7 @@ pub inline fn XCheckMaskEvent(
     event_mask: c_long,
     event_return: *XEvent,
 ) bool {
-    return X.XCheckMaskEvent(display, event_mask, event_return) != X.False;
+    return X11.XCheckMaskEvent(display, event_mask, event_return) != X11.False;
 }
 
 /// The XCloseDisplay function closes the connection to the X server for the
@@ -1372,7 +1372,7 @@ pub inline fn XCheckMaskEvent(
 pub inline fn XCloseDisplay(display: *Display) void {
     // There is no mention in the docs on that the return value of XCloseDisplay
     // signifies, hence we discard it.
-    _ = X.XCloseDisplay(display);
+    _ = X11.XCloseDisplay(display);
 }
 
 /// The XConfigureWindow function uses the values specified in the
@@ -1399,7 +1399,7 @@ pub inline fn XConfigureWindow(
     changes: *XWindowChanges,
 ) void {
     // The meaning of the return value was not specified in documentation.
-    _ = X.XConfigureWindow(display, window, value_mask, changes);
+    _ = X11.XConfigureWindow(display, window, value_mask, changes);
 }
 
 /// The XCopyArea function combines the specified rectangle of src with the
@@ -1435,7 +1435,7 @@ pub inline fn XCopyArea(
     dest: Coordinates(c_int),
 ) void {
     // The meaning of the return value was not specified in documentation.
-    _ = X.XCopyArea(
+    _ = X11.XCopyArea(
         display,
         src_drw,
         dest_drw,
@@ -1462,7 +1462,7 @@ pub inline fn XCopyArea(
 ///
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XCreateFontCursor.3.xhtml
 pub inline fn XCreateFontCursor(display: *Display, shape: PointerShape) Cursor {
-    return X.XCreateFontCursor(display, @intFromEnum(shape));
+    return X11.XCreateFontCursor(display, @intFromEnum(shape));
 }
 
 /// The XCreateGC function creates a graphics context and returns a GC. The GC
@@ -1480,7 +1480,7 @@ pub inline fn XCreateGC(
     valuemask: c_ulong,
     values: *XGCValues,
 ) GC {
-    return X.XCreateGC(display, drawable, valuemask, values);
+    return X11.XCreateGC(display, drawable, valuemask, values);
 }
 
 /// The XCreatePixmap function creates a pixmap of the width, height, and depth
@@ -1505,7 +1505,7 @@ pub inline fn XCreatePixmap(
     height: c_uint,
     depth: c_uint,
 ) Pixmap {
-    return X.XCreatePixmap(display, drawable, width, height, depth);
+    return X11.XCreatePixmap(display, drawable, width, height, depth);
 }
 
 /// The XCreateWindow function creates an unmapped subwindow for a specified
@@ -1551,7 +1551,7 @@ pub inline fn XCreateSimpleWindow(
     /// Specifies the background pixel value of the window.
     background: c_ulong,
 ) Window {
-    return X.XCreateSimpleWindow(
+    return X11.XCreateSimpleWindow(
         display,
         parent,
         rect.x,
@@ -1606,7 +1606,7 @@ pub inline fn XCreateWindow(
     valuemask: c_ulong,
     attributes: [*c]XSetWindowAttributes,
 ) Window {
-    return X.XCreateWindow(
+    return X11.XCreateWindow(
         display,
         parent,
         x,
@@ -1630,7 +1630,7 @@ pub inline fn XCreateWindow(
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XDefineCursor.3.xhtml
 pub inline fn XDefineCursor(display: *Display, window: Window, cursor: Cursor) void {
     // The meaning of the return value was not specified in documentation.
-    _ = X.XDefineCursor(display, window, cursor);
+    _ = X11.XDefineCursor(display, window, cursor);
 }
 
 /// The XDeleteProperty function deletes the specified property only if the
@@ -1643,7 +1643,7 @@ pub inline fn XDefineCursor(display: *Display, window: Window, cursor: Cursor) v
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XGetWindowProperty.3.xhtml
 pub inline fn XDeleteProperty(display: *Display, window: Window, atom: Atom) void {
     // The meaning of the return value was not specified in documentation.
-    _ = X.XDeleteProperty(display, window, atom);
+    _ = X11.XDeleteProperty(display, window, atom);
 }
 
 /// The XDestroyWindow function destroys the specified window as well as all of
@@ -1663,7 +1663,7 @@ pub inline fn XDeleteProperty(display: *Display, window: Window, atom: Atom) voi
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XDestroyWindow.3.xhtml
 pub inline fn XDestroyWindow(display: *Display, window: Window) void {
     // The meaning of the return value was not specified in documentation.
-    _ = X.XDestroyWindow(display, window);
+    _ = X11.XDestroyWindow(display, window);
 }
 
 /// The XDisplayKeycodes function returns the min-keycodes and max-keycodes
@@ -1679,7 +1679,7 @@ pub inline fn XDisplayKeycodes(
     max_keycodes_return: *c_int,
 ) void {
     // The meaning of the return value was not specified in documentation.
-    _ = X.XDisplayKeycodes(display, min_keycodes_return, max_keycodes_return);
+    _ = X11.XDisplayKeycodes(display, min_keycodes_return, max_keycodes_return);
 }
 
 /// The XDrawRectangle and XDrawRectangles functions draw the outlines of the
@@ -1710,7 +1710,7 @@ pub inline fn XDrawRectangle(
     rect: Rect,
 ) void {
     // The meaning of the return value was not specified in documentation.
-    _ = X.XDrawRectangle(display, drawable, gc, rect.x, rect.y, rect.w, rect.h);
+    _ = X11.XDrawRectangle(display, drawable, gc, rect.x, rect.y, rect.w, rect.h);
 }
 
 /// The XFillRectangle and XFillRectangles functions fill the specified
@@ -1743,7 +1743,7 @@ pub inline fn XFillRectangle(
     rect: Rect,
 ) void {
     // The meaning of the return value was not specified in documentation.
-    _ = X.XFillRectangle(display, drawable, gc, rect.x, rect.y, rect.w, rect.h);
+    _ = X11.XFillRectangle(display, drawable, gc, rect.x, rect.y, rect.w, rect.h);
 }
 
 /// The XFree function is a general-purpose Xlib routine that frees the
@@ -1754,7 +1754,7 @@ pub inline fn XFillRectangle(
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XFree.3.xhtml
 pub inline fn XFree(ptr: ?*anyopaque) void {
     // The meaning of the return value was not specified in documentation.
-    _ = X.XFree(ptr);
+    _ = X11.XFree(ptr);
 }
 
 /// The XFreeCursor function deletes the association between the cursor
@@ -1767,7 +1767,7 @@ pub inline fn XFree(ptr: ?*anyopaque) void {
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XRecolorCursor.3.xhtml
 pub inline fn XFreeCursor(display: *Display, cursor: Cursor) void {
     // The meaning of the return value was not specified in documentation.
-    _ = X.XFreeCursor(display, cursor);
+    _ = X11.XFreeCursor(display, cursor);
 }
 
 /// The XFreeGC function destroys the specified GC as well as all the
@@ -1778,7 +1778,7 @@ pub inline fn XFreeCursor(display: *Display, cursor: Cursor) void {
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XCreateGC.3.xhtml
 pub inline fn XFreeGC(display: *Display, gc: GC) void {
     // The meaning of the return value was not specified in documentation.
-    _ = X.XFreeGC(display, gc);
+    _ = X11.XFreeGC(display, gc);
 }
 
 /// The XFreeModifiermap function frees the specified XModifierKeymap structure.
@@ -1786,7 +1786,7 @@ pub inline fn XFreeGC(display: *Display, gc: GC) void {
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XChangeKeyboardMapping.3.xhtml
 pub inline fn XFreeModifiermap(modmap: *XModifierKeymap) void {
     // The meaning of the return value was not specified in documentation.
-    _ = X.XFreeModifiermap(modmap);
+    _ = X11.XFreeModifiermap(modmap);
 }
 
 /// The XFreePixmap function first deletes the association between the pixmap
@@ -1798,7 +1798,7 @@ pub inline fn XFreeModifiermap(modmap: *XModifierKeymap) void {
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XCreatePixmap.3.xhtml
 pub inline fn XFreePixmap(display: *Display, pixmap: Pixmap) void {
     // The meaning of the return value was not specified in documentation.
-    _ = X.XFreePixmap(display, pixmap);
+    _ = X11.XFreePixmap(display, pixmap);
 }
 
 /// The XFreeStringList function releases memory allocated by
@@ -1808,7 +1808,7 @@ pub inline fn XFreePixmap(display: *Display, pixmap: Pixmap) void {
 ///
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XStringListToTextProperty.3.xhtml
 pub inline fn XFreeStringList(list: [*c][*c]u8) void {
-    X.XFreeStringList(list);
+    X11.XFreeStringList(list);
 }
 
 /// The XGetClassHint function returns the class hint of the specified window
@@ -1824,7 +1824,7 @@ pub inline fn XFreeStringList(list: [*c][*c]u8) void {
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XAllocClassHint.3.xhtml
 pub inline fn XGetClassHint(display: *Display, window: Window) ?XClassHint {
     var class_hints_return: XClassHint = undefined;
-    const status = X.XGetClassHint(display, window, &class_hints_return);
+    const status = X11.XGetClassHint(display, window, &class_hints_return);
     if (status == 0) return null;
     return class_hints_return;
 }
@@ -1862,7 +1862,7 @@ pub inline fn XGetKeyboardMapping(
     keysyms_per_keycode_return: *c_int,
 ) ?[*]KeySym {
     // Meaning of return value is not specified in documentation.
-    return X.XGetKeyboardMapping(
+    return X11.XGetKeyboardMapping(
         display,
         first_keycode,
         keycode_count,
@@ -1878,7 +1878,7 @@ pub inline fn XGetKeyboardMapping(
 ///
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XChangeKeyboardMapping.3.xhtml
 pub inline fn XGetModifierMapping(display: *Display) ?*XModifierKeymap {
-    return X.XGetModifierMapping(display);
+    return X11.XGetModifierMapping(display);
 }
 
 /// The XGetTextProperty function reads the specified property from the window
@@ -1906,7 +1906,7 @@ pub inline fn XGetTextProperty(
     property: Atom,
 ) ?XTextProperty {
     var ret: XTextProperty = undefined;
-    const status = X.XGetTextProperty(display, window, &ret, property);
+    const status = X11.XGetTextProperty(display, window, &ret, property);
     return if (status == 0) null else ret;
 }
 
@@ -1918,8 +1918,8 @@ pub inline fn XGetTextProperty(
 ///
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XSetTransientForHint.3.xhtml
 pub inline fn XGetTransientForHint(display: *Display, window: Window) ?Window {
-    var prop_window_return: Window = X.None;
-    if (X.XGetTransientForHint(display, window, &prop_window_return) == 0) return null;
+    var prop_window_return: Window = X11.None;
+    if (X11.XGetTransientForHint(display, window, &prop_window_return) == 0) return null;
     return prop_window_return;
 }
 
@@ -1936,7 +1936,7 @@ pub inline fn XGetWindowAttributes(
     window_attributes_return: *XWindowAttributes,
 ) bool {
     // It returns a nonzero status on success; otherwise, it returns a zero status.
-    return X.XGetWindowAttributes(display, window, window_attributes_return) != 0;
+    return X11.XGetWindowAttributes(display, window, window_attributes_return) != 0;
 }
 
 pub const YGetWindowPropertyResult = struct {
@@ -2036,19 +2036,19 @@ pub inline fn XGetWindowProperty(
     var r_bytes_after: c_ulong = 0;
     var raw_data: [*c]u8 = undefined;
     var format: c_int = 0;
-    const status = X.XGetWindowProperty(display, w, property, long_offset, //
+    const status = X11.XGetWindowProperty(display, w, property, long_offset, //
         long_length, @intFromBool(delete), req_type, &r_type, &format, //
         &nitems, &r_bytes_after, &raw_data);
 
     // From the original docs:
     // "The function returns Success if it executes successfully."
-    if (status != X.Success) return null;
+    if (status != X11.Success) return null;
 
     // If the specified property does not exist for the specified window,
     // XGetWindowProperty returns None to actual_type_return and the value zero
     // to actual_format_return and bytes_after_return. The nitems_return
     // argument is empty. In this case, the delete argument is ignored.
-    if (r_type == X.None or format == 0 or r_bytes_after == 0) return null;
+    if (r_type == X11.None or format == 0 or r_bytes_after == 0) return null;
 
     return .{
         .type = r_type,
@@ -2085,7 +2085,7 @@ pub inline fn XGetWindowProperty(
 ///
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XAllocWMHints.3.xhtml
 pub inline fn XGetWMHints(display: *Display, window: Window) ?*XWMHints {
-    return X.XGetWMHints(display, window);
+    return X11.XGetWMHints(display, window);
 }
 
 /// The XGetWMNormalHints function returns the size hints stored in the
@@ -2115,7 +2115,7 @@ pub inline fn XGetWMHints(display: *Display, window: Window) ?*XWMHints {
 pub inline fn XGetWMNormalHints(display: *Display, window: Window) ?XSizeHints {
     var hints_return: XSizeHints = undefined;
     var supplied_return: c_long = undefined;
-    const status = X.XGetWMNormalHints(display, window, &hints_return, &supplied_return);
+    const status = X11.XGetWMNormalHints(display, window, &hints_return, &supplied_return);
     if (status == 0) return null;
     return hints_return;
 }
@@ -2142,7 +2142,7 @@ pub inline fn XGetWMProtocols(display: *Display, window: Window) ?[]Atom {
     // number of elements in the list, and returns a nonzero status. Otherwise,
     // it sets neither of the return arguments and returns a zero status. To
     // release the list of atoms, use XFree.
-    const status = X.XGetWMProtocols(display, window, &atoms, &count_return);
+    const status = X11.XGetWMProtocols(display, window, &atoms, &count_return);
     if (status == 0) return null;
     return atoms.?[0..@intCast(count_return)];
 }
@@ -2203,9 +2203,9 @@ pub inline fn XGrabButton(
     cursor: Cursor,
 ) void {
     // Inferrably, since XGrabButton is very similar to XGrabPointer, the
-    // returned integer could mean X.GrabSuccess. However, since it's not
+    // returned integer could mean X11.GrabSuccess. However, since it's not
     // explicitly stated in the documentation, we shall discard it.
-    _ = X.XGrabButton(
+    _ = X11.XGrabButton(
         display,
         button,
         modifiers,
@@ -2271,7 +2271,7 @@ pub inline fn XGrabKey(
     keyboard_mode: GrabMode,
 ) void {
     // Meaning of return value is not specified in documentation.
-    _ = X.XGrabKey(
+    _ = X11.XGrabKey(
         display,
         keycode,
         modifiers,
@@ -2356,7 +2356,7 @@ pub inline fn XGrabPointer(
     /// request was processed.
     time: Time,
 ) bool {
-    const result = X.XGrabPointer(
+    const result = X11.XGrabPointer(
         display,
         grab_window,
         @intFromBool(owner_events),
@@ -2370,7 +2370,7 @@ pub inline fn XGrabPointer(
     // From the docs:
     // "The XGrabPointer function actively grabs control of the pointer and
     // returns GrabSuccess if the grab was successful."
-    return result == X.GrabSuccess;
+    return result == X11.GrabSuccess;
 }
 
 /// The XGrabServer function disables processing of requests and close downs on
@@ -2380,7 +2380,7 @@ pub inline fn XGrabPointer(
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XGrabServer.3.xhtml
 pub inline fn XGrabServer(display: *Display) void {
     // Meaning of return value is not specified in documentation.
-    _ = X.XGrabServer(display);
+    _ = X11.XGrabServer(display);
 }
 
 /// The XInternAtom function returns the atom identifier associated with the
@@ -2399,14 +2399,14 @@ pub inline fn XInternAtom(
     // If only_if_exists is False, the atom is created if it does not exist.
     only_if_exists: bool,
 ) ?Atom {
-    const atom = X.XInternAtom(display, atom_name, @intFromBool(only_if_exists));
-    // To quote from X11/X.h:
+    const atom = X11.XInternAtom(display, atom_name, @intFromBool(only_if_exists));
+    // To quote from X11/X11.h:
     // ```c
     // #ifndef None
     // #define None 0L /* universal null resource or null atom */
     // #endif
     // ```
-    return if (atom == X.None) null else atom;
+    return if (atom == X11.None) null else atom;
 }
 
 /// If the specified KeySym is not defined for any KeyCode, XKeysymToKeycode
@@ -2416,7 +2416,7 @@ pub inline fn XInternAtom(
 ///
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XStringToKeysym.3.xhtml
 pub inline fn XKeysymToKeycode(display: *Display, keysym: KeySym) KeyCode {
-    return X.XKeysymToKeycode(display, keysym);
+    return X11.XKeysymToKeycode(display, keysym);
 }
 
 /// The XKeycodeToKeysym function uses internal Xlib tables and returns the
@@ -2434,7 +2434,7 @@ pub inline fn XkbKeycodeToKeysym(
     group: c_uint,
     level: c_uint,
 ) KeySym {
-    return X.XkbKeycodeToKeysym(display, keycode, group, level);
+    return X11.XkbKeycodeToKeysym(display, keycode, group, level);
 }
 
 /// The XKillClient function forces a close down of the client that created the
@@ -2453,7 +2453,7 @@ pub inline fn XkbKeycodeToKeysym(
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XSetCloseDownMode.3.xhtml
 pub inline fn XKillClient(display: *Display, resource: XID) void {
     // Meaning of return value is not specified in documentation.
-    _ = X.XKillClient(display, resource);
+    _ = X11.XKillClient(display, resource);
 }
 
 /// The XMapWindow function maps the window and all of its subwindows that have
@@ -2501,7 +2501,7 @@ pub inline fn XKillClient(display: *Display, resource: XID) void {
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XMapWindow.3.xhtml
 pub inline fn XMapRaised(display: *Display, window: Window) void {
     // Meaning of return value is not specified in documentation.
-    _ = X.XMapRaised(display, window);
+    _ = X11.XMapRaised(display, window);
 }
 
 /// The XMapWindow function maps the window and all of its subwindows that have
@@ -2543,7 +2543,7 @@ pub inline fn XMapRaised(display: *Display, window: Window) void {
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XMapWindow.3.xhtml
 pub inline fn XMapWindow(display: *Display, window: Window) void {
     // Meaning of return value is not specified in documentation.
-    _ = X.XMapWindow(display, window);
+    _ = X11.XMapWindow(display, window);
 }
 
 /// The XMaskEvent function searches the event queue for the events associated
@@ -2556,7 +2556,7 @@ pub inline fn XMapWindow(display: *Display, window: Window) void {
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XNextEvent.3.xhtml
 pub inline fn XMaskEvent(display: *Display, window: Window, event_return: *XEvent) void {
     // Meaning of return value is not specified in documentation.
-    _ = X.XMaskEvent(display, window, event_return);
+    _ = X11.XMaskEvent(display, window, event_return);
 }
 
 /// The XMoveResizeWindow function changes the size and location of the
@@ -2582,7 +2582,7 @@ pub inline fn XMoveResizeWindow(
     height: c_uint,
 ) void {
     // Meaning of return value is not specified in documentation.
-    _ = X.XMoveResizeWindow(display, window, x, y, width, height);
+    _ = X11.XMoveResizeWindow(display, window, x, y, width, height);
 }
 
 /// See XMoveResizeWindow.
@@ -2594,7 +2594,7 @@ pub inline fn XMoveResizeWindow2(
     rect: Rect,
 ) void {
     // Meaning of return value is not specified in documentation.
-    _ = X.XMoveResizeWindow(display, window, rect.x, rect.y, rect.w, rect.h);
+    _ = X11.XMoveResizeWindow(display, window, rect.x, rect.y, rect.w, rect.h);
 }
 
 /// The XMoveWindow function moves the specified window to the specified x and
@@ -2624,7 +2624,7 @@ pub inline fn XMoveWindow(
     // the new position of the window relative to its parent.
 
     // Meaning of return value is not specified in documentation.
-    _ = X.XMoveWindow(display, window, x, y);
+    _ = X11.XMoveWindow(display, window, x, y);
 }
 
 /// The XNextEvent function copies the first event from the event queue into
@@ -2636,7 +2636,7 @@ pub inline fn XMoveWindow(
 ///
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XNextEvent.3.xhtml
 pub inline fn XNextEvent(display: *Display, event: *XEvent) bool {
-    return X.XNextEvent(display, event) == X.Success;
+    return X11.XNextEvent(display, event) == X11.Success;
 }
 
 /// The XOpenDisplay function returns a Display structure that serves as the
@@ -2664,7 +2664,7 @@ pub inline fn XNextEvent(display: *Display, event: *XEvent) bool {
 ///
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XOpenDisplay.3.xhtml
 pub inline fn XOpenDisplay(display_name: [*c]const u8) ?*Display {
-    return X.XOpenDisplay(display_name);
+    return X11.XOpenDisplay(display_name);
 }
 
 /// Custom struct for dealing with XQueryPointer.
@@ -2724,7 +2724,7 @@ pub inline fn XQueryPointer(
     //                    int *win_x_return,
     //                    int *win_y_return,
     //                    unsigned int *mask_return);
-    const result = X.XQueryPointer(display, window, &r.root_window, &r.child.?, //
+    const result = X11.XQueryPointer(display, window, &r.root_window, &r.child.?, //
         &r.root_pos.x, &r.root_pos.y, &r.win_pos.?.x, &r.win_pos.?.y, &r.mask);
     if (result == 0) {
         // If XQueryPointer returns False, the pointer is not on the same
@@ -2737,7 +2737,7 @@ pub inline fn XQueryPointer(
         // win_x_return and win_y_return are relative to the origin of the
         // specified window. In this case, XQueryPointer returns the child that
         // contains the pointer, if any, or else None to child_return.
-        if (r.child == X.None) r.child = null;
+        if (r.child == X11.None) r.child = null;
     }
     return r;
 }
@@ -2761,7 +2761,7 @@ pub inline fn XQueryTree(
 ) ?[]Window {
     var c_opt: ?[*]Window = undefined;
     var n: c_uint = undefined;
-    const status = X.XQueryTree(display, window, root_return, parent_return, &c_opt, &n);
+    const status = X11.XQueryTree(display, window, root_return, parent_return, &c_opt, &n);
     if (status == 0) return null;
     var children: []Window = undefined;
     children.ptr = c_opt orelse return null;
@@ -2787,7 +2787,7 @@ pub inline fn XQueryTree(
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XRaiseWindow.3.xhtml
 pub inline fn XRaiseWindow(display: *Display, window: Window) void {
     // Meaning of return value is not specified in documentation.
-    _ = X.XRaiseWindow(display, window);
+    _ = X11.XRaiseWindow(display, window);
 }
 
 /// The XRefreshKeyboardMapping function refreshes the stored modifier and
@@ -2798,7 +2798,7 @@ pub inline fn XRaiseWindow(display: *Display, window: Window) void {
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XLookupKeysym.3.xhtml
 pub inline fn XRefreshKeyboardMapping(ev: *XMappingEvent) void {
     // Meaning of return value is not specified in documentation.
-    _ = X.XRefreshKeyboardMapping(ev);
+    _ = X11.XRefreshKeyboardMapping(ev);
 }
 
 /// The XSelectInput function requests that the X server report the events
@@ -2832,7 +2832,7 @@ pub inline fn XRefreshKeyboardMapping(ev: *XMappingEvent) void {
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XSendEvent.3.xhtml
 pub inline fn XSelectInput(display: *Display, window: Window, event_mask: c_long) void {
     // Meaning of return value is not specified in documentation.
-    _ = X.XSelectInput(display, window, event_mask);
+    _ = X11.XSelectInput(display, window, event_mask);
 }
 
 /// The XSendEvent function identifies the destination window, determines which
@@ -2886,7 +2886,7 @@ pub inline fn XSendEvent(
     event: *XEvent,
 ) void {
     // Meaning of return value is not specified in documentation.
-    _ = X.XSendEvent(display, window, @intFromBool(propagate), event_mask, event);
+    _ = X11.XSendEvent(display, window, @intFromBool(propagate), event_mask, event);
 }
 
 /// The XSetClassHint function sets the class hint for the specified window. If
@@ -2902,7 +2902,7 @@ pub inline fn XSetClassHint(
     class_hint: *XClassHint,
 ) void {
     // Meaning of return value is not specified in documentation.
-    _ = X.XSetClassHint(display, window, class_hint);
+    _ = X11.XSetClassHint(display, window, class_hint);
 }
 
 /// The XSetCloseDownMode defines what will happen to the client's resources at
@@ -2920,7 +2920,7 @@ pub inline fn XSetCloseDownMode(
     close_mode: CloseMode,
 ) void {
     // Meaning of return value is not specified in documentation.
-    _ = X.XSetCloseDownMode(display, @intFromEnum(close_mode));
+    _ = X11.XSetCloseDownMode(display, @intFromEnum(close_mode));
 }
 
 const ErrHandler = *const fn (?*Display, [*c]XErrorEvent) callconv(.c) c_int;
@@ -2938,7 +2938,7 @@ const ErrHandler = *const fn (?*Display, [*c]XErrorEvent) callconv(.c) c_int;
 ///
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XSetErrorHandler.3.xhtml
 pub inline fn XSetErrorHandler(f: ?ErrHandler) (?ErrHandler) {
-    return X.XSetErrorHandler(f);
+    return X11.XSetErrorHandler(f);
 }
 
 /// The XSetForeground function sets the foreground in the specified GC.
@@ -2953,7 +2953,7 @@ pub inline fn XSetForeground(
     foreground: c_ulong,
 ) void {
     // Meaning of return value is not specified in documentation.
-    _ = X.XSetForeground(display, gc, foreground);
+    _ = X11.XSetForeground(display, gc, foreground);
 }
 
 /// The XSetInputFocus function changes the input focus and the
@@ -2998,7 +2998,7 @@ pub inline fn XSetInputFocus(
     time: Time,
 ) void {
     // Meaning of return value is not specified in documentation.
-    _ = X.XSetInputFocus(display, window, @intFromEnum(revert_to), time);
+    _ = X11.XSetInputFocus(display, window, @intFromEnum(revert_to), time);
 }
 
 /// The XSetLineAttributes function sets the line drawing components in the specified GC.
@@ -3015,7 +3015,7 @@ pub inline fn XSetLineAttributes(
     join_style: JoinStyle,
 ) void {
     // Meaning of return value is not specified in documentation.
-    _ = X.XSetLineAttributes(
+    _ = X11.XSetLineAttributes(
         display,
         gc,
         line_width,
@@ -3038,7 +3038,7 @@ pub inline fn XSetWindowBorder(
     border_pixel: c_ulong,
 ) void {
     // Meaning of return value is not specified in documentation.
-    _ = X.XSetWindowBorder(display, window, border_pixel);
+    _ = X11.XSetWindowBorder(display, window, border_pixel);
 }
 
 /// The XSetWMHints function sets the window manager hints that include icon
@@ -3050,7 +3050,7 @@ pub inline fn XSetWindowBorder(
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XAllocWMHints.3.xhtml
 pub inline fn XSetWMHints(display: *Display, window: Window, value: *XWMHints) void {
     // Meaning of return value is not specified in documentation.
-    _ = X.XSetWMHints(display, window, value);
+    _ = X11.XSetWMHints(display, window, value);
 }
 
 /// The XSupportsLocale function returns True if Xlib functions are capable of
@@ -3061,7 +3061,7 @@ pub inline fn XSetWMHints(display: *Display, window: Window, value: *XWMHints) v
 ///
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XSupportsLocale.3.xhtml
 pub inline fn XSupportsLocale() bool {
-    return X.XSupportsLocale() != 0;
+    return X11.XSupportsLocale() != 0;
 }
 
 /// The XSync function flushes the output buffer and then waits until all
@@ -3081,7 +3081,7 @@ pub inline fn XSync(display: *Display, discard: bool) void {
     // According to the docs in the source, the c_int output is only important
     // in the other functions documented on that html page, but not XSync. So
     // we discard it.
-    _ = X.XSync(display, @intFromBool(discard));
+    _ = X11.XSync(display, @intFromBool(discard));
 }
 
 /// The XUngrabButton function releases the passive button/key combination on
@@ -3105,7 +3105,7 @@ pub inline fn XUngrabButton(
     grab_window: Window,
 ) void {
     // The meaning of the return value was not specified in documentation.
-    _ = X.XUngrabButton(display, button, modifiers, grab_window);
+    _ = X11.XUngrabButton(display, button, modifiers, grab_window);
 }
 
 /// The XUngrabKey function releases the key combination on the specified
@@ -3128,7 +3128,7 @@ pub inline fn XUngrabKey(
     grab_window: Window,
 ) void {
     // The meaning of the return value was not specified in documentation.
-    _ = X.XUngrabKey(display, keycode, modifiers, grab_window);
+    _ = X11.XUngrabKey(display, keycode, modifiers, grab_window);
 }
 
 /// The XUngrabPointer function releases the pointer and any queued events if
@@ -3145,7 +3145,7 @@ pub inline fn XUngrabKey(
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XGrabPointer.3.xhtml
 pub inline fn XUngrabPointer(display: *Display, time: Time) void {
     // The meaning of the return value was not specified in documentation.
-    _ = X.XUngrabPointer(display, time);
+    _ = X11.XUngrabPointer(display, time);
 }
 
 /// The XUngrabServer function restarts processing of requests and close downs
@@ -3155,7 +3155,7 @@ pub inline fn XUngrabPointer(display: *Display, time: Time) void {
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XGrabServer.3.xhtml
 pub inline fn XUngrabServer(display: *Display) void {
     // Meaning of return value is not specified in documentation.
-    _ = X.XUngrabServer(display);
+    _ = X11.XUngrabServer(display);
 }
 
 /// The XUnmapWindow function unmaps the specified window and causes the X
@@ -3172,7 +3172,7 @@ pub inline fn XUngrabServer(display: *Display) void {
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XUnmapWindow.3.xhtml
 pub inline fn XUnmapWindow(display: *Display, window: Window) void {
     // Meaning of return value is not specified in documentation.
-    _ = X.XUnmapWindow(display, window);
+    _ = X11.XUnmapWindow(display, window);
 }
 
 /// If dest_w is None, XWarpPointer moves the pointer by the offsets (dest_x,
@@ -3207,7 +3207,7 @@ pub inline fn XWarpPointer(
     dest_y: c_int,
 ) void {
     // Meaning of return value is not specified in documentation.
-    _ = X.XWarpPointer(display, src_w, dest_w, src.x, src.y, src.w, src.h, dest_x, dest_y);
+    _ = X11.XWarpPointer(display, src_w, dest_w, src.x, src.y, src.w, src.h, dest_x, dest_y);
 }
 
 /// The XmbTextPropertyToTextList, XwcTextPropertyToTextList and
@@ -3259,16 +3259,16 @@ pub inline fn XmbTextPropertyToTextList(
 ) ?[][*c]u8 {
     var list_return: [*c][*c]u8 = undefined;
     var count_return: c_int = undefined;
-    const result = X.XmbTextPropertyToTextList(
+    const result = X11.XmbTextPropertyToTextList(
         display,
         text_prop,
         &list_return,
         &count_return,
     );
     switch (result) {
-        X.XNoMemory => return null,
-        X.XLocaleNotSupported => return null,
-        X.XConverterNotFound => return null,
+        X11.XNoMemory => return null,
+        X11.XLocaleNotSupported => return null,
+        X11.XConverterNotFound => return null,
         else => {},
     }
     if (list_return) |list| {
@@ -3294,7 +3294,7 @@ pub inline fn XftCharExists(
     font: *XftFont,
     codepoint: c_uint,
 ) bool {
-    return X.XftCharExists(display, font, codepoint) != 0;
+    return X11.XftCharExists(display, font, codepoint) != 0;
 }
 
 /// Use XAllocNamedColor() to look up the named color name for the screen
@@ -3318,8 +3318,8 @@ pub inline fn XftColorAllocName(
     name: []const u8,
     result: *XftColor,
 ) bool {
-    const status = X.XftColorAllocName(display, visual, cmap, name.ptr, result);
-    return status != X.False;
+    const status = X11.XftColorAllocName(display, visual, cmap, name.ptr, result);
+    return status != X11.False;
 }
 
 /// If the visual class is not TrueColor, Xft calls XFreeColors() to free the
@@ -3334,7 +3334,7 @@ pub inline fn XftColorFree(
     color: *XftColor,
 ) void {
     // Meaning of return value is not specified in documentation.
-    _ = X.XftColorFree(display, visual, cmap, color);
+    _ = X11.XftColorFree(display, visual, cmap, color);
 }
 
 /// XftDrawCreate creates a structure that can be used to render text and
@@ -3347,7 +3347,7 @@ pub inline fn XftDrawCreate(
     visual: *Visual,
     cmap: Colormap,
 ) ?*XftDraw {
-    return X.XftDrawCreate(display, drawable, visual, cmap);
+    return X11.XftDrawCreate(display, drawable, visual, cmap);
 }
 
 /// XftDrawDestroy destroys draw (created by one of the XftDrawCreate*()
@@ -3355,7 +3355,7 @@ pub inline fn XftDrawCreate(
 ///
 /// source: https://man.archlinux.org/man/Xft.3
 pub inline fn XftDrawDestroy(draw: *XftDraw) void {
-    X.XftDrawDestroy(draw);
+    X11.XftDrawDestroy(draw);
 }
 
 /// Draws no more than len glyphs of string to Xft drawable d using font in
@@ -3371,7 +3371,7 @@ pub inline fn XftDrawStringUtf8(
     text: []const u8,
     len: c_int,
 ) void {
-    X.XftDrawStringUtf8(d, color, font, x, y, text.ptr, len);
+    X11.XftDrawStringUtf8(d, color, font, x, y, text.ptr, len);
 }
 
 /// XftFonts are populated with any of XftFontOpen(), XftFontOpenName(),
@@ -3383,7 +3383,7 @@ pub inline fn XftDrawStringUtf8(
 ///
 /// source: https://man.archlinux.org/man/Xft.3
 pub inline fn XftFontClose(display: *Display, font: *XftFont) void {
-    X.XftFontClose(display, font);
+    X11.XftFontClose(display, font);
 }
 
 /// Also used internally by the XftFontOpen* functions, XftFontMatch can also
@@ -3397,7 +3397,7 @@ pub inline fn XftFontMatch(
     pattern: *FcPattern,
     result: *FcResult,
 ) ?*FcPattern {
-    return X.XftFontMatch(display, screen, pattern, result);
+    return X11.XftFontMatch(display, screen, pattern, result);
 }
 
 /// XftFontOpenName behaves as XftFontOpen does, except that it takes a
@@ -3410,7 +3410,7 @@ pub inline fn XftFontOpenName(
     screen: c_int,
     name: []const u8,
 ) ?*XftFont {
-    return X.XftFontOpenName(display, screen, name.ptr);
+    return X11.XftFontOpenName(display, screen, name.ptr);
 }
 
 /// XftFonts are populated with any of XftFontOpen(), XftFontOpenName(),
@@ -3422,7 +3422,7 @@ pub inline fn XftFontOpenName(
 ///
 /// source: https://man.archlinux.org/man/Xft.3
 pub inline fn XftFontOpenPattern(display: *Display, pattern: *FcPattern) ?*XftFont {
-    return X.XftFontOpenPattern(display, pattern);
+    return X11.XftFontOpenPattern(display, pattern);
 }
 
 /// XftTextExtentsUtf8 computes the pixel extents on display dpy of no more
@@ -3436,7 +3436,7 @@ pub inline fn XftTextExtentsUtf8(
     text: []const u8,
     extents: *XGlyphInfo,
 ) void {
-    X.XftTextExtentsUtf8(display, font, text.ptr, @intCast(text.len), extents);
+    X11.XftTextExtentsUtf8(display, font, text.ptr, @intCast(text.len), extents);
 }
 
 // -----------------------------------------------------------------------------
@@ -3460,54 +3460,54 @@ pub inline fn XftTextExtentsUtf8(
 /// The inverse operator is also available (GetAtomName).
 ///
 /// source: https://x.org/releases/X11R7.7/doc/xorg-docs/icccm/icccm.html
-pub const Atom = X.Atom;
+pub const Atom = X11.Atom;
 
-pub const Below = X.Below;
-pub const ButtonPress = X.ButtonPress;
-pub const ClientMessage = X.ClientMessage;
-pub const ConfigureNotify = X.ConfigureNotify;
-pub const ConfigureRequest = X.ConfigureRequest;
-pub const CopyFromParent = X.CopyFromParent;
-pub const CurrentTime = X.CurrentTime;
-pub const DestroyAll = X.DestroyAll;
-pub const DestroyNotify = X.DestroyNotify;
-pub const EnterNotify = X.EnterNotify;
-pub const Expose = X.Expose;
-pub const FocusIn = X.FocusIn;
-pub const IconicState = X.IconicState;
-pub const IsViewable = X.IsViewable;
-pub const KeyPress = X.KeyPress;
-pub const LockMask = X.LockMask;
-pub const MapRequest = X.MapRequest;
-pub const MappingKeyboard = X.MappingKeyboard;
-pub const MappingNotify = X.MappingNotify;
-pub const MotionNotify = X.MotionNotify;
-pub const ButtonRelease = X.ButtonRelease;
-pub const NormalState = X.NormalState;
-pub const ParentRelative = X.ParentRelative;
-pub const PointerRoot = X.PointerRoot;
-pub const PropertyDelete = X.PropertyDelete;
-pub const PropertyNotify = X.PropertyNotify;
-pub const ReplayPointer = X.ReplayPointer;
-pub const UnmapNotify = X.UnmapNotify;
+pub const Below = X11.Below;
+pub const ButtonPress = X11.ButtonPress;
+pub const ClientMessage = X11.ClientMessage;
+pub const ConfigureNotify = X11.ConfigureNotify;
+pub const ConfigureRequest = X11.ConfigureRequest;
+pub const CopyFromParent = X11.CopyFromParent;
+pub const CurrentTime = X11.CurrentTime;
+pub const DestroyAll = X11.DestroyAll;
+pub const DestroyNotify = X11.DestroyNotify;
+pub const EnterNotify = X11.EnterNotify;
+pub const Expose = X11.Expose;
+pub const FocusIn = X11.FocusIn;
+pub const IconicState = X11.IconicState;
+pub const IsViewable = X11.IsViewable;
+pub const KeyPress = X11.KeyPress;
+pub const LockMask = X11.LockMask;
+pub const MapRequest = X11.MapRequest;
+pub const MappingKeyboard = X11.MappingKeyboard;
+pub const MappingNotify = X11.MappingNotify;
+pub const MotionNotify = X11.MotionNotify;
+pub const ButtonRelease = X11.ButtonRelease;
+pub const NormalState = X11.NormalState;
+pub const ParentRelative = X11.ParentRelative;
+pub const PointerRoot = X11.PointerRoot;
+pub const PropertyDelete = X11.PropertyDelete;
+pub const PropertyNotify = X11.PropertyNotify;
+pub const ReplayPointer = X11.ReplayPointer;
+pub const UnmapNotify = X11.UnmapNotify;
 
-pub const NotifyInferior = X.NotifyInferior;
-pub const NotifyNormal = X.NotifyNormal;
+pub const NotifyInferior = X11.NotifyInferior;
+pub const NotifyNormal = X11.NotifyNormal;
 
-pub const FC_CHARSET = X.FC_CHARSET;
-pub const FC_SCALABLE = X.FC_SCALABLE;
+pub const FC_CHARSET = X11.FC_CHARSET;
+pub const FC_SCALABLE = X11.FC_SCALABLE;
 
-pub const LASTEvent = X.LASTEvent;
-pub const XA_ATOM = X.XA_ATOM;
-pub const XA_STRING = X.XA_STRING;
-pub const XA_WINDOW = X.XA_WINDOW;
-pub const XA_WM_HINTS = X.XA_WM_HINTS;
-pub const XA_WM_NAME = X.XA_WM_NAME;
-pub const XA_WM_NORMAL_HINTS = X.XA_WM_NORMAL_HINTS;
-pub const XA_WM_TRANSIENT_FOR = X.XA_WM_TRANSIENT_FOR;
+pub const LASTEvent = X11.LASTEvent;
+pub const XA_ATOM = X11.XA_ATOM;
+pub const XA_STRING = X11.XA_STRING;
+pub const XA_WINDOW = X11.XA_WINDOW;
+pub const XA_WM_HINTS = X11.XA_WM_HINTS;
+pub const XA_WM_NAME = X11.XA_WM_NAME;
+pub const XA_WM_NORMAL_HINTS = X11.XA_WM_NORMAL_HINTS;
+pub const XA_WM_TRANSIENT_FOR = X11.XA_WM_TRANSIENT_FOR;
 
-pub const AnyButton = X.AnyButton;
-pub const AnyKey = X.AnyKey;
+pub const AnyButton = X11.AnyButton;
+pub const AnyKey = X11.AnyKey;
 
 /// Specifies whether the data should be viewed as a list of 8-bit, 16-bit, or
 /// 32-bit quantities. Used in XGetWindowProperty, among other places.
@@ -3544,84 +3544,84 @@ pub const FormattedData = union(Format) {
 };
 
 pub const EventMode = enum(c_int) {
-    AsyncPointer = X.AsyncPointer,
-    SyncPointer = X.SyncPointer,
-    ReplayPointer = X.ReplayPointer,
-    AsyncKeyboard = X.AsyncKeyboard,
-    SyncKeyboard = X.SyncKeyboard,
-    ReplayKeyboard = X.ReplayKeyboard,
-    AsyncBoth = X.AsyncBoth,
-    SyncBoth = X.SyncBoth,
+    AsyncPointer = X11.AsyncPointer,
+    SyncPointer = X11.SyncPointer,
+    ReplayPointer = X11.ReplayPointer,
+    AsyncKeyboard = X11.AsyncKeyboard,
+    SyncKeyboard = X11.SyncKeyboard,
+    ReplayKeyboard = X11.ReplayKeyboard,
+    AsyncBoth = X11.AsyncBoth,
+    SyncBoth = X11.SyncBoth,
 };
 
 pub const GrabMode = enum(c_int) {
-    Sync = X.GrabModeSync,
-    Async = X.GrabModeAsync,
+    Sync = X11.GrabModeSync,
+    Async = X11.GrabModeAsync,
 };
 
 pub const PropMode = enum(c_int) {
-    Replace = X.PropModeReplace,
-    Prepend = X.PropModePrepend,
-    Append = X.PropModeAppend,
+    Replace = X11.PropModeReplace,
+    Prepend = X11.PropModePrepend,
+    Append = X11.PropModeAppend,
 };
 
 pub const FcMatch = enum(c_int) {
-    Pattern = X.FcMatchPattern,
-    Font = X.FcMatchFont,
-    Scan = X.FcMatchScan,
+    Pattern = X11.FcMatchPattern,
+    Font = X11.FcMatchFont,
+    Scan = X11.FcMatchScan,
 };
 
 pub const RevertTo = enum(c_int) {
-    None = X.RevertToNone,
-    PointerRoot = X.RevertToPointerRoot,
-    Parent = X.RevertToParent,
+    None = X11.RevertToNone,
+    PointerRoot = X11.RevertToPointerRoot,
+    Parent = X11.RevertToParent,
 };
 
 pub const WindowState = enum(c_int) {
-    WithdrawnState = X.WithdrawnState,
-    NormalState = X.NormalState,
-    IconicState = X.IconicState,
+    WithdrawnState = X11.WithdrawnState,
+    NormalState = X11.NormalState,
+    IconicState = X11.IconicState,
 };
 
 pub const CloseMode = enum(c_int) {
-    DestroyAll = X.DestroyAll,
-    RetainPermanent = X.RetainPermanent,
-    RetainTemporary = X.RetainTemporary,
+    DestroyAll = X11.DestroyAll,
+    RetainPermanent = X11.RetainPermanent,
+    RetainTemporary = X11.RetainTemporary,
 };
 
-/// There are many more enums than this, just check out any of the X.XC_* stuff.
+/// There are many more enums than this, just check out any of the X11.XC_* stuff.
 /// and the rest should be adjacent.
-pub const PointerShape = enum(@TypeOf(X.XC_left_ptr)) {
+pub const PointerShape = enum(@TypeOf(X11.XC_left_ptr)) {
     /// Commonly used for dragging things around. The four arrows spread out
     /// from the center.
-    Fleur = X.XC_fleur,
-    Left_ptr = X.XC_left_ptr,
-    Sizing = X.XC_sizing,
+    Fleur = X11.XC_fleur,
+    Left_ptr = X11.XC_left_ptr,
+    Sizing = X11.XC_sizing,
 };
 
 pub const JoinStyle = enum(c_int) {
-    Miter = X.JoinMiter,
-    Round = X.JoinRound,
-    Bevel = X.JoinBevel,
+    Miter = X11.JoinMiter,
+    Round = X11.JoinRound,
+    Bevel = X11.JoinBevel,
 };
 
 pub const LineStyle = enum(c_int) {
-    Solid = X.LineSolid,
-    OnOffDash = X.LineOnOffDash,
-    DoubleDash = X.LineDoubleDash,
+    Solid = X11.LineSolid,
+    OnOffDash = X11.LineOnOffDash,
+    DoubleDash = X11.LineDoubleDash,
 };
 
 pub const CapStyle = enum(c_int) {
-    NotLast = X.CapNotLast,
-    Butt = X.CapButt,
-    Round = X.CapRound,
-    Projecting = X.CapProjecting,
+    NotLast = X11.CapNotLast,
+    Butt = X11.CapButt,
+    Round = X11.CapRound,
+    Projecting = X11.CapProjecting,
 };
 
-pub const None = X.None;
+pub const None = X11.None;
 
-pub const False = X.False;
-pub const True = X.True;
+pub const False = X11.False;
+pub const True = X11.True;
 
 // -----------------------------------------------------------------------------
 // ++ Bitmasks
@@ -3632,63 +3632,71 @@ pub const True = X.True;
 /// source: https://xorg.freedesktop.org/releases/current/doc/libX11/libX11/libX11.html#Event_Masks
 pub const eventMask = struct {
     /// No events wanted.
-    pub const NoEventMask = X.NoEventMask;
+    pub const NoEventMask = X11.NoEventMask;
     /// Pointer button down events wanted.
-    pub const ButtonPressMask = X.ButtonPressMask;
+    pub const ButtonPressMask = X11.ButtonPressMask;
     /// Pointer button up events wanted.
-    pub const ButtonReleaseMask = X.ButtonReleaseMask;
+    pub const ButtonReleaseMask = X11.ButtonReleaseMask;
     /// Pointer window entry events wanted.
-    pub const EnterWindowMask = X.EnterWindowMask;
+    pub const EnterWindowMask = X11.EnterWindowMask;
     /// Pointer window leave events wanted.
-    pub const LeaveWindowMask = X.LeaveWindowMask;
+    pub const LeaveWindowMask = X11.LeaveWindowMask;
     /// Pointer motion events wanted.
-    pub const PointerMotionMask = X.PointerMotionMask;
+    pub const PointerMotionMask = X11.PointerMotionMask;
     /// Any exposure wanted.
-    pub const ExposureMask = X.ExposureMask;
+    pub const ExposureMask = X11.ExposureMask;
     /// Any change in window structure wanted.
-    pub const StructureNotifyMask = X.StructureNotifyMask;
+    pub const StructureNotifyMask = X11.StructureNotifyMask;
     /// Any change in window structure wanted.
-    pub const SubstructureNotifyMask = X.SubstructureNotifyMask;
+    pub const SubstructureNotifyMask = X11.SubstructureNotifyMask;
     /// Redirect structure requests on children.
-    pub const SubstructureRedirectMask = X.SubstructureRedirectMask;
+    pub const SubstructureRedirectMask = X11.SubstructureRedirectMask;
     /// Any change in input focus wanted.
-    pub const FocusChangeMask = X.FocusChangeMask;
+    pub const FocusChangeMask = X11.FocusChangeMask;
     /// Any change in property wanted.
-    pub const PropertyChangeMask = X.PropertyChangeMask;
+    pub const PropertyChangeMask = X11.PropertyChangeMask;
+};
+
+/// Change Window.
+///
+/// source: https://xorg.freedesktop.org/releases/current/doc/libX11/libX11/libX11.html#Window_Attributes
+pub const CW = struct {
+    pub const X = X11.CWX;
+    pub const Y = X11.CWY;
+    pub const Width = X11.CWWidth;
+    pub const Height = X11.CWHeight;
+    pub const BorderWidth = X11.CWBorderWidth;
+    pub const Cursor = X11.CWCursor;
+
+    pub const BackPixmap = X11.CWBackPixmap;
+    pub const EventMask = X11.CWEventMask;
+    pub const OverrideRedirect = X11.CWOverrideRedirect;
+    pub const Sibling = X11.CWSibling;
+    pub const StackMode = X11.CWStackMode;
 };
 
 pub const masks = struct {
-    pub const ShiftMask = X.ShiftMask;
-    pub const ControlMask = X.ControlMask;
+    pub const ShiftMask = X11.ShiftMask;
+    pub const ControlMask = X11.ControlMask;
 
-    pub const Mod1Mask = X.Mod1Mask;
-    pub const Mod2Mask = X.Mod2Mask;
-    pub const Mod3Mask = X.Mod3Mask;
-    pub const Mod4Mask = X.Mod4Mask;
-    pub const Mod5Mask = X.Mod5Mask;
+    pub const Mod1Mask = X11.Mod1Mask;
+    pub const Mod2Mask = X11.Mod2Mask;
+    pub const Mod3Mask = X11.Mod3Mask;
+    pub const Mod4Mask = X11.Mod4Mask;
+    pub const Mod5Mask = X11.Mod5Mask;
 
-    pub const CWX = X.CWX;
-    pub const CWY = X.CWY;
-    pub const CWWidth = X.CWWidth;
-    pub const CWHeight = X.CWHeight;
-    pub const CWBorderWidth = X.CWBorderWidth;
-    pub const CWCursor = X.CWCursor;
-    pub const CWBackPixmap = X.CWBackPixmap;
-    pub const CWEventMask = X.CWEventMask;
-    pub const CWOverrideRedirect = X.CWOverrideRedirect;
-    pub const CWSibling = X.CWSibling;
-    pub const CWStackMode = X.CWStackMode;
+    pub const PAspect = X11.PAspect;
+    pub const PBaseSize = X11.PBaseSize;
+    pub const PMaxSize = X11.PMaxSize;
+    pub const PMinSize = X11.PMinSize;
+    pub const PResizeInc = X11.PResizeInc;
+    pub const PSize = X11.PSize;
 
-    pub const PAspect = X.PAspect;
-    pub const PBaseSize = X.PBaseSize;
-    pub const PMaxSize = X.PMaxSize;
-    pub const PMinSize = X.PMinSize;
-    pub const PResizeInc = X.PResizeInc;
-    pub const PSize = X.PSize;
+    /// source: https://xorg.freedesktop.org/releases/current/doc/libX11/libX11/libX11.html#Setting_and_Reading_the_WM_HINTS_Property
+    pub const InputHint = X11.InputHint;
+    pub const XUrgencyHint = X11.XUrgencyHint;
 
-    pub const InputHint = X.InputHint;
-    pub const XUrgencyHint = X.XUrgencyHint;
-    pub const AnyModifier = X.AnyModifier;
+    pub const AnyModifier = X11.AnyModifier;
 };
 
 // -----------------------------------------------------------------------------
@@ -3697,72 +3705,72 @@ pub const masks = struct {
 
 pub const keys = struct {
     // zig fmt: off
-    pub const XK_a = X.XK_a; pub const XK_b = X.XK_b; pub const XK_c = X.XK_c; pub const XK_d = X.XK_d;
-    pub const XK_e = X.XK_e; pub const XK_f = X.XK_f; pub const XK_g = X.XK_g; pub const XK_h = X.XK_h;
-    pub const XK_i = X.XK_i; pub const XK_j = X.XK_j; pub const XK_k = X.XK_k; pub const XK_l = X.XK_l;
-    pub const XK_m = X.XK_m; pub const XK_n = X.XK_n; pub const XK_o = X.XK_o; pub const XK_p = X.XK_p;
-    pub const XK_q = X.XK_q; pub const XK_r = X.XK_r; pub const XK_s = X.XK_s; pub const XK_t = X.XK_t;
-    pub const XK_u = X.XK_u; pub const XK_v = X.XK_v; pub const XK_w = X.XK_w; pub const XK_x = X.XK_x;
-    pub const XK_y = X.XK_y; pub const XK_z = X.XK_z; // lower caae
-    pub const XK_A = X.XK_A; pub const XK_B = X.XK_B; pub const XK_C = X.XK_C; pub const XK_D = X.XK_D;
-    pub const XK_E = X.XK_E; pub const XK_F = X.XK_F; pub const XK_G = X.XK_G; pub const XK_H = X.XK_H;
-    pub const XK_I = X.XK_I; pub const XK_J = X.XK_J; pub const XK_K = X.XK_K; pub const XK_L = X.XK_L;
-    pub const XK_M = X.XK_M; pub const XK_N = X.XK_N; pub const XK_O = X.XK_O; pub const XK_P = X.XK_P;
-    pub const XK_Q = X.XK_Q; pub const XK_R = X.XK_R; pub const XK_S = X.XK_S; pub const XK_T = X.XK_T;
-    pub const XK_U = X.XK_U; pub const XK_V = X.XK_V; pub const XK_W = X.XK_W; pub const XK_X = X.XK_X;
-    pub const XK_Y = X.XK_Y; pub const XK_Z = X.XK_Z; // upper case
-    pub const XK_0 = X.XK_0; pub const XK_1 = X.XK_1; pub const XK_2 = X.XK_2; pub const XK_3 = X.XK_3;
-    pub const XK_4 = X.XK_4; pub const XK_5 = X.XK_5; pub const XK_6 = X.XK_6; pub const XK_7 = X.XK_7;
-    pub const XK_8 = X.XK_8; pub const XK_9 = X.XK_9; // numbers
+    pub const XK_a = X11.XK_a; pub const XK_b = X11.XK_b; pub const XK_c = X11.XK_c; pub const XK_d = X11.XK_d;
+    pub const XK_e = X11.XK_e; pub const XK_f = X11.XK_f; pub const XK_g = X11.XK_g; pub const XK_h = X11.XK_h;
+    pub const XK_i = X11.XK_i; pub const XK_j = X11.XK_j; pub const XK_k = X11.XK_k; pub const XK_l = X11.XK_l;
+    pub const XK_m = X11.XK_m; pub const XK_n = X11.XK_n; pub const XK_o = X11.XK_o; pub const XK_p = X11.XK_p;
+    pub const XK_q = X11.XK_q; pub const XK_r = X11.XK_r; pub const XK_s = X11.XK_s; pub const XK_t = X11.XK_t;
+    pub const XK_u = X11.XK_u; pub const XK_v = X11.XK_v; pub const XK_w = X11.XK_w; pub const XK_x = X11.XK_x;
+    pub const XK_y = X11.XK_y; pub const XK_z = X11.XK_z; // lower caae
+    pub const XK_A = X11.XK_A; pub const XK_B = X11.XK_B; pub const XK_C = X11.XK_C; pub const XK_D = X11.XK_D;
+    pub const XK_E = X11.XK_E; pub const XK_F = X11.XK_F; pub const XK_G = X11.XK_G; pub const XK_H = X11.XK_H;
+    pub const XK_I = X11.XK_I; pub const XK_J = X11.XK_J; pub const XK_K = X11.XK_K; pub const XK_L = X11.XK_L;
+    pub const XK_M = X11.XK_M; pub const XK_N = X11.XK_N; pub const XK_O = X11.XK_O; pub const XK_P = X11.XK_P;
+    pub const XK_Q = X11.XK_Q; pub const XK_R = X11.XK_R; pub const XK_S = X11.XK_S; pub const XK_T = X11.XK_T;
+    pub const XK_U = X11.XK_U; pub const XK_V = X11.XK_V; pub const XK_W = X11.XK_W; pub const XK_X = X11.XK_X;
+    pub const XK_Y = X11.XK_Y; pub const XK_Z = X11.XK_Z; // upper case
+    pub const XK_0 = X11.XK_0; pub const XK_1 = X11.XK_1; pub const XK_2 = X11.XK_2; pub const XK_3 = X11.XK_3;
+    pub const XK_4 = X11.XK_4; pub const XK_5 = X11.XK_5; pub const XK_6 = X11.XK_6; pub const XK_7 = X11.XK_7;
+    pub const XK_8 = X11.XK_8; pub const XK_9 = X11.XK_9; // numbers
     // zig fmt: on
-    pub const XK_Return = X.XK_Return;
-    pub const XK_Tab = X.XK_Tab;
-    pub const XK_comma = X.XK_comma;
-    pub const XK_equal = X.XK_equal;
-    pub const XK_minus = X.XK_minus;
-    pub const XK_period = X.XK_period;
-    pub const XK_space = X.XK_space;
-    pub const XK_Num_Lock = X.XK_Num_Lock;
+    pub const XK_Return = X11.XK_Return;
+    pub const XK_Tab = X11.XK_Tab;
+    pub const XK_comma = X11.XK_comma;
+    pub const XK_equal = X11.XK_equal;
+    pub const XK_minus = X11.XK_minus;
+    pub const XK_period = X11.XK_period;
+    pub const XK_space = X11.XK_space;
+    pub const XK_Num_Lock = X11.XK_Num_Lock;
 
     // AwesomeWM provides a very helpful graphic here:
     // https://awesomewm.org/doc/api/libraries/mouse.html
 
     /// Left click.
-    pub const Button1 = X.Button1;
+    pub const Button1 = X11.Button1;
     /// Middle click.
-    pub const Button2 = X.Button2;
+    pub const Button2 = X11.Button2;
     /// Right click.
-    pub const Button3 = X.Button3;
-    pub const Button4 = X.Button4;
-    pub const Button5 = X.Button5;
+    pub const Button3 = X11.Button3;
+    pub const Button4 = X11.Button4;
+    pub const Button5 = X11.Button5;
 };
 
 // -----------------------------------------------------------------------------
 // ++ Macros
 // -----------------------------------------------------------------------------
 
-pub const ConnectionNumber = X.ConnectionNumber;
-pub const DefaultColormap = X.DefaultColormap;
-pub const DefaultDepth = X.DefaultDepth;
-pub const DefaultRootWindow = X.DefaultRootWindow;
+pub const ConnectionNumber = X11.ConnectionNumber;
+pub const DefaultColormap = X11.DefaultColormap;
+pub const DefaultDepth = X11.DefaultDepth;
+pub const DefaultRootWindow = X11.DefaultRootWindow;
 /// The DefaultScreen macro returns the default screen number referenced in the
 /// XOpenDisplay routine.
-pub const DefaultScreen = X.DefaultScreen;
-pub const DefaultVisual = X.DefaultVisual;
-pub const DisplayHeight = X.DisplayHeight;
-pub const DisplayWidth = X.DisplayWidth;
-pub const RootWindow = X.RootWindow;
+pub const DefaultScreen = X11.DefaultScreen;
+pub const DefaultVisual = X11.DefaultVisual;
+pub const DisplayHeight = X11.DisplayHeight;
+pub const DisplayWidth = X11.DisplayWidth;
+pub const RootWindow = X11.RootWindow;
 
 // -----------------------------------------------------------------------------
 // ++ Errors
 // -----------------------------------------------------------------------------
 
 pub const err = struct {
-    pub const BadAccess = X.BadAccess;
-    pub const BadDrawable = X.BadDrawable;
-    pub const BadGC = X.BadGC;
-    pub const BadMatch = X.BadMatch;
-    pub const BadWindow = X.BadWindow;
+    pub const BadAccess = X11.BadAccess;
+    pub const BadDrawable = X11.BadDrawable;
+    pub const BadGC = X11.BadGC;
+    pub const BadMatch = X11.BadMatch;
+    pub const BadWindow = X11.BadWindow;
 };
 
 // -----------------------------------------------------------------------------
@@ -3771,14 +3779,14 @@ pub const err = struct {
 
 /// Request Code of a XErrorEvent.
 pub const rq = struct {
-    pub const ConfigureWindow = X.X_ConfigureWindow;
-    pub const GrabButton = X.X_GrabButton;
-    pub const GrabKey = X.X_GrabKey;
-    pub const SetInputFocus = X.X_SetInputFocus;
-    pub const CopyArea = X.X_CopyArea;
-    pub const PolySegment = X.X_PolySegment;
-    pub const PolyFillRectangle = X.X_PolyFillRectangle;
-    pub const PolyText8 = X.X_PolyText8;
+    pub const ConfigureWindow = X11.X_ConfigureWindow;
+    pub const GrabButton = X11.X_GrabButton;
+    pub const GrabKey = X11.X_GrabKey;
+    pub const SetInputFocus = X11.X_SetInputFocus;
+    pub const CopyArea = X11.X_CopyArea;
+    pub const PolySegment = X11.X_PolySegment;
+    pub const PolyFillRectangle = X11.X_PolyFillRectangle;
+    pub const PolyText8 = X11.X_PolyText8;
 };
 
 // -----------------------------------------------------------------------------
@@ -3791,14 +3799,14 @@ pub const rq = struct {
 /// source: https://xorg.freedesktop.org/archive/X11R7.0/doc/html/FcCharSetAddChar.3.html
 /// source: https://fontconfig.pages.freedesktop.org/fontconfig/fontconfig-devel/
 pub inline fn FcCharSetAddChar(fcs: *FcCharSet, ucs4: c_uint) bool {
-    return X.FcCharSetAddChar(fcs, ucs4) != X.FcFalse;
+    return X11.FcCharSetAddChar(fcs, ucs4) != X11.FcFalse;
 }
 
 /// Allocates and initializes a new empty character set object.
 ///
 /// source: https://xorg.freedesktop.org/archive/X11R7.0/doc/html/FcCharSetCreate.3.html
 pub inline fn FcCharSetCreate() ?*FcCharSet {
-    return X.FcCharSetCreate();
+    return X11.FcCharSetCreate();
 }
 
 /// Destroy a character set. Decrements the reference count fcs. If the
@@ -3806,7 +3814,7 @@ pub inline fn FcCharSetCreate() ?*FcCharSet {
 ///
 /// source: https://xorg.freedesktop.org/archive/X11R7.0/doc/html/FcCharSetDestroy.3.html
 pub inline fn FcCharSetDestroy(fcs: *FcCharSet) void {
-    X.FcCharSetDestroy(fcs);
+    X11.FcCharSetDestroy(fcs);
 }
 
 /// Execute substitutions. Calls FcConfigSubstituteWithPat setting p_pat to NULL.
@@ -3819,7 +3827,7 @@ pub inline fn FcCharSetDestroy(fcs: *FcCharSet) void {
 ///
 /// source: https://xorg.freedesktop.org/archive/X11R7.0/doc/html/FcConfigSubstitute.3.html
 pub inline fn FcConfigSubstitute(config: ?*FcConfig, p: *FcPattern, kind: FcMatch) bool {
-    return X.FcConfigSubstitute(config, p, @intFromEnum(kind)) != X.FcFalse;
+    return X11.FcConfigSubstitute(config, p, @intFromEnum(kind)) != X11.FcFalse;
 }
 
 /// Perform default substitutions in a pattern.
@@ -3833,7 +3841,7 @@ pub inline fn FcConfigSubstitute(config: ?*FcConfig, p: *FcPattern, kind: FcMatc
 ///
 /// source: https://xorg.freedesktop.org/archive/X11R7.0/doc/html/FcDefaultSubstitute.3.html
 pub inline fn FcDefaultSubstitute(p: *FcPattern) void {
-    X.FcDefaultSubstitute(p);
+    X11.FcDefaultSubstitute(p);
 }
 
 /// Parse a pattern string.
@@ -3842,7 +3850,7 @@ pub inline fn FcDefaultSubstitute(p: *FcPattern) void {
 ///
 /// source: https://xorg.freedesktop.org/archive/X11R7.0/doc/html/FcNameParse.3.html
 pub inline fn FcNameParse(name: []const u8) ?*FcPattern {
-    return X.FcNameParse(name.ptr);
+    return X11.FcNameParse(name.ptr);
 }
 
 /// [FcPatternAdd-Type] These are all convenience functions that insert objects
@@ -3852,7 +3860,7 @@ pub inline fn FcNameParse(name: []const u8) ?*FcPattern {
 ///
 /// source: https://xorg.freedesktop.org/archive/X11R7.0/doc/html/FcPatternAdd-Type.3.html
 pub inline fn FcPatternAddBool(p: *FcPattern, object: [*c]const u8, value: bool) bool {
-    return X.FcPatternAddBool(p, object, @intFromBool(value)) != X.FcFalse;
+    return X11.FcPatternAddBool(p, object, @intFromBool(value)) != X11.FcFalse;
 }
 
 /// [FcPatternAdd-Type] These are all convenience functions that insert objects
@@ -3862,14 +3870,14 @@ pub inline fn FcPatternAddBool(p: *FcPattern, object: [*c]const u8, value: bool)
 ///
 /// source: https://xorg.freedesktop.org/archive/X11R7.0/doc/html/FcPatternAdd-Type.3.html
 pub inline fn FcPatternAddCharSet(p: *FcPattern, object: [*c]const u8, charset: *FcCharSet) bool {
-    return X.FcPatternAddCharSet(p, object, charset) != X.FcFalse;
+    return X11.FcPatternAddCharSet(p, object, charset) != X11.FcFalse;
 }
 
 /// Destroys a pattern, in the process destroying all related values.
 ///
 /// source: https://xorg.freedesktop.org/archive/X11R7.0/doc/html/FcPatternDestroy.3.html
 pub inline fn FcPatternDestroy(p: *FcPattern) void {
-    X.FcPatternDestroy(p);
+    X11.FcPatternDestroy(p);
 }
 
 /// Copy a pattern, returning a new pattern that matches p. Each pattern may be
@@ -3877,7 +3885,7 @@ pub inline fn FcPatternDestroy(p: *FcPattern) void {
 ///
 /// source: https://freedesktop.org/software/fontconfig/fontconfig-devel/fcpatternduplicate.html
 pub inline fn FcPatternDuplicate(p: *const FcPattern) ?*FcPattern {
-    return X.FcPatternDuplicate(p);
+    return X11.FcPatternDuplicate(p);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

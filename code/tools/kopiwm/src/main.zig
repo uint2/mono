@@ -20,6 +20,7 @@ const atoms = @import("atoms.zig");
 const X = @import("x11.zig");
 const M = @import("x11.zig").masks;
 const EM = @import("x11.zig").eventMask;
+const CW = @import("x11.zig").CW;
 const E = @import("errors.zig");
 
 const NAME = @import("build_opts").name;
@@ -216,7 +217,7 @@ fn manage(allocator: Allocator, w: X.Window, wa: *X.XWindowAttributes) error{Out
     c.bw.set(cfg.borderpx);
 
     var wc = X.XWindowChanges{ .border_width = @intCast(c.bw.now) };
-    X.XConfigureWindow(z.dpy, w, M.CWBorderWidth, &wc);
+    X.XConfigureWindow(z.dpy, w, CW.BorderWidth, &wc);
     X.XSetWindowBorder(z.dpy, w, z.scheme.get(.Normal).border.pixel);
 
     c.configure(z.dpy); // propagates border_width, if size doesn't change
@@ -279,7 +280,7 @@ fn unmanage(allocator: Allocator, c: *Client, destroyed: bool) void {
         _ = X.XSetErrorHandler(E.xerrordummy);
         X.XSelectInput(z.dpy, c.win, EM.NoEventMask);
         var wc = X.XWindowChanges{ .border_width = @intCast(c.bw.prev) };
-        X.XConfigureWindow(z.dpy, c.win, M.CWBorderWidth, &wc); // restore border
+        X.XConfigureWindow(z.dpy, c.win, CW.BorderWidth, &wc); // restore border
         X.XUngrabButton(z.dpy, X.AnyButton, M.AnyModifier, c.win);
         c.setState(.WithdrawnState);
         X.XSync(z.dpy, false);
@@ -343,7 +344,7 @@ fn restack(allocator: Allocator, m: *Monitor) void {
         var c_opt = m.stack;
         while (c_opt) |c| : (c_opt = c.snext) {
             if (!c.is_floating.now and c.isVisible()) {
-                X.XConfigureWindow(z.dpy, c.win, M.CWSibling | M.CWStackMode, &wc);
+                X.XConfigureWindow(z.dpy, c.win, CW.Sibling | CW.StackMode, &wc);
                 wc.sibling = c.win;
             }
         }
@@ -470,23 +471,23 @@ fn configureRequest(e: *X.XEvent) void {
     const vmask = ev.value_mask;
 
     if (winToClient(ev.window)) |c| {
-        if (vmask & M.CWBorderWidth != 0) {
+        if (vmask & CW.BorderWidth != 0) {
             c.bw.set(@intCast(ev.border_width));
         } else if (c.is_floating.now or z.selmon.lt.now.arrange == null) {
             const m = c.mon;
-            if (vmask & M.CWX != 0) {
+            if (vmask & CW.X != 0) {
                 c.pos.prev.x = c.pos.now.x;
                 c.pos.now.x = m.m.x + ev.x;
             }
-            if (vmask & M.CWY != 0) {
+            if (vmask & CW.Y != 0) {
                 c.pos.prev.y = c.pos.now.y;
                 c.pos.now.y = m.m.y + ev.y;
             }
-            if (vmask & M.CWWidth != 0) {
+            if (vmask & CW.Width != 0) {
                 c.pos.prev.w = c.pos.now.w;
                 c.pos.now.w = @intCast(ev.width);
             }
-            if (vmask & M.CWHeight != 0) {
+            if (vmask & CW.Height != 0) {
                 c.pos.prev.h = c.pos.now.h;
                 c.pos.now.h = @intCast(ev.height);
             }
@@ -500,7 +501,7 @@ fn configureRequest(e: *X.XEvent) void {
                 c.pos.prev.y = c.pos.now.y;
                 c.pos.now.y = m.m.y + (@divFloor(@as(i32, @intCast(m.m.h)), 2) - @divFloor(c.height(), 2));
             }
-            if ((vmask & (M.CWX | M.CWY) != 0) and (vmask & (M.CWWidth | M.CWHeight)) == 0) {
+            if ((vmask & (CW.X | CW.Y) != 0) and (vmask & (CW.Width | CW.Height)) == 0) {
                 c.configure(z.dpy);
             }
             if (c.isVisible()) {
@@ -1358,7 +1359,7 @@ fn updateBars() void {
             X.DefaultDepth(z.dpy, z.screen),
             X.CopyFromParent,
             X.DefaultVisual(z.dpy, z.screen),
-            M.CWOverrideRedirect | M.CWBackPixmap | M.CWEventMask,
+            CW.OverrideRedirect | CW.BackPixmap | CW.EventMask,
             &wa,
         );
         log.info("Create bar window({d}): (x={d}, y={d}, w={d}, h={d})", .{
@@ -1795,7 +1796,7 @@ pub fn main() !void {
             | EM.ButtonPressMask | EM.PointerMotionMask | EM.EnterWindowMask //
             | EM.LeaveWindowMask | EM.StructureNotifyMask | EM.PropertyChangeMask,
         };
-        X.XChangeWindowAttributes(dpy, z.root, M.CWEventMask | M.CWCursor, &wa);
+        X.XChangeWindowAttributes(dpy, z.root, CW.EventMask | CW.Cursor, &wa);
         X.XSelectInput(dpy, z.root, wa.event_mask);
     }
 
