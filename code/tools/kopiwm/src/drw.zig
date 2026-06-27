@@ -24,7 +24,7 @@ pub const Font = struct {
     ///
     /// Gets the extents of an utf-8 encoded string. It is on the user to ensure
     /// that `utf8.str` is indeed utf-8 encoded.
-    pub fn getExtents(self: *Self, utf8str: []const u8, w: ?*u32, h: ?*u32) void {
+    pub fn getExtents(self: *const Self, utf8str: []const u8, w: ?*u32, h: ?*u32) void {
         if (utf8str.len == 0) {
             if (w) |w_ptr| w_ptr.* = 0;
             if (h) |h_ptr| h_ptr.* = 0;
@@ -294,6 +294,16 @@ pub const Drw = struct {
         }
     }
 
+    /// Find the first font that supports the UTF-8 codepoint requested.
+    fn getFontThatHasChar(self: *const Self, utf8codepoint: u21) ?*Font {
+        const codepoint: c_uint = @intCast(utf8codepoint);
+        var f_opt: ?*Font = self.fonts;
+        while (f_opt) |f| : (f_opt = f.next) {
+            if (X.XftCharExists(self.dpy, f.xfont, codepoint)) return f;
+        }
+        return null;
+    }
+
     /// (dwm) drw_text
     /// Question: Is `invert` a bitmask? or a boolean? or a numerical value?
     /// Because based on dwm's source code all three cases kinda doesn't fit.
@@ -391,6 +401,7 @@ pub const Drw = struct {
             utf8.str = text;
             utf8.codepoint = 0;
             utf8.charlen = 0;
+
             while (text.len > 0) {
                 utf8.charlen = unicode.utf8ByteSequenceLength(text[0]) catch unreachable;
                 utf8.codepoint = switch (utf8.charlen) {
@@ -400,15 +411,11 @@ pub const Drw = struct {
                     4 => unicode.utf8Decode4(text[0..4].*) catch unreachable,
                     else => unreachable,
                 };
-                var curfont_opt: ?*Font = self.fonts;
                 charexists = false;
                 var tmpw: u32 = undefined;
-                while (curfont_opt) |curfont| : (curfont_opt = curfont.next) {
-                    charexists |= X.XftCharExists(self.dpy, curfont.xfont, @intCast(utf8.codepoint));
-                    if (!charexists) {
-                        continue;
-                    }
-                    curfont.getExtents(text[0..utf8.charlen], &tmpw, null);
+                if (self.getFontThatHasChar(utf8.codepoint)) |font| {
+                    charexists = true;
+                    font.getExtents(text[0..utf8.charlen], &tmpw, null);
 
                     if (ew + (state.ellipsis_width orelse 0) <= w) {
                         // keep track where the ellipsis still fits
@@ -426,21 +433,18 @@ pub const Drw = struct {
                         } else {
                             utf8.strlen = ellipsis_len;
                         }
-                    } else if (curfont == usedfont) {
+                    } else if (font == usedfont) {
                         text = text[utf8.charlen..];
                         utf8.strlen += if (utf8err) 0 else utf8.charlen;
                         ew += if (utf8err) 0 else tmpw;
                     } else {
-                        nextfont = curfont;
+                        nextfont = font;
                     }
-                    break;
                 }
 
                 if (overflow or !charexists or nextfont != null or utf8err) {
                     break;
-                } else {
-                    charexists = false;
-                }
+                } else charexists = false;
             }
 
             if (utf8.strlen > 0) {
