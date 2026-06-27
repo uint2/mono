@@ -1513,8 +1513,8 @@ fn drawbar(allocator: Allocator, m: *Monitor) void {
     if (!m.show_bar) return;
 
     var tw: u32 = 0;
-    const boxs = z.drw.fonts.height / 9;
-    const boxw = z.drw.fonts.height / 6 + 2;
+    const boxs = @divTrunc(z.drw.fonts.height, 9);
+    const boxw = @divTrunc(z.drw.fonts.height, 6) + 2;
 
     const occ = m.getOccupiedBitmask();
     const urg = m.getUrgentBitmask();
@@ -1547,7 +1547,7 @@ fn drawbar(allocator: Allocator, m: *Monitor) void {
         );
         if ((occ & current_tag) != 0) {
             z.drw.drawRect(
-                .{ .x = x + boxs, .y = boxs, .w = boxw, .h = boxw },
+                .{ .x = x + boxs, .y = boxs, .w = @intCast(boxw), .h = @intCast(boxw) },
                 filled: {
                     const client = z.selmon.sel orelse break :filled false;
                     break :filled m == z.selmon and (client.tags & current_tag) != 0;
@@ -1680,7 +1680,7 @@ pub fn main() !void {
         .colors = &cfg.colors,
     });
     defer z.drw.deinit(allocator);
-    z.lrpad = z.drw.fonts.height;
+    z.lrpad = @intCast(z.drw.fonts.height);
 
     // Initialize appearance.
     for (std.enums.values(SchemeState)) |ss|
