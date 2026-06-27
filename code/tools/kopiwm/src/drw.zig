@@ -1,11 +1,11 @@
 const std = @import("std");
+const log = std.log;
 const X = @import("x11.zig");
 const Rect = @import("rect.zig").Rect;
 const EnumArray = @import("enum_array.zig").EnumArray;
 const SchemeState = @import("enums.zig").SchemeState;
 const mem = std.mem;
 const Allocator = mem.Allocator;
-const log = std.log;
 
 // TODO: change this to Font when all is said and done.
 /// This represents a linked list of fonts.
@@ -436,8 +436,6 @@ pub const Drw = struct {
                     }
                     curfont.getExts(text[0..utf8charlen], &tmpw, null);
 
-                    // TODO: possible dwm bug here that ellipsis width is not
-                    // initialized yet.
                     if (ew + (state.ellipsis_width orelse 0) <= w) {
                         // keep track where the ellipsis still fits
                         ellipsis_x = x + @as(i32, @intCast(ew));
