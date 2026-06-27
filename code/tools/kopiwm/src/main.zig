@@ -1777,11 +1777,8 @@ pub fn main() !void {
     z.lrpad = z.drw.fonts.h;
 
     // Initialize appearance.
-    for (std.enums.values(SchemeState)) |ss| {
-        const s = z.scheme.getPtr(ss);
-        s.* = try z.drw.scmCreate(allocator, cfg.colors.get(ss));
-        log.info("fg: {x}, bg: {x}, border: {x}", .{ s.*.fg.pixel, s.*.bg.pixel, s.*.border.pixel });
-    }
+    for (std.enums.values(SchemeState)) |ss|
+        z.scheme.set(ss, try z.drw.scmCreate(allocator, cfg.colors.get(ss)));
 
     // Initialize cursors.
     z.cursors.set(.Normal, X.XCreateFontCursor(dpy, .Left_ptr));
