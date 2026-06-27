@@ -1782,21 +1782,12 @@ pub fn main() !void {
     updateStatus(allocator);
 
     // EWMH support per view.
-    // https://specifications.freedesktop.org/wm/latest/
-    X.XChangeProperty(
-        dpy,
-        z.root,
-        atoms.net(.Supported),
-        X.XA_ATOM,
-        32,
-        .Replace,
-        @ptrCast(&atoms.__NET.values),
-        @intCast(atoms.__NET.values.len),
-    );
+    // https://specifications.freedesktop.org/wm/1.5/
+    const nets = atoms.net_array();
+    X.XChangeProperty(dpy, z.root, atoms.net(.Supported), X.XA_ATOM, 32, .Replace, @ptrCast(&nets), @intCast(nets.len));
     X.XDeleteProperty(dpy, z.root, atoms.net(.ClientList));
 
-    // Select events.
-    {
+    { // Select events.
         var wa: X.XSetWindowAttributes = .{
             .cursor = z.cursors.get(.Normal),
             .event_mask = M.SubstructureRedirectMask | M.SubstructureNotifyMask //

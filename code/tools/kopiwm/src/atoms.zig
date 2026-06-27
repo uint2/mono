@@ -48,6 +48,12 @@ pub const Net = enum {
 
     ActiveWindow,
     ClientList,
+    /// This property MUST be set by the Window Manager to indicate which
+    /// hints it supports. For example: considering _NET_WM_STATE both this
+    /// atom and all supported states e.g. _NET_WM_STATE_MODAL,
+    /// _NET_WM_STATE_STICKY, would be listed. This assumes that backwards
+    /// incompatible changes will not be made to the hints (without being
+    /// renamed).
     Supported,
     /// The Window Manager MUST set this property on the root window to be the
     /// ID of a child window created by himself, to indicate that a compliant
@@ -97,4 +103,8 @@ pub inline fn net(key: Net) X.Atom {
 
 pub inline fn wm(key: WM) X.Atom {
     return __WM.get(key);
+}
+
+pub inline fn net_array() [std.enums.values(Net).len]X.Atom {
+    return __NET.values;
 }
