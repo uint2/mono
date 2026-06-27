@@ -1737,9 +1737,6 @@ pub fn main() !void {
     };
     z.root = X.RootWindow(dpy, z.screen);
 
-    z.drw = try .init(allocator, dpy, z.screen, z.root, z.s.w, z.s.h, &cfg.fonts);
-    z.lrpad = z.drw.fonts.h;
-
     var selmon: ?*Monitor = null;
     // Make sure that `selmon` is initialized.
     _ = try updategeom(allocator, &selmon);
@@ -1767,10 +1764,8 @@ pub fn main() !void {
         X.XChangeProperty(dpy, checkWin, atoms.net(.WMName), utf8string, 8, .Replace, NAME.ptr, NAME.len);
     }
 
-    // Initialize cursors.
-    z.cursors.set(.Normal, X.XCreateFontCursor(dpy, .Left_ptr));
-    z.cursors.set(.Resize, X.XCreateFontCursor(dpy, .Sizing));
-    z.cursors.set(.Move, X.XCreateFontCursor(dpy, .Fleur));
+    z.drw = try .init(allocator, dpy, z.screen, z.root, z.s.w, z.s.h, &cfg.fonts);
+    z.lrpad = z.drw.fonts.h;
 
     // Initialize appearance.
     for (std.enums.values(SchemeState)) |ss| {
@@ -1778,6 +1773,11 @@ pub fn main() !void {
         s.* = try z.drw.scmCreate(allocator, cfg.colors.get(ss));
         log.info("fg: {x}, bg: {x}, border: {x}", .{ s.*.fg.pixel, s.*.bg.pixel, s.*.border.pixel });
     }
+
+    // Initialize cursors.
+    z.cursors.set(.Normal, X.XCreateFontCursor(dpy, .Left_ptr));
+    z.cursors.set(.Resize, X.XCreateFontCursor(dpy, .Sizing));
+    z.cursors.set(.Move, X.XCreateFontCursor(dpy, .Fleur));
 
     // Initialize bars.
     updateBars();
