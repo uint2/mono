@@ -3369,6 +3369,8 @@ pub inline fn XftDrawStringUtf8(
     x: c_int,
     y: c_int,
     text: []const u8,
+    /// The number of UTF-8 characters in `text`. May not be the same as the
+    /// number of bytes in `text`.
     len: c_int,
 ) void {
     X11.XftDrawStringUtf8(d, color, font, x, y, text.ptr, len);

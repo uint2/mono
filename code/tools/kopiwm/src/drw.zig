@@ -315,6 +315,7 @@ pub const Drw = struct {
         self: *Self,
         allocator: Allocator,
         rect: Rect,
+        /// Left padding.
         lpad: u32,
         text_to_draw: []const u8,
         invert: u32,
@@ -322,14 +323,12 @@ pub const Drw = struct {
         const INVALID = "�";
         var text: []const u8 = text_to_draw;
         var x = rect.x;
-        const y = rect.y;
         var w = rect.w;
-        const h = rect.h;
         var usedfont = self.fonts;
 
         if (text.len == 0) return 0;
 
-        const render: bool = w != 0 and h != 0;
+        const render: bool = w != 0 and rect.h != 0;
 
         if (render and (self.scheme == null or w == 0)) return 0;
 
@@ -349,9 +348,9 @@ pub const Drw = struct {
         } else {
             const color = if (invert_) &self.scheme.?.fg else &self.scheme.?.bg;
             X.XSetForeground(self.dpy, self.gc, color.pixel);
-            X.XFillRectangle(self.dpy, self.drawable, self.gc, .{ .x = x, .y = y, .w = w, .h = h });
+            X.XFillRectangle(self.dpy, self.drawable, self.gc, rect);
             if (w < lpad) {
-                return x + @as(i32, @intCast(w));
+                return x + @as(c_int, @intCast(w));
             }
             d = X.XftDrawCreate(
                 self.dpy,
@@ -375,6 +374,7 @@ pub const Drw = struct {
             var codepoint: u21 = 0;
             var charlen: u3 = 0;
             var str: []const u8 = undefined;
+            /// Then number of UTF-8 characters in `str`.
             var strlen: u32 = 0;
         };
 
@@ -449,7 +449,7 @@ pub const Drw = struct {
 
             if (utf8.strlen > 0) {
                 if (render) {
-                    ty = y + @divTrunc(@as(i32, @intCast(h - usedfont.height)), 2) + usedfont.xfont.ascent;
+                    ty = rect.y + @divTrunc(@as(i32, @intCast(rect.h - usedfont.height)), 2) + usedfont.xfont.ascent;
                     const color = if (invert_) &self.scheme.?.bg else &self.scheme.?.fg;
                     if (d) |drw| {
                         X.XftDrawStringUtf8(drw, color, usedfont.xfont, x, ty, utf8.str, @intCast(utf8.strlen));
@@ -461,14 +461,14 @@ pub const Drw = struct {
 
             if (utf8err and (!render or (state.invalid_width orelse w) < w)) {
                 if (render) {
-                    _ = self.drawText(allocator, .{ .x = x, .y = y, .w = w, .h = h }, 0, INVALID, invert);
+                    _ = self.drawText(allocator, .{ .x = x, .y = rect.y, .w = w, .h = rect.h }, 0, INVALID, invert);
                 }
                 x += @intCast(state.invalid_width orelse 0);
                 w -= state.invalid_width orelse 0;
             }
 
             if (render and overflow) {
-                _ = self.drawText(allocator, .{ .x = ellipsis_x, .y = y, .w = ellipsis_w, .h = h }, 0, "...", invert);
+                _ = self.drawText(allocator, .{ .x = ellipsis_x, .y = rect.y, .w = ellipsis_w, .h = rect.h }, 0, "...", invert);
             }
 
             if (text.len == 0 or overflow) {
