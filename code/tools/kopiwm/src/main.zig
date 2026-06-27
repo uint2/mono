@@ -1798,9 +1798,10 @@ pub fn main() !void {
     { // Select events.
         var wa: X.XSetWindowAttributes = .{
             .cursor = z.cursors.get(.Normal),
-            .event_mask = EM.SubstructureRedirectMask | EM.SubstructureNotifyMask //
-            | EM.ButtonPressMask | EM.PointerMotionMask | EM.EnterWindowMask //
-            | EM.LeaveWindowMask | EM.StructureNotifyMask | EM.PropertyChangeMask,
+            .event_mask = EM.PropertyChangeMask | EM.StructureNotifyMask |
+                EM.SubstructureRedirectMask | EM.SubstructureNotifyMask |
+                EM.ButtonPressMask | EM.PointerMotionMask |
+                EM.EnterWindowMask | EM.LeaveWindowMask,
         };
         X.XChangeWindowAttributes(dpy, z.root, CW.EventMask | CW.Cursor, &wa);
         X.XSelectInput(dpy, z.root, wa.event_mask);
