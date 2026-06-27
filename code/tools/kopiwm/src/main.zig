@@ -1231,7 +1231,7 @@ fn grabkeys() void {
 }
 
 /// (dwm) cleanup
-// Cleanup monitors and their clients.
+/// Cleanup monitors and their clients.
 fn cleanupMonitors(allocator: Allocator) void {
     var m_opt: ?*Monitor = undefined;
 
