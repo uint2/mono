@@ -3429,6 +3429,9 @@ pub inline fn XftFontOpenPattern(display: *Display, pattern: *FcPattern) ?*XftFo
 /// than len bytes of a UTF-8 encoded string when drawn with font, storing them
 /// in extents.
 ///
+/// The extents describe a user-space rectangle that encloses the "inked"
+/// portion of the glyphs
+///
 /// source: https://man.archlinux.org/man/Xft.3
 pub inline fn XftTextExtentsUtf8(
     display: *Display,
