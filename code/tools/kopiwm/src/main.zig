@@ -1239,7 +1239,7 @@ fn grabkeys() void {
 
 /// (dwm) cleanup
 // Continue to build this up as we go.
-fn cleanup(allocator: Allocator, wmcheckwin: X.Window) void {
+fn cleanup(allocator: Allocator) void {
     // View all clients at once. ~0 yields a bitmask of all high bits. I don't
     // fully understand why we do this yet, but I think it helps with clearing
     // out the clients.
@@ -1252,18 +1252,9 @@ fn cleanup(allocator: Allocator, wmcheckwin: X.Window) void {
             unmanage(allocator, c, false);
         }
     }
-    X.XUngrabKey(z.dpy, X.AnyKey, M.AnyModifier, z.root);
     while (z.mons) |mon| {
         cleanupmon(allocator, mon);
     }
-    for (z.cursors.values) |cursor| {
-        X.XFreeCursor(z.dpy, cursor);
-    }
-    for (std.enums.values(SchemeState)) |ss| {
-        z.drw.scmFree(allocator, z.scheme.get(ss));
-    }
-    X.XDestroyWindow(z.dpy, wmcheckwin);
-    z.drw.deinit(allocator);
     X.XSync(z.dpy, false);
     X.XSetInputFocus(z.dpy, X.PointerRoot, .PointerRoot, X.CurrentTime);
     X.XDeleteProperty(z.dpy, z.root, atoms.net(.ActiveWindow));
@@ -1695,6 +1686,7 @@ pub fn main() !void {
             return std.debug.print(NAME ++ ": could not find the first selected monitor\n", .{});
         };
     }
+    defer cleanup(allocator);
 
     // Initialize atoms.
     atoms.initializeAtomsForEnum(dpy, atoms.WM, &atoms.__WM);
@@ -1722,16 +1714,19 @@ pub fn main() !void {
         .fonts = &cfg.fonts,
         .colors = &cfg.colors,
     });
+    defer z.drw.deinit(allocator);
     z.lrpad = z.drw.fonts.h;
 
     // Initialize appearance.
     for (std.enums.values(SchemeState)) |ss|
         z.scheme.set(ss, try z.drw.scmCreate(allocator, cfg.colors.get(ss)));
+    defer for (std.enums.values(SchemeState)) |ss| z.drw.scmFree(allocator, z.scheme.get(ss));
 
     // Initialize cursors.
     z.cursors.set(.Normal, X.XCreateFontCursor(dpy, .Left_ptr));
     z.cursors.set(.Resize, X.XCreateFontCursor(dpy, .Sizing));
     z.cursors.set(.Move, X.XCreateFontCursor(dpy, .Fleur));
+    defer for (z.cursors.values) |cursor| X.XFreeCursor(z.dpy, cursor);
 
     // Initialize bars.
     updateBars();
@@ -1756,6 +1751,7 @@ pub fn main() !void {
     }
 
     grabkeys();
+    defer X.XUngrabKey(z.dpy, X.AnyKey, M.AnyModifier, z.root);
     focus(allocator, null);
 
     // End of setup ============================================================
