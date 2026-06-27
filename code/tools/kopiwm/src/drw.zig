@@ -7,43 +7,7 @@ const EnumArray = @import("enum_array.zig").EnumArray;
 const SchemeState = @import("enums.zig").SchemeState;
 const mem = std.mem;
 const Allocator = mem.Allocator;
-
-// TODO: change this to Font when all is said and done.
-/// This represents a linked list of fonts.
-pub const Font = struct {
-    const Self = @This();
-
-    dpy: *X.Display,
-    /// Standardized height of the font as computed at initialization.
-    height: c_int,
-    xfont: *X.XftFont,
-    next: ?*Font,
-
-    /// (dwm) drw_font_getexts
-    ///
-    /// Gets the extents of an utf-8 encoded string. It is on the user to ensure
-    /// that `utf8.str` is indeed utf-8 encoded.
-    pub fn getExtents(self: *const Self, utf8str: []const u8, w: ?*u32, h: ?*u32) void {
-        if (utf8str.len == 0) {
-            if (w) |w_ptr| w_ptr.* = 0;
-            if (h) |h_ptr| h_ptr.* = 0;
-            return;
-        }
-        var ext: X.XGlyphInfo = undefined;
-        X.XftTextExtentsUtf8(self.dpy, self.xfont, utf8str, &ext);
-        if (w) |w_ptr| w_ptr.* = @intCast(ext.xOff);
-        if (h) |h_ptr| h_ptr.* = @intCast(self.height); // Standardized height.
-    }
-
-    pub fn deinit(self: *Self, allocator: Allocator) void {
-        if (self.xfont.pattern) |pattern| {
-            X.FcPatternDestroy(pattern);
-        }
-        X.XftFontClose(self.dpy, self.xfont);
-        log.warn("Deallocate font: {*}", .{self});
-        allocator.destroy(self);
-    }
-};
+const Font = @import("font.zig").Font;
 
 pub fn Scheme(comptime T: type) type {
     return struct {
@@ -71,76 +35,13 @@ pub fn fontsetCreate(
     if (fonts.len == 0) return null;
     var ret: ?*Font = null;
     var it = std.mem.reverseIterator(fonts);
-    while (it.next()) |font| {
-        const cur = try xfontCreateFromName(allocator, dpy, screen, font);
+    while (it.next()) |fontName| {
+        var cur = try allocator.create(Font);
+        try cur.fromName(dpy, screen, fontName);
         cur.next = ret;
         ret = cur;
     }
     return ret;
-}
-
-/// (dwm) xfont_create
-fn xfontCreateFromPattern(
-    allocator: Allocator,
-    dpy: *X.Display,
-    font_pattern: *X.FcPattern,
-) error{ OutOfMemory, FontCreateError }!*Font {
-    const xfont = X.XftFontOpenPattern(dpy, font_pattern) orelse {
-        std.debug.print("error, cannot load font from pattern\n", .{});
-        return error.FontCreateError;
-    };
-
-    var font = try allocator.create(Font);
-    font.xfont = xfont;
-    font.height = xfont.ascent + xfont.descent;
-    font.dpy = dpy;
-
-    return font;
-}
-
-/// (dwm) xfont_create
-fn xfontCreateFromName(
-    allocator: Allocator,
-    dpy: *X.Display,
-    screen: c_int,
-    font_name: []const u8,
-) error{ OutOfMemory, FontCreateError }!*Font {
-    if (font_name.len == 0) {
-        std.debug.print("No font specified.", .{});
-        return error.FontCreateError;
-    }
-
-    // Using the pattern found at font->xfont->pattern does not yield the
-    // same substitution results as using the pattern returned by
-    // FcNameParse; using the latter results in the desired fallback
-    // behaviour whereas the former just results in missing-character
-    // rectangles being drawn, at least with some fonts.
-    const xfont = X.XftFontOpenName(dpy, screen, font_name) orelse {
-        std.debug.print("error, cannot load font from name: '{s}'\n", .{font_name});
-        return error.FontCreateError;
-    };
-    xfont.pattern = X.FcNameParse(font_name) orelse {
-        std.debug.print("error, cannot parse font name to pattern: '{s}'\n", .{font_name});
-        X.XftFontClose(dpy, xfont);
-        return error.FontCreateError;
-    };
-
-    var font = try allocator.create(Font);
-    font.xfont = xfont;
-    font.height = xfont.ascent + xfont.descent;
-    font.dpy = dpy;
-
-    return font;
-}
-
-/// (dwm) xfont_free
-fn xfontFree(allocator: Allocator, font: *Font) void {
-    if (font.xfont.pattern) |pattern| {
-        X.FcPatternDestroy(pattern);
-    }
-    X.XftFontClose(font.dpy, font.xfont);
-    log.warn("Deallocate font: {*}", .{font});
-    allocator.destroy(font);
 }
 
 pub const DrwInitParams = struct {
@@ -508,7 +409,7 @@ pub const Drw = struct {
                 _ = X.FcCharSetAddChar(fccharset, @intCast(utf8.codepoint));
 
                 const self_fonts_pattern = self.fonts.xfont.pattern orelse {
-                    // Refer to the comment in xfontCreateFromName for more information.
+                    // Refer to the comment in Font.fromName for more information.
                     @panic("the first font in the cache must be loaded from a font string.");
                 };
 
@@ -525,7 +426,7 @@ pub const Drw = struct {
 
                 if (match_opt) |match| {
                     const j = if (state.nomatches[h0] > 0) h1 else h0;
-                    usedfont = xfontCreateFromPattern(allocator, self.dpy, match) catch {
+                    usedfont.fromPattern(self.dpy, match) catch {
                         state.nomatches[j] = utf8.codepoint;
                         continue;
                     };
@@ -535,7 +436,7 @@ pub const Drw = struct {
                         curfont.next = usedfont;
                     } else {
                         state.nomatches[j] = utf8.codepoint;
-                        xfontFree(allocator, usedfont);
+                        usedfont.deinit(allocator);
                     }
                 }
             }
