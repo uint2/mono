@@ -1737,14 +1737,12 @@ pub fn main() !void {
     };
     z.root = X.RootWindow(dpy, z.screen);
 
-    var selmon: ?*Monitor = null;
-    // Make sure that `selmon` is initialized.
-    _ = try updategeom(allocator, &selmon);
-    if (selmon) |m| {
-        z.selmon = m;
-    } else {
-        std.debug.print("App could not find the first selected monitor (dwm: selmon)\n", .{});
-        return;
+    { // Initialize selmon, and make sure it's non-null.
+        var selmon: ?*Monitor = null;
+        _ = try updategeom(allocator, &selmon);
+        z.selmon = selmon orelse {
+            return std.debug.print(NAME ++ ": could not find the first selected monitor\n", .{});
+        };
     }
 
     // Initialize atoms.
