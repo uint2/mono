@@ -14,8 +14,6 @@ const Rect = @import("rect.zig").Rect;
 
 pub const Monitor = struct {
     const Self = @This();
-    /// A string to represent the current layout.
-    layout_symbol: []const u8 = undefined,
     /// Master window factor.
     mfact: f32 = cfg.mfact,
     /// Number of master windows.
@@ -45,11 +43,10 @@ pub const Monitor = struct {
 
     /// (dwm) createmon
     pub fn init(allocator: Allocator) error{OutOfMemory}!*Self {
-        var m = try allocator.create(Self);
+        const m = try allocator.create(Self);
         m.* = .{
             .lt = .init(&cfg.layouts[0]),
         };
-        m.layout_symbol = m.lt.now.symbol;
         std.log.info("Initialized a monitor!", .{});
         return m;
     }

@@ -318,7 +318,6 @@ fn updateClientList() void {
 
 /// (dwm) arrangemon
 fn arrangeMon(m: *Monitor) void {
-    m.layout_symbol = m.lt.now.symbol;
     if (m.lt.now.arrange) |f| {
         log.info("Arranging monitor {*} with algo \"{s}\"", .{ m, m.lt.now.symbol });
         f(m);
@@ -407,7 +406,7 @@ const R = struct {
             if (i < cfg.tags.len) {
                 click = .TagBar;
                 arg = .{ .ui = @as(u32, 1) << @intCast(i) };
-            } else if (ev.x < x + z.TEXTW(allocator, z.selmon.layout_symbol)) {
+            } else if (ev.x < x + z.TEXTW(allocator, z.selmon.lt.now.symbol)) {
                 click = .LtSymbol;
             } else if (ev.x > z.selmon.w.w - z.TEXTW(allocator, z.stext.get()) + z.lrpad - 2) {
                 click = .StatusText;
@@ -897,7 +896,6 @@ pub fn setLayout(allocator: Allocator, arg: *const Arg) void {
         else => return,
     };
     z.selmon.lt.now = lt;
-    z.selmon.layout_symbol = lt.symbol;
     if (z.selmon.sel) |_| {
         arrange(allocator, z.selmon);
     } else {
@@ -1589,13 +1587,13 @@ fn drawbar(allocator: Allocator, m: *Monitor) void {
         x += @intCast(w);
     }
 
-    w = z.TEXTW(allocator, m.layout_symbol);
+    w = z.TEXTW(allocator, m.lt.now.symbol);
     z.drw.setScheme(z.scheme.get(.Normal));
     x = z.drw.drawText(
         allocator,
         .{ .x = x, .y = 0, .w = w, .h = z.bar_height },
         z.lrpad / 2,
-        m.layout_symbol,
+        m.lt.now.symbol,
         0,
     );
 
