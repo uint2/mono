@@ -1167,7 +1167,8 @@ fn focus(allocator: Allocator, client: ?*Client) void {
         c.detachStack();
         c.attachStack();
         grabbuttons(c, true);
-        X.XSetWindowBorder(z.dpy, c.win, z.scheme.get(.Selected).border.pixel);
+        const scheme = z.scheme.get(.Selected);
+        X.XSetWindowBorder(z.dpy, c.win, scheme.border.pixel);
         c.setFocus();
     } else {
         X.XSetInputFocus(z.dpy, z.root, .PointerRoot, X.CurrentTime);
@@ -1231,6 +1232,12 @@ fn grabkeys() void {
 /// (dwm) cleanup
 // Continue to build this up as we go.
 fn cleanup(allocator: Allocator) void {
+    var m_opt: ?*Monitor = undefined;
+
+    // Hide all the bars so that we don't use fonts for cleanup.
+    m_opt = z.mons;
+    while (m_opt) |m| : (m_opt = m.next) m.show_bar = false;
+
     log.info("Start cleaning up monitors!", .{});
     // View all clients at once. ~0 yields a bitmask of all high bits. I don't
     // fully understand why we do this yet, but I think it helps with clearing
@@ -1238,7 +1245,7 @@ fn cleanup(allocator: Allocator) void {
     view(allocator, &.{ .ui = ~@as(u32, 0) });
     z.selmon.lt.set(&.{ .symbol = "", .arrange = null });
 
-    var m_opt: ?*Monitor = z.mons;
+    m_opt = z.mons;
     while (m_opt) |m| : (m_opt = m.next) {
         while (m.stack) |c| {
             unmanage(allocator, c, false);
@@ -1690,8 +1697,9 @@ pub fn main() !void {
     z.lrpad = @intCast(z.drw.fonts.height);
 
     // Initialize appearance.
-    for (std.enums.values(SchemeState)) |ss|
+    for (std.enums.values(SchemeState)) |ss| {
         z.scheme.set(ss, try z.drw.scmCreate(allocator, cfg.colors.get(ss)));
+    }
     defer for (std.enums.values(SchemeState)) |ss| z.drw.scmFree(allocator, z.scheme.get(ss));
 
     // Initialize cursors.
