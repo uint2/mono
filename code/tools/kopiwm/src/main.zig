@@ -166,20 +166,20 @@ fn run(z: *App, allocator: Allocator) DwmError!void {
 
 inline fn runOne(z: *App, alloc: Allocator, ev: *X.XEvent) DwmError!void {
     switch (ev.type) {
-        X.ButtonPress => try R.buttonPress(z, alloc, ev),
-        X.ClientMessage => R.clientMessage(z, alloc, ev),
-        X.ConfigureNotify => try R.configureNotify(z, alloc, ev),
-        X.ConfigureRequest => R.configureRequest(z, ev),
-        X.DestroyNotify => R.destroyNotify(z, alloc, ev),
-        X.EnterNotify => R.enterNotify(z, alloc, ev),
-        X.Expose => R.expose(z, alloc, ev),
-        X.FocusIn => R.focusIn(z, ev),
-        X.KeyPress => try R.keyPress(z, alloc, ev),
-        X.MapRequest => try R.mapRequest(z, alloc, ev),
-        X.MappingNotify => R.mappingNotify(z, ev),
-        X.MotionNotify => R.motionNotify(z, alloc, ev),
-        X.PropertyNotify => R.propertyNotify(z, alloc, ev),
-        X.UnmapNotify => R.unmapNotify(z, alloc, ev),
+        X.ButtonPress => try R.buttonPress(z, alloc, &ev.xbutton),
+        X.ClientMessage => R.clientMessage(z, alloc, &ev.xclient),
+        X.ConfigureNotify => try R.configureNotify(z, alloc, &ev.xconfigure),
+        X.ConfigureRequest => R.configureRequest(z, &ev.xconfigurerequest),
+        X.DestroyNotify => R.destroyNotify(z, alloc, &ev.xdestroywindow),
+        X.EnterNotify => R.enterNotify(z, alloc, &ev.xcrossing),
+        X.Expose => R.expose(z, alloc, &ev.xexpose),
+        X.FocusIn => R.focusIn(z, &ev.xfocus),
+        X.KeyPress => try R.keyPress(z, alloc, &ev.xkey),
+        X.MapRequest => try R.mapRequest(z, alloc, &ev.xmaprequest),
+        X.MappingNotify => R.mappingNotify(z, &ev.xmapping),
+        X.MotionNotify => R.motionNotify(z, alloc, &ev.xmotion),
+        X.PropertyNotify => R.propertyNotify(z, alloc, &ev.xproperty),
+        X.UnmapNotify => R.unmapNotify(z, alloc, &ev.xunmap),
         else => {},
     }
 }
@@ -325,58 +325,15 @@ const setup = struct {
 /// Functions that are called in [r]eaction to events. {{{
 const R = struct {
     /// (dwm) buttonpress
-    fn buttonPress(z: *App, allocator: Allocator, e: *X.XEvent) DwmError!void {
-        const ev: X.XButtonPressedEvent = e.xbutton;
-        var click: Clk = .RootWin;
-        var arg: Arg = undefined;
-
-        // Focus monitor if necessary.
-        const m = z.windowToMonitor(ev.window);
-        if (m != z.selmon) {
-            if (z.selmon.sel) |c| c.unfocus(z, true);
-            z.selmon = m;
-            z.resolveClientAndFocus(allocator, null);
-        }
-
-        // Locate the click, and populate the `click` variable.
-        // This block searches for the click location in the bar window.
-        if (ev.window == z.selmon.barwin) {
-            var i: usize = 0;
-            var x: u32 = 0;
-            while (true) {
-                x += z.TEXTW(allocator, cfg.tags[i].text);
-                if (ev.x >= x) {
-                    i += 1;
-                    if (i < cfg.tags.len) continue;
-                }
-                break;
-            }
-            if (i < cfg.tags.len) {
-                click = .TagBar;
-                arg = .{ .ui = @as(u32, 1) << @intCast(i) };
-            } else if (ev.x < x + z.TEXTW(allocator, z.selmon.lt.now.symbol)) {
-                click = .LtSymbol;
-            } else if (ev.x > z.selmon.w.w - z.TEXTW(allocator, z.stext.get()) + z.lrpad - 2) {
-                click = .StatusText;
-            } else {
-                click = .WinTitle;
-            }
-        }
-        // Locate the click, and populate the `click` variable.
-        // This block searches for the click location in the client.
-        if (z.winToClient(ev.window)) |c| {
-            z.resolveClientAndFocus(allocator, c);
-            z.selmon.restack(allocator, z);
-            X.XAllowEvents(z.dpy, .ReplayPointer, X.CurrentTime);
-            click = .ClientWin;
-        }
+    fn buttonPress(z: *App, allocator: Allocator, ev: *X.XButtonPressedEvent) DwmError!void {
+        const click = z.resolveClick(allocator, ev);
 
         // Search the `buttons` map for a hit.
         for (cfg.buttons) |*button| {
-            if (button.click != click or button.button != ev.button) continue;
+            if (button.click != click.loc or button.button != ev.button) continue;
             if (z.numlockmask.cleanMask(button.mask) == z.numlockmask.cleanMask(ev.state)) {
-                const arg2 = switch (click) {
-                    .TagBar => &arg,
+                const arg2 = switch (click.loc) {
+                    .TagBar => &Arg{ .ui = click.tagMask },
                     else => &button.lf.arg,
                 };
                 switch (button.lf.func) {
@@ -390,8 +347,7 @@ const R = struct {
     }
 
     /// (dwm) clientmessage
-    fn clientMessage(z: *App, allocator: Allocator, e: *X.XEvent) void {
-        const ev: X.XClientMessageEvent = e.xclient;
+    fn clientMessage(z: *App, allocator: Allocator, ev: *X.XClientMessageEvent) void {
         var c: *Client = z.winToClient(ev.window) orelse return;
 
         if (ev.message_type == atoms.net(.WMState)) {
@@ -412,8 +368,7 @@ const R = struct {
     }
 
     /// (dwm) configurenotify
-    fn configureNotify(z: *App, allocator: Allocator, e: *X.XEvent) error{OutOfMemory}!void {
-        const ev: X.XConfigureEvent = e.xconfigure;
+    fn configureNotify(z: *App, allocator: Allocator, ev: *X.XConfigureEvent) error{OutOfMemory}!void {
         if (ev.window != z.root) return;
         const dirty = z.s.w != ev.width or z.s.h != ev.height;
         z.s.w = @intCast(ev.width);
@@ -438,9 +393,9 @@ const R = struct {
             z.arrangeAllMonitors();
         }
     }
+
     /// (dwm) configurerequest
-    fn configureRequest(z: *App, e: *X.XEvent) void {
-        const ev = e.xconfigurerequest;
+    fn configureRequest(z: *App, ev: *X.XConfigureRequestEvent) void {
         const vmask = ev.value_mask;
 
         if (z.winToClient(ev.window)) |c| {
@@ -499,14 +454,12 @@ const R = struct {
     }
 
     /// (dwm) destroynotify
-    fn destroyNotify(z: *App, allocator: Allocator, e: *X.XEvent) void {
-        const ev: X.XDestroyWindowEvent = e.xdestroywindow;
+    fn destroyNotify(z: *App, allocator: Allocator, ev: *X.XDestroyWindowEvent) void {
         if (z.winToClient(ev.window)) |c| c.unmanage(z, allocator, true);
     }
 
     /// (dwm) enternotify
-    fn enterNotify(z: *App, allocator: Allocator, e: *X.XEvent) void {
-        const ev: X.XCrossingEvent = e.xcrossing;
+    fn enterNotify(z: *App, allocator: Allocator, ev: *X.XCrossingEvent) void {
         if ((ev.mode != X.NotifyNormal or ev.detail == X.NotifyInferior) and ev.window != z.root) {
             return;
         }
@@ -522,24 +475,21 @@ const R = struct {
     }
 
     /// (dwm) expose
-    fn expose(z: *App, allocator: Allocator, e: *X.XEvent) void {
-        const ev: X.XExposeEvent = e.xexpose;
+    fn expose(z: *App, allocator: Allocator, ev: *X.XExposeEvent) void {
         if (ev.count == 0) {
             z.windowToMonitor(ev.window).drawbar(allocator, z);
         }
     }
 
     /// (dwm) focusin
-    fn focusIn(z: *App, e: *X.XEvent) void {
-        const ev: X.XFocusChangeEvent = e.xfocus;
+    fn focusIn(z: *App, ev: *X.XFocusChangeEvent) void {
         if (z.selmon.sel) |sel| {
             if (ev.window != sel.win) sel.setInputFocus(z);
         }
     }
 
     /// (dwm) keypress
-    fn keyPress(z: *App, allocator: Allocator, e: *X.XEvent) DwmError!void {
-        const ev: X.XKeyEvent = e.xkey;
+    fn keyPress(z: *App, allocator: Allocator, ev: *X.XKeyEvent) DwmError!void {
         const keysym = X.XkbKeycodeToKeysym(z.dpy, @intCast(ev.keycode), 0, 0);
         for (cfg.keys) |key| {
             if (keysym == key.sym and z.numlockmask.cleanMask(key.mod) == z.numlockmask.cleanMask(ev.state)) {
@@ -554,8 +504,7 @@ const R = struct {
     }
 
     /// (dwm) mappingnotify
-    fn mappingNotify(z: *App, e: *X.XEvent) void {
-        const ev: *X.XMappingEvent = &e.xmapping;
+    fn mappingNotify(z: *App, ev: *X.XMappingEvent) void {
         X.XRefreshKeyboardMapping(ev);
         if (ev.request == X.MappingKeyboard) {
             z.grabkeys();
@@ -563,8 +512,7 @@ const R = struct {
     }
 
     /// (dwm) maprequest
-    fn mapRequest(z: *App, allocator: Allocator, e: *X.XEvent) error{OutOfMemory}!void {
-        const ev: X.XMapRequestEvent = e.xmaprequest;
+    fn mapRequest(z: *App, allocator: Allocator, ev: *X.XMapRequestEvent) error{OutOfMemory}!void {
         var wa: X.XWindowAttributes = undefined;
 
         if (!X.XGetWindowAttributes(z.dpy, ev.window, &wa)) return;
@@ -577,8 +525,7 @@ const R = struct {
     }
 
     /// (dwm) motionnotify
-    fn motionNotify(z: *App, allocator: Allocator, e: *X.XEvent) void {
-        const ev: X.XMotionEvent = e.xmotion;
+    fn motionNotify(z: *App, allocator: Allocator, ev: *X.XMotionEvent) void {
         const static = struct {
             var mon: ?*Monitor = null;
         };
@@ -598,8 +545,7 @@ const R = struct {
     }
 
     /// (dwm) propertynotify
-    fn propertyNotify(z: *App, allocator: Allocator, e: *X.XEvent) void {
-        const ev: X.XPropertyEvent = e.xproperty;
+    fn propertyNotify(z: *App, allocator: Allocator, ev: *X.XPropertyEvent) void {
         if (ev.window == z.root and ev.atom == X.XA_WM_NAME) {
             z.updateStatus(allocator);
         } else if (ev.state == X.PropertyDelete) {
@@ -632,8 +578,7 @@ const R = struct {
     }
 
     /// (dwm) unmapnotify
-    fn unmapNotify(z: *App, allocator: Allocator, e: *X.XEvent) void {
-        const ev: X.XUnmapEvent = e.xunmap;
+    fn unmapNotify(z: *App, allocator: Allocator, ev: *X.XUnmapEvent) void {
         if (z.winToClient(ev.window)) |c| {
             if (ev.send_event == 0) {
                 c.unmanage(z, allocator, false);

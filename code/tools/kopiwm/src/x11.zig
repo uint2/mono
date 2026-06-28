@@ -241,6 +241,47 @@ pub const XClientMessageEvent = X11.XClientMessageEvent;
 /// source: https://x.org/releases/X11R7.7/doc/man/man3/XConfigureEvent.3.xhtml
 pub const XConfigureEvent = X11.XConfigureEvent;
 
+/// The structure for ConfigureRequest events contains:
+///
+/// ```c
+/// typedef struct {
+///     int type;             /* ConfigureRequest */
+///     unsigned long serial; /* # of last request processed by server */
+///     Bool send_event;      /* true if this came from a SendEvent request */
+///     Display *display;     /* Display the event was read from */
+///     Window parent;
+///     Window window;
+///     int x, y;
+///     int width, height;
+///     int border_width;
+///     Window above;
+///     int detail;           /* Above, Below, TopIf, BottomIf, Opposite */
+///     unsigned long value_mask;
+/// } XConfigureRequestEvent;
+/// ```
+///
+/// The type member is set to the event type constant name that uniquely
+/// identifies it. For example, when the X server reports a GraphicsExpose
+/// event to a client application, it sends an XGraphicsExposeEvent structure
+/// with the type member set to GraphicsExpose. The display member is set to a
+/// pointer to the display the event was read on. The send_event member is set
+/// to True if the event came from a SendEvent protocol request. The serial
+/// member is set from the serial number reported in the protocol but expanded
+/// from the 16-bit least-significant bits to a full 32-bit value. The window
+/// member is set to the window that is most useful to toolkit dispatchers.
+///
+/// The parent member is set to the parent window. The window member is set to
+/// the window whose size, position, border width, and/or stacking order is to
+/// be reconfigured. The value_mask member indicates which components were
+/// specified in the ConfigureWindow protocol request. The corresponding values
+/// are reported as given in the request. The remaining values are filled in
+/// from the current geometry of the window, except in the case of above
+/// (sibling) and detail (stack-mode), which are reported as None and Above,
+/// respectively, if they are not given in the request.
+///
+/// source: https://x.org/releases/X11R7.7/doc/man/man3/XConfigureRequestEvent.3.xhtml
+pub const XConfigureRequestEvent = X11.XConfigureRequestEvent;
+
 /// ```c
 /// typedef struct {
 ///     int type;             /* EnterNotify or LeaveNotify */

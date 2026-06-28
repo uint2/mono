@@ -18,6 +18,7 @@ const Client = @import("client.zig").Client;
 const Allocator = std.mem.Allocator;
 const EnumArray = @import("enum_array.zig").EnumArray;
 const cfg = @import("config.zig");
+const Clk = @import("enums.zig").Clk;
 
 const NAME = @import("build_opts").name;
 const VERSION = @import("build_opts").version;
@@ -371,4 +372,55 @@ pub fn updategeom(self: *Self) bool {
         self.selmon = self.windowToMonitor(self.root);
     }
     return dirty;
+}
+
+pub fn resolveClick(self: *Self, allocator: Allocator, ev: *const X.XButtonPressedEvent) struct {
+    /// Location of the click.
+    loc: Clk,
+    /// The tag that was clicked, as a bitmask.
+    tagMask: u32,
+} {
+    var click: Clk = .RootWin;
+    var tagMask: u32 = 0;
+
+    // Focus monitor if necessary.
+    const m = self.windowToMonitor(ev.window);
+    if (m != self.selmon) {
+        if (self.selmon.sel) |c| c.unfocus(self, true);
+        self.selmon = m;
+        self.resolveClientAndFocus(allocator, null);
+    }
+
+    // This block searches for the click location in the bar window. That is
+    // the status bar area.
+    if (ev.window == self.selmon.barwin) {
+        var i: usize = 0;
+        var x: u32 = 0;
+        while (true) {
+            x += self.TEXTW(allocator, cfg.tags[i].text);
+            if (ev.x >= x) {
+                i += 1;
+                if (i < cfg.tags.len) continue;
+            }
+            break;
+        }
+        if (i < cfg.tags.len) {
+            click = .TagBar;
+            tagMask = @as(u32, 1) << @intCast(i);
+        } else if (ev.x < x + self.TEXTW(allocator, self.selmon.lt.now.symbol)) {
+            click = .LtSymbol;
+        } else if (ev.x > self.selmon.w.w - self.TEXTW(allocator, self.stext.get()) + self.lrpad - 2) {
+            click = .StatusText;
+        } else {
+            click = .WinTitle;
+        }
+    }
+    // This block searches for the click location in the client.
+    else if (self.winToClient(ev.window)) |c| {
+        self.resolveClientAndFocus(allocator, c);
+        self.selmon.restack(allocator, self);
+        X.XAllowEvents(self.dpy, .ReplayPointer, X.CurrentTime);
+        click = .ClientWin;
+    }
+    return .{ .loc = click, .tagMask = tagMask };
 }
