@@ -20,7 +20,7 @@ const defaults = @import("config_defaults.zig");
 // aggressive tree-shaking, so lots of code is just not checked at comptime if
 // a minimal config is used, so we keep it as a switch if ever we want to debug
 // those functions.
-const USE_DEFAULT_CONFIG = false;
+const USE_DEFAULT_CONFIG = true;
 
 pub const BUTTONMASK = EM.ButtonPressMask | EM.ButtonReleaseMask;
 pub const MOUSEMASK = BUTTONMASK | EM.PointerMotionMask;
