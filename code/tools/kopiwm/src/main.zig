@@ -220,6 +220,9 @@ fn arrangeMon(m: *Monitor) void {
 }
 
 /// (dwm) restack
+///
+/// Puts the selected client at the top of the stacking order, so that no other
+/// window obscures it. And then also syncs our stacking order with X's.
 fn restack(z: *App, allocator: Allocator, m: *Monitor) void {
     drawbar(z, allocator, m);
 
@@ -230,7 +233,7 @@ fn restack(z: *App, allocator: Allocator, m: *Monitor) void {
         X.XRaiseWindow(z.dpy, sel.win);
     }
     if (has_arrange) {
-        var wc = X.XWindowChanges{ .stack_mode = X.Below, .sibling = m.barwin };
+        var wc = X.XWindowChanges{ .sibling = m.barwin, .stack_mode = X.Below };
         var c_opt = m.stack;
         while (c_opt) |c| : (c_opt = c.snext) {
             if (!c.is_floating.now and c.isVisible()) {
