@@ -70,7 +70,7 @@ pub const Monitor = struct {
         return (sel.tags & mask) != 0;
     }
 
-    /// Count the number of clients that are tiled.
+    /// Count the number of clients (including this one) that are tiled.
     pub fn countTiledClients(self: *Self) u32 {
         var c = self.clients orelse return 0;
         var n: u32 = if (c.isTiled()) 1 else 0;

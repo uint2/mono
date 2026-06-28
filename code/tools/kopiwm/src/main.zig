@@ -990,16 +990,11 @@ pub const layouts = struct {
         while (c_opt) |c| : (c_opt = c.next) {
             if (c.isVisible()) n += 1;
         }
-        if (n > 0) { // Override layout symbol.
-            // TODO: have to make the layout symbol an owned buffer. Right not it
-            // can only display const strings.
-            // snprintf(m->ltsymbol, sizeof m->ltsymbol, "[%d]", n);
-        }
-        c_opt = (c_opt orelse return).nextTiled();
+        c_opt = (m.clients orelse return).nextTiled();
         while (c_opt) |c| : (c_opt = c.nextTiled()) {
             var r = m.w;
-            r.w = m.w.w - 2 * @as(u32, @intCast(c.bw.now));
-            r.h = m.w.h - 2 * @as(u32, @intCast(c.bw.now));
+            r.w = m.w.w - 2 * c.bw.now;
+            r.h = m.w.h - 2 * c.bw.now;
             c.hintAndResize(r, false);
         }
     }
