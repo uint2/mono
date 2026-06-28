@@ -105,9 +105,9 @@ fn manage(z: *App, allocator: Allocator, w: X.Window, wa: *X.XWindowAttributes) 
     }
     r.x = @max(r.x, c.mon.w.x); // If client is too far left, truncate it.
     r.y = @max(r.y, c.mon.w.y); // If client is too far up, truncate it.
-    c.bw.set(cfg.borderpx);
+    c.borderWidth.set(cfg.borderpx);
 
-    var wc = X.XWindowChanges{ .border_width = @intCast(c.bw.now) };
+    var wc = X.XWindowChanges{ .border_width = @intCast(c.borderWidth.now) };
     X.XConfigureWindow(z.dpy, w, CW.BorderWidth, &wc);
     X.XSetWindowBorder(z.dpy, w, z.scheme.get(.Normal).border.pixel);
 
@@ -170,7 +170,7 @@ fn unmanage(z: *App, allocator: Allocator, c: *Client, destroyed: bool) void {
         X.XGrabServer(z.dpy); // dwm: Avoid race conditions.
         _ = X.XSetErrorHandler(E.xerrordummy);
         X.XSelectInput(z.dpy, c.win, EM.NoEventMask);
-        var wc = X.XWindowChanges{ .border_width = @intCast(c.bw.prev) };
+        var wc = X.XWindowChanges{ .border_width = @intCast(c.borderWidth.prev) };
         X.XConfigureWindow(z.dpy, c.win, CW.BorderWidth, &wc); // restore border
         X.XUngrabButton(z.dpy, X.AnyButton, M.AnyModifier, c.win);
         c.setState(.WithdrawnState);
@@ -394,7 +394,7 @@ const R = struct {
 
         if (z.winToClient(ev.window)) |c| {
             if (vmask & CW.BorderWidth != 0) {
-                c.bw.set(@intCast(ev.border_width));
+                c.borderWidth.set(@intCast(ev.border_width));
             } else if (c.is_floating.now or z.selmon.lt.now.arrange == null) {
                 const m = c.mon;
                 if (vmask & CW.X != 0) {
@@ -975,8 +975,8 @@ pub const layouts = struct {
         c_opt = (m.clients orelse return).nextTiled();
         while (c_opt) |c| : (c_opt = c.nextTiled()) {
             var r = m.w;
-            r.w = m.w.w - 2 * c.bw.now;
-            r.h = m.w.h - 2 * c.bw.now;
+            r.w = m.w.w - 2 * c.borderWidth.now;
+            r.h = m.w.h - 2 * c.borderWidth.now;
             c.hintAndResize(r, false);
         }
     }
@@ -1009,8 +1009,8 @@ pub const layouts = struct {
                 c.hintAndResize(.{
                     .x = m.w.x,
                     .y = m.w.y + my,
-                    .w = @intCast(mw - (2 * c.bw.now)),
-                    .h = @intCast(h - (2 * c.bw.now)),
+                    .w = @intCast(mw - (2 * c.borderWidth.now)),
+                    .h = @intCast(h - (2 * c.borderWidth.now)),
                 }, false);
                 if (my + c.height() < m.w.h) {
                     my += c.height();
@@ -1020,8 +1020,8 @@ pub const layouts = struct {
                 c.hintAndResize(.{
                     .x = m.w.x + @as(i32, @intCast(mw)),
                     .y = m.w.y + ty,
-                    .w = m.w.w - mw - 2 * c.bw.now,
-                    .h = h - 2 * c.bw.now,
+                    .w = m.w.w - mw - 2 * c.borderWidth.now,
+                    .h = h - 2 * c.borderWidth.now,
                 }, false);
                 if (ty + c.height() < m.w.h) {
                     ty += c.height();
@@ -1154,7 +1154,7 @@ pub const mp = struct {
                         .w = c.pos.now.w,
                         .h = c.pos.now.h,
                     };
-                    new.snap(&z.selmon.w, @intCast(c.bw.now), cfg.snap);
+                    new.snap(&z.selmon.w, @intCast(c.borderWidth.now), cfg.snap);
                     if (z.selmon.lt.now.arrange != null and
                         !c.is_floating.now and
                         (@abs(new.x - c.pos.now.x) > cfg.snap or @abs(new.y - c.pos.now.y) > cfg.snap))
@@ -1202,8 +1202,8 @@ pub const mp = struct {
         if (!grab_ok) return;
         if (c.is_floating.now) {
             X.XWarpPointer(z.dpy, X.None, c.win, .zero, //
-                @intCast(c.pos.now.w + c.bw.now - 1), //
-                @intCast(c.pos.now.h + c.bw.now - 1));
+                @intCast(c.pos.now.w + c.borderWidth.now - 1), //
+                @intCast(c.pos.now.h + c.borderWidth.now - 1));
         } else {
             X.XWarpPointer(z.dpy, X.None, z.selmon.barwin, .zero, //
                 @intFromFloat(z.selmon.mfact * @as(f32, @floatFromInt(z.selmon.m.w))), //
@@ -1219,8 +1219,8 @@ pub const mp = struct {
                     if (ev.xmotion.time - lasttime <= cfg.refreshinterval) continue;
 
                     lasttime = ev.xmotion.time;
-                    const nw: i32 = @max(@as(i32, @intCast(ev.xmotion.x)) - ocx - 2 * @as(i32, @intCast(c.bw.now)) + 1, 1);
-                    const nh: i32 = @max(@as(i32, @intCast(ev.xmotion.y)) - ocy - 2 * @as(i32, @intCast(c.bw.now)) + 1, 1);
+                    const nw: i32 = @max(@as(i32, @intCast(ev.xmotion.x)) - ocx - 2 * @as(i32, @intCast(c.borderWidth.now)) + 1, 1);
+                    const nh: i32 = @max(@as(i32, @intCast(ev.xmotion.y)) - ocy - 2 * @as(i32, @intCast(c.borderWidth.now)) + 1, 1);
                     if (!c.is_floating.now) {
                         const f = @as(f32, @floatFromInt(ev.xmotion.x)) /
                             @as(f32, @floatFromInt(z.selmon.m.w));
@@ -1255,8 +1255,8 @@ pub const mp = struct {
         }
         if (c.is_floating.now) {
             X.XWarpPointer(z.dpy, X.None, c.win, .zero, //
-                @intCast(c.pos.now.w + c.bw.now - 1), //
-                @intCast(c.pos.now.h + c.bw.now - 1));
+                @intCast(c.pos.now.w + c.borderWidth.now - 1), //
+                @intCast(c.pos.now.h + c.borderWidth.now - 1));
         }
         X.XUngrabPointer(z.dpy, X.CurrentTime);
         while (X.XCheckMaskEvent(z.dpy, EM.EnterWindowMask, &ev)) {}

@@ -40,7 +40,7 @@ pub const Client = struct {
     sz: ClientSizes = .init,
     hintsvalid: bool = false,
     /// Border width.
-    bw: toggle(c_uint),
+    borderWidth: toggle(c_uint),
     /// Bitmask of active tags.
     tags: u32 = 0,
     is_fixed: bool = false,
@@ -69,7 +69,7 @@ pub const Client = struct {
             .win = window,
             .mon = monitor,
             .pos = .init(.fromX(X.XWindowAttributes, wa)),
-            .bw = .init(@intCast(wa.border_width)),
+            .borderWidth = .init(@intCast(wa.border_width)),
             .is_floating = .init(false),
         };
     }
@@ -207,12 +207,12 @@ pub const Client = struct {
 
     /// (dwm) WIDTH
     pub inline fn width(self: *const Self) i32 {
-        return @intCast(self.pos.now.w + 2 * self.bw.now);
+        return @intCast(self.pos.now.w + 2 * self.borderWidth.now);
     }
 
     /// (dwm) HEIGHT
     pub inline fn height(self: *const Self) i32 {
-        return @intCast(self.pos.now.h + 2 * self.bw.now);
+        return @intCast(self.pos.now.h + 2 * self.borderWidth.now);
     }
 
     /// (dwm) configure
@@ -222,7 +222,7 @@ pub const Client = struct {
         xconf.display = dpy;
         xconf.event = self.win;
         xconf.window = self.win;
-        xconf.border_width = @intCast(self.bw.now);
+        xconf.border_width = @intCast(self.borderWidth.now);
         xconf.above = X.None;
         xconf.override_redirect = X.False;
         var event = X.XEvent{ .xconfigure = xconf };
@@ -263,7 +263,7 @@ pub const Client = struct {
                 1,
             );
             self.isfullscreen = true;
-            self.bw.set(0);
+            self.borderWidth.set(0);
             self.is_floating.set(true);
             self.resize(self.mon.m);
             X.XRaiseWindow(self.app.dpy, self.win);
@@ -280,7 +280,7 @@ pub const Client = struct {
             );
             self.isfullscreen = false;
             self.is_floating.revert();
-            self.bw.revert();
+            self.borderWidth.revert();
             self.pos.revert();
             self.resize(self.pos.now);
             // arrange(self.mon);
@@ -303,7 +303,7 @@ pub const Client = struct {
     pub fn resize(self: *Self, rect: Rect) void {
         const z = self.app;
         var wc = rect.toX(X.XWindowChanges);
-        wc.border_width = @intCast(self.bw.now);
+        wc.border_width = @intCast(self.borderWidth.now);
         const flags = CW.X | CW.Y | CW.Width | CW.Height | CW.BorderWidth;
         X.XConfigureWindow(z.dpy, self.win, flags, &wc);
         self.pos.set(rect);
@@ -330,7 +330,7 @@ pub const Client = struct {
         rect.w = @max(1, rect.w);
         rect.h = @max(1, rect.h);
 
-        const bw: i32 = @intCast(c.bw.now);
+        const bw: i32 = @intCast(c.borderWidth.now);
         if (interact) {
             if (rect.x > c.app.s.w) {
                 // left-most point is beyond the limits of the current monitor.
