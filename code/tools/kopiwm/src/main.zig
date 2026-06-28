@@ -74,12 +74,12 @@ fn getState(z: *App, w: X.Window) @typeInfo(X.WindowState).@"enum".tag_type {
 /// (dwm) manage
 fn manage(z: *App, allocator: Allocator, w: X.Window, wa: *X.XWindowAttributes) error{OutOfMemory}!void {
     const c = try allocator.create(Client);
-    c.* = .init(z, w, z.selmon, wa);
+    c.* = .init(w, z.selmon, wa);
     const transient_window = X.XGetTransientForHint(z.dpy, w);
 
     log.info("Created client {*}", .{c});
 
-    c.updateTitle();
+    c.updateTitle(z);
     blk: {
         if (transient_window) |_| {
             // This seems to make very little sense if there is a bijection between
@@ -91,7 +91,7 @@ fn manage(z: *App, allocator: Allocator, w: X.Window, wa: *X.XWindowAttributes) 
             }
         }
         c.mon = z.selmon;
-        c.applyRules();
+        c.applyRules(z.dpy);
     }
     var r = &c.*.pos.now;
 
@@ -112,9 +112,9 @@ fn manage(z: *App, allocator: Allocator, w: X.Window, wa: *X.XWindowAttributes) 
     X.XSetWindowBorder(z.dpy, w, z.scheme.get(.Normal).border.pixel);
 
     c.configure(z.dpy); // propagates border_width, if size doesn't change
-    c.updateWindowType();
-    c.updateSizeHints();
-    c.updateWMHints();
+    c.updateWindowType(allocator, z);
+    c.updateSizeHints(z);
+    c.updateWMHints(z);
 
     const mask = EM.EnterWindowMask | EM.FocusChangeMask | EM.PropertyChangeMask | EM.StructureNotifyMask;
     X.XSelectInput(z.dpy, w, mask);
@@ -150,7 +150,7 @@ fn manage(z: *App, allocator: Allocator, w: X.Window, wa: *X.XWindowAttributes) 
     ); // dwm: some windows require this.
     // me: I have no idea why. Looks like we're pushing the window off the screen.
 
-    c.setState(.NormalState);
+    c.setState(z.dpy, .NormalState);
     if (c.mon == z.selmon) {
         if (c.mon.sel) |c2| c2.unfocus(z, false);
     }
@@ -173,7 +173,7 @@ fn unmanage(z: *App, allocator: Allocator, c: *Client, destroyed: bool) void {
         var wc = X.XWindowChanges{ .border_width = @intCast(c.borderWidth.prev) };
         X.XConfigureWindow(z.dpy, c.win, CW.BorderWidth, &wc); // restore border
         X.XUngrabButton(z.dpy, X.AnyButton, M.AnyModifier, c.win);
-        c.setState(.WithdrawnState);
+        c.setState(z.dpy, .WithdrawnState);
         X.XSync(z.dpy, false);
         _ = X.XSetErrorHandler(E.xerror);
         X.XUngrabServer(z.dpy);
@@ -279,18 +279,19 @@ const R = struct {
     }
 
     /// (dwm) clientmessage
-    fn clientMessage(z: *App, e: *X.XEvent) void {
+    fn clientMessage(z: *App, allocator: Allocator, e: *X.XEvent) void {
         const ev: X.XClientMessageEvent = e.xclient;
         var c: *Client = z.winToClient(ev.window) orelse return;
 
         if (ev.message_type == atoms.net(.WMState)) {
             const fs_atom = atoms.net(.WMFullscreen);
             if (ev.data.l[1] == fs_atom or ev.data.l[2] == fs_atom) {
-                c.setFullscreen(switch (ev.data.l[0]) {
+                const fullscreen = switch (ev.data.l[0]) {
                     1 => true, // _NET_WM_STATE_ADD
                     2 => !c.isfullscreen, // _NET_WM_STATE_TOGGLE
                     else => false,
-                });
+                };
+                c.setFullscreen(allocator, z, fullscreen);
             }
         } else if (ev.message_type == atoms.net(.ActiveWindow)) {
             if (c != z.selmon.sel and c.isurgent) {
@@ -317,7 +318,7 @@ const R = struct {
                 c_opt = m.clients;
                 while (c_opt) |c| : (c_opt = c.next) {
                     if (c.isfullscreen) {
-                        c.resize(&m.m);
+                        c.resize(z.dpy, &m.m);
                     }
                 }
                 X.XMoveResizeWindow(z.dpy, m.barwin, m.w.x, m.w.y, m.w.w, z.bar_height);
@@ -421,7 +422,7 @@ const R = struct {
     fn focusIn(z: *App, e: *X.XEvent) void {
         const ev: X.XFocusChangeEvent = e.xfocus;
         if (z.selmon.sel) |sel| {
-            if (ev.window != sel.win) sel.setInputFocus();
+            if (ev.window != sel.win) sel.setInputFocus(z);
         }
     }
 
@@ -502,19 +503,19 @@ const R = struct {
                 },
                 X.XA_WM_NORMAL_HINTS => c.hintsvalid = false,
                 X.XA_WM_HINTS => {
-                    c.updateWMHints();
+                    c.updateWMHints(z);
                     drawbars(z, allocator);
                 },
                 else => {},
             }
             if (ev.atom == X.XA_WM_NAME or ev.atom == atoms.net(.WMName)) {
-                c.updateTitle();
+                c.updateTitle(z);
                 if (c == c.mon.sel) {
                     c.mon.drawbar(allocator, z);
                 }
             }
             if (ev.atom == atoms.net(.WMWindowType)) {
-                c.updateWindowType();
+                c.updateWindowType(allocator, z);
             }
         }
     }
@@ -526,7 +527,7 @@ const R = struct {
             if (ev.send_event == 0) {
                 unmanage(z, allocator, c, false);
             } else {
-                c.setState(.WithdrawnState);
+                c.setState(z.dpy, .WithdrawnState);
             }
         }
     }
@@ -551,7 +552,7 @@ fn run(z: *App, allocator: Allocator) DwmError!void {
 inline fn runOne(z: *App, alloc: Allocator, ev: *X.XEvent) DwmError!void {
     switch (ev.type) {
         X.ButtonPress => try R.buttonPress(z, alloc, ev),
-        X.ClientMessage => R.clientMessage(z, ev),
+        X.ClientMessage => R.clientMessage(z, alloc, ev),
         X.ConfigureNotify => try R.configureNotify(z, alloc, ev),
         X.ConfigureRequest => R.configureRequest(z, ev),
         X.DestroyNotify => R.destroyNotify(z, alloc, ev),
@@ -620,7 +621,7 @@ fn sendMon(z: *App, allocator: Allocator, c: *Client, m: *Monitor) void {
     c.tags = m.tags; // Assign tags of target monitor.
     c.attach();
     c.attachStack();
-    if (c.isfullscreen) c.resize(&m.m);
+    if (c.isfullscreen) c.resize(z.dpy, &m.m);
     focus(z, allocator, null);
     z.arrangeAllMonitors();
 }
@@ -1010,7 +1011,7 @@ pub const mp = struct {
     pub fn killClient(z: *App, _: *const Arg) void {
         const sel = z.selmon.sel orelse return;
         log.info("Trying to kill client {*}", .{sel});
-        if (!sel.sendEvent(atoms.wm(.Delete))) {
+        if (!sel.sendEvent(z.dpy, atoms.wm(.Delete))) {
             log.info("Kill effective", .{});
             X.XGrabServer(z.dpy);
             _ = X.XSetErrorHandler(E.xerrordummy);
