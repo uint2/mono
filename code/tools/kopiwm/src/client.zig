@@ -266,7 +266,7 @@ pub const Client = struct {
             self.isfullscreen = true;
             self.borderWidth.set(0);
             self.is_floating.set(true);
-            self.resize(self.mon.m);
+            self.resize(&self.mon.m);
             X.XRaiseWindow(self.app.dpy, self.win);
         } else if (!fullscreen and self.isfullscreen) {
             X.XChangeProperty(
@@ -283,7 +283,8 @@ pub const Client = struct {
             self.is_floating.revert();
             self.borderWidth.revert();
             self.pos.revert();
-            self.resize(self.pos.now);
+            self.resize(&self.pos.now);
+            // TODO: uncomment this
             // arrange(self.mon);
         }
     }
@@ -301,21 +302,20 @@ pub const Client = struct {
 
     /// (dwm) resizeclient
     /// Resize the X window, and also update its border width.
-    pub fn resize(self: *Self, rect: Rect) void {
+    pub fn resize(self: *Self, rect: *Rect) void {
         const z = self.app;
         var wc = rect.toX(X.XWindowChanges);
         wc.border_width = @intCast(self.borderWidth.now);
         const flags = CW.X | CW.Y | CW.Width | CW.Height | CW.BorderWidth;
         X.XConfigureWindow(z.dpy, self.win, flags, &wc);
-        self.pos.set(rect);
+        self.pos.set(rect.*);
         self.configure(z.dpy);
         X.XSync(z.dpy, false);
     }
 
     /// (dwm) resize
-    pub fn hintAndResize(self: *Self, target: Rect, interact: bool) void {
-        var t = target;
-        if (self.applySizeHints(&t, interact)) self.resize(t);
+    pub fn hintAndResize(self: *Self, z: *const App, target: *Rect, interact: bool) void {
+        if (self.applySizeHints(z, target, interact)) self.resize(target);
     }
 
     /// (dwm) applysizehints
@@ -323,7 +323,7 @@ pub const Client = struct {
     /// suggested resize target. After applying size hints, `rect` will be
     /// updated to be a more correct resize target. Returns true if the final
     /// value of `rect` differs from the client's current state.
-    pub fn applySizeHints(self: *Self, rect: *Rect, interact: bool) bool {
+    pub fn applySizeHints(self: *Self, z: *const App, rect: *Rect, interact: bool) bool {
         const c: *const Self = self;
         const m: *Monitor = self.mon;
 
@@ -333,13 +333,13 @@ pub const Client = struct {
 
         const bw: i32 = @intCast(c.borderWidth.now);
         if (interact) {
-            if (rect.x > c.app.s.w) {
+            if (rect.x > z.s.w) {
                 // left-most point is beyond the limits of the current monitor.
-                rect.x = @as(i32, @intCast(c.app.s.w)) - c.width();
+                rect.x = @as(i32, @intCast(z.s.w)) - c.width();
             }
-            if (rect.y > c.app.s.h) {
+            if (rect.y > z.s.h) {
                 // top-most point is beyond the limits of the current monitor.
-                rect.y = @as(i32, @intCast(c.app.s.h)) - c.height();
+                rect.y = @as(i32, @intCast(z.s.h)) - c.height();
             }
             if (rect.r() + 2 * bw < 0) {
                 rect.x = 0;
@@ -354,8 +354,8 @@ pub const Client = struct {
             if (rect.b() + 2 * bw <= m.w.y) rect.y = m.w.y;
         }
 
-        if (rect.h < c.app.bar_height) rect.h = c.app.bar_height;
-        if (rect.w < c.app.bar_height) rect.w = c.app.bar_height;
+        if (rect.h < z.bar_height) rect.h = z.bar_height;
+        if (rect.w < z.bar_height) rect.w = z.bar_height;
 
         if (cfg.resizehints or c.is_floating.now or m.lt.now.arrange == null) {
             if (!c.hintsvalid) {
@@ -554,7 +554,7 @@ pub const Client = struct {
     /// (dwm) showhide
     /// Refreshes the show-hide state of the entire linked list of Clients in
     /// the stack.
-    pub fn showHide(c: *Self) void {
+    pub fn showHide(c: *Self, z: *const App) void {
         log.info("showHide called on {*} ({s})", .{ c, if (c.isVisible()) "show" else "hide" });
         if (c.isVisible()) {
             // Show clients top-down.
@@ -564,11 +564,11 @@ pub const Client = struct {
                 if (c.mon.lt.now.arrange) |_| break :r true;
                 break :r c.is_floating.now;
             };
-            if (should_resize) c.hintAndResize(c.pos.now, false);
-            if (c.snext) |next| next.showHide();
+            if (should_resize) c.hintAndResize(z, &c.pos.now, false);
+            if (c.snext) |next| next.showHide(z);
         } else {
             // Hide clients bottom up.
-            if (c.snext) |next| next.showHide();
+            if (c.snext) |next| next.showHide(z);
             X.XMoveWindow(c.app.dpy, c.win, c.width() * -2, c.pos.now.y);
         }
     }

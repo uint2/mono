@@ -212,10 +212,10 @@ fn updateClientList(z: *App) void {
 }
 
 /// (dwm) arrangemon
-fn arrangeMon(m: *Monitor) void {
+fn arrangeMon(z: *const App, m: *Monitor) void {
     if (m.lt.now.arrange) |f| {
         log.info("Arranging monitor {*} with algo \"{s}\"", .{ m, m.lt.now.symbol });
-        f(m);
+        f(z, m);
     }
 }
 
@@ -254,20 +254,20 @@ fn arrange(z: *App, allocator: Allocator, monitor: ?*Monitor) void {
 
     var m_opt: ?*Monitor = null;
     if (monitor) |m| {
-        if (m.stack) |c| c.showHide();
+        if (m.stack) |c| c.showHide(z);
     } else {
         m_opt = monitor;
         while (m_opt) |m| : (m_opt = m.next) {
-            if (m.stack) |c| c.showHide();
+            if (m.stack) |c| c.showHide(z);
         }
     }
     if (monitor) |m| {
-        arrangeMon(m);
+        arrangeMon(z, m);
         restack(z, allocator, m);
     } else {
         m_opt = monitor;
         while (m_opt) |m| : (m_opt = m.next) {
-            arrangeMon(m);
+            arrangeMon(z, m);
         }
     }
 }
@@ -378,7 +378,7 @@ const R = struct {
                 c_opt = m.clients;
                 while (c_opt) |c| : (c_opt = c.next) {
                     if (c.isfullscreen) {
-                        c.resize(m.m);
+                        c.resize(&m.m);
                     }
                 }
                 X.XMoveResizeWindow(z.dpy, m.barwin, m.w.x, m.w.y, m.w.w, z.bar_height);
@@ -681,7 +681,7 @@ fn sendMon(z: *App, allocator: Allocator, c: *Client, m: *Monitor) void {
     c.tags = m.tags; // Assign tags of target monitor.
     c.attach();
     c.attachStack();
-    if (c.isfullscreen) c.resize(m.m);
+    if (c.isfullscreen) c.resize(&m.m);
     focus(z, allocator, null);
     arrange(z, allocator, null);
 }
@@ -966,7 +966,7 @@ fn updateStatus(z: *App, allocator: Allocator) void {
 /// Layouts.
 pub const layouts = struct {
     /// (dwm) monocle
-    pub fn monocle(m: *Monitor) void {
+    pub fn monocle(z: *const App, m: *Monitor) void {
         var c_opt = m.clients;
         var n: u32 = 0;
         while (c_opt) |c| : (c_opt = c.next) {
@@ -977,12 +977,12 @@ pub const layouts = struct {
             var r = m.w;
             r.w = m.w.w - 2 * c.borderWidth.now;
             r.h = m.w.h - 2 * c.borderWidth.now;
-            c.hintAndResize(r, false);
+            c.hintAndResize(z, &r, false);
         }
     }
 
     /// (dwm) tile
-    pub fn tile(m: *Monitor) void {
+    pub fn tile(z: *const App, m: *Monitor) void {
         const n = m.countTiledClients();
         if (n == 0) return;
         const mw: u32 = blk: {
@@ -1006,23 +1006,25 @@ pub const layouts = struct {
             log.debug("n={d}, i={d}, ty={d}, my={d}", .{ n, i, ty, my });
             if (i < m.nmaster) {
                 const h = @divFloor(m.w.h - @as(u32, @intCast(my)), @min(n, m.nmaster) - i);
-                c.hintAndResize(.{
+                var r = Rect{
                     .x = m.w.x,
                     .y = m.w.y + my,
                     .w = @intCast(mw - (2 * c.borderWidth.now)),
                     .h = @intCast(h - (2 * c.borderWidth.now)),
-                }, false);
+                };
+                c.hintAndResize(z, &r, false);
                 if (my + c.height() < m.w.h) {
                     my += c.height();
                 }
             } else {
                 const h = @divFloor(m.w.h - @as(u32, @intCast(ty)), n - i);
-                c.hintAndResize(.{
+                var r = Rect{
                     .x = m.w.x + @as(i32, @intCast(mw)),
                     .y = m.w.y + ty,
                     .w = m.w.w - mw - 2 * c.borderWidth.now,
                     .h = h - 2 * c.borderWidth.now,
-                }, false);
+                };
+                c.hintAndResize(z, &r, false);
                 if (ty + c.height() < m.w.h) {
                     ty += c.height();
                 }
@@ -1163,7 +1165,7 @@ pub const mp = struct {
                     }
                     if (z.selmon.lt.now.arrange != null or c.is_floating.now) {
                         c.pos.set(new);
-                        c.hintAndResize(c.pos.now, true);
+                        c.hintAndResize(z, &c.pos.now, true);
                     }
                 },
                 X.ButtonRelease => break,
@@ -1246,7 +1248,7 @@ pub const mp = struct {
                         var r = c.pos.now;
                         r.w = @intCast(nw);
                         r.h = @intCast(nh);
-                        c.hintAndResize(r, true);
+                        c.hintAndResize(z, &r, true);
                     }
                 },
                 X.ButtonRelease => break,
@@ -1370,7 +1372,7 @@ pub const mp = struct {
         if (sel.isfullscreen) return; // No support for making fullscreen windows float.
         sel.is_floating.set(!sel.is_floating.now or sel.is_fixed);
         if (sel.is_floating.now) {
-            sel.hintAndResize(sel.pos.now, false);
+            sel.hintAndResize(z, &sel.pos.now, false);
         }
         arrange(z, allocator, z.selmon);
     }
