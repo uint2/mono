@@ -158,7 +158,7 @@ pub const Client = struct {
     }
 
     /// (dwm) setfocus
-    pub fn setFocus(self: *Self) void {
+    pub fn setInputFocus(self: *Self) void {
         const z = self.app;
         if (!self.neverfocus) {
             X.XSetInputFocus(z.dpy, self.win, .PointerRoot, X.CurrentTime);
@@ -649,5 +649,23 @@ pub const Client = struct {
             X.XSetInputFocus(z.dpy, z.root, .PointerRoot, X.CurrentTime);
             X.XDeleteProperty(z.dpy, z.root, atoms.net(.ActiveWindow));
         }
+    }
+
+    /// Puts focus on the client `self`.
+    pub fn focus(self: *Self, z: *App) void {
+        // If the currently selected client is not the new target, then unfocus it.
+        if (z.selmon.sel) |sel| {
+            if (sel != self) sel.unfocus(z, false);
+        }
+        z.selmon = self.mon;
+        // if the client (that's about to be focused) is urgent, then put it at
+        // ease for it is about to be tended to.
+        if (self.isurgent) self.setUrgent(z.dpy, false);
+        self.detachStack();
+        self.attachStack();
+        self.grabbuttons(z, true);
+        X.XSetWindowBorder(z.dpy, self.win, z.scheme.get(.Selected).border.pixel);
+        self.setInputFocus();
+        z.selmon.sel = self;
     }
 };

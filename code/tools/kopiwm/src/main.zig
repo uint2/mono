@@ -421,7 +421,7 @@ const R = struct {
     fn focusIn(z: *App, e: *X.XEvent) void {
         const ev: X.XFocusChangeEvent = e.xfocus;
         if (z.selmon.sel) |sel| {
-            if (ev.window != sel.win) sel.setFocus();
+            if (ev.window != sel.win) sel.setInputFocus();
         }
     }
 
@@ -730,21 +730,7 @@ fn focus(z: *App, allocator: Allocator, client: ?*Client) void {
     };
 
     log.info("Focusing client @ {*}", .{target});
-
-    // If the currently selected client is not the new target, then unfocus it.
-    if (z.selmon.sel) |sel| {
-        if (sel != target) sel.unfocus(z, false);
-    }
-    z.selmon = target.mon;
-    // if the client (that's about to be focused) is urgent, then put it at
-    // ease for it is about to be tended to.
-    if (target.isurgent) target.setUrgent(z.dpy, false);
-    target.detachStack();
-    target.attachStack();
-    target.grabbuttons(z, true);
-    X.XSetWindowBorder(z.dpy, target.win, z.scheme.get(.Selected).border.pixel);
-    target.setFocus();
-    z.selmon.sel = target;
+    target.focus(z);
     drawbars(z, allocator);
 }
 
