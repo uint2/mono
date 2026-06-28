@@ -54,27 +54,6 @@ fn checkOtherWM(dpy: *X.Display) void {
     X.XSync(dpy, false);
 }
 
-/// (dwm) INTERSECT
-fn intersect(x: i32, y: i32, w: i32, h: i32, m: *Monitor) i32 {
-    return @max(0, @min(x + w, m.wx + @as(i32, @intCast(m.ww))) - @max(x, m.wx)) *
-        @max(0, @min(y + h, m.wy + @as(i32, @intCast(m.wh))) - @max(y, m.wy));
-}
-
-/// (dwm) wintoclient
-/// Searches all the monitors and all of their clients for one that matches
-/// the window search query. Returns the first hit.
-fn winToClient(z: *App, w: X.Window) ?*Client {
-    var m_opt: ?*Monitor = z.mons;
-    var c_opt: ?*Client = null;
-    while (m_opt) |m| : (m_opt = m.next) {
-        c_opt = m.clients;
-        while (c_opt) |c| : (c_opt = c.next) {
-            if (c.win == w) return c;
-        }
-    }
-    return null;
-}
-
 /// (dwm) getstate
 fn getState(z: *App, w: X.Window) @typeInfo(X.WindowState).@"enum".tag_type {
     const int_type = @typeInfo(X.WindowState).@"enum".tag_type;
@@ -105,7 +84,7 @@ fn manage(z: *App, allocator: Allocator, w: X.Window, wa: *X.XWindowAttributes) 
         if (transient_window) |_| {
             // This seems to make very little sense if there is a bijection between
             // clients and windows.
-            if (winToClient(z, w)) |other_client| {
+            if (z.winToClient(w)) |other_client| {
                 c.mon = other_client.mon;
                 c.tags = other_client.tags;
                 break :blk;
@@ -332,7 +311,7 @@ const R = struct {
         }
         // Locate the click, and populate the `click` variable.
         // This block searches for the click location in the client.
-        if (winToClient(z, ev.window)) |c| {
+        if (z.winToClient(ev.window)) |c| {
             focus(z, allocator, c);
             restack(z, allocator, z.selmon);
             X.XAllowEvents(z.dpy, .ReplayPointer, X.CurrentTime);
@@ -360,7 +339,7 @@ const R = struct {
     /// (dwm) clientmessage
     fn clientMessage(z: *App, e: *X.XEvent) void {
         const ev: X.XClientMessageEvent = e.xclient;
-        var c: *Client = winToClient(z, ev.window) orelse return;
+        var c: *Client = z.winToClient(ev.window) orelse return;
 
         if (ev.message_type == atoms.net(.WMState)) {
             const fs_atom = atoms.net(.WMFullscreen);
@@ -410,7 +389,7 @@ const R = struct {
         const ev = e.xconfigurerequest;
         const vmask = ev.value_mask;
 
-        if (winToClient(z, ev.window)) |c| {
+        if (z.winToClient(ev.window)) |c| {
             if (vmask & CW.BorderWidth != 0) {
                 c.bw.set(@intCast(ev.border_width));
             } else if (c.is_floating.now or z.selmon.lt.now.arrange == null) {
@@ -468,7 +447,7 @@ const R = struct {
     /// (dwm) destroynotify
     fn destroyNotify(z: *App, allocator: Allocator, e: *X.XEvent) void {
         const ev: X.XDestroyWindowEvent = e.xdestroywindow;
-        if (winToClient(z, ev.window)) |c| unmanage(z, allocator, c, true);
+        if (z.winToClient(ev.window)) |c| unmanage(z, allocator, c, true);
     }
 
     /// (dwm) enternotify
@@ -477,7 +456,7 @@ const R = struct {
         if ((ev.mode != X.NotifyNormal or ev.detail == X.NotifyInferior) and ev.window != z.root) {
             return;
         }
-        const c = winToClient(z, ev.window);
+        const c = z.winToClient(ev.window);
         const m = if (c) |client| client.mon else wintomon(z, ev.window);
         if (m != z.selmon) {
             unfocus(z, z.selmon.sel, true);
@@ -537,7 +516,7 @@ const R = struct {
         if (!X.XGetWindowAttributes(z.dpy, ev.window, &wa)) return;
         if (wa.override_redirect != 0) return;
 
-        if (winToClient(z, ev.window) == null) {
+        if (z.winToClient(ev.window) == null) {
             log.info("Start managing window {d} (mapRequest)", .{ev.window});
             try manage(z, allocator, ev.window, &wa);
         }
@@ -571,12 +550,12 @@ const R = struct {
             updateStatus(z, allocator);
         } else if (ev.state == X.PropertyDelete) {
             return; // ignore.
-        } else if (winToClient(z, ev.window)) |c| {
+        } else if (z.winToClient(ev.window)) |c| {
             switch (ev.atom) {
                 X.XA_WM_TRANSIENT_FOR => {
                     const trans_opt = X.XGetTransientForHint(z.dpy, c.win);
                     const b = !c.is_floating.now and trans_opt != null;
-                    if (trans_opt) |t| c.is_floating.set(winToClient(z, t) != null);
+                    if (trans_opt) |t| c.is_floating.set(z.winToClient(t) != null);
                     if (b and c.is_floating.now) arrange(z, allocator, c.mon);
                 },
                 X.XA_WM_NORMAL_HINTS => c.hintsvalid = false,
@@ -601,7 +580,7 @@ const R = struct {
     /// (dwm) unmapnotify
     fn unmapNotify(z: *App, allocator: Allocator, e: *X.XEvent) void {
         const ev: X.XUnmapEvent = e.xunmap;
-        if (winToClient(z, ev.window)) |c| {
+        if (z.winToClient(ev.window)) |c| {
             if (ev.send_event == 0) {
                 unmanage(z, allocator, c, false);
             } else {
@@ -718,7 +697,7 @@ fn wintomon(z: *App, w: X.Window) *Monitor {
     while (m_opt) |m| : (m_opt = m.next) {
         if (w == m.barwin) return m;
     }
-    if (winToClient(z, w)) |c| return c.mon;
+    if (z.winToClient(w)) |c| return c.mon;
     return z.selmon;
 }
 
@@ -1156,9 +1135,7 @@ pub const mp = struct {
         const grab_ok = X.XGrabPointer(z.dpy, z.root, false, MOUSEMASK, .Async, //
             .Async, X.None, z.cursors.get(.Move), X.CurrentTime);
         if (!grab_ok) return;
-        const coords = z.getRootPtr() orelse return;
-        const x = coords.x;
-        const y = coords.y;
+        const pointer = z.getRootPtr() orelse return;
         var ev: X.XEvent = undefined;
         var lasttime: X.Time = 0;
         while (true) {
@@ -1166,34 +1143,24 @@ pub const mp = struct {
             switch (ev.type) {
                 X.Expose | X.MapRequest | X.ConfigureRequest => try runOne(z, allocator, &ev),
                 X.MotionNotify => {
-                    if (ev.xmotion.time - lasttime <= @divFloor(1000, cfg.refreshrate)) {
-                        continue;
-                    }
+                    if (ev.xmotion.time - lasttime <= cfg.refreshinterval) continue;
                     lasttime = ev.xmotion.time;
-                    var nx = ocx + (ev.xmotion.x - x);
-                    var ny = ocy + (ev.xmotion.y - y);
-                    if (@abs(z.selmon.w.x - nx) < cfg.snap) {
-                        nx = z.selmon.w.x;
-                    } else if (@abs(z.selmon.w.r() - (nx + c.width())) < cfg.snap) {
-                        nx = z.selmon.w.r() - c.width();
-                    }
-                    if (@abs(z.selmon.w.y - ny) < cfg.snap) {
-                        ny = z.selmon.w.y;
-                    } else if (@abs(z.selmon.w.b() - (ny + c.height())) < cfg.snap) {
-                        ny = z.selmon.w.b() - c.height();
-                    }
-                    if (!c.is_floating.now and
-                        z.selmon.lt.now.arrange != null and
-                        (@abs(nx - c.pos.now.x) > cfg.snap or
-                            @abs(ny - c.pos.now.y) > cfg.snap))
+                    var new: Rect = .{
+                        .x = ocx + (ev.xmotion.x - pointer.x),
+                        .y = ocy + (ev.xmotion.y - pointer.y),
+                        .w = c.pos.now.w,
+                        .h = c.pos.now.h,
+                    };
+                    new.snap(&z.selmon.w, @intCast(c.bw.now), cfg.snap);
+                    if (z.selmon.lt.now.arrange != null and
+                        !c.is_floating.now and
+                        (@abs(new.x - c.pos.now.x) > cfg.snap or @abs(new.y - c.pos.now.y) > cfg.snap))
                     {
                         toggleFloating(z, allocator, undefined);
                     }
                     if (z.selmon.lt.now.arrange != null or c.is_floating.now) {
-                        var r = c.pos.now;
-                        r.x = nx;
-                        r.y = ny;
-                        c.hintAndResize(r, true);
+                        c.pos.set(new);
+                        c.hintAndResize(c.pos.now, true);
                     }
                 },
                 X.ButtonRelease => break,
@@ -1201,11 +1168,10 @@ pub const mp = struct {
             }
         }
         X.XUngrabPointer(z.dpy, X.CurrentTime);
-        const m_opt = c.pos.now.toMonitor(z.mons);
-        if (m_opt != z.selmon) {
-            if (m_opt) |m| {
-                sendMon(z, allocator, c, m);
-                z.selmon = m;
+        if (c.pos.now.toMonitor(z.mons)) |mon| {
+            if (mon != z.selmon) {
+                sendMon(z, allocator, c, mon);
+                z.selmon = mon;
                 focus(z, allocator, null);
             }
         }
@@ -1228,17 +1194,8 @@ pub const mp = struct {
         const ocx = c.pos.now.x;
         const ocy = c.pos.now.y;
 
-        const grab_ok = X.XGrabPointer(
-            z.dpy,
-            z.root,
-            false,
-            MOUSEMASK,
-            .Async,
-            .Async,
-            X.None,
-            z.cursors.get(.Resize),
-            X.CurrentTime,
-        );
+        const grab_ok = X.XGrabPointer(z.dpy, z.root, false, MOUSEMASK, .Async, //
+            .Async, X.None, z.cursors.get(.Resize), X.CurrentTime);
         if (!grab_ok) return;
         if (c.is_floating.now) {
             X.XWarpPointer(z.dpy, X.None, c.win, .zero, //
@@ -1256,9 +1213,8 @@ pub const mp = struct {
             switch (ev.type) {
                 X.Expose | X.MapRequest | X.ConfigureRequest => try runOne(z, allocator, &ev),
                 X.MotionNotify => {
-                    if (ev.xmotion.time - lasttime <= @divFloor(1000, cfg.refreshrate)) {
-                        continue;
-                    }
+                    if (ev.xmotion.time - lasttime <= cfg.refreshinterval) continue;
+
                     lasttime = ev.xmotion.time;
                     const nw: i32 = @max(@as(i32, @intCast(ev.xmotion.x)) - ocx - 2 * @as(i32, @intCast(c.bw.now)) + 1, 1);
                     const nh: i32 = @max(@as(i32, @intCast(ev.xmotion.y)) - ocy - 2 * @as(i32, @intCast(c.bw.now)) + 1, 1);

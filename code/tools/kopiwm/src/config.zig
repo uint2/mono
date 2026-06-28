@@ -81,7 +81,8 @@ pub const resizehints: bool = true;
 pub const lockfullscreen: bool = true;
 
 /// Refresh rate (per second) for client move/resize
-pub const refreshrate: u16 = 60;
+const refreshrate = 60;
+pub const refreshinterval: X.Time = @divFloor(1000, refreshrate);
 
 /// False means hide bar.
 pub const show_bar: bool = true;

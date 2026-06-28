@@ -159,3 +159,18 @@ pub fn getMonitorFromDirection(self: *const Self, direction: Direction) *Monitor
         },
     }
 }
+
+/// (dwm) wintoclient
+/// Searches all the monitors and all of their clients for one that matches
+/// the window search query. Returns the first hit.
+pub fn winToClient(self: *const Self, w: X.Window) ?*Client {
+    var m_opt: ?*Monitor = self.mons;
+    var c_opt: ?*Client = null;
+    while (m_opt) |m| : (m_opt = m.next) {
+        c_opt = m.clients;
+        while (c_opt) |c| : (c_opt = c.next) {
+            if (c.win == w) return c;
+        }
+    }
+    return null;
+}

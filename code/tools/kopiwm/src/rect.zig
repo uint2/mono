@@ -95,6 +95,27 @@ pub fn Rect2(
             const height = @min(lhs.b(), rhs.b()) - @max(lhs.y, rhs.y);
             return @max(0, width) * @max(0, height);
         }
+
+        /// Calculates the snap location within the parent.
+        pub fn snap(self: *Self, parent: *const Self, padding: c_int, snapDist: c_int) void {
+            const p = 2 * padding;
+            // Too far left -> snap to the left vertical bound.
+            if (@abs(parent.x - self.x) < snapDist) {
+                self.x = parent.x;
+            }
+            // Too far right -> snap to the right vertical bound.
+            else if (@abs(parent.r() - (self.x + p)) < snapDist) {
+                self.x = parent.r() - p;
+            }
+            // Too far up -> snap to the top horizontal bound.
+            if (@abs(parent.y - self.y) < snapDist) {
+                self.y = parent.y;
+            }
+            // Too far down -> snap to the bottom horizontal bound.
+            else if (@abs(parent.b() - (self.y + p)) < snapDist) {
+                self.y = parent.b() - p;
+            }
+        }
     };
 }
 

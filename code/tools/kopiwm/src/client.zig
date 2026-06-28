@@ -40,7 +40,7 @@ pub const Client = struct {
     sz: ClientSizes = .init,
     hintsvalid: bool = false,
     /// Border width.
-    bw: toggle(u32),
+    bw: toggle(c_uint),
     /// Bitmask of active tags.
     tags: u32 = 0,
     is_fixed: bool = false,
