@@ -55,11 +55,11 @@ fn checkOtherWM(dpy: *X.Display) void {
 }
 
 /// (dwm) getstate
-fn getState(z: *App, w: X.Window) @typeInfo(X.WindowState).@"enum".tag_type {
+fn getState(dpy: *X.Display, w: X.Window) @typeInfo(X.WindowState).@"enum".tag_type {
     const int_type = @typeInfo(X.WindowState).@"enum".tag_type;
     log.info("::getState", .{});
     const atom = atoms.wm(.State);
-    const data = X.XGetWindowProperty(z.dpy, w, atom, 0, 2, false, atom) orelse return -1;
+    const data = X.XGetWindowProperty(dpy, w, atom, 0, 2, false, atom) orelse return -1;
     defer data.deinit();
     if (data.value.len() == 0) return -1;
     const result: int_type = switch (data.value) {
@@ -538,7 +538,7 @@ fn scan(z: *App, allocator: Allocator) error{OutOfMemory}!void {
         const ok = X.XGetWindowAttributes(z.dpy, wins[i], &wa);
         if (!ok or wa.override_redirect != 0) continue;
         if (X.XGetTransientForHint(z.dpy, wins[i]) == null) continue;
-        if (wa.map_state == X.IsViewable or getState(z, wins[i]) == X.IconicState) {
+        if (wa.map_state == X.IsViewable or getState(z.dpy, wins[i]) == X.IconicState) {
             log.info("Start managing window {d} (scan, non-transient)", .{wins[i]});
             try manage(z, allocator, wins[i], &wa);
         }
@@ -548,7 +548,7 @@ fn scan(z: *App, allocator: Allocator) error{OutOfMemory}!void {
         if (!X.XGetWindowAttributes(z.dpy, wins[i], &wa)) continue;
         if (X.XGetTransientForHint(z.dpy, wins[i]) == null) continue;
         const viewable = wa.map_state == X.IsViewable;
-        const iconic = getState(z, wins[i]) == X.IconicState;
+        const iconic = getState(z.dpy, wins[i]) == X.IconicState;
         if (viewable or iconic) {
             log.info("Start managing window {d} (scan, transient)", .{wins[i]});
             try manage(z, allocator, wins[i], &wa);
