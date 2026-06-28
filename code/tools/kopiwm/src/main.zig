@@ -1221,17 +1221,9 @@ pub const mp = struct {
                 return;
             }
         }
-        pop(z, allocator, c.?);
+        if (c) |client| client.pop(allocator, z);
     }
 };
-
-/// (dwm) pop
-pub fn pop(z: *App, allocator: Allocator, c: *Client) void {
-    c.detach();
-    c.attach();
-    z.resolveClientAndFocus(allocator, c);
-    c.mon.arrange(allocator, z);
-}
 
 /// Returns true if we should terminate the process immediately after this
 /// function ends.

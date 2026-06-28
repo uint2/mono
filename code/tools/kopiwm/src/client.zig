@@ -698,4 +698,12 @@ pub const Client = struct {
         z.updateClientList();
         m.arrange(allocator, z);
     }
+
+    /// (dwm) pop
+    pub fn pop(self: *Self, allocator: Allocator, z: *App) void {
+        self.detach();
+        self.attach();
+        z.resolveClientAndFocus(allocator, self);
+        self.mon.arrange(allocator, z);
+    }
 };
