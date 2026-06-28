@@ -73,15 +73,8 @@ pub const Monitor = struct {
     /// Count the number of clients that are tiled.
     pub fn countTiledClients(self: *Self) u32 {
         var c = self.clients orelse return 0;
-        var n: u32 = 0;
-        while (c.nextTiled()) |nt| {
-            // We found the next tiled client (i.e. `nt`), and so we add one to
-            // the count.
-            n += 1;
-            // But we cannot use `nt` again because the next tiled client of
-            // `nt` would be itself, resulting in an infinite loop.
-            c = nt.next orelse break;
-        }
+        var n: u32 = if (c.isTiled()) 1 else 0;
+        while (c.nextTiledExclusive()) |next| : (c = next) n += 1;
         return n;
     }
 
