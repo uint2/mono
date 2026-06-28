@@ -50,7 +50,9 @@ pub const Client = struct {
     isfullscreen: bool = false,
     /// Next client in the linked list of clients.
     next: ?*Self = null,
-    /// Next client in the display stack.
+    /// Next client in the stacking order. That is, the order in which windows
+    /// appear visually. If window A covers window B, or is laid on top of it,
+    /// then A is before B in the stacking order.
     snext: ?*Self = null,
     /// The parent monitor to this client.
     mon: *Monitor,

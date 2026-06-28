@@ -114,3 +114,20 @@ pub fn barRect(self: *const Self) Rect {
         .h = self.bar_height,
     };
 }
+
+/// Tries to find the best client to focus based on the suggestion. If the
+/// suggested client is visible and non-null, then all's good and return it.
+/// Otherwise, attempt to find the first client that is visible. If even that's
+/// not possible, then return null.
+pub fn resolveFocus(self: *const Self, suggested: ?*Client) ?*Client {
+    if (suggested) |c| if (c.isVisible()) return c;
+    // At this point, the suggested client is either null or invisible.
+
+    // Advance the pointer until it points to the first visible client.
+    var c_opt = self.selmon.stack;
+    while (c_opt) |c| : (c_opt = c.snext) {
+        if (c.isVisible()) return c;
+    }
+
+    return null;
+}

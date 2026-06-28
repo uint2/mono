@@ -1134,43 +1134,37 @@ fn unfocus(z: *App, client: ?*Client, setfocus: bool) void {
 }
 
 /// (dwm) focus
+///
+/// Draws the focus to one particular client. If no `client` is provided (null),
+/// then focus any client that is visible.
 fn focus(z: *App, allocator: Allocator, client: ?*Client) void {
-    if (client) |c| {
-        log.info("focus({*})", .{c});
-    } else log.info("focus(null)", .{});
+    log.info("Focusing a client...", .{});
 
-    var c_opt = client;
-    if (if (c_opt) |c| !c.isVisible() else true) {
-        // If `client` is null or it's invisible, then push the pointer forward
-        // until c_opt points to the first visible client.
-        c_opt = z.selmon.stack;
-        while (c_opt) |c| : (c_opt = c.snext) {
-            if (c.isVisible()) break;
-        }
-    }
-    // If the currently selected client in the selected monitor is not `c_opt`,
-    // then unfocus it.
-    if (z.selmon.sel) |sel| {
-        if (sel != c_opt) {
-            unfocus(z, sel, false);
-        }
-    }
-    if (c_opt) |c| {
-        z.selmon = c.mon;
-        // if the client (that's about to be focused) is urgent, then put it at
-        // ease for it is about to be tended to.
-        if (c.isurgent) c.setUrgent(z.dpy, false);
-        c.detachStack();
-        c.attachStack();
-        grabbuttons(z, c, true);
-        const scheme = z.scheme.get(.Selected);
-        X.XSetWindowBorder(z.dpy, c.win, scheme.border.pixel);
-        c.setFocus();
-    } else {
+    const target = z.resolveFocus(client) orelse {
+        log.info("No focus target found.", .{});
         X.XSetInputFocus(z.dpy, z.root, .PointerRoot, X.CurrentTime);
         X.XDeleteProperty(z.dpy, z.root, atoms.net(.ActiveWindow));
+        z.selmon.sel = null;
+        drawbars(z, allocator);
+        return;
+    };
+
+    log.info("Focusing client @ {*}", .{target});
+
+    // If the currently selected client is not the new target, then unfocus it.
+    if (z.selmon.sel) |sel| {
+        if (sel != target) unfocus(z, sel, false);
     }
-    z.selmon.sel = c_opt;
+    z.selmon = target.mon;
+    // if the client (that's about to be focused) is urgent, then put it at
+    // ease for it is about to be tended to.
+    if (target.isurgent) target.setUrgent(z.dpy, false);
+    target.detachStack();
+    target.attachStack();
+    grabbuttons(z, target, true);
+    X.XSetWindowBorder(z.dpy, target.win, z.scheme.get(.Selected).border.pixel);
+    target.setFocus();
+    z.selmon.sel = target;
     drawbars(z, allocator);
 }
 

@@ -35,7 +35,9 @@ pub const Monitor = struct {
     clients: ?*Client = null,
     /// Selected client
     sel: ?*Client = null,
-    /// Clients ordered by stack.
+    /// Clients ordered by stacking order. That is, the order in which windows
+    /// appear visually. If window A covers window B, or is laid on top of it,
+    /// then A is before B in the stacking order.
     stack: ?*Client = null,
 
     next: ?*Self = null,
