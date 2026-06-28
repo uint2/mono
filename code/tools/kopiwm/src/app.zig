@@ -7,6 +7,7 @@ const NumLockMask = @import("numlockmask.zig").NumLockMask;
 const X = @import("x11.zig");
 const EM = @import("x11.zig").eventMask;
 const CW = @import("x11.zig").CW;
+const M = @import("x11.zig").masks;
 const Rect = @import("rect.zig").Rect;
 const SchemeState = @import("color_scheme.zig").SchemeState;
 const CursorState = @import("enums.zig").CursorState;
@@ -324,5 +325,31 @@ pub fn updateBars(self: *Self) void {
         X.XDefineCursor(self.dpy, m.barwin, self.cursors.get(.Normal));
         X.XMapRaised(self.dpy, m.barwin);
         X.XSetClassHint(self.dpy, m.barwin, &ch);
+    }
+}
+
+/// (dwm) grabkeys
+pub fn grabkeys(self: *Self) void {
+    self.numlockmask.update(self.dpy);
+
+    var start: c_int = undefined; // or, X.KeyCode
+    var end: c_int = undefined; // or, X.KeyCode
+    var skip: c_int = undefined;
+
+    X.XUngrabKey(self.dpy, X.AnyKey, M.AnyModifier, self.root);
+    X.XDisplayKeycodes(self.dpy, &start, &end);
+    const syms = X.XGetKeyboardMapping(self.dpy, @intCast(start), end - start + 1, &skip) orelse return;
+    defer X.XFree(syms);
+
+    var keycode = start;
+    while (keycode < end) : (keycode += 1) {
+        for (cfg.keys) |key| {
+            // Skip modifier codes, we do that ourselves.
+            if (key.sym == syms[@intCast((keycode - start) * skip)]) {
+                for (self.numlockmask.modifiers) |mod| {
+                    _ = X.XGrabKey(self.dpy, keycode, key.mod | mod, self.root, true, .Async, .Async);
+                }
+            }
+        }
     }
 }
