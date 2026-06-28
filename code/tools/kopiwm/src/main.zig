@@ -70,11 +70,17 @@ pub fn focusMon(z: *App, allocator: Allocator, arg: *const Arg) void {
 }
 
 /// (dwm) focusstack
+///
+/// Focuses the next/previous client in the stack.
 pub fn focusStack(z: *App, allocator: Allocator, arg: *const Arg) void {
+    const direction = switch (arg.*) {
+        .d => |v| v,
+        else => return,
+    };
     const sel = z.selmon.sel orelse return;
     if (sel.isfullscreen and cfg.lockfullscreen) return;
     var c_opt: ?*Client = null;
-    switch (arg.d) {
+    switch (direction) {
         .Next => {
             c_opt = sel.next;
             // TODO: figure out why this isn't c.snext.
