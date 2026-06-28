@@ -639,4 +639,15 @@ pub const Client = struct {
             }
         }
     }
+
+    /// (dwm) unfocus
+    pub fn unfocus(self: *Self, z: *App, setfocus: bool) void {
+        log.info("Unfocusing client at: {*}", .{self});
+        self.grabbuttons(z, false);
+        X.XSetWindowBorder(z.dpy, self.win, z.scheme.get(.Normal).border.pixel);
+        if (setfocus) {
+            X.XSetInputFocus(z.dpy, z.root, .PointerRoot, X.CurrentTime);
+            X.XDeleteProperty(z.dpy, z.root, atoms.net(.ActiveWindow));
+        }
+    }
 };

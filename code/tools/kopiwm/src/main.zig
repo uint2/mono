@@ -152,7 +152,7 @@ fn manage(z: *App, allocator: Allocator, w: X.Window, wa: *X.XWindowAttributes) 
 
     c.setState(.NormalState);
     if (c.mon == z.selmon) {
-        unfocus(z, c.mon.sel, false);
+        if (c.mon.sel) |c2| c2.unfocus(z, false);
     }
     c.mon.sel = c;
     c.mon.arrange(allocator, z);
@@ -211,14 +211,6 @@ fn updateClientList(z: *App) void {
     }
 }
 
-/// (dwm) arrangemon
-fn arrangeMon(z: *const App, m: *Monitor) void {
-    if (m.lt.now.arrange) |f| {
-        log.info("Arranging monitor {*} with algo \"{s}\"", .{ m, m.lt.now.symbol });
-        f(z, m);
-    }
-}
-
 /// Functions that are called in [r]eaction to events.
 const R = struct {
     /// (dwm) buttonpress
@@ -230,7 +222,7 @@ const R = struct {
         // Focus monitor if necessary.
         const m = wintomon(z, ev.window);
         if (m != z.selmon) {
-            if (z.selmon.sel) |c| unfocus(z, c, true);
+            if (z.selmon.sel) |c| c.unfocus(z, true);
             z.selmon = m;
             focus(z, allocator, null);
         }
@@ -409,7 +401,7 @@ const R = struct {
         const c = z.winToClient(ev.window);
         const m = if (c) |client| client.mon else wintomon(z, ev.window);
         if (m != z.selmon) {
-            unfocus(z, z.selmon.sel, true);
+            if (z.selmon.sel) |sel| sel.unfocus(z, true);
             z.selmon = m;
         } else if (c == null or c == z.selmon.sel) {
             return;
@@ -484,7 +476,7 @@ const R = struct {
         if (m_opt) |m| {
             if (static.mon) |mon| {
                 if (m != mon) {
-                    unfocus(z, z.selmon.sel, true);
+                    if (z.selmon.sel) |sel| sel.unfocus(z, true);
                     z.selmon = m;
                     focus(z, allocator, null);
                 }
@@ -620,7 +612,7 @@ fn scan(z: *App, allocator: Allocator) error{OutOfMemory}!void {
 fn sendMon(z: *App, allocator: Allocator, c: *Client, m: *Monitor) void {
     if (c.mon == m) return;
     // Leave the previous monitor.
-    unfocus(z, c, true);
+    c.unfocus(z, true);
     c.detach();
     c.detachStack();
     // Enter the new monitor.
@@ -721,18 +713,6 @@ fn setupClearZombies() void {
     while (std.c.waitpid(-1, null, std.c.W.NOHANG) > 0) {}
 }
 
-/// (dwm) unfocus
-fn unfocus(z: *App, client: ?*Client, setfocus: bool) void {
-    const c = client orelse return;
-    log.info("Unfocusing client at: {*}", .{c});
-    c.grabbuttons(z, false);
-    X.XSetWindowBorder(z.dpy, c.win, z.scheme.get(.Normal).border.pixel);
-    if (setfocus) {
-        X.XSetInputFocus(z.dpy, z.root, .PointerRoot, X.CurrentTime);
-        X.XDeleteProperty(z.dpy, z.root, atoms.net(.ActiveWindow));
-    }
-}
-
 /// (dwm) focus
 ///
 /// Draws the focus to one particular client. If no `client` is provided (null),
@@ -753,7 +733,7 @@ fn focus(z: *App, allocator: Allocator, client: ?*Client) void {
 
     // If the currently selected client is not the new target, then unfocus it.
     if (z.selmon.sel) |sel| {
-        if (sel != target) unfocus(z, sel, false);
+        if (sel != target) sel.unfocus(z, false);
     }
     z.selmon = target.mon;
     // if the client (that's about to be focused) is urgent, then put it at
@@ -976,7 +956,7 @@ pub const mp = struct {
         const target = z.getMonitorFromDirection(direction);
 
         if (target == z.selmon) return;
-        unfocus(z, z.selmon.sel, false);
+        if (z.selmon.sel) |sel| sel.unfocus(z, false);
         z.selmon = target;
         focus(z, allocator, null);
     }
