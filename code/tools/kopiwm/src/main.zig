@@ -54,70 +54,6 @@ fn checkOtherWM(dpy: *X.Display) void {
     X.XSync(dpy, false);
 }
 
-/// (dwm) focusmon
-pub fn focusMon(z: *App, allocator: Allocator, arg: *const Arg) void {
-    const direction = switch (arg.*) {
-        .d => |v| v,
-        else => return,
-    };
-
-    const target = z.getMonitorFromDirection(direction);
-
-    if (target == z.selmon) return;
-    unfocus(z, z.selmon.sel, false);
-    z.selmon = target;
-    focus(z, allocator, null);
-}
-
-/// (dwm) focusstack
-///
-/// Focuses the next/previous client in the stack.
-pub fn focusStack(z: *App, allocator: Allocator, arg: *const Arg) void {
-    const direction = switch (arg.*) {
-        .d => |v| v,
-        else => return,
-    };
-    const sel = z.selmon.sel orelse return;
-    if (sel.isfullscreen and cfg.lockfullscreen) return;
-    var c_opt: ?*Client = null;
-    switch (direction) {
-        .Next => {
-            c_opt = sel.next;
-            // TODO: figure out why this isn't c.snext.
-            while (c_opt) |c| : (c_opt = c.next) {
-                if (c.isVisible()) {
-                    break;
-                }
-            }
-            if (c_opt == null) {
-                c_opt = z.selmon.clients;
-                while (c_opt) |c| : (c_opt = c.next) {
-                    if (c.isVisible()) {
-                        break;
-                    }
-                }
-            }
-        },
-        .Prev => {
-            var i_opt: ?*Client = null;
-            i_opt = z.selmon.clients;
-            while (i_opt) |i| : (i_opt = i.next) {
-                if (i == sel) break;
-                if (i.isVisible()) c_opt = i;
-            }
-            if (c_opt == null) {
-                while (i_opt) |i| : (i_opt = i.next) {
-                    if (i.isVisible()) c_opt = i;
-                }
-            }
-        },
-    }
-    if (c_opt) |c| {
-        focus(z, allocator, c);
-        restack(z, allocator, z.selmon);
-    }
-}
-
 /// (dwm) INTERSECT
 fn intersect(x: i32, y: i32, w: i32, h: i32, m: *Monitor) i32 {
     return @max(0, @min(x + w, m.wx + @as(i32, @intCast(m.ww))) - @max(x, m.wx)) *
@@ -749,245 +685,6 @@ fn scan(z: *App, allocator: Allocator) error{OutOfMemory}!void {
     }
 }
 
-/// (dwm) incnmaster
-pub fn incNMaster(z: *App, allocator: Allocator, arg: *const Arg) void {
-    const i = switch (arg.*) {
-        .i => |v| v,
-        else => return,
-    };
-    z.selmon.nmaster = @intCast(@max(@as(i32, @intCast(z.selmon.nmaster)) + i, 0));
-    arrange(z, allocator, z.selmon);
-}
-
-/// (dwm) killclient
-pub fn killClient(z: *App, _: *const Arg) void {
-    const sel = z.selmon.sel orelse return;
-    log.info("Trying to kill client {*}", .{sel});
-    if (!sel.sendEvent(atoms.wm(.Delete))) {
-        log.info("Kill effective", .{});
-        X.XGrabServer(z.dpy);
-        _ = X.XSetErrorHandler(E.xerrordummy);
-        X.XSetCloseDownMode(z.dpy, .DestroyAll);
-        X.XKillClient(z.dpy, sel.win);
-        X.XSync(z.dpy, false);
-        _ = X.XSetErrorHandler(E.xerror);
-        X.XUngrabServer(z.dpy);
-    } else {
-        log.info("Kill ineffective", .{});
-    }
-}
-
-/// (dwm) monocle
-pub fn monocle(m: *Monitor) void {
-    var c_opt = m.clients;
-    var n: u32 = 0;
-    while (c_opt) |c| : (c_opt = c.next) {
-        if (c.isVisible()) n += 1;
-    }
-    if (n > 0) { // Override layout symbol.
-        // TODO: have to make the layout symbol an owned buffer. Right not it
-        // can only display const strings.
-        // snprintf(m->ltsymbol, sizeof m->ltsymbol, "[%d]", n);
-    }
-    c_opt = (c_opt orelse return).nextTiled();
-    while (c_opt) |c| : (c_opt = c.nextTiled()) {
-        var r = m.w;
-        r.w = m.w.w - 2 * @as(u32, @intCast(c.bw.now));
-        r.h = m.w.h - 2 * @as(u32, @intCast(c.bw.now));
-        c.hintAndResize(r, false);
-    }
-}
-
-/// (dwm) movemouse
-pub fn moveMouse(z: *App, allocator: Allocator, _: *const Arg) DwmError!void {
-    var c = z.selmon.sel orelse return;
-    if (c.isfullscreen) return; // No support moving fullscreen windows by mouse.
-    restack(z, allocator, z.selmon);
-
-    // Old client x and y coordinates.
-    const ocx = c.pos.now.x;
-    const ocy = c.pos.now.y;
-
-    const grab_ok = X.XGrabPointer(z.dpy, z.root, false, MOUSEMASK, .Async, //
-        .Async, X.None, z.cursors.get(.Move), X.CurrentTime);
-    if (!grab_ok) return;
-    const coords = z.getRootPtr() orelse return;
-    const x = coords.x;
-    const y = coords.y;
-    var ev: X.XEvent = undefined;
-    var lasttime: X.Time = 0;
-    while (true) {
-        X.XMaskEvent(z.dpy, MOUSEMASK | EM.ExposureMask | EM.SubstructureRedirectMask, &ev);
-        switch (ev.type) {
-            X.Expose | X.MapRequest | X.ConfigureRequest => try runOne(z, allocator, &ev),
-            X.MotionNotify => {
-                if (ev.xmotion.time - lasttime <= @divFloor(1000, cfg.refreshrate)) {
-                    continue;
-                }
-                lasttime = ev.xmotion.time;
-                var nx = ocx + (ev.xmotion.x - x);
-                var ny = ocy + (ev.xmotion.y - y);
-                if (@abs(z.selmon.w.x - nx) < cfg.snap) {
-                    nx = z.selmon.w.x;
-                } else if (@abs(z.selmon.w.r() - (nx + c.width())) < cfg.snap) {
-                    nx = z.selmon.w.r() - c.width();
-                }
-                if (@abs(z.selmon.w.y - ny) < cfg.snap) {
-                    ny = z.selmon.w.y;
-                } else if (@abs(z.selmon.w.b() - (ny + c.height())) < cfg.snap) {
-                    ny = z.selmon.w.b() - c.height();
-                }
-                if (!c.is_floating.now and
-                    z.selmon.lt.now.arrange != null and
-                    (@abs(nx - c.pos.now.x) > cfg.snap or
-                        @abs(ny - c.pos.now.y) > cfg.snap))
-                {
-                    toggleFloating(z, allocator, undefined);
-                }
-                if (z.selmon.lt.now.arrange != null or c.is_floating.now) {
-                    var r = c.pos.now;
-                    r.x = nx;
-                    r.y = ny;
-                    c.hintAndResize(r, true);
-                }
-            },
-            X.ButtonRelease => break,
-            else => {},
-        }
-    }
-    X.XUngrabPointer(z.dpy, X.CurrentTime);
-    const m_opt = c.pos.now.toMonitor(z.mons);
-    if (m_opt != z.selmon) {
-        if (m_opt) |m| {
-            sendMon(z, allocator, c, m);
-            z.selmon = m;
-            focus(z, allocator, null);
-        }
-    }
-}
-
-/// (dwm) setlayout
-pub fn setLayout(z: *App, allocator: Allocator, arg: *const Arg) void {
-    // TODO: check all other instances of tagged access of args. Make sure to
-    // use a switch statement before indexing.
-    const lt = switch (arg.*) {
-        .l => |lt| lt,
-        else => return,
-    };
-    z.selmon.lt.now = lt;
-    if (z.selmon.sel) |_| {
-        arrange(z, allocator, z.selmon);
-    } else {
-        drawbar(z, allocator, z.selmon);
-    }
-}
-
-/// (dwm) setmfact
-pub fn setMFact(z: *App, allocator: Allocator, arg: *const Arg) void {
-    if (z.selmon.lt.now.arrange == null) return;
-    const f: f32 = switch (arg.*) {
-        .f => |v| v,
-        else => return,
-    };
-    if (0.05 <= f and f <= 0.95) {
-        z.selmon.mfact = f;
-        arrange(z, allocator, z.selmon);
-    }
-}
-
-/// (dwm) resizemouse
-pub fn resizeMouse(z: *App, allocator: Allocator, _: *const Arg) DwmError!void {
-    var c = z.selmon.sel orelse return;
-    if (c.isfullscreen) return; // No support moving fullscreen windows by mouse.
-    restack(z, allocator, z.selmon);
-
-    // Old client x and y coordinates.
-    const ocx = c.pos.now.x;
-    const ocy = c.pos.now.y;
-
-    const grab_ok = X.XGrabPointer(
-        z.dpy,
-        z.root,
-        false,
-        MOUSEMASK,
-        .Async,
-        .Async,
-        X.None,
-        z.cursors.get(.Resize),
-        X.CurrentTime,
-    );
-    if (!grab_ok) return;
-    if (c.is_floating.now) {
-        X.XWarpPointer(z.dpy, X.None, c.win, .zero, //
-            @intCast(c.pos.now.w + c.bw.now - 1), //
-            @intCast(c.pos.now.h + c.bw.now - 1));
-    } else {
-        X.XWarpPointer(z.dpy, X.None, z.selmon.barwin, .zero, //
-            @intFromFloat(z.selmon.mfact * @as(f32, @floatFromInt(z.selmon.m.w))), //
-            @intCast(@divFloor(z.selmon.m.h, 2)));
-    }
-    var ev: X.XEvent = undefined;
-    var lasttime: X.Time = 0;
-    while (true) {
-        X.XMaskEvent(z.dpy, MOUSEMASK | EM.ExposureMask | EM.SubstructureRedirectMask, &ev);
-        switch (ev.type) {
-            X.Expose | X.MapRequest | X.ConfigureRequest => try runOne(z, allocator, &ev),
-            X.MotionNotify => {
-                if (ev.xmotion.time - lasttime <= @divFloor(1000, cfg.refreshrate)) {
-                    continue;
-                }
-                lasttime = ev.xmotion.time;
-                const nw: i32 = @max(@as(i32, @intCast(ev.xmotion.x)) - ocx - 2 * @as(i32, @intCast(c.bw.now)) + 1, 1);
-                const nh: i32 = @max(@as(i32, @intCast(ev.xmotion.y)) - ocy - 2 * @as(i32, @intCast(c.bw.now)) + 1, 1);
-                if (!c.is_floating.now) {
-                    const f = @as(f32, @floatFromInt(ev.xmotion.x)) /
-                        @as(f32, @floatFromInt(z.selmon.m.w));
-                    if (0.05 <= f and f <= 0.95) {
-                        z.selmon.mfact = f;
-                        arrange(z, allocator, z.selmon);
-                    }
-                    // toggleFloating(undefined);
-                } else if (c.mon.w.x + nw >= z.selmon.w.l() and
-                    c.mon.w.x + nw <= z.selmon.w.r() and
-                    c.mon.w.y + nh >= z.selmon.w.t() and
-                    c.mon.w.y + nh <= z.selmon.w.b())
-                {
-                    if (!c.is_floating.now and
-                        z.selmon.lt.now.arrange != null and
-                        (@abs(nw - @as(i32, @intCast(c.pos.now.w))) > cfg.snap or
-                            @abs(nh - @as(i32, @intCast(c.pos.now.h))) > cfg.snap))
-                    {
-                        toggleFloating(z, allocator, undefined);
-                    }
-                }
-                if (z.selmon.lt.now.arrange == null or c.is_floating.now) {
-                    var r = c.pos.now;
-                    r.w = @intCast(nw);
-                    r.h = @intCast(nh);
-                    c.hintAndResize(r, true);
-                }
-            },
-            X.ButtonRelease => break,
-            else => {},
-        }
-    }
-    if (c.is_floating.now) {
-        X.XWarpPointer(z.dpy, X.None, c.win, .zero, //
-            @intCast(c.pos.now.w + c.bw.now - 1), //
-            @intCast(c.pos.now.h + c.bw.now - 1));
-    }
-    X.XUngrabPointer(z.dpy, X.CurrentTime);
-    while (X.XCheckMaskEvent(z.dpy, EM.EnterWindowMask, &ev)) {}
-    const m_opt = c.pos.now.toMonitor(z.mons);
-    if (m_opt != z.selmon) {
-        if (m_opt) |m| {
-            sendMon(z, allocator, c, m);
-            z.selmon = m;
-            focus(z, allocator, null);
-        }
-    }
-}
-
 /// (dwm) sendmon
 ///
 /// Sends a client to a monitor.
@@ -1005,17 +702,6 @@ fn sendMon(z: *App, allocator: Allocator, c: *Client, m: *Monitor) void {
     if (c.isfullscreen) c.resize(m.m);
     focus(z, allocator, null);
     arrange(z, allocator, null);
-}
-
-/// (dwm) togglefloating
-pub fn toggleFloating(z: *App, allocator: Allocator, _: *const Arg) void {
-    const sel = z.selmon.sel orelse return;
-    if (sel.isfullscreen) return; // No support for making fullscreen windows float.
-    sel.is_floating.set(!sel.is_floating.now or sel.is_fixed);
-    if (sel.is_floating.now) {
-        sel.hintAndResize(sel.pos.now, false);
-    }
-    arrange(z, allocator, z.selmon);
 }
 
 /// (dwm) wintomon
@@ -1217,7 +903,7 @@ fn cleanupMonitors(z: *App, allocator: Allocator) void {
     // View all clients at once. ~0 yields a bitmask of all high bits. I don't
     // fully understand why we do this yet, but I think it helps with clearing
     // out the clients.
-    view(z, allocator, &.{ .ui = ~@as(u32, 0) });
+    mp.view(z, allocator, &.{ .ui = ~@as(u32, 0) });
     z.selmon.lt.set(&.{ .symbol = "", .arrange = null });
 
     m_opt = z.mons;
@@ -1295,173 +981,514 @@ fn updateStatus(z: *App, allocator: Allocator) void {
     drawbar(z, allocator, z.selmon);
 }
 
-/// (dwm) spawn
-pub fn spawn(z: *App, arg: *const Arg) void {
-    const args = switch (arg.*) {
-        .args => |value| value,
-        else => return,
-    };
-    const pid = std.posix.fork() catch {
-        @panic("Unable to fork while trying to spawn a child process.");
-    };
-    if (pid == 0) {
-        _ = C.close(X.ConnectionNumber(z.dpy));
-        _ = C.setsid();
-
-        var sa: C.struct_sigaction = undefined;
-        _ = C.sigemptyset(&sa.sa_mask);
-        sa.sa_flags = 0;
-        sa.__sigaction_handler.sa_handler = C.SIG_DFL;
-        _ = C.sigaction(C.SIGCHLD, &sa, null);
-        const err = std.posix.execvpeZ(args[0].?, args, std.c.environ);
-        std.debug.print("execvp failed with:\n{any}\n", .{err});
-        std.process.exit(1);
+/// Layouts.
+pub const layouts = struct {
+    /// (dwm) monocle
+    pub fn monocle(m: *Monitor) void {
+        var c_opt = m.clients;
+        var n: u32 = 0;
+        while (c_opt) |c| : (c_opt = c.next) {
+            if (c.isVisible()) n += 1;
+        }
+        if (n > 0) { // Override layout symbol.
+            // TODO: have to make the layout symbol an owned buffer. Right not it
+            // can only display const strings.
+            // snprintf(m->ltsymbol, sizeof m->ltsymbol, "[%d]", n);
+        }
+        c_opt = (c_opt orelse return).nextTiled();
+        while (c_opt) |c| : (c_opt = c.nextTiled()) {
+            var r = m.w;
+            r.w = m.w.w - 2 * @as(u32, @intCast(c.bw.now));
+            r.h = m.w.h - 2 * @as(u32, @intCast(c.bw.now));
+            c.hintAndResize(r, false);
+        }
     }
-}
 
-/// (dwm) tag
-pub fn tag(z: *App, allocator: Allocator, arg: *const Arg) void {
-    const mask = switch (arg.*) {
-        .ui => |v| if (v & cfg.TAGMASK != 0) v else return,
-        else => return,
-    };
-    if (z.selmon.sel) |c| {
-        c.tags = mask & cfg.TAGMASK;
+    /// (dwm) tile
+    pub fn tile(m: *Monitor) void {
+        const n = m.countTiledClients();
+        if (n == 0) return;
+        const mw: u32 = blk: {
+            if (n > m.nmaster) {
+                if (m.nmaster == 0) break :blk 0;
+                break :blk @intFromFloat(@as(f32, @floatFromInt(m.w.w)) * m.mfact);
+            }
+            break :blk m.w.w;
+        };
+
+        log.info("tile with {d} clients, with mw={d}", .{ n, mw });
+
+        var i: u32 = 0;
+        var my: i32 = 0; // master's y
+        var ty: i32 = 0; // non-master's y
+        var c_opt = if (m.clients) |c| c.nextTiled() else null;
+        while (c_opt) |c| : ({
+            c_opt = c.nextTiledExclusive();
+            i += 1;
+        }) {
+            log.debug("n={d}, i={d}, ty={d}, my={d}", .{ n, i, ty, my });
+            if (i < m.nmaster) {
+                const h = @divFloor(m.w.h - @as(u32, @intCast(my)), @min(n, m.nmaster) - i);
+                c.hintAndResize(.{
+                    .x = m.w.x,
+                    .y = m.w.y + my,
+                    .w = @intCast(mw - (2 * c.bw.now)),
+                    .h = @intCast(h - (2 * c.bw.now)),
+                }, false);
+                if (my + c.height() < m.w.h) {
+                    my += c.height();
+                }
+            } else {
+                const h = @divFloor(m.w.h - @as(u32, @intCast(ty)), n - i);
+                c.hintAndResize(.{
+                    .x = m.w.x + @as(i32, @intCast(mw)),
+                    .y = m.w.y + ty,
+                    .w = m.w.w - mw - 2 * c.bw.now,
+                    .h = h - 2 * c.bw.now,
+                }, false);
+                if (ty + c.height() < m.w.h) {
+                    ty += c.height();
+                }
+            }
+        }
+    }
+};
+
+/// Mappable functions. Everything has to have a `arg: *const Arg` parameter.
+pub const mp = struct {
+    /// (dwm) togglefloating
+    pub fn toggleFloating(z: *App, allocator: Allocator, _: *const Arg) void {
+        const sel = z.selmon.sel orelse return;
+        if (sel.isfullscreen) return; // No support for making fullscreen windows float.
+        sel.is_floating.set(!sel.is_floating.now or sel.is_fixed);
+        if (sel.is_floating.now) {
+            sel.hintAndResize(sel.pos.now, false);
+        }
+        arrange(z, allocator, z.selmon);
+    }
+
+    /// (dwm) spawn
+    pub fn spawn(z: *App, arg: *const Arg) void {
+        const args = switch (arg.*) {
+            .args => |value| value,
+            else => unreachable,
+        };
+        const pid = std.posix.fork() catch {
+            @panic("Unable to fork while trying to spawn a child process.");
+        };
+        if (pid == 0) {
+            _ = C.close(X.ConnectionNumber(z.dpy));
+            _ = C.setsid();
+
+            var sa: C.struct_sigaction = undefined;
+            _ = C.sigemptyset(&sa.sa_mask);
+            sa.sa_flags = 0;
+            sa.__sigaction_handler.sa_handler = C.SIG_DFL;
+            _ = C.sigaction(C.SIGCHLD, &sa, null);
+            const err = std.posix.execvpeZ(args[0].?, args, std.c.environ);
+            std.debug.print("execvp failed with:\n{any}\n", .{err});
+            std.process.exit(1);
+        }
+    }
+
+    /// (dwm) tag
+    pub fn tag(z: *App, allocator: Allocator, arg: *const Arg) void {
+        const mask = switch (arg.*) {
+            .ui => |v| if (v & cfg.TAGMASK != 0) v else return,
+            else => unreachable,
+        };
+        if (z.selmon.sel) |c| {
+            c.tags = mask & cfg.TAGMASK;
+            focus(z, allocator, null);
+            arrange(z, allocator, z.selmon);
+        }
+    }
+
+    /// (dwm) tagmon
+    pub fn tagMonitor(z: *App, allocator: Allocator, arg: *const Arg) void {
+        const direction = switch (arg.*) {
+            .d => |v| v,
+            else => unreachable,
+        };
+
+        const sel = z.selmon.sel orelse return;
+
+        const target = z.getMonitorFromDirection(direction);
+        if (target == z.selmon) return;
+
+        sendMon(z, allocator, sel, target);
+    }
+
+    /// (dwm) view
+    /// Views a certain tag mask.
+    pub fn view(z: *App, allocator: Allocator, arg: *const Arg) void {
+        const mask = switch (arg.*) {
+            .ui => |mask| b: {
+                // This mask is expected to only have one high bit.
+                if (mask != ~@as(@TypeOf(mask), 0) and @popCount(mask) != 1) {
+                    log.err("view() received a mask of {x}", .{mask});
+                }
+                break :b mask & cfg.TAGMASK;
+            },
+            else => unreachable,
+        };
+        log.info("view with bitmask: {b}", .{mask});
+        if (mask == z.selmon.tags) {
+            return; // nothing to do here.
+        } else if (mask != 0) {
+            z.selmon.tags = mask;
+        }
         focus(z, allocator, null);
         arrange(z, allocator, z.selmon);
     }
-}
 
-/// (dwm) tagmon
-pub fn tagMonitor(z: *App, allocator: Allocator, arg: *const Arg) void {
-    const direction = switch (arg.*) {
-        .d => |v| v,
-        else => return,
-    };
-
-    const sel = z.selmon.sel orelse return;
-
-    const target = z.getMonitorFromDirection(direction);
-    if (target == z.selmon) return;
-
-    sendMon(z, allocator, sel, target);
-}
-
-/// (dwm) view
-/// Views a certain tag mask.
-pub fn view(z: *App, allocator: Allocator, arg: *const Arg) void {
-    const mask = switch (arg.*) {
-        .ui => |mask| b: {
-            // This mask is expected to only have one high bit.
-            if (mask != ~@as(@TypeOf(mask), 0) and @popCount(mask) != 1) {
-                log.err("view() received a mask of {x}", .{mask});
-            }
-            break :b mask & cfg.TAGMASK;
-        },
-        else => return,
-    };
-    log.info("view with bitmask: {b}", .{mask});
-    if (mask == z.selmon.tags) {
-        return; // nothing to do here.
-    } else if (mask != 0) {
-        z.selmon.tags = mask;
+    /// (dwm) togglebar
+    pub fn toggleBar(z: *App, allocator: Allocator, _: *const Arg) void {
+        z.selmon.show_bar = !z.selmon.show_bar;
+        z.selmon.updateBarPosition(z.bar_height);
+        X.XMoveResizeWindow2(z.dpy, z.selmon.barwin, z.barRect());
+        arrange(z, allocator, z.selmon);
     }
-    focus(z, allocator, null);
-    arrange(z, allocator, z.selmon);
-}
 
-/// (dwm) tile
-pub fn tile(m: *Monitor) void {
-    const n = m.countTiledClients();
-    if (n == 0) return;
-    const mw: u32 = blk: {
-        if (n > m.nmaster) {
-            if (m.nmaster == 0) break :blk 0;
-            break :blk @intFromFloat(@as(f32, @floatFromInt(m.w.w)) * m.mfact);
+    pub fn toggleBarPosition(z: *App, allocator: Allocator, _: *const Arg) void {
+        z.selmon.bar_pos = z.selmon.bar_pos.toggle();
+        z.selmon.updateBarPosition(z.bar_height);
+        X.XMoveResizeWindow2(z.dpy, z.selmon.barwin, z.barRect());
+        arrange(z, allocator, z.selmon);
+    }
+
+    /// (dwm) toggletag
+    pub fn toggleTag(z: *App, allocator: Allocator, arg: *const Arg) void {
+        const mask = switch (arg.*) {
+            .ui => |v| v,
+            else => unreachable,
+        };
+        const sel = z.selmon.sel orelse return;
+        const newtags = sel.tags ^ (mask & cfg.TAGMASK);
+        if (newtags != 0) {
+            sel.tags = newtags;
+            focus(z, allocator, null);
+            arrange(z, allocator, z.selmon);
         }
-        break :blk m.w.w;
-    };
+    }
 
-    log.info("tile with {d} clients, with mw={d}", .{ n, mw });
+    /// (dwm) toggleview
+    pub fn toggleView(z: *App, allocator: Allocator, arg: *const Arg) void {
+        const mask = switch (arg.*) {
+            .ui => |v| v & cfg.TAGMASK,
+            else => unreachable,
+        };
+        const newtagset = z.selmon.tags ^ mask;
+        if (newtagset != 0) {
+            z.selmon.tags = newtagset;
+            focus(z, allocator, null);
+            arrange(z, allocator, z.selmon);
+        }
+    }
 
-    var i: u32 = 0;
-    var my: i32 = 0; // master's y
-    var ty: i32 = 0; // non-master's y
-    var c_opt = if (m.clients) |c| c.nextTiled() else null;
-    while (c_opt) |c| : ({
-        c_opt = c.nextTiledExclusive();
-        i += 1;
-    }) {
-        log.debug("n={d}, i={d}, ty={d}, my={d}", .{ n, i, ty, my });
-        if (i < m.nmaster) {
-            const h = @divFloor(m.w.h - @as(u32, @intCast(my)), @min(n, m.nmaster) - i);
-            c.hintAndResize(.{
-                .x = m.w.x,
-                .y = m.w.y + my,
-                .w = @intCast(mw - (2 * c.bw.now)),
-                .h = @intCast(h - (2 * c.bw.now)),
-            }, false);
-            if (my + c.height() < m.w.h) {
-                my += c.height();
+    /// (dwm) quit
+    pub fn quit(z: *App, _: *const Arg) void {
+        log.info("{s}", .{LINE});
+        log.info("quit() called.", .{});
+        z.running = false;
+    }
+
+    /// (dwm) zoom
+    pub fn zoom(z: *App, allocator: Allocator, _: *const Arg) void {
+        var c: ?*Client = z.selmon.sel orelse return;
+        if (c.?.is_floating.now or z.selmon.lt.now.arrange == null) return;
+        const nextTiled: ?*Client = if (z.selmon.clients) |x| x.nextTiled() else null;
+        if (c == nextTiled) {
+            c = if (c.?.next) |x| x.nextTiled() else null;
+            if (c == null) {
+                return;
             }
+        }
+        pop(z, allocator, c.?);
+    }
+
+    /// (dwm) focusmon
+    pub fn focusMon(z: *App, allocator: Allocator, arg: *const Arg) void {
+        const direction = switch (arg.*) {
+            .d => |v| v,
+            else => unreachable,
+        };
+
+        const target = z.getMonitorFromDirection(direction);
+
+        if (target == z.selmon) return;
+        unfocus(z, z.selmon.sel, false);
+        z.selmon = target;
+        focus(z, allocator, null);
+    }
+
+    /// (dwm) focusstack
+    ///
+    /// Focuses the next/previous client in the stack.
+    pub fn focusStack(z: *App, allocator: Allocator, arg: *const Arg) void {
+        const direction = switch (arg.*) {
+            .d => |v| v,
+            else => unreachable,
+        };
+        const sel = z.selmon.sel orelse return;
+        if (sel.isfullscreen and cfg.lockfullscreen) return;
+        var c_opt: ?*Client = null;
+        switch (direction) {
+            .Next => {
+                c_opt = sel.next;
+                // TODO: figure out why this isn't c.snext.
+                while (c_opt) |c| : (c_opt = c.next) {
+                    if (c.isVisible()) {
+                        break;
+                    }
+                }
+                if (c_opt == null) {
+                    c_opt = z.selmon.clients;
+                    while (c_opt) |c| : (c_opt = c.next) {
+                        if (c.isVisible()) {
+                            break;
+                        }
+                    }
+                }
+            },
+            .Prev => {
+                var i_opt: ?*Client = null;
+                i_opt = z.selmon.clients;
+                while (i_opt) |i| : (i_opt = i.next) {
+                    if (i == sel) break;
+                    if (i.isVisible()) c_opt = i;
+                }
+                if (c_opt == null) {
+                    while (i_opt) |i| : (i_opt = i.next) {
+                        if (i.isVisible()) c_opt = i;
+                    }
+                }
+            },
+        }
+        if (c_opt) |c| {
+            focus(z, allocator, c);
+            restack(z, allocator, z.selmon);
+        }
+    }
+
+    /// (dwm) incnmaster
+    pub fn incNMaster(z: *App, allocator: Allocator, arg: *const Arg) void {
+        const i = switch (arg.*) {
+            .i => |v| v,
+            else => unreachable,
+        };
+        z.selmon.nmaster = @intCast(@max(@as(i32, @intCast(z.selmon.nmaster)) + i, 0));
+        arrange(z, allocator, z.selmon);
+    }
+
+    /// (dwm) killclient
+    pub fn killClient(z: *App, _: *const Arg) void {
+        const sel = z.selmon.sel orelse return;
+        log.info("Trying to kill client {*}", .{sel});
+        if (!sel.sendEvent(atoms.wm(.Delete))) {
+            log.info("Kill effective", .{});
+            X.XGrabServer(z.dpy);
+            _ = X.XSetErrorHandler(E.xerrordummy);
+            X.XSetCloseDownMode(z.dpy, .DestroyAll);
+            X.XKillClient(z.dpy, sel.win);
+            X.XSync(z.dpy, false);
+            _ = X.XSetErrorHandler(E.xerror);
+            X.XUngrabServer(z.dpy);
         } else {
-            const h = @divFloor(m.w.h - @as(u32, @intCast(ty)), n - i);
-            c.hintAndResize(.{
-                .x = m.w.x + @as(i32, @intCast(mw)),
-                .y = m.w.y + ty,
-                .w = m.w.w - mw - 2 * c.bw.now,
-                .h = h - 2 * c.bw.now,
-            }, false);
-            if (ty + c.height() < m.w.h) {
-                ty += c.height();
+            log.info("Kill ineffective", .{});
+        }
+    }
+
+    /// (dwm) movemouse
+    pub fn moveMouse(z: *App, allocator: Allocator, _: *const Arg) DwmError!void {
+        var c = z.selmon.sel orelse return;
+        if (c.isfullscreen) return; // No support moving fullscreen windows by mouse.
+        restack(z, allocator, z.selmon);
+
+        // Old client x and y coordinates.
+        const ocx = c.pos.now.x;
+        const ocy = c.pos.now.y;
+
+        const grab_ok = X.XGrabPointer(z.dpy, z.root, false, MOUSEMASK, .Async, //
+            .Async, X.None, z.cursors.get(.Move), X.CurrentTime);
+        if (!grab_ok) return;
+        const coords = z.getRootPtr() orelse return;
+        const x = coords.x;
+        const y = coords.y;
+        var ev: X.XEvent = undefined;
+        var lasttime: X.Time = 0;
+        while (true) {
+            X.XMaskEvent(z.dpy, MOUSEMASK | EM.ExposureMask | EM.SubstructureRedirectMask, &ev);
+            switch (ev.type) {
+                X.Expose | X.MapRequest | X.ConfigureRequest => try runOne(z, allocator, &ev),
+                X.MotionNotify => {
+                    if (ev.xmotion.time - lasttime <= @divFloor(1000, cfg.refreshrate)) {
+                        continue;
+                    }
+                    lasttime = ev.xmotion.time;
+                    var nx = ocx + (ev.xmotion.x - x);
+                    var ny = ocy + (ev.xmotion.y - y);
+                    if (@abs(z.selmon.w.x - nx) < cfg.snap) {
+                        nx = z.selmon.w.x;
+                    } else if (@abs(z.selmon.w.r() - (nx + c.width())) < cfg.snap) {
+                        nx = z.selmon.w.r() - c.width();
+                    }
+                    if (@abs(z.selmon.w.y - ny) < cfg.snap) {
+                        ny = z.selmon.w.y;
+                    } else if (@abs(z.selmon.w.b() - (ny + c.height())) < cfg.snap) {
+                        ny = z.selmon.w.b() - c.height();
+                    }
+                    if (!c.is_floating.now and
+                        z.selmon.lt.now.arrange != null and
+                        (@abs(nx - c.pos.now.x) > cfg.snap or
+                            @abs(ny - c.pos.now.y) > cfg.snap))
+                    {
+                        toggleFloating(z, allocator, undefined);
+                    }
+                    if (z.selmon.lt.now.arrange != null or c.is_floating.now) {
+                        var r = c.pos.now;
+                        r.x = nx;
+                        r.y = ny;
+                        c.hintAndResize(r, true);
+                    }
+                },
+                X.ButtonRelease => break,
+                else => {},
+            }
+        }
+        X.XUngrabPointer(z.dpy, X.CurrentTime);
+        const m_opt = c.pos.now.toMonitor(z.mons);
+        if (m_opt != z.selmon) {
+            if (m_opt) |m| {
+                sendMon(z, allocator, c, m);
+                z.selmon = m;
+                focus(z, allocator, null);
             }
         }
     }
-}
 
-/// (dwm) togglebar
-pub fn toggleBar(z: *App, allocator: Allocator, _: *const Arg) void {
-    z.selmon.show_bar = !z.selmon.show_bar;
-    z.selmon.updateBarPosition(z.bar_height);
-    X.XMoveResizeWindow2(z.dpy, z.selmon.barwin, z.barRect());
-    arrange(z, allocator, z.selmon);
-}
-
-pub fn toggleBarPosition(z: *App, allocator: Allocator, _: *const Arg) void {
-    z.selmon.bar_pos = z.selmon.bar_pos.toggle();
-    z.selmon.updateBarPosition(z.bar_height);
-    X.XMoveResizeWindow2(z.dpy, z.selmon.barwin, z.barRect());
-    arrange(z, allocator, z.selmon);
-}
-
-/// (dwm) toggletag
-pub fn toggleTag(z: *App, allocator: Allocator, arg: *const Arg) void {
-    const mask = switch (arg.*) {
-        .ui => |v| v,
-        else => return,
-    };
-    const sel = z.selmon.sel orelse return;
-    const newtags = sel.tags ^ (mask & cfg.TAGMASK);
-    if (newtags != 0) {
-        sel.tags = newtags;
-        focus(z, allocator, null);
-        arrange(z, allocator, z.selmon);
+    /// (dwm) setlayout
+    pub fn setLayout(z: *App, allocator: Allocator, arg: *const Arg) void {
+        // TODO: check all other instances of tagged access of args. Make sure to
+        // use a switch statement before indexing.
+        const lt = switch (arg.*) {
+            .l => |lt| lt,
+            else => unreachable,
+        };
+        z.selmon.lt.now = lt;
+        if (z.selmon.sel) |_| {
+            arrange(z, allocator, z.selmon);
+        } else {
+            drawbar(z, allocator, z.selmon);
+        }
     }
-}
 
-/// (dwm) toggleview
-pub fn toggleView(z: *App, allocator: Allocator, arg: *const Arg) void {
-    const mask = switch (arg.*) {
-        .ui => |v| v & cfg.TAGMASK,
-        else => return,
-    };
-    const newtagset = z.selmon.tags ^ mask;
-    if (newtagset != 0) {
-        z.selmon.tags = newtagset;
-        focus(z, allocator, null);
-        arrange(z, allocator, z.selmon);
+    /// (dwm) setmfact
+    pub fn setMFact(z: *App, allocator: Allocator, arg: *const Arg) void {
+        if (z.selmon.lt.now.arrange == null) return;
+        const f: f32 = switch (arg.*) {
+            .f => |v| v,
+            else => unreachable,
+        };
+        if (0.05 <= f and f <= 0.95) {
+            z.selmon.mfact = f;
+            arrange(z, allocator, z.selmon);
+        }
     }
-}
+
+    /// (dwm) resizemouse
+    pub fn resizeMouse(z: *App, allocator: Allocator, _: *const Arg) DwmError!void {
+        var c = z.selmon.sel orelse return;
+        if (c.isfullscreen) return; // No support moving fullscreen windows by mouse.
+        restack(z, allocator, z.selmon);
+
+        // Old client x and y coordinates.
+        const ocx = c.pos.now.x;
+        const ocy = c.pos.now.y;
+
+        const grab_ok = X.XGrabPointer(
+            z.dpy,
+            z.root,
+            false,
+            MOUSEMASK,
+            .Async,
+            .Async,
+            X.None,
+            z.cursors.get(.Resize),
+            X.CurrentTime,
+        );
+        if (!grab_ok) return;
+        if (c.is_floating.now) {
+            X.XWarpPointer(z.dpy, X.None, c.win, .zero, //
+                @intCast(c.pos.now.w + c.bw.now - 1), //
+                @intCast(c.pos.now.h + c.bw.now - 1));
+        } else {
+            X.XWarpPointer(z.dpy, X.None, z.selmon.barwin, .zero, //
+                @intFromFloat(z.selmon.mfact * @as(f32, @floatFromInt(z.selmon.m.w))), //
+                @intCast(@divFloor(z.selmon.m.h, 2)));
+        }
+        var ev: X.XEvent = undefined;
+        var lasttime: X.Time = 0;
+        while (true) {
+            X.XMaskEvent(z.dpy, MOUSEMASK | EM.ExposureMask | EM.SubstructureRedirectMask, &ev);
+            switch (ev.type) {
+                X.Expose | X.MapRequest | X.ConfigureRequest => try runOne(z, allocator, &ev),
+                X.MotionNotify => {
+                    if (ev.xmotion.time - lasttime <= @divFloor(1000, cfg.refreshrate)) {
+                        continue;
+                    }
+                    lasttime = ev.xmotion.time;
+                    const nw: i32 = @max(@as(i32, @intCast(ev.xmotion.x)) - ocx - 2 * @as(i32, @intCast(c.bw.now)) + 1, 1);
+                    const nh: i32 = @max(@as(i32, @intCast(ev.xmotion.y)) - ocy - 2 * @as(i32, @intCast(c.bw.now)) + 1, 1);
+                    if (!c.is_floating.now) {
+                        const f = @as(f32, @floatFromInt(ev.xmotion.x)) /
+                            @as(f32, @floatFromInt(z.selmon.m.w));
+                        if (0.05 <= f and f <= 0.95) {
+                            z.selmon.mfact = f;
+                            arrange(z, allocator, z.selmon);
+                        }
+                        // toggleFloating(undefined);
+                    } else if (c.mon.w.x + nw >= z.selmon.w.l() and
+                        c.mon.w.x + nw <= z.selmon.w.r() and
+                        c.mon.w.y + nh >= z.selmon.w.t() and
+                        c.mon.w.y + nh <= z.selmon.w.b())
+                    {
+                        if (!c.is_floating.now and
+                            z.selmon.lt.now.arrange != null and
+                            (@abs(nw - @as(i32, @intCast(c.pos.now.w))) > cfg.snap or
+                                @abs(nh - @as(i32, @intCast(c.pos.now.h))) > cfg.snap))
+                        {
+                            toggleFloating(z, allocator, undefined);
+                        }
+                    }
+                    if (z.selmon.lt.now.arrange == null or c.is_floating.now) {
+                        var r = c.pos.now;
+                        r.w = @intCast(nw);
+                        r.h = @intCast(nh);
+                        c.hintAndResize(r, true);
+                    }
+                },
+                X.ButtonRelease => break,
+                else => {},
+            }
+        }
+        if (c.is_floating.now) {
+            X.XWarpPointer(z.dpy, X.None, c.win, .zero, //
+                @intCast(c.pos.now.w + c.bw.now - 1), //
+                @intCast(c.pos.now.h + c.bw.now - 1));
+        }
+        X.XUngrabPointer(z.dpy, X.CurrentTime);
+        while (X.XCheckMaskEvent(z.dpy, EM.EnterWindowMask, &ev)) {}
+        const m_opt = c.pos.now.toMonitor(z.mons);
+        if (m_opt != z.selmon) {
+            if (m_opt) |m| {
+                sendMon(z, allocator, c, m);
+                z.selmon = m;
+                focus(z, allocator, null);
+            }
+        }
+    }
+};
 
 /// (dwm) pop
 pub fn pop(z: *App, allocator: Allocator, c: *Client) void {
@@ -1469,27 +1496,6 @@ pub fn pop(z: *App, allocator: Allocator, c: *Client) void {
     c.attach();
     focus(z, allocator, c);
     arrange(z, allocator, c.mon);
-}
-
-/// (dwm) quit
-pub fn quit(z: *App, _: *const Arg) void {
-    log.info("{s}", .{LINE});
-    log.info("quit() called.", .{});
-    z.running = false;
-}
-
-/// (dwm) zoom
-pub fn zoom(z: *App, allocator: Allocator, _: *const Arg) void {
-    var c: ?*Client = z.selmon.sel orelse return;
-    if (c.?.is_floating.now or z.selmon.lt.now.arrange == null) return;
-    const nextTiled: ?*Client = if (z.selmon.clients) |x| x.nextTiled() else null;
-    if (c == nextTiled) {
-        c = if (c.?.next) |x| x.nextTiled() else null;
-        if (c == null) {
-            return;
-        }
-    }
-    pop(z, allocator, c.?);
 }
 
 /// (dwm) drawbar
