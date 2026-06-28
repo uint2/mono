@@ -1336,7 +1336,7 @@ pub fn spawn(z: *App, arg: *const Arg) void {
         sa.__sigaction_handler.sa_handler = C.SIG_DFL;
         _ = C.sigaction(C.SIGCHLD, &sa, null);
         const err = std.posix.execvpeZ(args[0].?, args, std.c.environ);
-        std.debug.print("execvp failed with:\n{*}\n", .{err});
+        std.debug.print("execvp failed with:\n{any}\n", .{err});
         std.process.exit(1);
     }
 }
@@ -1643,6 +1643,7 @@ pub fn main() !void {
         return std.debug.print(NAME ++ ": cannot open X display\n", .{});
     };
     defer X.XCloseDisplay(dpy);
+    const screen = X.DefaultScreen(dpy);
 
     checkOtherWM(dpy);
     setupTerminationHandling();
@@ -1653,17 +1654,17 @@ pub fn main() !void {
 
     // Initialize colors.
     for (std.enums.values(SchemeState)) |ss| {
-        const color = try ColorScheme.init(allocator, dpy, z.screen, cfg.colors.get(ss));
+        const color = try ColorScheme.init(allocator, dpy, screen, cfg.colors.get(ss));
         z.scheme.set(ss, color);
     }
-    defer for (std.enums.values(SchemeState)) |ss| z.scheme.get(ss).deinit(allocator, dpy, z.screen);
+    defer for (std.enums.values(SchemeState)) |ss| z.scheme.get(ss).deinit(allocator, dpy, screen);
 
     // Initialize dimensions, and establish first window and monitor.
     z.s = .{
-        .w = @intCast(X.DisplayWidth(dpy, z.screen)),
-        .h = @intCast(X.DisplayHeight(dpy, z.screen)),
+        .w = @intCast(X.DisplayWidth(dpy, screen)),
+        .h = @intCast(X.DisplayHeight(dpy, screen)),
     };
-    z.root = X.RootWindow(dpy, z.screen);
+    z.root = X.RootWindow(dpy, screen);
     z.selmon = try Monitor.init(allocator);
     z.mons = z.selmon;
     _ = updategeom(&z);
@@ -1687,7 +1688,7 @@ pub fn main() !void {
     }
 
     // Initialize all the fonts specified in the config.
-    const fonts = try Font.initMany(allocator, dpy, z.screen, &cfg.fonts) orelse {
+    const fonts = try Font.initMany(allocator, dpy, screen, &cfg.fonts) orelse {
         @panic("Not a single font was valid.");
     };
     defer fonts.free(allocator);
@@ -1695,7 +1696,7 @@ pub fn main() !void {
 
     z.drw = try .init(.{
         .dpy = dpy,
-        .screen = z.screen,
+        .screen = screen,
         .root = z.root,
         .width = z.s.w,
         .height = z.s.h,

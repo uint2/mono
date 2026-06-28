@@ -56,7 +56,15 @@ numlockmask: NumLockMask = .empty,
 
 running: bool = true,
 
-pub const init: Self = .{};
+pub fn init(allocator: Allocator, dpy: *X.Display, screen: c_int) error{OutOfMemory}!Self {
+    const m0 = try Monitor.init(allocator);
+    return Self{
+        .dpy = dpy,
+        .screen = screen,
+        .selmon = m0,
+        .mons = m0,
+    };
+}
 
 /// (dwm) TEXTW
 pub fn TEXTW(self: *Self, allocator: Allocator, text: []const u8) u32 {
