@@ -220,7 +220,7 @@ const R = struct {
         var arg: Arg = undefined;
 
         // Focus monitor if necessary.
-        const m = wintomon(z, ev.window);
+        const m = z.windowToMonitor(ev.window);
         if (m != z.selmon) {
             if (z.selmon.sel) |c| c.unfocus(z, true);
             z.selmon = m;
@@ -400,7 +400,7 @@ const R = struct {
             return;
         }
         const c = z.winToClient(ev.window);
-        const m = if (c) |client| client.mon else wintomon(z, ev.window);
+        const m = if (c) |client| client.mon else z.windowToMonitor(ev.window);
         if (m != z.selmon) {
             if (z.selmon.sel) |sel| sel.unfocus(z, true);
             z.selmon = m;
@@ -414,7 +414,7 @@ const R = struct {
     fn expose(z: *App, allocator: Allocator, e: *X.XEvent) void {
         const ev: X.XExposeEvent = e.xexpose;
         if (ev.count == 0) {
-            wintomon(z, ev.window).drawbar(allocator, z);
+            z.windowToMonitor(ev.window).drawbar(allocator, z);
         }
     }
 
@@ -607,24 +607,6 @@ fn scan(z: *App, allocator: Allocator) error{OutOfMemory}!void {
     }
 }
 
-/// (dwm) wintomon
-fn wintomon(z: *App, w: X.Window) *Monitor {
-    if (w == z.root) {
-        if (z.getRootPtr()) |coords| {
-            const r = Rect{ .x = coords.x, .y = coords.y, .w = 1, .h = 1 };
-            // To guarantee a non-null return of `*Monitor`, we deviate a tad from
-            // dwm's behaviour and return `selmon` if nothing is found.
-            return r.toMonitor(z.mons) orelse z.selmon;
-        }
-    }
-    var m_opt: ?*Monitor = z.mons;
-    while (m_opt) |m| : (m_opt = m.next) {
-        if (w == m.barwin) return m;
-    }
-    if (z.winToClient(w)) |c| return c.mon;
-    return z.selmon;
-}
-
 /// (dwm) updategeom
 fn updategeom(z: *App) bool {
     var dirty = false;
@@ -639,7 +621,7 @@ fn updategeom(z: *App) bool {
     }
     if (dirty) {
         z.selmon = mons;
-        z.selmon = wintomon(z, z.root);
+        z.selmon = z.windowToMonitor(z.root);
     }
     return dirty;
 }

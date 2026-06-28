@@ -196,3 +196,23 @@ pub fn drawbars(self: *Self, allocator: Allocator) void {
         m.drawbar(allocator, self);
     }
 }
+
+/// (dwm) wintomon
+///
+/// Obtains the monitor that a window is on. Falls back to the selected monitor.
+pub fn windowToMonitor(self: *Self, w: X.Window) *Monitor {
+    if (w == self.root) {
+        if (self.getRootPtr()) |coords| {
+            const r = Rect{ .x = coords.x, .y = coords.y, .w = 1, .h = 1 };
+            // To guarantee a non-null return of `*Monitor`, we deviate a tad from
+            // dwm's behaviour and return `selmon` if nothing is found.
+            return r.toMonitor(self.mons) orelse self.selmon;
+        }
+    }
+    var m_opt: ?*Monitor = self.mons;
+    while (m_opt) |m| : (m_opt = m.next) {
+        if (w == m.barwin) return m;
+    }
+    if (self.winToClient(w)) |c| return c.mon;
+    return self.selmon;
+}
