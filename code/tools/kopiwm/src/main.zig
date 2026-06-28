@@ -155,7 +155,7 @@ fn manage(z: *App, allocator: Allocator, w: X.Window, wa: *X.XWindowAttributes) 
         unfocus(z, c.mon.sel, false);
     }
     c.mon.sel = c;
-    arrange(z, allocator, c.mon);
+    c.mon.arrange(allocator, z);
     X.XMapWindow(z.dpy, c.win);
     focus(z, allocator, null);
 }
@@ -183,7 +183,7 @@ fn unmanage(z: *App, allocator: Allocator, c: *Client, destroyed: bool) void {
     allocator.destroy(c);
     focus(z, allocator, null);
     updateClientList(z);
-    arrange(z, allocator, m);
+    m.arrange(allocator, z);
 }
 
 /// (dwm) updateclientlist
@@ -216,59 +216,6 @@ fn arrangeMon(z: *const App, m: *Monitor) void {
     if (m.lt.now.arrange) |f| {
         log.info("Arranging monitor {*} with algo \"{s}\"", .{ m, m.lt.now.symbol });
         f(z, m);
-    }
-}
-
-/// (dwm) restack
-///
-/// Puts the selected client at the top of the stacking order, so that no other
-/// window obscures it. And then also syncs our stacking order with X's.
-fn restack(z: *App, allocator: Allocator, m: *Monitor) void {
-    drawbar(z, allocator, m);
-
-    const has_arrange = m.lt.now.arrange != null;
-
-    const sel = m.sel orelse return;
-    if (sel.is_floating.now or !has_arrange) {
-        X.XRaiseWindow(z.dpy, sel.win);
-    }
-    if (has_arrange) {
-        var wc = X.XWindowChanges{ .sibling = m.barwin, .stack_mode = X.Below };
-        var c_opt = m.stack;
-        while (c_opt) |c| : (c_opt = c.snext) {
-            if (!c.is_floating.now and c.isVisible()) {
-                X.XConfigureWindow(z.dpy, c.win, CW.Sibling | CW.StackMode, &wc);
-                wc.sibling = c.win;
-            }
-        }
-    }
-
-    X.XSync(z.dpy, false);
-    var ev: X.XEvent = undefined;
-    while (X.XCheckMaskEvent(z.dpy, EM.EnterWindowMask, &ev)) {}
-}
-
-/// (dwm) arrange
-fn arrange(z: *App, allocator: Allocator, monitor: ?*Monitor) void {
-    if (monitor) |m| log.info("arranging monitor({*})", .{m}) else log.info("arranging monitor(null)", .{});
-
-    var m_opt: ?*Monitor = null;
-    if (monitor) |m| {
-        if (m.stack) |c| c.showHide(z);
-    } else {
-        m_opt = z.mons;
-        while (m_opt) |m| : (m_opt = m.next) {
-            if (m.stack) |c| c.showHide(z);
-        }
-    }
-    if (monitor) |m| {
-        arrangeMon(z, m);
-        restack(z, allocator, m);
-    } else {
-        m_opt = z.mons;
-        while (m_opt) |m| : (m_opt = m.next) {
-            arrangeMon(z, m);
-        }
     }
 }
 
@@ -316,7 +263,7 @@ const R = struct {
         // This block searches for the click location in the client.
         if (z.winToClient(ev.window)) |c| {
             focus(z, allocator, c);
-            restack(z, allocator, z.selmon);
+            z.selmon.restack(allocator, z);
             X.XAllowEvents(z.dpy, .ReplayPointer, X.CurrentTime);
             click = .ClientWin;
         }
@@ -384,7 +331,7 @@ const R = struct {
                 X.XMoveResizeWindow(z.dpy, m.barwin, m.w.x, m.w.y, m.w.w, z.bar_height);
             }
             focus(z, allocator, null);
-            arrange(z, allocator, null);
+            z.arrangeAllMonitors();
         }
     }
     /// (dwm) configurerequest
@@ -474,7 +421,7 @@ const R = struct {
     fn expose(z: *App, allocator: Allocator, e: *X.XEvent) void {
         const ev: X.XExposeEvent = e.xexpose;
         if (ev.count == 0) {
-            drawbar(z, allocator, wintomon(z, ev.window));
+            wintomon(z, ev.window).drawbar(allocator, z);
         }
     }
 
@@ -559,7 +506,7 @@ const R = struct {
                     const trans_opt = X.XGetTransientForHint(z.dpy, c.win);
                     const b = !c.is_floating.now and trans_opt != null;
                     if (trans_opt) |t| c.is_floating.set(z.winToClient(t) != null);
-                    if (b and c.is_floating.now) arrange(z, allocator, c.mon);
+                    if (b and c.is_floating.now) c.mon.arrange(allocator, z);
                 },
                 X.XA_WM_NORMAL_HINTS => c.hintsvalid = false,
                 X.XA_WM_HINTS => {
@@ -571,7 +518,7 @@ const R = struct {
             if (ev.atom == X.XA_WM_NAME or ev.atom == atoms.net(.WMName)) {
                 c.updateTitle();
                 if (c == c.mon.sel) {
-                    drawbar(z, allocator, c.mon);
+                    c.mon.drawbar(allocator, z);
                 }
             }
             if (ev.atom == atoms.net(.WMWindowType)) {
@@ -683,7 +630,7 @@ fn sendMon(z: *App, allocator: Allocator, c: *Client, m: *Monitor) void {
     c.attachStack();
     if (c.isfullscreen) c.resize(&m.m);
     focus(z, allocator, null);
-    arrange(z, allocator, null);
+    z.arrangeAllMonitors();
 }
 
 /// (dwm) wintomon
@@ -825,7 +772,7 @@ fn focus(z: *App, allocator: Allocator, client: ?*Client) void {
 fn drawbars(z: *App, allocator: Allocator) void {
     var m_opt: ?*Monitor = z.mons;
     while (m_opt) |m| : (m_opt = m.next) {
-        drawbar(z, allocator, m);
+        m.drawbar(allocator, z);
     }
 }
 
@@ -960,7 +907,7 @@ fn updateStatus(z: *App, allocator: Allocator) void {
     } else {
         z.stext.set(NAME ++ "-" ++ VERSION);
     }
-    drawbar(z, allocator, z.selmon);
+    z.selmon.drawbar(allocator, z);
 }
 
 /// Layouts.
@@ -982,6 +929,7 @@ pub const layouts = struct {
     }
 
     /// (dwm) tile
+    /// TODO: try to make Monitor a const pointer.
     pub fn tile(z: *const App, m: *Monitor) void {
         const n = m.countTiledClients();
         if (n == 0) return;
@@ -1095,7 +1043,7 @@ pub const mp = struct {
         }
         if (c_opt) |c| {
             focus(z, allocator, c);
-            restack(z, allocator, z.selmon);
+            z.selmon.restack(allocator, z);
         }
     }
 
@@ -1106,7 +1054,7 @@ pub const mp = struct {
             else => unreachable,
         };
         z.selmon.nmaster = @intCast(@max(@as(i32, @intCast(z.selmon.nmaster)) + i, 0));
-        arrange(z, allocator, z.selmon);
+        z.selmon.arrange(allocator, z);
     }
 
     /// (dwm) killclient
@@ -1131,7 +1079,7 @@ pub const mp = struct {
     pub fn moveMouse(z: *App, allocator: Allocator, _: *const Arg) DwmError!void {
         var c = z.selmon.sel orelse return;
         if (c.isfullscreen) return; // No support moving fullscreen windows by mouse.
-        restack(z, allocator, z.selmon);
+        z.selmon.restack(allocator, z);
 
         // Old client x and y coordinates.
         const ocx = c.pos.now.x;
@@ -1193,7 +1141,7 @@ pub const mp = struct {
     pub fn resizeMouse(z: *App, allocator: Allocator, _: *const Arg) DwmError!void {
         var c = z.selmon.sel orelse return;
         if (c.isfullscreen) return; // No support moving fullscreen windows by mouse.
-        restack(z, allocator, z.selmon);
+        z.selmon.restack(allocator, z);
 
         // Old client x and y coordinates.
         const ocx = c.pos.now.x;
@@ -1228,7 +1176,7 @@ pub const mp = struct {
                             @as(f32, @floatFromInt(z.selmon.m.w));
                         if (0.05 <= f and f <= 0.95) {
                             z.selmon.mfact = f;
-                            arrange(z, allocator, z.selmon);
+                            z.selmon.arrange(allocator, z);
                         }
                         // toggleFloating(undefined);
                     } else if (c.mon.w.x + nw >= z.selmon.w.l() and
@@ -1280,9 +1228,9 @@ pub const mp = struct {
         };
         z.selmon.lt.now = lt;
         if (z.selmon.sel) |_| {
-            arrange(z, allocator, z.selmon);
+            z.selmon.arrange(allocator, z);
         } else {
-            drawbar(z, allocator, z.selmon);
+            z.selmon.drawbar(allocator, z);
         }
     }
 
@@ -1295,7 +1243,7 @@ pub const mp = struct {
         };
         if (0.05 <= f and f <= 0.95) {
             z.selmon.mfact = f;
-            arrange(z, allocator, z.selmon);
+            z.selmon.arrange(allocator, z);
         }
     }
 
@@ -1332,7 +1280,7 @@ pub const mp = struct {
         if (z.selmon.sel) |c| {
             c.tags = mask & cfg.TAGMASK;
             focus(z, allocator, null);
-            arrange(z, allocator, z.selmon);
+            z.selmon.arrange(allocator, z);
         }
     }
 
@@ -1356,14 +1304,14 @@ pub const mp = struct {
         z.selmon.show_bar = !z.selmon.show_bar;
         z.selmon.updateBarPosition(z.bar_height);
         X.XMoveResizeWindow2(z.dpy, z.selmon.barwin, z.barRect());
-        arrange(z, allocator, z.selmon);
+        z.selmon.arrange(allocator, z);
     }
 
     pub fn toggleBarPosition(z: *App, allocator: Allocator, _: *const Arg) void {
         z.selmon.bar_pos = z.selmon.bar_pos.toggle();
         z.selmon.updateBarPosition(z.bar_height);
         X.XMoveResizeWindow2(z.dpy, z.selmon.barwin, z.barRect());
-        arrange(z, allocator, z.selmon);
+        z.selmon.arrange(allocator, z);
     }
 
     /// (dwm) togglefloating
@@ -1374,7 +1322,7 @@ pub const mp = struct {
         if (sel.is_floating.now) {
             sel.hintAndResize(z, &sel.pos.now, false);
         }
-        arrange(z, allocator, z.selmon);
+        z.selmon.arrange(allocator, z);
     }
 
     /// (dwm) toggletag
@@ -1388,7 +1336,7 @@ pub const mp = struct {
         if (newtags != 0) {
             sel.tags = newtags;
             focus(z, allocator, null);
-            arrange(z, allocator, z.selmon);
+            z.selmon.arrange(allocator, z);
         }
     }
 
@@ -1402,7 +1350,7 @@ pub const mp = struct {
         if (newtagset != 0) {
             z.selmon.tags = newtagset;
             focus(z, allocator, null);
-            arrange(z, allocator, z.selmon);
+            z.selmon.arrange(allocator, z);
         }
     }
 
@@ -1426,7 +1374,7 @@ pub const mp = struct {
             z.selmon.tags = mask;
         }
         focus(z, allocator, null);
-        arrange(z, allocator, z.selmon);
+        z.selmon.arrange(allocator, z);
     }
 
     /// (dwm) zoom
@@ -1449,83 +1397,7 @@ pub fn pop(z: *App, allocator: Allocator, c: *Client) void {
     c.detach();
     c.attach();
     focus(z, allocator, c);
-    arrange(z, allocator, c.mon);
-}
-
-/// (dwm) drawbar
-fn drawbar(z: *App, allocator: Allocator, m: *Monitor) void {
-    if (!m.show_bar) return;
-
-    var tw: u32 = 0;
-    const boxs = @divTrunc(z.drw.fonts.height, 9);
-    const boxw = @divTrunc(z.drw.fonts.height, 6) + 2;
-
-    const occ = m.getOccupiedBitmask();
-    const urg = m.getUrgentBitmask();
-
-    // draw status text first so it can be overdrawn by tags later
-    if (m == z.selmon) { // status text is only drawn on selected monitor
-        z.drw.setScheme(z.scheme.get(.Normal));
-        tw = z.TEXTW(allocator, z.stext.get());
-        _ = z.drw.drawText(allocator, .{
-            .x = @as(c_int, @intCast(m.w.w)) - @as(c_int, @intCast(tw)),
-            .y = 0,
-            .w = tw,
-            .h = z.bar_height,
-        }, 0, z.stext.get(), 0);
-    }
-
-    var x: i32 = 0;
-    var w: u32 = 0;
-    for (0..cfg.tags.len) |i| {
-        w = z.TEXTW(allocator, cfg.tags[i].text);
-        const current_tag = @as(u32, 1) << @intCast(i);
-        const selected = m.tags & current_tag != 0;
-        z.drw.setScheme(z.scheme.get(if (selected) .Selected else .Normal));
-        _ = z.drw.drawText(
-            allocator,
-            .{ .x = x, .y = 0, .w = w, .h = z.bar_height },
-            z.lrpad / 2,
-            cfg.tags[i].text,
-            urg & current_tag,
-        );
-        if ((occ & current_tag) != 0) {
-            z.drw.drawRect(
-                .{ .x = x + boxs, .y = boxs, .w = @intCast(boxw), .h = @intCast(boxw) },
-                filled: {
-                    const client = z.selmon.sel orelse break :filled false;
-                    break :filled m == z.selmon and (client.tags & current_tag) != 0;
-                },
-                (urg & current_tag) != 0,
-            );
-        }
-        x += @intCast(w);
-    }
-
-    w = z.TEXTW(allocator, m.lt.now.symbol);
-    z.drw.setScheme(z.scheme.get(.Normal));
-    x = z.drw.drawText(
-        allocator,
-        .{ .x = x, .y = 0, .w = w, .h = z.bar_height },
-        z.lrpad / 2,
-        m.lt.now.symbol,
-        0,
-    );
-
-    // TODO: what if tw > m.ww?
-    w = m.w.w - tw - @as(u32, @intCast(x));
-    if (w > z.bar_height) {
-        if (m.sel) |c| {
-            const name = c.name.get();
-            const r = Rect{ .x = x, .y = 0, .w = w, .h = z.bar_height };
-            z.drw.setScheme(z.scheme.get(if (m == z.selmon) .Bar else .Normal));
-            _ = z.drw.drawText(allocator, r, z.lrpad / 2, name, 0);
-        } else {
-            z.drw.setScheme(z.scheme.get(.Normal));
-            z.drw.drawRect(.{ .x = x, .y = 0, .w = w, .h = z.bar_height }, true, true);
-        }
-    }
-    z.drw.map(m.barwin, .{ .x = 0, .y = 0, .w = m.w.w, .h = z.bar_height });
+    c.mon.arrange(allocator, z);
 }
 
 /// Returns true if we should terminate the process immediately after this

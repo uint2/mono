@@ -2,6 +2,7 @@ const std = @import("std");
 const mem = std.mem;
 const log = std.log;
 
+const App = @import("app.zig");
 const cfg = @import("config.zig");
 const toggle = @import("toggle.zig").toggle;
 const lt = @import("layout.zig");
@@ -10,6 +11,8 @@ const Client = @import("client.zig").Client;
 const BarPosition = @import("enums.zig").BarPosition;
 
 const X = @import("x11.zig");
+const CW = @import("x11.zig").CW;
+const EM = @import("x11.zig").eventMask;
 const Allocator = std.mem.Allocator;
 const Rect = @import("rect.zig").Rect;
 
@@ -134,5 +137,123 @@ pub const Monitor = struct {
             if (c.isVisible()) return c;
         }
         return null;
+    }
+
+    pub fn arrange(self: *Monitor, allocator: Allocator, z: *App) void {
+        if (self.stack) |c| c.showHide(z);
+        self.startArrange(z);
+        self.restack(allocator, z);
+    }
+
+    /// (dwm) arrangemon
+    ///
+    /// Calls the arrange function stored inside of the layout member.
+    pub fn startArrange(self: *Self, z: *const App) void {
+        (self.lt.now.arrange orelse return)(z, self);
+    }
+
+    /// (dwm) drawbar
+    pub fn drawbar(self: *Self, allocator: Allocator, z: *App) void {
+        if (!self.show_bar) return;
+
+        var tw: u32 = 0;
+        const boxs = @divTrunc(z.drw.fonts.height, 9);
+        const boxw = @divTrunc(z.drw.fonts.height, 6) + 2;
+
+        const occ = self.getOccupiedBitmask();
+        const urg = self.getUrgentBitmask();
+
+        // draw status text first so it can be overdrawn by tags later
+        if (self == z.selmon) { // status text is only drawn on selected monitor
+            z.drw.setScheme(z.scheme.get(.Normal));
+            tw = z.TEXTW(allocator, z.stext.get());
+            _ = z.drw.drawText(allocator, .{
+                .x = @as(c_int, @intCast(self.w.w)) - @as(c_int, @intCast(tw)),
+                .y = 0,
+                .w = tw,
+                .h = z.bar_height,
+            }, 0, z.stext.get(), 0);
+        }
+
+        var x: i32 = 0;
+        var w: u32 = 0;
+        for (0..cfg.tags.len) |i| {
+            w = z.TEXTW(allocator, cfg.tags[i].text);
+            const current_tag = @as(u32, 1) << @intCast(i);
+            const selected = self.tags & current_tag != 0;
+            z.drw.setScheme(z.scheme.get(if (selected) .Selected else .Normal));
+            _ = z.drw.drawText(
+                allocator,
+                .{ .x = x, .y = 0, .w = w, .h = z.bar_height },
+                z.lrpad / 2,
+                cfg.tags[i].text,
+                urg & current_tag,
+            );
+            if ((occ & current_tag) != 0) {
+                z.drw.drawRect(
+                    .{ .x = x + boxs, .y = boxs, .w = @intCast(boxw), .h = @intCast(boxw) },
+                    filled: {
+                        const client = z.selmon.sel orelse break :filled false;
+                        break :filled self == z.selmon and (client.tags & current_tag) != 0;
+                    },
+                    (urg & current_tag) != 0,
+                );
+            }
+            x += @intCast(w);
+        }
+
+        w = z.TEXTW(allocator, self.lt.now.symbol);
+        z.drw.setScheme(z.scheme.get(.Normal));
+        x = z.drw.drawText(
+            allocator,
+            .{ .x = x, .y = 0, .w = w, .h = z.bar_height },
+            z.lrpad / 2,
+            self.lt.now.symbol,
+            0,
+        );
+
+        // TODO: what if tw > self.ww?
+        w = self.w.w - tw - @as(u32, @intCast(x));
+        if (w > z.bar_height) {
+            if (self.sel) |c| {
+                const name = c.name.get();
+                const r = Rect{ .x = x, .y = 0, .w = w, .h = z.bar_height };
+                z.drw.setScheme(z.scheme.get(if (self == z.selmon) .Bar else .Normal));
+                _ = z.drw.drawText(allocator, r, z.lrpad / 2, name, 0);
+            } else {
+                z.drw.setScheme(z.scheme.get(.Normal));
+                z.drw.drawRect(.{ .x = x, .y = 0, .w = w, .h = z.bar_height }, true, true);
+            }
+        }
+        z.drw.map(self.barwin, .{ .x = 0, .y = 0, .w = self.w.w, .h = z.bar_height });
+    }
+
+    /// (dwm) restack
+    ///
+    /// Puts the selected client at the top of the stacking order, so that no other
+    /// window obscures it. And then also syncs our stacking order with X's.
+    pub fn restack(self: *Monitor, allocator: Allocator, z: *App) void {
+        self.drawbar(allocator, z);
+
+        const has_arrange = self.lt.now.arrange != null;
+
+        const sel = self.sel orelse return;
+        if (sel.is_floating.now or !has_arrange) {
+            X.XRaiseWindow(z.dpy, sel.win);
+        }
+        if (has_arrange) {
+            var wc = X.XWindowChanges{ .sibling = self.barwin, .stack_mode = X.Below };
+            var c_opt = self.stack;
+            while (c_opt) |c| : (c_opt = c.snext) {
+                if (!c.is_floating.now and c.isVisible()) {
+                    X.XConfigureWindow(z.dpy, c.win, CW.Sibling | CW.StackMode, &wc);
+                    wc.sibling = c.win;
+                }
+            }
+        }
+
+        X.XSync(z.dpy, false);
+        var ev: X.XEvent = undefined;
+        while (X.XCheckMaskEvent(z.dpy, EM.EnterWindowMask, &ev)) {}
     }
 };

@@ -174,3 +174,15 @@ pub fn winToClient(self: *const Self, w: X.Window) ?*Client {
     }
     return null;
 }
+
+/// (dwm) arrange
+pub fn arrangeAllMonitors(self: *Self) void {
+    var m_opt: ?*Monitor = self.mons;
+    while (m_opt) |m| : (m_opt = m.next) {
+        if (m.stack) |c| c.showHide(self);
+    }
+    m_opt = self.mons;
+    while (m_opt) |m| : (m_opt = m.next) {
+        m.startArrange(self);
+    }
+}
