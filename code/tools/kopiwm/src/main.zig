@@ -1318,8 +1318,6 @@ pub const mp = struct {
 
     /// (dwm) setlayout
     pub fn setLayout(z: *App, allocator: Allocator, arg: *const Arg) void {
-        // TODO: check all other instances of tagged access of args. Make sure to
-        // use a switch statement before indexing.
         const lt = switch (arg.*) {
             .l => |lt| lt,
             else => unreachable,
