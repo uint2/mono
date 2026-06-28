@@ -133,4 +133,13 @@ pub const Monitor = struct {
         }
         return mask;
     }
+
+    /// Gets the first visible client based on stacking order.
+    pub fn firstVisibleClient(self: *const Self) ?*Client {
+        var c_opt = self.stack;
+        while (c_opt) |c| : (c_opt = c.snext) {
+            if (c.isVisible()) return c;
+        }
+        return null;
+    }
 };

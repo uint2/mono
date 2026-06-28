@@ -1,4 +1,5 @@
 const std = @import("std");
+const Direction = @import("lazy_fn.zig").Direction;
 const log = std.log;
 const build_opts = @import("build_opts");
 const NumLockMask = @import("numlockmask.zig").NumLockMask;
@@ -115,19 +116,46 @@ pub fn barRect(self: *const Self) Rect {
     };
 }
 
-/// Tries to find the best client to focus based on the suggestion. If the
-/// suggested client is visible and non-null, then all's good and return it.
-/// Otherwise, attempt to find the first client that is visible. If even that's
-/// not possible, then return null.
+/// Tries to find the best client to focus, based on the suggestion.
+/// * If the suggested client is visible and non-null, then all's good.
+/// * If it's invisible, check that client's parent monitor for the first
+///   visible client.
+/// * Otherwise, check the selected monitor for the first visible client.
+/// * Give up and return null.
 pub fn resolveFocus(self: *const Self, suggested: ?*Client) ?*Client {
-    if (suggested) |c| if (c.isVisible()) return c;
-    // At this point, the suggested client is either null or invisible.
-
-    // Advance the pointer until it points to the first visible client.
-    var c_opt = self.selmon.stack;
-    while (c_opt) |c| : (c_opt = c.snext) {
-        if (c.isVisible()) return c;
+    if (suggested) |suggestedClient| {
+        if (suggestedClient.isVisible()) {
+            return suggestedClient;
+        } else if (suggestedClient.mon.firstVisibleClient()) |client| {
+            return client;
+        } else if (self.selmon == suggestedClient.mon) {
+            return null;
+        }
     }
+    return self.selmon.firstVisibleClient();
+}
 
-    return null;
+/// (dwm) dirtomon
+///
+/// If there are multiple monitors, then go to the next/prev one. Otherwise,
+/// do not move (i.e. stay on selmon).
+pub fn getMonitorFromDirection(self: *const Self, direction: Direction) *Monitor {
+    switch (direction) {
+        .Next => return if (self.selmon.next) |t| t else self.selmon,
+        .Prev => {
+            var m = self.mons;
+            if (self.selmon == self.mons) {
+                // Send pointer to the end of the linked list.
+                while (m.next) |next| : (m = next) {}
+                return m;
+            } else {
+                // Advance pointer to just before the selected one.
+                while (m.next) |next| : (m = next) if (next == self.selmon) return m;
+                // The monitor list is corrupted because we couldn't retrieve
+                // selmon from traversing the linked list from the start. So
+                // selmon is dangling.
+                @panic("Corrupted monitor linked list.");
+            }
+        },
+    }
 }

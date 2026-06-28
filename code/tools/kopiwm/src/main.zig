@@ -54,42 +54,19 @@ fn checkOtherWM(dpy: *X.Display) void {
     X.XSync(dpy, false);
 }
 
-/// (dwm) dirtomon
-///
-/// If there are multiple monitors, then go to the next/prev one. Otherwise,
-/// do not move (i.e. stay on selmon).
-fn directionToMonitor(z: *App, direction: Direction) *Monitor {
-    switch (direction) {
-        .Next => return if (z.selmon.next) |t| t else z.selmon,
-        .Prev => {
-            var m = z.mons;
-            if (z.selmon == z.mons) {
-                // Send pointer to the end of the linked list.
-                while (m.next) |next| : (m = next) {}
-                return m;
-            } else {
-                // Advance pointer to just before the selected one.
-                while (m.next) |next| : (m = next) if (next == z.selmon) return m;
-                // The monitor list is corrupted because we couldn't retrieve
-                // selmon from traversing the linked list from the start. So
-                // selmon is dangling.
-                @panic("Corrupted monitor linked list.");
-            }
-        },
-    }
-}
-
 /// (dwm) focusmon
 pub fn focusMon(z: *App, allocator: Allocator, arg: *const Arg) void {
-    // Skip base case where there are no monitors to change focus to.
-    if (z.mons.next == null) return;
-    const m_opt = directionToMonitor(arg.d);
-    if (m_opt == z.selmon) return;
-    if (m_opt) |m| {
-        unfocus(z, z.selmon.sel, false);
-        z.selmon = m;
-        focus(z, allocator, null);
-    }
+    const direction = switch (arg.*) {
+        .d => |v| v,
+        else => return,
+    };
+
+    const target = z.getMonitorFromDirection(direction);
+
+    if (target == z.selmon) return;
+    unfocus(z, z.selmon.sel, false);
+    z.selmon = target;
+    focus(z, allocator, null);
 }
 
 /// (dwm) focusstack
@@ -1006,18 +983,20 @@ pub fn resizeMouse(z: *App, allocator: Allocator, _: *const Arg) DwmError!void {
 }
 
 /// (dwm) sendmon
+///
+/// Sends a client to a monitor.
 fn sendMon(z: *App, allocator: Allocator, c: *Client, m: *Monitor) void {
     if (c.mon == m) return;
+    // Leave the previous monitor.
     unfocus(z, c, true);
     c.detach();
     c.detachStack();
+    // Enter the new monitor.
     c.mon = m;
     c.tags = m.tags; // Assign tags of target monitor.
     c.attach();
     c.attachStack();
-    if (c.isfullscreen) {
-        c.resize(m.w);
-    }
+    if (c.isfullscreen) c.resize(m.m);
     focus(z, allocator, null);
     arrange(z, allocator, null);
 }
@@ -1355,11 +1334,11 @@ pub fn tagMonitor(z: *App, allocator: Allocator, arg: *const Arg) void {
     };
 
     const sel = z.selmon.sel orelse return;
-    if (z.mons.next == null) return;
 
-    if (directionToMonitor(direction)) |m| {
-        sendMon(z, allocator, sel, m);
-    }
+    const target = z.getMonitorFromDirection(direction);
+    if (target == z.selmon) return;
+
+    sendMon(z, allocator, sel, target);
 }
 
 /// (dwm) view
