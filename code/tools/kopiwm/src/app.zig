@@ -1,7 +1,7 @@
-//! By convention, root.zig is the root source file when making a library.
 const std = @import("std");
 const log = std.log;
 const build_opts = @import("build_opts");
+const NumLockMask = @import("numlockmask.zig").NumLockMask;
 const X = @import("x11.zig");
 const Rect = @import("rect.zig").Rect;
 const SchemeState = @import("color_scheme.zig").SchemeState;
@@ -51,6 +51,8 @@ scheme: EnumArray(SchemeState, *ColorScheme) = .empty,
 
 /// Status bar text.
 stext: fstr(256) = .empty,
+
+numlockmask: NumLockMask = .empty,
 
 running: bool = true,
 
