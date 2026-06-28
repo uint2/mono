@@ -13,6 +13,7 @@ const M = @import("x11.zig").masks;
 const EM = @import("x11.zig").eventMask;
 const CW = @import("x11.zig").CW;
 const atoms = @import("atoms.zig");
+const Coordinates = @import("enums.zig").Coordinates;
 
 const ClientSizes = struct {
     base: ?Size = null,
@@ -572,7 +573,7 @@ pub const Client = struct {
         }
     }
 
-    pub inline fn isTiled(self: *Self) bool {
+    pub inline fn isTiled(self: *const Self) bool {
         return !self.is_floating.now and self.isVisible();
     }
 
@@ -580,7 +581,7 @@ pub const Client = struct {
     /// Get the next element (possibly itself) in the linked list (given by
     /// `self.next`) that is tiled. Could be the current element, could also be
     /// null.
-    pub fn nextTiled(self: *Self) ?*Self {
+    pub fn nextTiled(self: *const Self) ?*Self {
         var c_opt: ?*Self = self;
         while (c_opt) |c| : (c_opt = c.next) if (c.isTiled()) return c;
         return null;
@@ -588,7 +589,35 @@ pub const Client = struct {
 
     /// Get the next element (NOT itself) in the linked list (given by
     /// `self.next`) that is tiled.
-    pub fn nextTiledExclusive(self: *Self) ?*Self {
+    pub fn nextTiledExclusive(self: *const Self) ?*Self {
         return if (self.next) |c| c.nextTiled() else null;
+    }
+
+    /// Gets the location to send the pointer to when the user starts resizing
+    /// the window. These coordinates will be relative to this client's window's
+    /// origin.
+    ///
+    /// If the client is floating, then send the cursor to the bottom-right of
+    /// the window.
+    ///
+    /// If the client is tiled, then this is entirely Khang's preference but
+    /// we only support resizing the biggest tiled window (the master window).
+    /// Basically that is equivalent to changing the mfact. So send the cursor
+    /// to the mfact line that divides the screen vertically, and make sure the
+    /// cursor is vertically centered on the screen.
+    pub fn wrapPointerForResize(self: *const Self, dpy: *X.Display) Coordinates(c_int) {
+        _ = self;
+        _ = dpy;
+        // TODO: implement this and put it in resizeMouse.
+        @panic("");
+        // if (self.is_floating.now) {
+        //     X.XWarpPointer(dpy, X.None, self.win, .zero, //
+        //         @intCast(self.pos.now.w + self.borderWidth.now - 1), //
+        //         @intCast(self.pos.now.h + self.borderWidth.now - 1));
+        // } else {
+        //     X.XWarpPointer(dpy, X.None, z.selmon.barwin, .zero, //
+        //         @intFromFloat(z.selmon.mfact * @as(f32, @floatFromInt(z.selmon.m.w))), //
+        //         @intCast(@divFloor(z.selmon.m.h, 2)));
+        // }
     }
 };
