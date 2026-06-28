@@ -238,3 +238,28 @@ pub fn resolveClientAndFocus(self: *Self, allocator: Allocator, client: ?*Client
     target.focus(self);
     self.drawbars(allocator);
 }
+
+/// (dwm) updateclientlist
+/// Updates the ClientList property in the X server.
+pub fn updateClientList(self: *const Self) void {
+    var m_opt: ?*Monitor = self.mons;
+    var c_opt: ?*Client = undefined;
+    // Delete the existing list.
+    X.XDeleteProperty(self.dpy, self.root, atoms.net(.ClientList));
+    // Rebuild the list.
+    while (m_opt) |m| : (m_opt = m.next) {
+        c_opt = m.clients;
+        while (c_opt) |c| : (c_opt = c.next) {
+            X.XChangeProperty(
+                self.dpy,
+                self.root,
+                atoms.net(.ClientList),
+                X.XA_WINDOW,
+                32,
+                .Append,
+                @ptrCast(&c.win),
+                1,
+            );
+        }
+    }
+}

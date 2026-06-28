@@ -182,33 +182,8 @@ fn unmanage(z: *App, allocator: Allocator, c: *Client, destroyed: bool) void {
     const m = c.mon; // So that we can still access c.mon after freeing c.
     allocator.destroy(c);
     z.resolveClientAndFocus(allocator, null);
-    updateClientList(z);
+    z.updateClientList();
     m.arrange(allocator, z);
-}
-
-/// (dwm) updateclientlist
-/// Updates the ClientList property in the X server.
-fn updateClientList(z: *App) void {
-    var m_opt: ?*Monitor = z.mons;
-    var c_opt: ?*Client = undefined;
-    // Delete the existing list.
-    X.XDeleteProperty(z.dpy, z.root, atoms.net(.ClientList));
-    // Rebuild the list.
-    while (m_opt) |m| : (m_opt = m.next) {
-        c_opt = m.clients;
-        while (c_opt) |c| : (c_opt = c.next) {
-            X.XChangeProperty(
-                z.dpy,
-                z.root,
-                atoms.net(.ClientList),
-                X.XA_WINDOW,
-                32,
-                .Append,
-                @ptrCast(&c.win),
-                1,
-            );
-        }
-    }
 }
 
 /// Functions that are called in [r]eaction to events.
