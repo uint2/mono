@@ -76,8 +76,8 @@ pub fn init(allocator: Allocator, dpy: *X.Display, screen: c_int) error{OutOfMem
 }
 
 /// (dwm) TEXTW
-pub fn TEXTW(self: *Self, allocator: Allocator, text: []const u8) u32 {
-    return self.drw.fontSetGetWidth(allocator, text) + self.lrpad;
+pub fn TEXTW(self: *Self, allocator: Allocator, text: []const u8) error{OutOfMemory}!u32 {
+    return try self.drw.fontSetGetWidth(allocator, text) + self.lrpad;
 }
 
 /// (dwm) getrootptr
@@ -198,10 +198,10 @@ pub fn arrangeAllMonitors(self: *Self) void {
 /// (dwm) drawbars
 ///
 /// Updates all the status bars across all monitors.
-pub fn drawbars(self: *Self, allocator: Allocator) void {
+pub fn drawbars(self: *Self, allocator: Allocator) error{OutOfMemory}!void {
     var m_opt: ?*Monitor = self.mons;
     while (m_opt) |m| : (m_opt = m.next) {
-        m.drawbar(allocator, self);
+        try m.drawbar(allocator, self);
     }
 }
 
@@ -229,7 +229,7 @@ pub fn windowToMonitor(self: *Self, w: X.Window) *Monitor {
 ///
 /// Draws the focus to one particular client. If no `client` is provided (null),
 /// then focus any client that is visible.
-pub fn resolveClientAndFocus(self: *Self, allocator: Allocator, client: ?*Client) void {
+pub fn resolveClientAndFocus(self: *Self, allocator: Allocator, client: ?*Client) error{OutOfMemory}!void {
     log.info("Focusing a client...", .{});
 
     const target = self.resolveFocus(client) orelse {
@@ -237,13 +237,13 @@ pub fn resolveClientAndFocus(self: *Self, allocator: Allocator, client: ?*Client
         X.XSetInputFocus(self.dpy, self.root, .PointerRoot, X.CurrentTime);
         X.XDeleteProperty(self.dpy, self.root, atoms.net(.ActiveWindow));
         self.selmon.sel = null;
-        self.drawbars(allocator);
+        try self.drawbars(allocator);
         return;
     };
 
     log.info("Focusing client @ {*}", .{target});
     target.focus(self);
-    self.drawbars(allocator);
+    try self.drawbars(allocator);
 }
 
 /// (dwm) updateclientlist
@@ -272,13 +272,13 @@ pub fn updateClientList(self: *const Self) void {
 }
 
 /// (dwm) updatestatus
-pub fn updateStatus(self: *Self, allocator: Allocator) void {
+pub fn updateStatus(self: *Self, allocator: Allocator) error{OutOfMemory}!void {
     if (self.getTextProp(self.root, X.XA_WM_NAME, &self.stext.buffer)) |len| {
         self.stext.len = len;
     } else {
         self.stext.set(NAME ++ "-" ++ VERSION);
     }
-    self.selmon.drawbar(allocator, self);
+    try self.selmon.drawbar(allocator, self);
 }
 
 /// (dwm) updatebars
@@ -374,7 +374,7 @@ pub fn updategeom(self: *Self) bool {
     return dirty;
 }
 
-pub fn resolveClick(self: *Self, allocator: Allocator, ev: *const X.XButtonPressedEvent) struct {
+pub fn resolveClick(self: *Self, allocator: Allocator, ev: *const X.XButtonPressedEvent) error{OutOfMemory}!struct {
     /// Location of the click.
     loc: Clk,
     /// The tag that was clicked, as a bitmask.
@@ -388,7 +388,7 @@ pub fn resolveClick(self: *Self, allocator: Allocator, ev: *const X.XButtonPress
     if (m != self.selmon) {
         if (self.selmon.sel) |c| c.unfocus(self, true);
         self.selmon = m;
-        self.resolveClientAndFocus(allocator, null);
+        try self.resolveClientAndFocus(allocator, null);
     }
 
     // This block searches for the click location in the bar window. That is
@@ -397,7 +397,7 @@ pub fn resolveClick(self: *Self, allocator: Allocator, ev: *const X.XButtonPress
         var i: usize = 0;
         var x: u32 = 0;
         while (true) {
-            x += self.TEXTW(allocator, cfg.tags[i].text);
+            x += try self.TEXTW(allocator, cfg.tags[i].text);
             if (ev.x >= x) {
                 i += 1;
                 if (i < cfg.tags.len) continue;
@@ -407,9 +407,9 @@ pub fn resolveClick(self: *Self, allocator: Allocator, ev: *const X.XButtonPress
         if (i < cfg.tags.len) {
             click = .TagBar;
             tagMask = @as(u32, 1) << @intCast(i);
-        } else if (ev.x < x + self.TEXTW(allocator, self.selmon.lt.now.symbol)) {
+        } else if (ev.x < x + try self.TEXTW(allocator, self.selmon.lt.now.symbol)) {
             click = .LtSymbol;
-        } else if (ev.x > self.selmon.w.w - self.TEXTW(allocator, self.stext.get()) + self.lrpad - 2) {
+        } else if (ev.x > self.selmon.w.w - try self.TEXTW(allocator, self.stext.get()) + self.lrpad - 2) {
             click = .StatusText;
         } else {
             click = .WinTitle;
@@ -417,8 +417,8 @@ pub fn resolveClick(self: *Self, allocator: Allocator, ev: *const X.XButtonPress
     }
     // This block searches for the click location in the client.
     else if (self.winToClient(ev.window)) |c| {
-        self.resolveClientAndFocus(allocator, c);
-        self.selmon.restack(allocator, self);
+        try self.resolveClientAndFocus(allocator, c);
+        try self.selmon.restack(allocator, self);
         X.XAllowEvents(self.dpy, .ReplayPointer, X.CurrentTime);
         click = .ClientWin;
     }

@@ -134,23 +134,23 @@ const my_keys = [_]Key{
     .init(MODKEY,                   k.XK_Return, .f(M.mp.spawn,               .{ .args = termcmd    })),
     // .init(MODKEY,                   k.XK_j,      .f(M.mp.focusStack,          .{ .d = .Next         })),
     // .init(MODKEY,                   k.XK_k,      .f(M.mp.focusStack,          .{ .d = .Prev         })),
-    .init(MODKEY|m.ctrl|m.shft,     k.XK_equal,  .a(M.mp.setMFact,            .{ .f =  0.04         })),
-    .init(MODKEY|m.ctrl|m.shft,     k.XK_minus,  .a(M.mp.setMFact,            .{ .f = -0.04         })),
-    .init(MODKEY,                   k.XK_Return, .a(M.mp.zoom,                undefined              )),
-    .init(MODKEY,                   k.XK_Tab,    .a(M.mp.focusStack,          .{ .d = .Next         })),
+    .init(MODKEY|m.ctrl|m.shft,     k.XK_equal,  .A(M.mp.setMFact,            .{ .f =  0.04         })),
+    .init(MODKEY|m.ctrl|m.shft,     k.XK_minus,  .A(M.mp.setMFact,            .{ .f = -0.04         })),
+    .init(MODKEY,                   k.XK_Return, .A(M.mp.zoom,                undefined              )),
+    .init(MODKEY,                   k.XK_Tab,    .A(M.mp.focusStack,          .{ .d = .Next         })),
     .init(MODKEY,                   k.XK_q,      .f(M.mp.killClient,          undefined              )),
-    .init(MODKEY|m.ctrl,            k.XK_f,      .a(M.mp.toggleFloating,      undefined              )),
+    .init(MODKEY|m.ctrl,            k.XK_f,      .A(M.mp.toggleFloating,      undefined              )),
     .init(m.hyper,                  k.XK_q,      .f(M.mp.quit,                undefined              )),
-    .init(m.bot3,                   k.XK_b,      .a(M.mp.toggleBar,           undefined              )),
-    .init(m.hyper,                  k.XK_b,      .a(M.mp.toggleBarPosition,   undefined              )),
+    .init(m.bot3,                   k.XK_b,      .A(M.mp.toggleBar,           undefined              )),
+    .init(m.hyper,                  k.XK_b,      .A(M.mp.toggleBarPosition,   undefined              )),
 };
 // zig fmt: on
 
 /// A template of what's to be mapped for each tag available.
 // zig fmt: off
 const my_tag_keys = [_]Key{
-    .init(MODKEY,           0, .a(M.mp.view,       .{ .ui = 0 })),
-    .init(MODKEY|m.shft,    0, .a(M.mp.tag,        .{ .ui = 0 })),
+    .init(MODKEY,           0, .A(M.mp.view,       .{ .ui = 0 })),
+    .init(MODKEY|m.shft,    0, .A(M.mp.tag,        .{ .ui = 0 })),
 };
 // zig fmt: on
 
@@ -182,8 +182,8 @@ pub const keys = initKeys(
 pub const my_buttons = [_]Button{
 .init(.ClientWin,    MODKEY,   k.Button1,   .A( M.mp.moveMouse,        undefined)),
 .init(.ClientWin,    MODKEY,   k.Button3,   .A( M.mp.resizeMouse,      undefined)),
-.init(.TagBar,       0,        k.Button1,   .a( M.mp.view,             undefined)),
-.init(.TagBar,       0,        k.Button3,   .a( M.mp.toggleView,       undefined)),
+.init(.TagBar,       0,        k.Button1,   .A( M.mp.view,             undefined)),
+.init(.TagBar,       0,        k.Button3,   .A( M.mp.toggleView,       undefined)),
 };
 // zig fmt: on
 pub const buttons: []const Button = if (USE_DEFAULT_CONFIG) &defaults.buttons else &my_buttons;

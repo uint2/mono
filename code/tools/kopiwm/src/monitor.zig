@@ -140,10 +140,10 @@ pub const Monitor = struct {
     }
 
     /// (dwm) arrangemon
-    pub fn arrange(self: *Monitor, allocator: Allocator, z: *App) void {
+    pub fn arrange(self: *Monitor, allocator: Allocator, z: *App) error{OutOfMemory}!void {
         if (self.stack) |c| c.showHide(z);
         self.startArrange(z);
-        self.restack(allocator, z);
+        try self.restack(allocator, z);
     }
 
     /// (dwm) arrangemon
@@ -154,7 +154,7 @@ pub const Monitor = struct {
     }
 
     /// (dwm) drawbar
-    pub fn drawbar(self: *Self, allocator: Allocator, z: *App) void {
+    pub fn drawbar(self: *Self, allocator: Allocator, z: *App) error{OutOfMemory}!void {
         if (!self.show_bar) return;
 
         var tw: u32 = 0;
@@ -167,8 +167,8 @@ pub const Monitor = struct {
         // draw status text first so it can be overdrawn by tags later
         if (self == z.selmon) { // status text is only drawn on selected monitor
             z.drw.setScheme(z.scheme.get(.Normal));
-            tw = z.TEXTW(allocator, z.stext.get());
-            _ = z.drw.drawText(allocator, .{
+            tw = try z.TEXTW(allocator, z.stext.get());
+            _ = try z.drw.drawText(allocator, .{
                 .x = @as(c_int, @intCast(self.w.w)) - @as(c_int, @intCast(tw)),
                 .y = 0,
                 .w = tw,
@@ -179,11 +179,11 @@ pub const Monitor = struct {
         var x: i32 = 0;
         var w: u32 = 0;
         for (0..cfg.tags.len) |i| {
-            w = z.TEXTW(allocator, cfg.tags[i].text);
+            w = try z.TEXTW(allocator, cfg.tags[i].text);
             const current_tag = @as(u32, 1) << @intCast(i);
             const selected = self.tags & current_tag != 0;
             z.drw.setScheme(z.scheme.get(if (selected) .Selected else .Normal));
-            _ = z.drw.drawText(
+            _ = try z.drw.drawText(
                 allocator,
                 .{ .x = x, .y = 0, .w = w, .h = z.bar_height },
                 z.lrpad / 2,
@@ -203,9 +203,9 @@ pub const Monitor = struct {
             x += @intCast(w);
         }
 
-        w = z.TEXTW(allocator, self.lt.now.symbol);
+        w = try z.TEXTW(allocator, self.lt.now.symbol);
         z.drw.setScheme(z.scheme.get(.Normal));
-        x = z.drw.drawText(
+        x = try z.drw.drawText(
             allocator,
             .{ .x = x, .y = 0, .w = w, .h = z.bar_height },
             z.lrpad / 2,
@@ -220,7 +220,7 @@ pub const Monitor = struct {
                 const name = c.name.get();
                 const r = Rect{ .x = x, .y = 0, .w = w, .h = z.bar_height };
                 z.drw.setScheme(z.scheme.get(if (self == z.selmon) .Bar else .Normal));
-                _ = z.drw.drawText(allocator, r, z.lrpad / 2, name, 0);
+                _ = try z.drw.drawText(allocator, r, z.lrpad / 2, name, 0);
             } else {
                 z.drw.setScheme(z.scheme.get(.Normal));
                 z.drw.drawRect(.{ .x = x, .y = 0, .w = w, .h = z.bar_height }, true, true);
@@ -233,8 +233,8 @@ pub const Monitor = struct {
     ///
     /// Puts the selected client at the top of the stacking order, so that no other
     /// window obscures it. And then also syncs our stacking order with X's.
-    pub fn restack(self: *Monitor, allocator: Allocator, z: *App) void {
-        self.drawbar(allocator, z);
+    pub fn restack(self: *Monitor, allocator: Allocator, z: *App) error{OutOfMemory}!void {
+        try self.drawbar(allocator, z);
 
         const has_arrange = self.lt.now.arrange != null;
 

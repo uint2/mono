@@ -147,7 +147,7 @@ pub const Drw = struct {
         lpad: u32,
         text_to_draw: []const u8,
         invert: u32,
-    ) i32 {
+    ) error{OutOfMemory}!i32 {
         const INVALID = "�";
         var text: []const u8 = text_to_draw;
         var x = rect.x;
@@ -193,10 +193,10 @@ pub const Drw = struct {
         defer if (d) |draw| X.XftDrawDestroy(draw);
 
         if (state.ellipsis_width == null and render) {
-            state.ellipsis_width = self.fontSetGetWidth(allocator, "...");
+            state.ellipsis_width = try self.fontSetGetWidth(allocator, "...");
         }
         if (state.invalid_width == null and render) {
-            state.invalid_width = self.fontSetGetWidth(allocator, INVALID);
+            state.invalid_width = try self.fontSetGetWidth(allocator, INVALID);
         }
 
         const utf8 = struct {
@@ -291,14 +291,14 @@ pub const Drw = struct {
 
             if (utf8err and (!render or (state.invalid_width orelse w) < w)) {
                 if (render) {
-                    _ = self.drawText(allocator, .{ .x = x, .y = rect.y, .w = w, .h = rect.h }, 0, INVALID, invert);
+                    _ = try self.drawText(allocator, .{ .x = x, .y = rect.y, .w = w, .h = rect.h }, 0, INVALID, invert);
                 }
                 x += @intCast(state.invalid_width orelse 0);
                 w -= state.invalid_width orelse 0;
             }
 
             if (render and overflow) {
-                _ = self.drawText(allocator, .{ .x = ellipsis_x, .y = rect.y, .w = ellipsis_w, .h = rect.h }, 0, "...", invert);
+                _ = try self.drawText(allocator, .{ .x = ellipsis_x, .y = rect.y, .w = ellipsis_w, .h = rect.h }, 0, "...", invert);
             }
 
             if (text.len == 0 or overflow) {
@@ -347,6 +347,7 @@ pub const Drw = struct {
 
                 if (match_opt) |match| {
                     const j = if (state.nomatches[h0] > 0) h1 else h0;
+                    usedfont = try allocator.create(Font);
                     usedfont.fromPattern(self.dpy, match) catch {
                         state.nomatches[j] = utf8.codepoint;
                         continue;
@@ -366,9 +367,9 @@ pub const Drw = struct {
     }
 
     /// (dwm) drw_fontset_getwidth
-    pub fn fontSetGetWidth(self: *Self, allocator: Allocator, text: []const u8) u32 {
+    pub fn fontSetGetWidth(self: *Self, allocator: Allocator, text: []const u8) error{OutOfMemory}!u32 {
         if (text.len == 0) return 0;
-        return @intCast(self.drawText(allocator, .zero, 0, text, 0));
+        return @intCast(try self.drawText(allocator, .zero, 0, text, 0));
     }
 
     /// (dwm) drw_map

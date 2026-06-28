@@ -46,27 +46,27 @@ const termcmd: [*:null]const ?[*:0]const u8 = &.{"xterm"};
 pub const base_keys = [_]Key{
     .init(MODKEY,            k.XK_p,      .f(M.mp.spawn,          .{ .args = launchcmd  })),
     .init(MODKEY|ShiftMask,  k.XK_Return, .f(M.mp.spawn,          .{ .args = termcmd    })),
-    .init(MODKEY,            k.XK_b,      .a(M.mp.toggleBar,      undefined              )),
-    .init(MODKEY,            k.XK_j,      .a(M.mp.focusStack,     .{ .d = .Next         })),
-    .init(MODKEY,            k.XK_k,      .a(M.mp.focusStack,     .{ .d = .Prev         })),
-    .init(MODKEY,            k.XK_i,      .a(M.mp.incNMaster,     .{ .i =  1            })),
-    .init(MODKEY,            k.XK_d,      .a(M.mp.incNMaster,     .{ .i = -1            })),
-    .init(MODKEY,            k.XK_h,      .a(M.mp.setMFact,       .{ .f =  0.05         })),
-    .init(MODKEY,            k.XK_l,      .a(M.mp.incNMaster,     .{ .f = -0.05         })),
-    .init(MODKEY,            k.XK_Return, .a(M.mp.zoom,           undefined              )),
-    .init(MODKEY,            k.XK_Tab,    .a(M.mp.view,           undefined              )),
+    .init(MODKEY,            k.XK_b,      .A(M.mp.toggleBar,      undefined              )),
+    .init(MODKEY,            k.XK_j,      .A(M.mp.focusStack,     .{ .d = .Next         })),
+    .init(MODKEY,            k.XK_k,      .A(M.mp.focusStack,     .{ .d = .Prev         })),
+    .init(MODKEY,            k.XK_i,      .A(M.mp.incNMaster,     .{ .i =  1            })),
+    .init(MODKEY,            k.XK_d,      .A(M.mp.incNMaster,     .{ .i = -1            })),
+    .init(MODKEY,            k.XK_h,      .A(M.mp.setMFact,       .{ .f =  0.05         })),
+    .init(MODKEY,            k.XK_l,      .A(M.mp.incNMaster,     .{ .f = -0.05         })),
+    .init(MODKEY,            k.XK_Return, .A(M.mp.zoom,           undefined              )),
+    .init(MODKEY,            k.XK_Tab,    .A(M.mp.view,           undefined              )),
     .init(MODKEY|ShiftMask,  k.XK_c,      .f(M.mp.killClient,     undefined              )),
-    .init(MODKEY,            k.XK_t,      .a(M.mp.setLayout,      .{ .l = &layouts[0]   })),
-    .init(MODKEY,            k.XK_f,      .a(M.mp.setLayout,      .{ .l = &layouts[1]   })),
-    .init(MODKEY,            k.XK_m,      .a(M.mp.setLayout,      .{ .l = &layouts[2]   })),
-    .init(MODKEY,            k.XK_space,  .a(M.mp.setLayout,      .{ .l = &.empty       })),
-    .init(MODKEY|ShiftMask,  k.XK_space,  .a(M.mp.toggleFloating, undefined              )),
-    .init(MODKEY,            k.XK_0,      .a(M.mp.view,           .{ .ui = ~@as(u32, 0) })),
-    .init(MODKEY|ShiftMask,  k.XK_0,      .a(M.mp.tag,            .{ .ui = ~@as(u32, 0) })),
-    .init(MODKEY,            k.XK_comma,  .a(M.mp.focusMon,       .{ .d = .Prev         })),
-    .init(MODKEY,            k.XK_period, .a(M.mp.focusMon,       .{ .d = .Next         })),
-    .init(MODKEY|ShiftMask,  k.XK_comma,  .a(M.mp.tagMonitor,     .{ .d = .Prev         })),
-    .init(MODKEY|ShiftMask,  k.XK_period, .a(M.mp.tagMonitor,     .{ .d = .Next         })),
+    .init(MODKEY,            k.XK_t,      .A(M.mp.setLayout,      .{ .l = &layouts[0]   })),
+    .init(MODKEY,            k.XK_f,      .A(M.mp.setLayout,      .{ .l = &layouts[1]   })),
+    .init(MODKEY,            k.XK_m,      .A(M.mp.setLayout,      .{ .l = &layouts[2]   })),
+    .init(MODKEY,            k.XK_space,  .A(M.mp.setLayout,      .{ .l = &.empty       })),
+    .init(MODKEY|ShiftMask,  k.XK_space,  .A(M.mp.toggleFloating, undefined              )),
+    .init(MODKEY,            k.XK_0,      .A(M.mp.view,           .{ .ui = ~@as(u32, 0) })),
+    .init(MODKEY|ShiftMask,  k.XK_0,      .A(M.mp.tag,            .{ .ui = ~@as(u32, 0) })),
+    .init(MODKEY,            k.XK_comma,  .A(M.mp.focusMon,       .{ .d = .Prev         })),
+    .init(MODKEY,            k.XK_period, .A(M.mp.focusMon,       .{ .d = .Next         })),
+    .init(MODKEY|ShiftMask,  k.XK_comma,  .A(M.mp.tagMonitor,     .{ .d = .Prev         })),
+    .init(MODKEY|ShiftMask,  k.XK_period, .A(M.mp.tagMonitor,     .{ .d = .Next         })),
     .init(MODKEY|ShiftMask,  k.XK_q,      .f(M.mp.quit,           undefined              )),
 };
 // zig fmt: on
@@ -74,10 +74,10 @@ pub const base_keys = [_]Key{
 /// A template of what's to be mapped for each tag available.
 // zig fmt: off
 pub const tag_keys = [_]Key{
-    .init(MODKEY,                       0, .a(M.mp.view,       .{ .ui = 0 })),
-    .init(MODKEY|ControlMask,           0, .a(M.mp.toggleView, .{ .ui = 0 })),
-    .init(MODKEY|ShiftMask,             0, .a(M.mp.tag,        .{ .ui = 0 })),
-    .init(MODKEY|ShiftMask|ControlMask, 0, .a(M.mp.toggleTag,  .{ .ui = 0 })),
+    .init(MODKEY,                       0, .A(M.mp.view,       .{ .ui = 0 })),
+    .init(MODKEY|ControlMask,           0, .A(M.mp.toggleView, .{ .ui = 0 })),
+    .init(MODKEY|ShiftMask,             0, .A(M.mp.tag,        .{ .ui = 0 })),
+    .init(MODKEY|ShiftMask|ControlMask, 0, .A(M.mp.toggleTag,  .{ .ui = 0 })),
 };
 // zig fmt: on
 
@@ -85,16 +85,16 @@ pub const keys = cfg.initKeys(&base_keys);
 
 // zig fmt: off
 pub const buttons = [_]Button{
-.init(.LtSymbol,     0,        k.Button1,   .a( M.mp.setLayout,        .{ .l = &.empty     } )),
-.init(.LtSymbol,     0,        k.Button3,   .a( M.mp.setLayout,        .{ .l = &layouts[2] } )),
-.init(.WinTitle,     0,        k.Button2,   .a( M.mp.zoom,             undefined             )),
+.init(.LtSymbol,     0,        k.Button1,   .A( M.mp.setLayout,        .{ .l = &.empty     } )),
+.init(.LtSymbol,     0,        k.Button3,   .A( M.mp.setLayout,        .{ .l = &layouts[2] } )),
+.init(.WinTitle,     0,        k.Button2,   .A( M.mp.zoom,             undefined             )),
 .init(.StatusText,   0,        k.Button2,   .f( M.mp.spawn,            .{.args = &.{}}       )),
 .init(.ClientWin,    MODKEY,   k.Button1,   .A( M.mp.moveMouse,        undefined             )),
-.init(.ClientWin,    MODKEY,   k.Button2,   .a( M.mp.toggleFloating,   undefined             )),
+.init(.ClientWin,    MODKEY,   k.Button2,   .A( M.mp.toggleFloating,   undefined             )),
 .init(.ClientWin,    MODKEY,   k.Button3,   .A( M.mp.resizeMouse,      undefined             )),
-.init(.TagBar,       0,        k.Button1,   .a( M.mp.view,             undefined             )),
-.init(.TagBar,       0,        k.Button3,   .a( M.mp.toggleView,       undefined             )),
-.init(.TagBar,       MODKEY,   k.Button1,   .a( M.mp.tag,              undefined             )),
-.init(.TagBar,       MODKEY,   k.Button3,   .a( M.mp.toggleTag,        undefined             )),
+.init(.TagBar,       0,        k.Button1,   .A( M.mp.view,             undefined             )),
+.init(.TagBar,       0,        k.Button3,   .A( M.mp.toggleView,       undefined             )),
+.init(.TagBar,       MODKEY,   k.Button1,   .A( M.mp.tag,              undefined             )),
+.init(.TagBar,       MODKEY,   k.Button3,   .A( M.mp.toggleTag,        undefined             )),
 };
 // zig fmt: on

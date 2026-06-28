@@ -656,7 +656,7 @@ pub const Client = struct {
     /// (dwm) sendmon
     ///
     /// Sends a client to a monitor.
-    pub fn sendToMonitor(self: *Self, allocator: Allocator, z: *App, m: *Monitor) void {
+    pub fn sendToMonitor(self: *Self, allocator: Allocator, z: *App, m: *Monitor) error{OutOfMemory}!void {
         if (self.mon == m) return;
         // Leave the previous monitor.
         self.unfocus(z, true);
@@ -669,13 +669,13 @@ pub const Client = struct {
         self.attachStack();
         if (self.isfullscreen) self.resize(z.dpy, &m.m);
         self.focus(z);
-        z.drawbars(allocator);
+        try z.drawbars(allocator);
         z.arrangeAllMonitors();
     }
 
     /// (dwm) unmanage
     /// Destroys a client and removes it from the monitor that owns it.
-    pub fn unmanage(self: *Self, z: *App, allocator: Allocator, destroyed: bool) void {
+    pub fn unmanage(self: *Self, z: *App, allocator: Allocator, destroyed: bool) error{OutOfMemory}!void {
         self.detach();
         self.detachStack();
 
@@ -694,16 +694,16 @@ pub const Client = struct {
         log.warn("Deallocate client: {*} (will arrange monitor {*})", .{ self, self.mon });
         const m = self.mon; // So that we can still access self.mon after freeing self.
         allocator.destroy(self);
-        z.resolveClientAndFocus(allocator, null);
+        try z.resolveClientAndFocus(allocator, null);
         z.updateClientList();
-        m.arrange(allocator, z);
+        try m.arrange(allocator, z);
     }
 
     /// (dwm) pop
-    pub fn pop(self: *Self, allocator: Allocator, z: *App) void {
+    pub fn pop(self: *Self, allocator: Allocator, z: *App) error{OutOfMemory}!void {
         self.detach();
         self.attach();
-        z.resolveClientAndFocus(allocator, self);
-        self.mon.arrange(allocator, z);
+        try z.resolveClientAndFocus(allocator, self);
+        try self.mon.arrange(allocator, z);
     }
 };
