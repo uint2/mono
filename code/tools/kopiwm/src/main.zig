@@ -612,7 +612,7 @@ const R = struct {
 };
 
 /// For debugging: implement an emergency timeout in case we can't back out.
-const TIMEOUT: bool = false;
+const TIMEOUT: ?u32 = null;
 
 /// (dwm) run
 /// main event loop
@@ -622,7 +622,7 @@ fn run(z: *App, allocator: Allocator) DwmError!void {
     const start = std.time.timestamp();
 
     while (z.running and X.XNextEvent(z.dpy, &ev)) {
-        if (TIMEOUT and @abs(std.time.timestamp() - start) > 20) @panic("End please");
+        if (TIMEOUT) |t| if (@abs(std.time.timestamp() - start) > t) @panic("End please");
         try runOne(z, allocator, &ev);
     }
 }
