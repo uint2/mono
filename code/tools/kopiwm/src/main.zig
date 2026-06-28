@@ -1323,7 +1323,9 @@ pub fn spawn(z: *App, arg: *const Arg) void {
         .args => |value| value,
         else => return,
     };
-    const pid = std.posix.fork() catch unreachable;
+    const pid = std.posix.fork() catch {
+        @panic("Unable to fork while trying to spawn a child process.");
+    };
     if (pid == 0) {
         _ = C.close(X.ConnectionNumber(z.dpy));
         _ = C.setsid();
@@ -1333,9 +1335,9 @@ pub fn spawn(z: *App, arg: *const Arg) void {
         sa.sa_flags = 0;
         sa.__sigaction_handler.sa_handler = C.SIG_DFL;
         _ = C.sigaction(C.SIGCHLD, &sa, null);
-        std.posix.execvpeZ(args[0].?, args, std.c.environ) catch {
-            @panic("execvp failed.");
-        };
+        const err = std.posix.execvpeZ(args[0].?, args, std.c.environ);
+        std.debug.print("execvp failed with:\n{*}\n", .{err});
+        std.process.exit(1);
     }
 }
 
