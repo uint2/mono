@@ -12,6 +12,7 @@ const Size = @import("enums.zig").Size;
 const X = @import("x11.zig");
 const M = @import("x11.zig").masks;
 const EM = @import("x11.zig").eventMask;
+const E = @import("errors.zig");
 const CW = @import("x11.zig").CW;
 const atoms = @import("atoms.zig");
 const Coordinates = @import("enums.zig").Coordinates;
@@ -670,5 +671,31 @@ pub const Client = struct {
         self.focus(z);
         z.drawbars(allocator);
         z.arrangeAllMonitors();
+    }
+
+    /// (dwm) unmanage
+    /// Destroys a client and removes it from the monitor that owns it.
+    pub fn unmanage(self: *Self, z: *App, allocator: Allocator, destroyed: bool) void {
+        self.detach();
+        self.detachStack();
+
+        if (!destroyed) {
+            X.XGrabServer(z.dpy); // dwm: Avoid race conditions.
+            _ = X.XSetErrorHandler(E.xerrordummy);
+            X.XSelectInput(z.dpy, self.win, EM.NoEventMask);
+            var wc = X.XWindowChanges{ .border_width = @intCast(self.borderWidth.prev) };
+            X.XConfigureWindow(z.dpy, self.win, CW.BorderWidth, &wc); // restore border
+            X.XUngrabButton(z.dpy, X.AnyButton, M.AnyModifier, self.win);
+            self.setState(z.dpy, .WithdrawnState);
+            X.XSync(z.dpy, false);
+            _ = X.XSetErrorHandler(E.xerror);
+            X.XUngrabServer(z.dpy);
+        }
+        log.warn("Deallocate client: {*} (will arrange monitor {*})", .{ self, self.mon });
+        const m = self.mon; // So that we can still access self.mon after freeing self.
+        allocator.destroy(self);
+        z.resolveClientAndFocus(allocator, null);
+        z.updateClientList();
+        m.arrange(allocator, z);
     }
 };

@@ -160,32 +160,6 @@ fn manage(z: *App, allocator: Allocator, w: X.Window, wa: *X.XWindowAttributes) 
     z.resolveClientAndFocus(allocator, null);
 }
 
-/// (dwm) unmanage
-/// Destroys a client and removes it from the monitor that owns it.
-fn unmanage(z: *App, allocator: Allocator, c: *Client, destroyed: bool) void {
-    c.detach();
-    c.detachStack();
-
-    if (!destroyed) {
-        X.XGrabServer(z.dpy); // dwm: Avoid race conditions.
-        _ = X.XSetErrorHandler(E.xerrordummy);
-        X.XSelectInput(z.dpy, c.win, EM.NoEventMask);
-        var wc = X.XWindowChanges{ .border_width = @intCast(c.borderWidth.prev) };
-        X.XConfigureWindow(z.dpy, c.win, CW.BorderWidth, &wc); // restore border
-        X.XUngrabButton(z.dpy, X.AnyButton, M.AnyModifier, c.win);
-        c.setState(z.dpy, .WithdrawnState);
-        X.XSync(z.dpy, false);
-        _ = X.XSetErrorHandler(E.xerror);
-        X.XUngrabServer(z.dpy);
-    }
-    log.warn("Deallocate client: {*} (will arrange monitor {*})", .{ c, c.mon });
-    const m = c.mon; // So that we can still access c.mon after freeing c.
-    allocator.destroy(c);
-    z.resolveClientAndFocus(allocator, null);
-    z.updateClientList();
-    m.arrange(allocator, z);
-}
-
 /// Functions that are called in [r]eaction to events.
 const R = struct {
     /// (dwm) buttonpress
@@ -365,7 +339,7 @@ const R = struct {
     /// (dwm) destroynotify
     fn destroyNotify(z: *App, allocator: Allocator, e: *X.XEvent) void {
         const ev: X.XDestroyWindowEvent = e.xdestroywindow;
-        if (z.winToClient(ev.window)) |c| unmanage(z, allocator, c, true);
+        if (z.winToClient(ev.window)) |c| c.unmanage(z, allocator, true);
     }
 
     /// (dwm) enternotify
@@ -500,7 +474,7 @@ const R = struct {
         const ev: X.XUnmapEvent = e.xunmap;
         if (z.winToClient(ev.window)) |c| {
             if (ev.send_event == 0) {
-                unmanage(z, allocator, c, false);
+                c.unmanage(z, allocator, false);
             } else {
                 c.setState(z.dpy, .WithdrawnState);
             }
@@ -697,7 +671,7 @@ fn cleanupMonitors(z: *App, allocator: Allocator) void {
     m_opt = z.mons;
     while (m_opt) |m| : (m_opt = m.next) {
         while (m.stack) |c| {
-            unmanage(z, allocator, c, false);
+            c.unmanage(z, allocator, false);
         }
     }
     while (z.mons.next) |m| {
