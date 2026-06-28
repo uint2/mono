@@ -353,3 +353,22 @@ pub fn grabkeys(self: *Self) void {
         }
     }
 }
+
+/// (dwm) updategeom
+pub fn updategeom(self: *Self) bool {
+    var dirty = false;
+    var mons = self.mons;
+    if (mons.m.w != self.s.w or mons.m.h != self.s.h) {
+        dirty = true;
+        mons.w.w = self.s.w;
+        mons.w.h = self.s.h;
+        mons.m.w = self.s.w;
+        mons.m.h = self.s.h;
+        mons.updateBarPosition(self.bar_height);
+    }
+    if (dirty) {
+        self.selmon = mons;
+        self.selmon = self.windowToMonitor(self.root);
+    }
+    return dirty;
+}

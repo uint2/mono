@@ -184,25 +184,6 @@ inline fn runOne(z: *App, alloc: Allocator, ev: *X.XEvent) DwmError!void {
     }
 }
 
-/// (dwm) updategeom
-fn updategeom(z: *App) bool {
-    var dirty = false;
-    var mons = z.mons;
-    if (mons.m.w != z.s.w or mons.m.h != z.s.h) {
-        dirty = true;
-        mons.w.w = z.s.w;
-        mons.w.h = z.s.h;
-        mons.m.w = z.s.w;
-        mons.m.h = z.s.h;
-        mons.updateBarPosition(z.bar_height);
-    }
-    if (dirty) {
-        z.selmon = mons;
-        z.selmon = z.windowToMonitor(z.root);
-    }
-    return dirty;
-}
-
 /// (dwm) cleanup
 /// Cleanup monitors and their clients.
 fn cleanupMonitors(z: *App, allocator: Allocator) void {
@@ -439,7 +420,7 @@ const R = struct {
         z.s.h = @intCast(ev.height);
 
         // TODO: (dwm) updategeom handling sucks, needs to be simplified
-        if (updategeom(z) or dirty) {
+        if (z.updategeom() or dirty) {
             z.drw.resize(z.s.w, z.bar_height);
             z.updateBars();
             var m_opt: ?*Monitor = z.mons;
@@ -1224,7 +1205,7 @@ pub fn main() !void {
     z.root = X.RootWindow(dpy, screen);
     z.selmon = try Monitor.init(allocator);
     z.mons = z.selmon;
-    _ = updategeom(&z);
+    _ = z.updategeom();
     defer cleanupMonitors(&z, allocator);
 
     // Initialize atoms.
