@@ -439,7 +439,7 @@ const R = struct {
     fn propertyNotify(z: *App, allocator: Allocator, e: *X.XEvent) void {
         const ev: X.XPropertyEvent = e.xproperty;
         if (ev.window == z.root and ev.atom == X.XA_WM_NAME) {
-            updateStatus(z, allocator);
+            z.updateStatus(allocator);
         } else if (ev.state == X.PropertyDelete) {
             return; // ignore.
         } else if (z.winToClient(ev.window)) |c| {
@@ -731,16 +731,6 @@ fn updateBars(z: *App) void {
         X.XMapRaised(z.dpy, m.barwin);
         X.XSetClassHint(z.dpy, m.barwin, &ch);
     }
-}
-
-/// (dwm) updatestatus
-fn updateStatus(z: *App, allocator: Allocator) void {
-    if (z.getTextProp(z.root, X.XA_WM_NAME, &z.stext.buffer)) |len| {
-        z.stext.len = len;
-    } else {
-        z.stext.set(NAME ++ "-" ++ VERSION);
-    }
-    z.selmon.drawbar(allocator, z);
 }
 
 /// Layouts.
@@ -1347,7 +1337,7 @@ pub fn main() !void {
 
     // Initialize bars.
     updateBars(&z);
-    updateStatus(&z, allocator);
+    z.updateStatus(allocator);
 
     // EWMH support per view.
     // https://specifications.freedesktop.org/wm/1.5/

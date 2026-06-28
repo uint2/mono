@@ -16,6 +16,9 @@ const Allocator = std.mem.Allocator;
 const EnumArray = @import("enum_array.zig").EnumArray;
 const cfg = @import("config.zig");
 
+const NAME = @import("build_opts").name;
+const VERSION = @import("build_opts").version;
+
 const Drw = @import("drw.zig").Drw;
 const ColorScheme = @import("color_scheme.zig").ColorScheme;
 const Monitor = @import("monitor.zig").Monitor;
@@ -262,4 +265,14 @@ pub fn updateClientList(self: *const Self) void {
             );
         }
     }
+}
+
+/// (dwm) updatestatus
+pub fn updateStatus(self: *Self, allocator: Allocator) void {
+    if (self.getTextProp(self.root, X.XA_WM_NAME, &self.stext.buffer)) |len| {
+        self.stext.len = len;
+    } else {
+        self.stext.set(NAME ++ "-" ++ VERSION);
+    }
+    self.selmon.drawbar(allocator, self);
 }
