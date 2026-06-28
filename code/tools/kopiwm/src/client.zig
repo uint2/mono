@@ -88,7 +88,7 @@ pub const Client = struct {
     }
 
     /// (dwm) ISVISIBLE
-    pub inline fn isVisible(self: *Self) bool {
+    pub inline fn isVisible(self: *const Self) bool {
         return self.tags & self.mon.tags != 0;
     }
 
@@ -581,7 +581,7 @@ pub const Client = struct {
     /// Get the next element (possibly itself) in the linked list (given by
     /// `self.next`) that is tiled. Could be the current element, could also be
     /// null.
-    pub fn nextTiled(self: *const Self) ?*Self {
+    pub fn nextTiled(self: *Self) ?*Self {
         var c_opt: ?*Self = self;
         while (c_opt) |c| : (c_opt = c.next) if (c.isTiled()) return c;
         return null;
@@ -589,7 +589,7 @@ pub const Client = struct {
 
     /// Get the next element (NOT itself) in the linked list (given by
     /// `self.next`) that is tiled.
-    pub fn nextTiledExclusive(self: *const Self) ?*Self {
+    pub fn nextTiledExclusive(self: *Self) ?*Self {
         return if (self.next) |c| c.nextTiled() else null;
     }
 
