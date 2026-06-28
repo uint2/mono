@@ -55,27 +55,28 @@ fn checkOtherWM(dpy: *X.Display) void {
 }
 
 /// (dwm) dirtomon
-/// TODO: See if we can guarantee a non-null pointer.
-fn directionToMonitor(z: *App, direction: Direction) ?*Monitor {
-    var m_opt: ?*Monitor = null;
+///
+/// If there are multiple monitors, then go to the next/prev one. Otherwise,
+/// do not move (i.e. stay on selmon).
+fn directionToMonitor(z: *App, direction: Direction) *Monitor {
     switch (direction) {
-        .Next => {
-            m_opt = if (z.selmon.next) |t| t else z.mons;
-        },
+        .Next => return if (z.selmon.next) |t| t else z.selmon,
         .Prev => {
-            m_opt = z.mons;
+            var m = z.mons;
             if (z.selmon == z.mons) {
-                while (m_opt) |m| : (m_opt = m.next) {}
+                // Send pointer to the end of the linked list.
+                while (m.next) |next| : (m = next) {}
+                return m;
             } else {
-                while (m_opt) |m| : (m_opt = m.next) {
-                    if (m.next == z.selmon) {
-                        break;
-                    }
-                }
+                // Advance pointer to just before the selected one.
+                while (m.next) |next| : (m = next) if (next == z.selmon) return m;
+                // The monitor list is corrupted because we couldn't retrieve
+                // selmon from traversing the linked list from the start. So
+                // selmon is dangling.
+                @panic("Corrupted monitor linked list.");
             }
         },
     }
-    return m_opt;
 }
 
 /// (dwm) focusmon
