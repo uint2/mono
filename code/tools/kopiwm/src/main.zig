@@ -260,7 +260,7 @@ const R = struct {
         // TODO: (dwm) updategeom handling sucks, needs to be simplified
         if (updategeom(z) or dirty) {
             z.drw.resize(z.s.w, z.bar_height);
-            updateBars(z);
+            z.updateBars();
             var m_opt: ?*Monitor = z.mons;
             var c_opt: ?*Client = undefined;
             while (m_opt) |m| : (m_opt = m.next) {
@@ -683,54 +683,6 @@ fn cleanupMonitors(z: *App, allocator: Allocator) void {
     X.XSync(z.dpy, false);
     X.XSetInputFocus(z.dpy, X.PointerRoot, .PointerRoot, X.CurrentTime);
     X.XDeleteProperty(z.dpy, z.root, atoms.net(.ActiveWindow));
-}
-
-/// (dwm) updatebars
-fn updateBars(z: *App) void {
-    var wa: X.XSetWindowAttributes = .{
-        .override_redirect = X.True,
-        .background_pixmap = X.ParentRelative,
-        .event_mask = EM.ButtonPressMask | EM.ExposureMask,
-    };
-    const static = struct {
-        var name: [NAME.len]u8 = init();
-        fn init() [NAME.len]u8 {
-            var buf: [NAME.len]u8 = undefined;
-            @memcpy(&buf, NAME);
-            return buf;
-        }
-    };
-    var ch: X.XClassHint = .{ .res_class = &static.name, .res_name = &static.name };
-    var m_opt: ?*Monitor = z.mons;
-    while (m_opt) |m| : (m_opt = m.next) {
-        if (m.barwin != 0) {
-            continue;
-        }
-        m.barwin = X.XCreateWindow(
-            z.dpy,
-            z.root,
-            m.w.x,
-            m.by,
-            m.w.w,
-            z.bar_height,
-            0,
-            X.DefaultDepth(z.dpy, z.screen),
-            X.CopyFromParent,
-            X.DefaultVisual(z.dpy, z.screen),
-            CW.OverrideRedirect | CW.BackPixmap | CW.EventMask,
-            &wa,
-        );
-        log.info("Create bar window({d}): (x={d}, y={d}, w={d}, h={d})", .{
-            m.barwin,
-            m.w.x,
-            m.by,
-            m.w.w,
-            z.bar_height,
-        });
-        X.XDefineCursor(z.dpy, m.barwin, z.cursors.get(.Normal));
-        X.XMapRaised(z.dpy, m.barwin);
-        X.XSetClassHint(z.dpy, m.barwin, &ch);
-    }
 }
 
 /// Layouts.
@@ -1336,7 +1288,7 @@ pub fn main() !void {
     defer for (z.cursors.values) |cursor| X.XFreeCursor(dpy, cursor);
 
     // Initialize bars.
-    updateBars(&z);
+    z.updateBars();
     z.updateStatus(allocator);
 
     // EWMH support per view.

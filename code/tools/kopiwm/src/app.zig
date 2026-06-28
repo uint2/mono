@@ -5,6 +5,8 @@ const Direction = @import("lazy_fn.zig").Direction;
 const build_opts = @import("build_opts");
 const NumLockMask = @import("numlockmask.zig").NumLockMask;
 const X = @import("x11.zig");
+const EM = @import("x11.zig").eventMask;
+const CW = @import("x11.zig").CW;
 const Rect = @import("rect.zig").Rect;
 const SchemeState = @import("color_scheme.zig").SchemeState;
 const CursorState = @import("enums.zig").CursorState;
@@ -275,4 +277,52 @@ pub fn updateStatus(self: *Self, allocator: Allocator) void {
         self.stext.set(NAME ++ "-" ++ VERSION);
     }
     self.selmon.drawbar(allocator, self);
+}
+
+/// (dwm) updatebars
+pub fn updateBars(self: *Self) void {
+    var wa: X.XSetWindowAttributes = .{
+        .override_redirect = X.True,
+        .background_pixmap = X.ParentRelative,
+        .event_mask = EM.ButtonPressMask | EM.ExposureMask,
+    };
+    const static = struct {
+        var name: [NAME.len]u8 = staticInit();
+        fn staticInit() [NAME.len]u8 {
+            var buf: [NAME.len]u8 = undefined;
+            @memcpy(&buf, NAME);
+            return buf;
+        }
+    };
+    var ch: X.XClassHint = .{ .res_class = &static.name, .res_name = &static.name };
+    var m_opt: ?*Monitor = self.mons;
+    while (m_opt) |m| : (m_opt = m.next) {
+        if (m.barwin != 0) {
+            continue;
+        }
+        m.barwin = X.XCreateWindow(
+            self.dpy,
+            self.root,
+            m.w.x,
+            m.by,
+            m.w.w,
+            self.bar_height,
+            0,
+            X.DefaultDepth(self.dpy, self.screen),
+            X.CopyFromParent,
+            X.DefaultVisual(self.dpy, self.screen),
+            CW.OverrideRedirect | CW.BackPixmap | CW.EventMask,
+            &wa,
+        );
+        log.info("Create bar window({d}): (x={d}, y={d}, w={d}, h={d})", .{
+            m.barwin,
+            m.w.x,
+            m.by,
+            m.w.w,
+            self.bar_height,
+        });
+        X.XDefineCursor(self.dpy, m.barwin, self.cursors.get(.Normal));
+        X.XMapRaised(self.dpy, m.barwin);
+        X.XSetClassHint(self.dpy, m.barwin, &ch);
+    }
 }
