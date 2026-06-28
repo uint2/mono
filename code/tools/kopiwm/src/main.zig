@@ -256,7 +256,7 @@ fn arrange(z: *App, allocator: Allocator, monitor: ?*Monitor) void {
     if (monitor) |m| {
         if (m.stack) |c| c.showHide(z);
     } else {
-        m_opt = monitor;
+        m_opt = z.mons;
         while (m_opt) |m| : (m_opt = m.next) {
             if (m.stack) |c| c.showHide(z);
         }
@@ -265,7 +265,7 @@ fn arrange(z: *App, allocator: Allocator, monitor: ?*Monitor) void {
         arrangeMon(z, m);
         restack(z, allocator, m);
     } else {
-        m_opt = monitor;
+        m_opt = z.mons;
         while (m_opt) |m| : (m_opt = m.next) {
             arrangeMon(z, m);
         }
