@@ -16,7 +16,8 @@ x-rg:
 	rg 'X\.' --glob '!*x_tutorial*' --stats
 
 build:
-	zig build
+	zig build -Ddefaultconf=false
+	zig build -Ddefaultconf=true
 
 test:
 	zig build test

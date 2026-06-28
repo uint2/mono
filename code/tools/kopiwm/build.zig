@@ -20,9 +20,11 @@ pub fn build(b: *std.Build) void {
             .imports = &.{},
         }),
     });
+    const useDefault = b.option(bool, "defaultconf", "Whether or not to use the default config");
     const opts = b.addOptions();
     opts.addOption([]const u8, "version", appVersion);
     opts.addOption([]const u8, "name", exe.name);
+    opts.addOption(bool, "use_default_config", if (useDefault) |v| v else false);
     exe.root_module.addOptions("build_opts", opts);
 
     exe.linkLibC();

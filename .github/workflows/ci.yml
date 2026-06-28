@@ -484,7 +484,8 @@ jobs:
       - run: |
           sudo apt-get update --yes
           sudo apt-get install --yes libx11-dev libxft-dev libfreetype-dev libfontconfig-dev
-      - run: zig build
+      - run: zig build -Ddefaultconf=false
+      - run: zig build -Ddefaultconf=true
       - run: zig build test
 
   # ----------------------------------------------------------------------------
