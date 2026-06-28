@@ -81,9 +81,7 @@ fn directionToMonitor(z: *App, direction: Direction) ?*Monitor {
 /// (dwm) focusmon
 pub fn focusMon(z: *App, allocator: Allocator, arg: *const Arg) void {
     // Skip base case where there are no monitors to change focus to.
-    // TODO: see if we can guarantee that `z.mons` is non-null.
-    const mons = z.mons orelse return;
-    if (mons.next == null) return;
+    if (z.mons.next == null) return;
     const m_opt = directionToMonitor(arg.d);
     if (m_opt == z.selmon) return;
     if (m_opt) |m| {
@@ -1362,8 +1360,7 @@ pub fn tagMonitor(z: *App, allocator: Allocator, arg: *const Arg) void {
     };
 
     const sel = z.selmon.sel orelse return;
-    const mons = z.mons orelse return;
-    if (mons.next == null) return;
+    if (z.mons.next == null) return;
 
     if (directionToMonitor(direction)) |m| {
         sendMon(z, allocator, sel, m);
