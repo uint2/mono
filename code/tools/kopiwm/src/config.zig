@@ -25,9 +25,6 @@ const USE_DEFAULT_CONFIG = false;
 pub const BUTTONMASK = EM.ButtonPressMask | EM.ButtonReleaseMask;
 pub const MOUSEMASK = BUTTONMASK | EM.PointerMotionMask;
 
-// AwesomeWM provides a very helpful graphic here:
-// https://awesomewm.org/doc/api/libraries/mouse.html
-
 /// Number of pixels to snap during movement.
 pub const snap: i32 = 32;
 
