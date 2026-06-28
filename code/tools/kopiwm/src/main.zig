@@ -1056,157 +1056,6 @@ pub const layouts = struct {
 
 /// Mappable functions. Everything has to have a `arg: *const Arg` parameter.
 pub const mp = struct {
-    /// (dwm) togglefloating
-    pub fn toggleFloating(z: *App, allocator: Allocator, _: *const Arg) void {
-        const sel = z.selmon.sel orelse return;
-        if (sel.isfullscreen) return; // No support for making fullscreen windows float.
-        sel.is_floating.set(!sel.is_floating.now or sel.is_fixed);
-        if (sel.is_floating.now) {
-            sel.hintAndResize(sel.pos.now, false);
-        }
-        arrange(z, allocator, z.selmon);
-    }
-
-    /// (dwm) spawn
-    pub fn spawn(z: *App, arg: *const Arg) void {
-        const args = switch (arg.*) {
-            .args => |value| value,
-            else => unreachable,
-        };
-        const pid = std.posix.fork() catch {
-            @panic("Unable to fork while trying to spawn a child process.");
-        };
-        if (pid == 0) {
-            _ = C.close(X.ConnectionNumber(z.dpy));
-            _ = C.setsid();
-
-            var sa: C.struct_sigaction = undefined;
-            _ = C.sigemptyset(&sa.sa_mask);
-            sa.sa_flags = 0;
-            sa.__sigaction_handler.sa_handler = C.SIG_DFL;
-            _ = C.sigaction(C.SIGCHLD, &sa, null);
-            const err = std.posix.execvpeZ(args[0].?, args, std.c.environ);
-            std.debug.print("execvp failed with:\n{any}\n", .{err});
-            std.process.exit(1);
-        }
-    }
-
-    /// (dwm) tag
-    pub fn tag(z: *App, allocator: Allocator, arg: *const Arg) void {
-        const mask = switch (arg.*) {
-            .ui => |v| if (v & cfg.TAGMASK != 0) v else return,
-            else => unreachable,
-        };
-        if (z.selmon.sel) |c| {
-            c.tags = mask & cfg.TAGMASK;
-            focus(z, allocator, null);
-            arrange(z, allocator, z.selmon);
-        }
-    }
-
-    /// (dwm) tagmon
-    pub fn tagMonitor(z: *App, allocator: Allocator, arg: *const Arg) void {
-        const direction = switch (arg.*) {
-            .d => |v| v,
-            else => unreachable,
-        };
-
-        const sel = z.selmon.sel orelse return;
-
-        const target = z.getMonitorFromDirection(direction);
-        if (target == z.selmon) return;
-
-        sendMon(z, allocator, sel, target);
-    }
-
-    /// (dwm) view
-    /// Views a certain tag mask.
-    pub fn view(z: *App, allocator: Allocator, arg: *const Arg) void {
-        const mask = switch (arg.*) {
-            .ui => |mask| b: {
-                // This mask is expected to only have one high bit.
-                if (mask != ~@as(@TypeOf(mask), 0) and @popCount(mask) != 1) {
-                    log.err("view() received a mask of {x}", .{mask});
-                }
-                break :b mask & cfg.TAGMASK;
-            },
-            else => unreachable,
-        };
-        log.info("view with bitmask: {b}", .{mask});
-        if (mask == z.selmon.tags) {
-            return; // nothing to do here.
-        } else if (mask != 0) {
-            z.selmon.tags = mask;
-        }
-        focus(z, allocator, null);
-        arrange(z, allocator, z.selmon);
-    }
-
-    /// (dwm) togglebar
-    pub fn toggleBar(z: *App, allocator: Allocator, _: *const Arg) void {
-        z.selmon.show_bar = !z.selmon.show_bar;
-        z.selmon.updateBarPosition(z.bar_height);
-        X.XMoveResizeWindow2(z.dpy, z.selmon.barwin, z.barRect());
-        arrange(z, allocator, z.selmon);
-    }
-
-    pub fn toggleBarPosition(z: *App, allocator: Allocator, _: *const Arg) void {
-        z.selmon.bar_pos = z.selmon.bar_pos.toggle();
-        z.selmon.updateBarPosition(z.bar_height);
-        X.XMoveResizeWindow2(z.dpy, z.selmon.barwin, z.barRect());
-        arrange(z, allocator, z.selmon);
-    }
-
-    /// (dwm) toggletag
-    pub fn toggleTag(z: *App, allocator: Allocator, arg: *const Arg) void {
-        const mask = switch (arg.*) {
-            .ui => |v| v,
-            else => unreachable,
-        };
-        const sel = z.selmon.sel orelse return;
-        const newtags = sel.tags ^ (mask & cfg.TAGMASK);
-        if (newtags != 0) {
-            sel.tags = newtags;
-            focus(z, allocator, null);
-            arrange(z, allocator, z.selmon);
-        }
-    }
-
-    /// (dwm) toggleview
-    pub fn toggleView(z: *App, allocator: Allocator, arg: *const Arg) void {
-        const mask = switch (arg.*) {
-            .ui => |v| v & cfg.TAGMASK,
-            else => unreachable,
-        };
-        const newtagset = z.selmon.tags ^ mask;
-        if (newtagset != 0) {
-            z.selmon.tags = newtagset;
-            focus(z, allocator, null);
-            arrange(z, allocator, z.selmon);
-        }
-    }
-
-    /// (dwm) quit
-    pub fn quit(z: *App, _: *const Arg) void {
-        log.info("{s}", .{LINE});
-        log.info("quit() called.", .{});
-        z.running = false;
-    }
-
-    /// (dwm) zoom
-    pub fn zoom(z: *App, allocator: Allocator, _: *const Arg) void {
-        var c: ?*Client = z.selmon.sel orelse return;
-        if (c.?.is_floating.now or z.selmon.lt.now.arrange == null) return;
-        const nextTiled: ?*Client = if (z.selmon.clients) |x| x.nextTiled() else null;
-        if (c == nextTiled) {
-            c = if (c.?.next) |x| x.nextTiled() else null;
-            if (c == null) {
-                return;
-            }
-        }
-        pop(z, allocator, c.?);
-    }
-
     /// (dwm) focusmon
     pub fn focusMon(z: *App, allocator: Allocator, arg: *const Arg) void {
         const direction = switch (arg.*) {
@@ -1367,33 +1216,11 @@ pub const mp = struct {
         }
     }
 
-    /// (dwm) setlayout
-    pub fn setLayout(z: *App, allocator: Allocator, arg: *const Arg) void {
-        // TODO: check all other instances of tagged access of args. Make sure to
-        // use a switch statement before indexing.
-        const lt = switch (arg.*) {
-            .l => |lt| lt,
-            else => unreachable,
-        };
-        z.selmon.lt.now = lt;
-        if (z.selmon.sel) |_| {
-            arrange(z, allocator, z.selmon);
-        } else {
-            drawbar(z, allocator, z.selmon);
-        }
-    }
-
-    /// (dwm) setmfact
-    pub fn setMFact(z: *App, allocator: Allocator, arg: *const Arg) void {
-        if (z.selmon.lt.now.arrange == null) return;
-        const f: f32 = switch (arg.*) {
-            .f => |v| v,
-            else => unreachable,
-        };
-        if (0.05 <= f and f <= 0.95) {
-            z.selmon.mfact = f;
-            arrange(z, allocator, z.selmon);
-        }
+    /// (dwm) quit
+    pub fn quit(z: *App, _: *const Arg) void {
+        log.info("{s}", .{LINE});
+        log.info("quit() called.", .{});
+        z.running = false;
     }
 
     /// (dwm) resizemouse
@@ -1487,6 +1314,179 @@ pub const mp = struct {
                 focus(z, allocator, null);
             }
         }
+    }
+
+    /// (dwm) setlayout
+    pub fn setLayout(z: *App, allocator: Allocator, arg: *const Arg) void {
+        // TODO: check all other instances of tagged access of args. Make sure to
+        // use a switch statement before indexing.
+        const lt = switch (arg.*) {
+            .l => |lt| lt,
+            else => unreachable,
+        };
+        z.selmon.lt.now = lt;
+        if (z.selmon.sel) |_| {
+            arrange(z, allocator, z.selmon);
+        } else {
+            drawbar(z, allocator, z.selmon);
+        }
+    }
+
+    /// (dwm) setmfact
+    pub fn setMFact(z: *App, allocator: Allocator, arg: *const Arg) void {
+        if (z.selmon.lt.now.arrange == null) return;
+        const f: f32 = switch (arg.*) {
+            .f => |v| v,
+            else => unreachable,
+        };
+        if (0.05 <= f and f <= 0.95) {
+            z.selmon.mfact = f;
+            arrange(z, allocator, z.selmon);
+        }
+    }
+
+    /// (dwm) spawn
+    pub fn spawn(z: *App, arg: *const Arg) void {
+        const args = switch (arg.*) {
+            .args => |value| value,
+            else => unreachable,
+        };
+        const pid = std.posix.fork() catch {
+            @panic("Unable to fork while trying to spawn a child process.");
+        };
+        if (pid == 0) {
+            _ = C.close(X.ConnectionNumber(z.dpy));
+            _ = C.setsid();
+
+            var sa: C.struct_sigaction = undefined;
+            _ = C.sigemptyset(&sa.sa_mask);
+            sa.sa_flags = 0;
+            sa.__sigaction_handler.sa_handler = C.SIG_DFL;
+            _ = C.sigaction(C.SIGCHLD, &sa, null);
+            const err = std.posix.execvpeZ(args[0].?, args, std.c.environ);
+            std.debug.print("execvp failed with:\n{any}\n", .{err});
+            std.process.exit(1);
+        }
+    }
+
+    /// (dwm) tag
+    pub fn tag(z: *App, allocator: Allocator, arg: *const Arg) void {
+        const mask = switch (arg.*) {
+            .ui => |v| if (v & cfg.TAGMASK != 0) v else return,
+            else => unreachable,
+        };
+        if (z.selmon.sel) |c| {
+            c.tags = mask & cfg.TAGMASK;
+            focus(z, allocator, null);
+            arrange(z, allocator, z.selmon);
+        }
+    }
+
+    /// (dwm) tagmon
+    pub fn tagMonitor(z: *App, allocator: Allocator, arg: *const Arg) void {
+        const direction = switch (arg.*) {
+            .d => |v| v,
+            else => unreachable,
+        };
+
+        const sel = z.selmon.sel orelse return;
+
+        const target = z.getMonitorFromDirection(direction);
+        if (target == z.selmon) return;
+
+        sendMon(z, allocator, sel, target);
+    }
+
+    /// (dwm) togglebar
+    pub fn toggleBar(z: *App, allocator: Allocator, _: *const Arg) void {
+        z.selmon.show_bar = !z.selmon.show_bar;
+        z.selmon.updateBarPosition(z.bar_height);
+        X.XMoveResizeWindow2(z.dpy, z.selmon.barwin, z.barRect());
+        arrange(z, allocator, z.selmon);
+    }
+
+    pub fn toggleBarPosition(z: *App, allocator: Allocator, _: *const Arg) void {
+        z.selmon.bar_pos = z.selmon.bar_pos.toggle();
+        z.selmon.updateBarPosition(z.bar_height);
+        X.XMoveResizeWindow2(z.dpy, z.selmon.barwin, z.barRect());
+        arrange(z, allocator, z.selmon);
+    }
+
+    /// (dwm) togglefloating
+    pub fn toggleFloating(z: *App, allocator: Allocator, _: *const Arg) void {
+        const sel = z.selmon.sel orelse return;
+        if (sel.isfullscreen) return; // No support for making fullscreen windows float.
+        sel.is_floating.set(!sel.is_floating.now or sel.is_fixed);
+        if (sel.is_floating.now) {
+            sel.hintAndResize(sel.pos.now, false);
+        }
+        arrange(z, allocator, z.selmon);
+    }
+
+    /// (dwm) toggletag
+    pub fn toggleTag(z: *App, allocator: Allocator, arg: *const Arg) void {
+        const mask = switch (arg.*) {
+            .ui => |v| v,
+            else => unreachable,
+        };
+        const sel = z.selmon.sel orelse return;
+        const newtags = sel.tags ^ (mask & cfg.TAGMASK);
+        if (newtags != 0) {
+            sel.tags = newtags;
+            focus(z, allocator, null);
+            arrange(z, allocator, z.selmon);
+        }
+    }
+
+    /// (dwm) toggleview
+    pub fn toggleView(z: *App, allocator: Allocator, arg: *const Arg) void {
+        const mask = switch (arg.*) {
+            .ui => |v| v & cfg.TAGMASK,
+            else => unreachable,
+        };
+        const newtagset = z.selmon.tags ^ mask;
+        if (newtagset != 0) {
+            z.selmon.tags = newtagset;
+            focus(z, allocator, null);
+            arrange(z, allocator, z.selmon);
+        }
+    }
+
+    /// (dwm) view
+    /// Views a certain tag mask.
+    pub fn view(z: *App, allocator: Allocator, arg: *const Arg) void {
+        const mask = switch (arg.*) {
+            .ui => |mask| b: {
+                // This mask is expected to only have one high bit.
+                if (mask != ~@as(@TypeOf(mask), 0) and @popCount(mask) != 1) {
+                    log.err("view() received a mask of {x}", .{mask});
+                }
+                break :b mask & cfg.TAGMASK;
+            },
+            else => unreachable,
+        };
+        log.info("view with bitmask: {b}", .{mask});
+        if (mask == z.selmon.tags) {
+            return; // nothing to do here.
+        } else if (mask != 0) {
+            z.selmon.tags = mask;
+        }
+        focus(z, allocator, null);
+        arrange(z, allocator, z.selmon);
+    }
+
+    /// (dwm) zoom
+    pub fn zoom(z: *App, allocator: Allocator, _: *const Arg) void {
+        var c: ?*Client = z.selmon.sel orelse return;
+        if (c.?.is_floating.now or z.selmon.lt.now.arrange == null) return;
+        const nextTiled: ?*Client = if (z.selmon.clients) |x| x.nextTiled() else null;
+        if (c == nextTiled) {
+            c = if (c.?.next) |x| x.nextTiled() else null;
+            if (c == null) {
+                return;
+            }
+        }
+        pop(z, allocator, c.?);
     }
 };
 
