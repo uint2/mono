@@ -620,4 +620,23 @@ pub const Client = struct {
         //         @intCast(@divFloor(z.selmon.m.h, 2)));
         // }
     }
+
+    /// (dwm) grabbuttons
+    pub fn grabbuttons(self: *Client, z: *App, focused: bool) void {
+        z.numlockmask.update(z.dpy);
+        X.XUngrabButton(z.dpy, X.AnyButton, M.AnyModifier, self.win);
+        const bmask = EM.ButtonPressMask | EM.ButtonReleaseMask;
+        if (!focused) {
+            X.XGrabButton(z.dpy, X.AnyButton, M.AnyModifier, self.win, false, //
+                bmask, .Sync, .Sync, X.None, X.None);
+        }
+        for (cfg.buttons) |button| {
+            if (button.click == .ClientWin) {
+                for (z.numlockmask.modifiers) |modifier| {
+                    X.XGrabButton(z.dpy, button.button, button.mask | modifier, //
+                        self.win, false, bmask, .Async, .Sync, X.None, X.None);
+                }
+            }
+        }
+    }
 };

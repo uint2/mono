@@ -139,6 +139,7 @@ pub const Monitor = struct {
         return null;
     }
 
+    /// (dwm) arrangemon
     pub fn arrange(self: *Monitor, allocator: Allocator, z: *App) void {
         if (self.stack) |c| c.showHide(z);
         self.startArrange(z);

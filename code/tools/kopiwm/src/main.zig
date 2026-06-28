@@ -119,7 +119,7 @@ fn manage(z: *App, allocator: Allocator, w: X.Window, wa: *X.XWindowAttributes) 
     const mask = EM.EnterWindowMask | EM.FocusChangeMask | EM.PropertyChangeMask | EM.StructureNotifyMask;
     X.XSelectInput(z.dpy, w, mask);
 
-    grabbuttons(z, c, false);
+    c.grabbuttons(z, false);
 
     if (!c.is_floating.now) {
         c.is_floating = .init(transient_window != null or c.is_fixed);
@@ -725,7 +725,7 @@ fn setupClearZombies() void {
 fn unfocus(z: *App, client: ?*Client, setfocus: bool) void {
     const c = client orelse return;
     log.info("Unfocusing client at: {*}", .{c});
-    grabbuttons(z, c, false);
+    c.grabbuttons(z, false);
     X.XSetWindowBorder(z.dpy, c.win, z.scheme.get(.Normal).border.pixel);
     if (setfocus) {
         X.XSetInputFocus(z.dpy, z.root, .PointerRoot, X.CurrentTime);
@@ -761,7 +761,7 @@ fn focus(z: *App, allocator: Allocator, client: ?*Client) void {
     if (target.isurgent) target.setUrgent(z.dpy, false);
     target.detachStack();
     target.attachStack();
-    grabbuttons(z, target, true);
+    target.grabbuttons(z, true);
     X.XSetWindowBorder(z.dpy, target.win, z.scheme.get(.Selected).border.pixel);
     target.setFocus();
     z.selmon.sel = target;
@@ -773,23 +773,6 @@ fn drawbars(z: *App, allocator: Allocator) void {
     var m_opt: ?*Monitor = z.mons;
     while (m_opt) |m| : (m_opt = m.next) {
         m.drawbar(allocator, z);
-    }
-}
-
-/// (dwm) grabbuttons
-fn grabbuttons(z: *App, c: *Client, focused: bool) void {
-    z.numlockmask.update(z.dpy);
-    X.XUngrabButton(z.dpy, X.AnyButton, M.AnyModifier, c.win);
-    const bmask = EM.ButtonPressMask | EM.ButtonReleaseMask;
-    if (!focused) {
-        X.XGrabButton(z.dpy, X.AnyButton, M.AnyModifier, c.win, false, bmask, .Sync, .Sync, X.None, X.None);
-    }
-    for (cfg.buttons) |button| {
-        if (button.click == .ClientWin) {
-            for (z.numlockmask.modifiers) |modifier| {
-                X.XGrabButton(z.dpy, button.button, button.mask | modifier, c.win, false, bmask, .Async, .Sync, X.None, X.None);
-            }
-        }
     }
 }
 
