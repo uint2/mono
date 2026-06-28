@@ -42,17 +42,108 @@ pub const std_options: std.Options = .{
     .logFn = @import("logger.zig").customLog,
 };
 
-/// Ensures that there are no other window managers currently running.
-///
-/// (dwm) checkotherwm
-fn checkOtherWM(dpy: *X.Display) void {
-    E.xerrorlib = X.XSetErrorHandler(E.xerrorstart);
-    // this causes an error if some other window manager is running
-    X.XSelectInput(dpy, X.DefaultRootWindow(dpy), EM.SubstructureRedirectMask);
-    X.XSync(dpy, false);
-    _ = X.XSetErrorHandler(E.xerror);
-    X.XSync(dpy, false);
-}
+const setup = struct {
+    /// Ensures that there are no other window managers currently running.
+    ///
+    /// (dwm) checkotherwm
+    fn checkOtherWM(dpy: *X.Display) void {
+        E.xerrorlib = X.XSetErrorHandler(E.xerrorstart);
+        // this causes an error if some other window manager is running
+        X.XSelectInput(dpy, X.DefaultRootWindow(dpy), EM.SubstructureRedirectMask);
+        X.XSync(dpy, false);
+        _ = X.XSetErrorHandler(E.xerror);
+        X.XSync(dpy, false);
+    }
+
+    /// Do not let children turn into zombies when they terminate.
+    fn terminationHandling() void {
+        var sa: C.struct_sigaction = undefined;
+
+        // Initialize and empty a signal set.
+        _ = C.sigemptyset(&sa.sa_mask);
+
+        // source: https://man7.org/linux/man-pages/man2/sigaction.2.html
+        sa.sa_flags =
+            // Do not receive notification when child processes stop or resume.
+            C.SA_NOCLDSTOP |
+            // Do not transform children into zombies when they terminate.
+            //
+            // If the SA_NOCLDWAIT flag is set when establishing a handler for
+            // SIGCHLD, POSIX.1 leaves it unspecified whether a SIGCHLD signal is
+            // generated when a child process terminates.  On Linux, a SIGCHLD
+            // signal is generated in this case; on some other implementations, it
+            // is not.
+            C.SA_NOCLDWAIT |
+            // Provide behavior compatible with BSD signal semantics by making
+            // certain system calls restartable across signals. This flag is
+            // meaningful only when establishing a signal handler.
+            C.SA_RESTART;
+
+        // sa_handler specifies the action to be associated with _signum_ and can be
+        // one of the following:
+        //   *  SIG_DFL for the default action.
+        //   *  SIG_IGN to ignore this signal.
+        //   *  A pointer to a signal handling function.  This function receives
+        //      the signal number as its only argument.
+        sa.__sigaction_handler.sa_handler = C.SIG_IGN;
+
+        // The sigaction() system call is used to change the action taken by a
+        // process on receipt of a specific signal.
+        _ = C.sigaction(C.SIGCHLD, &sa, null);
+    }
+
+    /// Clean up any zombies (inherited from .xinitrc etc).
+    ///
+    /// pid=-1 means to wait for any child process.
+    ///
+    /// On success, `waitpid` returns the pid of the child whose state has
+    /// changed; if WNOHANG was specified and one or more child(ren) specified
+    /// by pid exist, but have not yet changed state, then 0 is returned. On
+    /// failure, -1 is returned.
+    ///
+    /// docs: https://man7.org/linux/man-pages/man2/waitpid.2.html
+    fn clearZombies() void {
+        while (std.c.waitpid(-1, null, std.c.W.NOHANG) > 0) {}
+    }
+
+    /// (dwm) scan
+    fn scan(z: *App, allocator: Allocator) error{OutOfMemory}!void {
+        var wa: X.XWindowAttributes = undefined;
+        var i: c_uint = undefined;
+        var d1: X.Window = undefined;
+        var d2: X.Window = undefined;
+
+        // No need to call XFree because null in Zig means NULL in C.
+        const wins: []X.Window = X.XQueryTree(z.dpy, z.root, &d1, &d2) orelse return;
+        defer X.XFree(wins.ptr);
+
+        // Note: this section down here in important in deciding which window to be
+        // `manage`d. We specifically do NOT want to be `manage`-ing the bar
+        // window.
+
+        i = 0;
+        while (i < wins.len) : (i += 1) {
+            const ok = X.XGetWindowAttributes(z.dpy, wins[i], &wa);
+            if (!ok or wa.override_redirect != 0) continue;
+            if (X.XGetTransientForHint(z.dpy, wins[i]) == null) continue;
+            if (wa.map_state == X.IsViewable or getState(z.dpy, wins[i]) == X.IconicState) {
+                log.info("Start managing window {d} (scan, non-transient)", .{wins[i]});
+                try manage(z, allocator, wins[i], &wa);
+            }
+        }
+        i = 0;
+        while (i < wins.len) : (i += 1) { // now the transients
+            if (!X.XGetWindowAttributes(z.dpy, wins[i], &wa)) continue;
+            if (X.XGetTransientForHint(z.dpy, wins[i]) == null) continue;
+            const viewable = wa.map_state == X.IsViewable;
+            const iconic = getState(z.dpy, wins[i]) == X.IconicState;
+            if (viewable or iconic) {
+                log.info("Start managing window {d} (scan, transient)", .{wins[i]});
+                try manage(z, allocator, wins[i], &wa);
+            }
+        }
+    }
+};
 
 /// (dwm) getstate
 fn getState(dpy: *X.Display, w: X.Window) @typeInfo(X.WindowState).@"enum".tag_type {
@@ -160,7 +251,121 @@ fn manage(z: *App, allocator: Allocator, w: X.Window, wa: *X.XWindowAttributes) 
     z.resolveClientAndFocus(allocator, null);
 }
 
-/// Functions that are called in [r]eaction to events.
+/// For debugging: implement an emergency timeout in case we can't back out.
+const TIMEOUT: ?u32 = null;
+
+/// (dwm) run
+/// main event loop
+fn run(z: *App, allocator: Allocator) DwmError!void {
+    X.XSync(z.dpy, false);
+    var ev: X.XEvent = undefined;
+    const start = std.time.timestamp();
+
+    while (z.running and X.XNextEvent(z.dpy, &ev)) {
+        if (TIMEOUT) |t| if (@abs(std.time.timestamp() - start) > t) @panic("End please");
+        try runOne(z, allocator, &ev);
+    }
+}
+
+inline fn runOne(z: *App, alloc: Allocator, ev: *X.XEvent) DwmError!void {
+    switch (ev.type) {
+        X.ButtonPress => try R.buttonPress(z, alloc, ev),
+        X.ClientMessage => R.clientMessage(z, alloc, ev),
+        X.ConfigureNotify => try R.configureNotify(z, alloc, ev),
+        X.ConfigureRequest => R.configureRequest(z, ev),
+        X.DestroyNotify => R.destroyNotify(z, alloc, ev),
+        X.EnterNotify => R.enterNotify(z, alloc, ev),
+        X.Expose => R.expose(z, alloc, ev),
+        X.FocusIn => R.focusIn(z, ev),
+        X.KeyPress => try R.keyPress(z, alloc, ev),
+        X.MapRequest => try R.mapRequest(z, alloc, ev),
+        X.MappingNotify => R.mappingNotify(z, ev),
+        X.MotionNotify => R.motionNotify(z, alloc, ev),
+        X.PropertyNotify => R.propertyNotify(z, alloc, ev),
+        X.UnmapNotify => R.unmapNotify(z, alloc, ev),
+        else => {},
+    }
+}
+
+/// (dwm) updategeom
+fn updategeom(z: *App) bool {
+    var dirty = false;
+    var mons = z.mons;
+    if (mons.m.w != z.s.w or mons.m.h != z.s.h) {
+        dirty = true;
+        mons.w.w = z.s.w;
+        mons.w.h = z.s.h;
+        mons.m.w = z.s.w;
+        mons.m.h = z.s.h;
+        mons.updateBarPosition(z.bar_height);
+    }
+    if (dirty) {
+        z.selmon = mons;
+        z.selmon = z.windowToMonitor(z.root);
+    }
+    return dirty;
+}
+
+/// (dwm) grabkeys
+fn grabkeys(z: *App) void {
+    z.numlockmask.update(z.dpy);
+
+    var start: c_int = undefined; // or, X.KeyCode
+    var end: c_int = undefined; // or, X.KeyCode
+    var skip: c_int = undefined;
+
+    X.XUngrabKey(z.dpy, X.AnyKey, M.AnyModifier, z.root);
+    X.XDisplayKeycodes(z.dpy, &start, &end);
+    const syms = X.XGetKeyboardMapping(z.dpy, @intCast(start), end - start + 1, &skip) orelse return;
+    defer X.XFree(syms);
+
+    var keycode = start;
+    while (keycode < end) : (keycode += 1) {
+        for (cfg.keys) |key| {
+            // Skip modifier codes, we do that ourselves.
+            if (key.sym == syms[@intCast((keycode - start) * skip)]) {
+                for (z.numlockmask.modifiers) |mod| {
+                    _ = X.XGrabKey(z.dpy, keycode, key.mod | mod, z.root, true, .Async, .Async);
+                }
+            }
+        }
+    }
+}
+
+/// (dwm) cleanup
+/// Cleanup monitors and their clients.
+fn cleanupMonitors(z: *App, allocator: Allocator) void {
+    var m_opt: ?*Monitor = undefined;
+
+    // Hide all the bars so that we don't use fonts for cleanup.
+    m_opt = z.mons;
+    while (m_opt) |m| : (m_opt = m.next) m.show_bar = false;
+
+    log.info("Start cleaning up monitors!", .{});
+    // View all clients at once. ~0 yields a bitmask of all high bits. I don't
+    // fully understand why we do this yet, but I think it helps with clearing
+    // out the clients.
+    mp.view(z, allocator, &.{ .ui = ~@as(u32, 0) });
+    z.selmon.lt.set(&.{ .symbol = "", .arrange = null });
+
+    m_opt = z.mons;
+    while (m_opt) |m| : (m_opt = m.next) {
+        while (m.stack) |c| {
+            c.unmanage(z, allocator, false);
+        }
+    }
+    while (z.mons.next) |m| {
+        // Remove `m` from the linked list that is `z.mons`.
+        z.mons.next = m.next;
+        m.deinit(allocator, z.dpy);
+    }
+    z.mons.deinit(allocator, z.dpy);
+    X.XSync(z.dpy, false);
+    X.XSetInputFocus(z.dpy, X.PointerRoot, .PointerRoot, X.CurrentTime);
+    X.XDeleteProperty(z.dpy, z.root, atoms.net(.ActiveWindow));
+}
+
+/// Functions that are called in [r]eaction to events. {{{
 const R = struct {
     /// (dwm) buttonpress
     fn buttonPress(z: *App, allocator: Allocator, e: *X.XEvent) DwmError!void {
@@ -481,211 +686,9 @@ const R = struct {
         }
     }
 };
+// }}}
 
-/// For debugging: implement an emergency timeout in case we can't back out.
-const TIMEOUT: ?u32 = null;
-
-/// (dwm) run
-/// main event loop
-fn run(z: *App, allocator: Allocator) DwmError!void {
-    X.XSync(z.dpy, false);
-    var ev: X.XEvent = undefined;
-    const start = std.time.timestamp();
-
-    while (z.running and X.XNextEvent(z.dpy, &ev)) {
-        if (TIMEOUT) |t| if (@abs(std.time.timestamp() - start) > t) @panic("End please");
-        try runOne(z, allocator, &ev);
-    }
-}
-
-inline fn runOne(z: *App, alloc: Allocator, ev: *X.XEvent) DwmError!void {
-    switch (ev.type) {
-        X.ButtonPress => try R.buttonPress(z, alloc, ev),
-        X.ClientMessage => R.clientMessage(z, alloc, ev),
-        X.ConfigureNotify => try R.configureNotify(z, alloc, ev),
-        X.ConfigureRequest => R.configureRequest(z, ev),
-        X.DestroyNotify => R.destroyNotify(z, alloc, ev),
-        X.EnterNotify => R.enterNotify(z, alloc, ev),
-        X.Expose => R.expose(z, alloc, ev),
-        X.FocusIn => R.focusIn(z, ev),
-        X.KeyPress => try R.keyPress(z, alloc, ev),
-        X.MapRequest => try R.mapRequest(z, alloc, ev),
-        X.MappingNotify => R.mappingNotify(z, ev),
-        X.MotionNotify => R.motionNotify(z, alloc, ev),
-        X.PropertyNotify => R.propertyNotify(z, alloc, ev),
-        X.UnmapNotify => R.unmapNotify(z, alloc, ev),
-        else => {},
-    }
-}
-
-/// (dwm) scan
-fn scan(z: *App, allocator: Allocator) error{OutOfMemory}!void {
-    var wa: X.XWindowAttributes = undefined;
-    var i: c_uint = undefined;
-    var d1: X.Window = undefined;
-    var d2: X.Window = undefined;
-
-    // No need to call XFree because null in Zig means NULL in C.
-    const wins: []X.Window = X.XQueryTree(z.dpy, z.root, &d1, &d2) orelse return;
-    defer X.XFree(wins.ptr);
-
-    // Note: this section down here in important in deciding which window to be
-    // `manage`d. We specifically do NOT want to be `manage`-ing the bar
-    // window.
-
-    i = 0;
-    while (i < wins.len) : (i += 1) {
-        const ok = X.XGetWindowAttributes(z.dpy, wins[i], &wa);
-        if (!ok or wa.override_redirect != 0) continue;
-        if (X.XGetTransientForHint(z.dpy, wins[i]) == null) continue;
-        if (wa.map_state == X.IsViewable or getState(z.dpy, wins[i]) == X.IconicState) {
-            log.info("Start managing window {d} (scan, non-transient)", .{wins[i]});
-            try manage(z, allocator, wins[i], &wa);
-        }
-    }
-    i = 0;
-    while (i < wins.len) : (i += 1) { // now the transients
-        if (!X.XGetWindowAttributes(z.dpy, wins[i], &wa)) continue;
-        if (X.XGetTransientForHint(z.dpy, wins[i]) == null) continue;
-        const viewable = wa.map_state == X.IsViewable;
-        const iconic = getState(z.dpy, wins[i]) == X.IconicState;
-        if (viewable or iconic) {
-            log.info("Start managing window {d} (scan, transient)", .{wins[i]});
-            try manage(z, allocator, wins[i], &wa);
-        }
-    }
-}
-
-/// (dwm) updategeom
-fn updategeom(z: *App) bool {
-    var dirty = false;
-    var mons = z.mons;
-    if (mons.m.w != z.s.w or mons.m.h != z.s.h) {
-        dirty = true;
-        mons.w.w = z.s.w;
-        mons.w.h = z.s.h;
-        mons.m.w = z.s.w;
-        mons.m.h = z.s.h;
-        mons.updateBarPosition(z.bar_height);
-    }
-    if (dirty) {
-        z.selmon = mons;
-        z.selmon = z.windowToMonitor(z.root);
-    }
-    return dirty;
-}
-
-/// Do not let children turn into zombies when they terminate.
-fn setupTerminationHandling() void {
-    var sa: C.struct_sigaction = undefined;
-
-    // Initialize and empty a signal set.
-    _ = C.sigemptyset(&sa.sa_mask);
-
-    // source: https://man7.org/linux/man-pages/man2/sigaction.2.html
-    sa.sa_flags =
-        // Do not receive notification when child processes stop or resume.
-        C.SA_NOCLDSTOP |
-        // Do not transform children into zombies when they terminate.
-        //
-        // If the SA_NOCLDWAIT flag is set when establishing a handler for
-        // SIGCHLD, POSIX.1 leaves it unspecified whether a SIGCHLD signal is
-        // generated when a child process terminates.  On Linux, a SIGCHLD
-        // signal is generated in this case; on some other implementations, it
-        // is not.
-        C.SA_NOCLDWAIT |
-        // Provide behavior compatible with BSD signal semantics by making
-        // certain system calls restartable across signals. This flag is
-        // meaningful only when establishing a signal handler.
-        C.SA_RESTART;
-
-    // sa_handler specifies the action to be associated with _signum_ and can be
-    // one of the following:
-    //   *  SIG_DFL for the default action.
-    //   *  SIG_IGN to ignore this signal.
-    //   *  A pointer to a signal handling function.  This function receives
-    //      the signal number as its only argument.
-    sa.__sigaction_handler.sa_handler = C.SIG_IGN;
-
-    // The sigaction() system call is used to change the action taken by a
-    // process on receipt of a specific signal.
-    _ = C.sigaction(C.SIGCHLD, &sa, null);
-}
-
-/// Clean up any zombies (inherited from .xinitrc etc).
-///
-/// pid=-1 means to wait for any child process.
-///
-/// On success, `waitpid` returns the pid of the child whose state has
-/// changed; if WNOHANG was specified and one or more child(ren) specified
-/// by pid exist, but have not yet changed state, then 0 is returned. On
-/// failure, -1 is returned.
-///
-/// docs: https://man7.org/linux/man-pages/man2/waitpid.2.html
-fn setupClearZombies() void {
-    while (std.c.waitpid(-1, null, std.c.W.NOHANG) > 0) {}
-}
-
-/// (dwm) grabkeys
-fn grabkeys(z: *App) void {
-    z.numlockmask.update(z.dpy);
-
-    var start: c_int = undefined; // or, X.KeyCode
-    var end: c_int = undefined; // or, X.KeyCode
-    var skip: c_int = undefined;
-
-    X.XUngrabKey(z.dpy, X.AnyKey, M.AnyModifier, z.root);
-    X.XDisplayKeycodes(z.dpy, &start, &end);
-    const syms = X.XGetKeyboardMapping(z.dpy, @intCast(start), end - start + 1, &skip) orelse return;
-    defer X.XFree(syms);
-
-    var keycode = start;
-    while (keycode < end) : (keycode += 1) {
-        for (cfg.keys) |key| {
-            // Skip modifier codes, we do that ourselves.
-            if (key.sym == syms[@intCast((keycode - start) * skip)]) {
-                for (z.numlockmask.modifiers) |mod| {
-                    _ = X.XGrabKey(z.dpy, keycode, key.mod | mod, z.root, true, .Async, .Async);
-                }
-            }
-        }
-    }
-}
-
-/// (dwm) cleanup
-/// Cleanup monitors and their clients.
-fn cleanupMonitors(z: *App, allocator: Allocator) void {
-    var m_opt: ?*Monitor = undefined;
-
-    // Hide all the bars so that we don't use fonts for cleanup.
-    m_opt = z.mons;
-    while (m_opt) |m| : (m_opt = m.next) m.show_bar = false;
-
-    log.info("Start cleaning up monitors!", .{});
-    // View all clients at once. ~0 yields a bitmask of all high bits. I don't
-    // fully understand why we do this yet, but I think it helps with clearing
-    // out the clients.
-    mp.view(z, allocator, &.{ .ui = ~@as(u32, 0) });
-    z.selmon.lt.set(&.{ .symbol = "", .arrange = null });
-
-    m_opt = z.mons;
-    while (m_opt) |m| : (m_opt = m.next) {
-        while (m.stack) |c| {
-            c.unmanage(z, allocator, false);
-        }
-    }
-    while (z.mons.next) |m| {
-        // Remove `m` from the linked list that is `z.mons`.
-        z.mons.next = m.next;
-        m.deinit(allocator, z.dpy);
-    }
-    z.mons.deinit(allocator, z.dpy);
-    X.XSync(z.dpy, false);
-    X.XSetInputFocus(z.dpy, X.PointerRoot, .PointerRoot, X.CurrentTime);
-    X.XDeleteProperty(z.dpy, z.root, atoms.net(.ActiveWindow));
-}
-
-/// Layouts.
+/// Layouts. {{{
 pub const layouts = struct {
     /// (dwm) monocle
     pub fn monocle(z: *const App, m: *Monitor) void {
@@ -755,8 +758,9 @@ pub const layouts = struct {
         }
     }
 };
+// }}}
 
-/// Mappable functions. Everything has to have a `arg: *const Arg` parameter.
+/// Mappable functions. Everything has to have a `arg: *const Arg` parameter. {{{
 pub const mp = struct {
     /// (dwm) focusmon
     pub fn focusMon(z: *App, allocator: Allocator, arg: *const Arg) void {
@@ -1166,6 +1170,7 @@ pub const mp = struct {
         if (c) |client| client.pop(allocator, z);
     }
 };
+// }}}
 
 /// Returns true if we should terminate the process immediately after this
 /// function ends.
@@ -1221,9 +1226,9 @@ pub fn main() !void {
     defer X.XCloseDisplay(dpy);
     const screen = X.DefaultScreen(dpy);
 
-    checkOtherWM(dpy);
-    setupTerminationHandling();
-    setupClearZombies();
+    setup.checkOtherWM(dpy);
+    setup.terminationHandling();
+    setup.clearZombies();
 
     // Initialize the X Display and Screen.
     var z: App = .{ .dpy = dpy, .screen = X.DefaultScreen(dpy) };
@@ -1312,10 +1317,8 @@ pub fn main() !void {
     grabkeys(&z);
     defer X.XUngrabKey(dpy, X.AnyKey, M.AnyModifier, z.root);
     z.resolveClientAndFocus(allocator, null);
+    try setup.scan(&z, allocator);
 
-    // End of setup ============================================================
-
-    try scan(&z, allocator);
     log.info("{s}", .{LINE});
     log.info("Starting event loop", .{});
     log.info("{s}", .{LINE});
