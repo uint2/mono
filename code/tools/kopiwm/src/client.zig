@@ -226,13 +226,6 @@ pub const Client = struct {
 
     /// (dwm) getatomprop
     fn getAtomProp(self: *Self, dpy: *X.Display, prop: X.Atom) ?X.Atom {
-        // var da: X.Atom = undefined; // dummy atom.
-        // var atom: X.Atom = undefined;
-        // var format: c_int = undefined;
-        // var nitems: c_ulong = undefined;
-        // var dl: c_ulong = undefined; // dummy long.
-        // var property: ?[*]u8 = undefined;
-
         const data = X.XGetWindowProperty(dpy, self.win, prop, 0, @sizeOf(X.Atom), false, X.XA_ATOM) orelse return null;
         defer data.deinit();
         if (data.value.len() == 0) return null;
@@ -657,5 +650,25 @@ pub const Client = struct {
         X.XSetWindowBorder(z.dpy, self.win, z.scheme.get(.Selected).border.pixel);
         self.setInputFocus(z);
         z.selmon.sel = self;
+    }
+
+    /// (dwm) sendmon
+    ///
+    /// Sends a client to a monitor.
+    pub fn sendToMonitor(self: *Self, allocator: Allocator, z: *App, m: *Monitor) void {
+        if (self.mon == m) return;
+        // Leave the previous monitor.
+        self.unfocus(z, true);
+        self.detach();
+        self.detachStack();
+        // Enter the new monitor.
+        self.mon = m;
+        self.tags = m.tags; // Assign tags of target monitor.
+        self.attach();
+        self.attachStack();
+        if (self.isfullscreen) self.resize(z.dpy, &m.m);
+        self.focus(z);
+        z.drawbars(allocator);
+        z.arrangeAllMonitors();
     }
 };

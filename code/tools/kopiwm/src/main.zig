@@ -504,7 +504,7 @@ const R = struct {
                 X.XA_WM_NORMAL_HINTS => c.hintsvalid = false,
                 X.XA_WM_HINTS => {
                     c.updateWMHints(z);
-                    drawbars(z, allocator);
+                    z.drawbars(allocator);
                 },
                 else => {},
             }
@@ -607,25 +607,6 @@ fn scan(z: *App, allocator: Allocator) error{OutOfMemory}!void {
     }
 }
 
-/// (dwm) sendmon
-///
-/// Sends a client to a monitor.
-fn sendMon(z: *App, allocator: Allocator, c: *Client, m: *Monitor) void {
-    if (c.mon == m) return;
-    // Leave the previous monitor.
-    c.unfocus(z, true);
-    c.detach();
-    c.detachStack();
-    // Enter the new monitor.
-    c.mon = m;
-    c.tags = m.tags; // Assign tags of target monitor.
-    c.attach();
-    c.attachStack();
-    if (c.isfullscreen) c.resize(z.dpy, &m.m);
-    focus(z, allocator, null);
-    z.arrangeAllMonitors();
-}
-
 /// (dwm) wintomon
 fn wintomon(z: *App, w: X.Window) *Monitor {
     if (w == z.root) {
@@ -726,21 +707,13 @@ fn focus(z: *App, allocator: Allocator, client: ?*Client) void {
         X.XSetInputFocus(z.dpy, z.root, .PointerRoot, X.CurrentTime);
         X.XDeleteProperty(z.dpy, z.root, atoms.net(.ActiveWindow));
         z.selmon.sel = null;
-        drawbars(z, allocator);
+        z.drawbars(allocator);
         return;
     };
 
     log.info("Focusing client @ {*}", .{target});
     target.focus(z);
-    drawbars(z, allocator);
-}
-
-/// (dwm) drawbars
-fn drawbars(z: *App, allocator: Allocator) void {
-    var m_opt: ?*Monitor = z.mons;
-    while (m_opt) |m| : (m_opt = m.next) {
-        m.drawbar(allocator, z);
-    }
+    z.drawbars(allocator);
 }
 
 /// (dwm) grabkeys
@@ -1073,7 +1046,7 @@ pub const mp = struct {
         X.XUngrabPointer(z.dpy, X.CurrentTime);
         if (c.pos.now.toMonitor(z.mons)) |mon| {
             if (mon != z.selmon) {
-                sendMon(z, allocator, c, mon);
+                c.sendToMonitor(allocator, z, mon);
                 z.selmon = mon;
                 focus(z, allocator, null);
             }
@@ -1163,7 +1136,7 @@ pub const mp = struct {
         const m_opt = c.pos.now.toMonitor(z.mons);
         if (m_opt != z.selmon) {
             if (m_opt) |m| {
-                sendMon(z, allocator, c, m);
+                c.sendToMonitor(allocator, z, m);
                 z.selmon = m;
                 focus(z, allocator, null);
             }
@@ -1246,7 +1219,7 @@ pub const mp = struct {
         const target = z.getMonitorFromDirection(direction);
         if (target == z.selmon) return;
 
-        sendMon(z, allocator, sel, target);
+        sel.sendToMonitor(allocator, z, target);
     }
 
     /// (dwm) togglebar

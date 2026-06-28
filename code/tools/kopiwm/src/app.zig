@@ -186,3 +186,13 @@ pub fn arrangeAllMonitors(self: *Self) void {
         m.startArrange(self);
     }
 }
+
+/// (dwm) drawbars
+///
+/// Updates all the status bars across all monitors.
+pub fn drawbars(self: *Self, allocator: Allocator) void {
+    var m_opt: ?*Monitor = self.mons;
+    while (m_opt) |m| : (m_opt = m.next) {
+        m.drawbar(allocator, self);
+    }
+}
