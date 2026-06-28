@@ -1,6 +1,7 @@
 const std = @import("std");
-const Direction = @import("lazy_fn.zig").Direction;
 const log = std.log;
+const atoms = @import("atoms.zig");
+const Direction = @import("lazy_fn.zig").Direction;
 const build_opts = @import("build_opts");
 const NumLockMask = @import("numlockmask.zig").NumLockMask;
 const X = @import("x11.zig");
@@ -215,4 +216,25 @@ pub fn windowToMonitor(self: *Self, w: X.Window) *Monitor {
     }
     if (self.winToClient(w)) |c| return c.mon;
     return self.selmon;
+}
+
+/// (dwm) focus
+///
+/// Draws the focus to one particular client. If no `client` is provided (null),
+/// then focus any client that is visible.
+pub fn resolveClientAndFocus(self: *Self, allocator: Allocator, client: ?*Client) void {
+    log.info("Focusing a client...", .{});
+
+    const target = self.resolveFocus(client) orelse {
+        log.info("No focus target found.", .{});
+        X.XSetInputFocus(self.dpy, self.root, .PointerRoot, X.CurrentTime);
+        X.XDeleteProperty(self.dpy, self.root, atoms.net(.ActiveWindow));
+        self.selmon.sel = null;
+        self.drawbars(allocator);
+        return;
+    };
+
+    log.info("Focusing client @ {*}", .{target});
+    target.focus(self);
+    self.drawbars(allocator);
 }

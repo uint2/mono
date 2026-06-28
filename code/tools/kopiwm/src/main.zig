@@ -157,7 +157,7 @@ fn manage(z: *App, allocator: Allocator, w: X.Window, wa: *X.XWindowAttributes) 
     c.mon.sel = c;
     c.mon.arrange(allocator, z);
     X.XMapWindow(z.dpy, c.win);
-    focus(z, allocator, null);
+    z.resolveClientAndFocus(allocator, null);
 }
 
 /// (dwm) unmanage
@@ -181,7 +181,7 @@ fn unmanage(z: *App, allocator: Allocator, c: *Client, destroyed: bool) void {
     log.warn("Deallocate client: {*} (will arrange monitor {*})", .{ c, c.mon });
     const m = c.mon; // So that we can still access c.mon after freeing c.
     allocator.destroy(c);
-    focus(z, allocator, null);
+    z.resolveClientAndFocus(allocator, null);
     updateClientList(z);
     m.arrange(allocator, z);
 }
@@ -224,7 +224,7 @@ const R = struct {
         if (m != z.selmon) {
             if (z.selmon.sel) |c| c.unfocus(z, true);
             z.selmon = m;
-            focus(z, allocator, null);
+            z.resolveClientAndFocus(allocator, null);
         }
 
         // Locate the click, and populate the `click` variable.
@@ -254,7 +254,7 @@ const R = struct {
         // Locate the click, and populate the `click` variable.
         // This block searches for the click location in the client.
         if (z.winToClient(ev.window)) |c| {
-            focus(z, allocator, c);
+            z.resolveClientAndFocus(allocator, c);
             z.selmon.restack(allocator, z);
             X.XAllowEvents(z.dpy, .ReplayPointer, X.CurrentTime);
             click = .ClientWin;
@@ -323,7 +323,7 @@ const R = struct {
                 }
                 X.XMoveResizeWindow(z.dpy, m.barwin, m.w.x, m.w.y, m.w.w, z.bar_height);
             }
-            focus(z, allocator, null);
+            z.resolveClientAndFocus(allocator, null);
             z.arrangeAllMonitors();
         }
     }
@@ -407,7 +407,7 @@ const R = struct {
         } else if (c == null or c == z.selmon.sel) {
             return;
         }
-        focus(z, allocator, c);
+        z.resolveClientAndFocus(allocator, c);
     }
 
     /// (dwm) expose
@@ -479,7 +479,7 @@ const R = struct {
                 if (m != mon) {
                     if (z.selmon.sel) |sel| sel.unfocus(z, true);
                     z.selmon = m;
-                    focus(z, allocator, null);
+                    z.resolveClientAndFocus(allocator, null);
                 }
             }
         }
@@ -675,27 +675,6 @@ fn setupTerminationHandling() void {
 /// docs: https://man7.org/linux/man-pages/man2/waitpid.2.html
 fn setupClearZombies() void {
     while (std.c.waitpid(-1, null, std.c.W.NOHANG) > 0) {}
-}
-
-/// (dwm) focus
-///
-/// Draws the focus to one particular client. If no `client` is provided (null),
-/// then focus any client that is visible.
-fn focus(z: *App, allocator: Allocator, client: ?*Client) void {
-    log.info("Focusing a client...", .{});
-
-    const target = z.resolveFocus(client) orelse {
-        log.info("No focus target found.", .{});
-        X.XSetInputFocus(z.dpy, z.root, .PointerRoot, X.CurrentTime);
-        X.XDeleteProperty(z.dpy, z.root, atoms.net(.ActiveWindow));
-        z.selmon.sel = null;
-        z.drawbars(allocator);
-        return;
-    };
-
-    log.info("Focusing client @ {*}", .{target});
-    target.focus(z);
-    z.drawbars(allocator);
 }
 
 /// (dwm) grabkeys
@@ -900,7 +879,7 @@ pub const mp = struct {
         if (target == z.selmon) return;
         if (z.selmon.sel) |sel| sel.unfocus(z, false);
         z.selmon = target;
-        focus(z, allocator, null);
+        z.resolveClientAndFocus(allocator, null);
     }
 
     /// (dwm) focusstack
@@ -947,7 +926,7 @@ pub const mp = struct {
             },
         }
         if (c_opt) |c| {
-            focus(z, allocator, c);
+            z.resolveClientAndFocus(allocator, c);
             z.selmon.restack(allocator, z);
         }
     }
@@ -1030,7 +1009,7 @@ pub const mp = struct {
             if (mon != z.selmon) {
                 c.sendToMonitor(allocator, z, mon);
                 z.selmon = mon;
-                focus(z, allocator, null);
+                z.resolveClientAndFocus(allocator, null);
             }
         }
     }
@@ -1120,7 +1099,7 @@ pub const mp = struct {
             if (m_opt) |m| {
                 c.sendToMonitor(allocator, z, m);
                 z.selmon = m;
-                focus(z, allocator, null);
+                z.resolveClientAndFocus(allocator, null);
             }
         }
     }
@@ -1184,7 +1163,7 @@ pub const mp = struct {
         };
         if (z.selmon.sel) |c| {
             c.tags = mask & cfg.TAGMASK;
-            focus(z, allocator, null);
+            z.resolveClientAndFocus(allocator, null);
             z.selmon.arrange(allocator, z);
         }
     }
@@ -1240,7 +1219,7 @@ pub const mp = struct {
         const newtags = sel.tags ^ (mask & cfg.TAGMASK);
         if (newtags != 0) {
             sel.tags = newtags;
-            focus(z, allocator, null);
+            z.resolveClientAndFocus(allocator, null);
             z.selmon.arrange(allocator, z);
         }
     }
@@ -1254,7 +1233,7 @@ pub const mp = struct {
         const newtagset = z.selmon.tags ^ mask;
         if (newtagset != 0) {
             z.selmon.tags = newtagset;
-            focus(z, allocator, null);
+            z.resolveClientAndFocus(allocator, null);
             z.selmon.arrange(allocator, z);
         }
     }
@@ -1278,7 +1257,7 @@ pub const mp = struct {
         } else if (mask != 0) {
             z.selmon.tags = mask;
         }
-        focus(z, allocator, null);
+        z.resolveClientAndFocus(allocator, null);
         z.selmon.arrange(allocator, z);
     }
 
@@ -1301,7 +1280,7 @@ pub const mp = struct {
 pub fn pop(z: *App, allocator: Allocator, c: *Client) void {
     c.detach();
     c.attach();
-    focus(z, allocator, c);
+    z.resolveClientAndFocus(allocator, c);
     c.mon.arrange(allocator, z);
 }
 
@@ -1449,7 +1428,7 @@ pub fn main() !void {
 
     grabkeys(&z);
     defer X.XUngrabKey(dpy, X.AnyKey, M.AnyModifier, z.root);
-    focus(&z, allocator, null);
+    z.resolveClientAndFocus(allocator, null);
 
     // End of setup ============================================================
 
