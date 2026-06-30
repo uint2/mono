@@ -14,15 +14,33 @@ const Scheme = @import("color_scheme.zig").Scheme;
 /// A simple hashset implementation specifically to store unicode codepoints
 /// (and hence u21).
 const SimpleHashSet = struct {
+    const Self = @This();
     const N: usize = 128;
 
     data: [N]u21,
+
+    const init: Self = .{ .data = std.mem.zeroes([N]u21) };
 
     fn hashedIndex(codepoint: u21) usize {
         var hash: usize = @intCast(codepoint);
         hash = ((hash >> 16) ^ hash) *% 0x21F0AAAD;
         hash = ((hash >> 15) ^ hash) *% 0xD35A2D97;
         return hash;
+    }
+
+    /// Note that this is approximate but good enough.
+    pub fn contains(self: *Self, codepoint: u21) bool {
+        const hash = hashedIndex(codepoint);
+        const h0 = ((hash >> 15) ^ hash) % N;
+        const h1 = (hash >> 17) % N;
+        return self.data[h0] == codepoint or self.data[h1] == codepoint;
+    }
+
+    pub fn insert(self: *Self, codepoint: u21) void {
+        const hash = hashedIndex(codepoint);
+        const h0 = ((hash >> 15) ^ hash) % N;
+        const h1 = (hash >> 17) % N;
+        self.data[if (self.data[h0] > 0) h1 else h0] = codepoint;
     }
 };
 
@@ -163,8 +181,7 @@ pub const Drw = struct {
             var ellipsis_width: ?u32 = null;
             var invalid_width: ?u32 = null;
             var nomatches: [128]usize = std.mem.zeroes([128]usize);
-            var nomatch: std.AutoHashMap() = .init(allocator);
-            // var nomatch: std.AutoArrayHashMap() = .init
+            var nomatch: SimpleHashSet = .init;
         };
 
         const invert_ = invert != 0; // just the boolean version of `invert`.
@@ -314,14 +331,9 @@ pub const Drw = struct {
                 // character must be drawn.
                 charexists = true;
 
-                var hash: usize = @intCast(utf8.codepoint);
-                hash = ((hash >> 16) ^ hash) *% 0x21F0AAAD;
-                hash = ((hash >> 15) ^ hash) *% 0xD35A2D97;
-                const h0 = ((hash >> 15) ^ hash) % state.nomatches.len;
-                const h1 = (hash >> 17) % state.nomatches.len;
                 // avoid expensive XftFontMatch call when we know we won't find
                 // a match
-                if (state.nomatches[h0] == utf8.codepoint or state.nomatches[h1] == utf8.codepoint) {
+                if (state.nomatch.contains(utf8.codepoint)) {
                     usedfont = self.fonts;
                     continue;
                 }
@@ -346,10 +358,9 @@ pub const Drw = struct {
                 X.FcPatternDestroy(fcpattern);
 
                 if (match_opt) |match| {
-                    const j = if (state.nomatches[h0] > 0) h1 else h0;
                     usedfont = try allocator.create(Font);
                     usedfont.fromPattern(self.dpy, match) catch {
-                        state.nomatches[j] = utf8.codepoint;
+                        state.nomatch.insert(utf8.codepoint);
                         continue;
                     };
                     if (X.XftCharExists(self.dpy, usedfont.xfont, @intCast(utf8.codepoint))) {
@@ -357,7 +368,7 @@ pub const Drw = struct {
                         while (curfont.next) |next| : (curfont = next) {}
                         curfont.next = usedfont;
                     } else {
-                        state.nomatches[j] = utf8.codepoint;
+                        state.nomatch.insert(utf8.codepoint);
                         usedfont.deinit(allocator);
                     }
                 }
