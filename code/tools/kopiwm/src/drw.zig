@@ -51,7 +51,6 @@ pub const DrwInitParams = struct {
     root: X.Window,
     width: c_uint,
     height: c_uint,
-    fonts: *Font,
     colors: *const EnumArray(SchemeState, Scheme([]const u8)),
 };
 
@@ -71,8 +70,6 @@ pub const Drw = struct {
     h: c_uint,
     /// The current state of scheme.
     scheme: ?*ColorScheme = null,
-    /// A linked list of fonts.
-    fonts: *Font,
 
     pub fn init(p: DrwInitParams) error{ OutOfMemory, FontCreateError }!Self {
         const depth = X.DefaultDepth(p.dpy, p.screen);
@@ -84,7 +81,6 @@ pub const Drw = struct {
             .gc = X.XCreateGC(p.dpy, p.root, 0, undefined),
             .w = p.width,
             .h = p.height,
-            .fonts = p.fonts,
         };
         X.XSetLineAttributes(p.dpy, drw.gc, 1, .Solid, .Butt, .Miter);
         return drw;
@@ -118,11 +114,6 @@ pub const Drw = struct {
         self.scheme = scheme;
     }
 
-    /// (dwm) drw_setfontset
-    pub fn setFontSet(self: *Self, set: *Font) void {
-        self.fonts = set;
-    }
-
     /// (dwm) drw_rect
     pub fn drawRect(self: *Self, rect: Rect, filled: bool, invert: bool) void {
         const scheme = self.scheme orelse return;
@@ -140,16 +131,6 @@ pub const Drw = struct {
         }
     }
 
-    /// Find the first font that supports the UTF-8 codepoint requested.
-    fn getFontThatHasChar(self: *const Self, utf8codepoint: u21) ?*Font {
-        const codepoint: c_uint = @intCast(utf8codepoint);
-        var f_opt: ?*Font = self.fonts;
-        while (f_opt) |f| : (f_opt = f.next) {
-            if (X.XftCharExists(self.dpy, f.xfont, codepoint)) return f;
-        }
-        return null;
-    }
-
     /// (dwm) drw_text
     /// Question: Is `invert` a bitmask? or a boolean? or a numerical value?
     /// Because based on dwm's source code all three cases kinda doesn't fit.
@@ -160,6 +141,7 @@ pub const Drw = struct {
     pub fn drawText(
         self: *Self,
         allocator: Allocator,
+        fonts: *Font,
         rect: Rect,
         /// Left padding.
         lpad: u32,
@@ -210,10 +192,10 @@ pub const Drw = struct {
         defer if (d) |draw| X.XftDrawDestroy(draw);
 
         if (state.ellipsis_width == null and render) {
-            state.ellipsis_width = try self.fontSetGetWidth(allocator, "...");
+            state.ellipsis_width = try self.fontSetGetWidth(allocator, fonts, "...");
         }
         if (state.invalid_width == null and render) {
-            state.invalid_width = try self.fontSetGetWidth(allocator, INVALID);
+            state.invalid_width = try self.fontSetGetWidth(allocator, fonts, INVALID);
         }
 
         const utf8 = struct {
@@ -236,7 +218,7 @@ pub const Drw = struct {
         var result: X.XftResult = undefined;
         // The number of bytes that the next UTF-8 char uses.
         var ew: u32 = undefined;
-        var usedfont = self.fonts;
+        var usedfont = fonts;
 
         // Main loop for printing text to completion. Breaks only when text runs
         // out or if there is overflow.
@@ -260,7 +242,7 @@ pub const Drw = struct {
                 };
                 charexists = false;
                 var tmpw: u32 = undefined;
-                if (self.getFontThatHasChar(utf8.codepoint)) |font| {
+                if (fonts.getFontThatHasChar(utf8.codepoint)) |font| {
                     charexists = true;
                     font.getExtents(text[0..utf8.charlen], &tmpw, null);
 
@@ -308,14 +290,14 @@ pub const Drw = struct {
 
             if (utf8err and (!render or (state.invalid_width orelse w) < w)) {
                 if (render) {
-                    _ = try self.drawText(allocator, .{ .x = x, .y = rect.y, .w = w, .h = rect.h }, 0, INVALID, invert);
+                    _ = try self.drawText(allocator, fonts, .{ .x = x, .y = rect.y, .w = w, .h = rect.h }, 0, INVALID, invert);
                 }
                 x += @intCast(state.invalid_width orelse 0);
                 w -= state.invalid_width orelse 0;
             }
 
             if (render and overflow) {
-                _ = try self.drawText(allocator, .{ .x = ellipsis_x, .y = rect.y, .w = ellipsis_w, .h = rect.h }, 0, "...", invert);
+                _ = try self.drawText(allocator, fonts, .{ .x = ellipsis_x, .y = rect.y, .w = ellipsis_w, .h = rect.h }, 0, "...", invert);
             }
 
             if (text.len == 0 or overflow) {
@@ -334,14 +316,14 @@ pub const Drw = struct {
                 // avoid expensive XftFontMatch call when we know we won't find
                 // a match
                 if (state.nomatch.contains(utf8.codepoint)) {
-                    usedfont = self.fonts;
+                    usedfont = fonts;
                     continue;
                 }
 
                 const fccharset = X.FcCharSetCreate() orelse unreachable;
                 _ = X.FcCharSetAddChar(fccharset, @intCast(utf8.codepoint));
 
-                const self_fonts_pattern = self.fonts.xfont.pattern orelse {
+                const self_fonts_pattern = fonts.xfont.pattern orelse {
                     // Refer to the comment in Font.fromName for more information.
                     @panic("the first font in the cache must be loaded from a font string.");
                 };
@@ -364,7 +346,7 @@ pub const Drw = struct {
                         continue;
                     };
                     if (X.XftCharExists(self.dpy, usedfont.xfont, @intCast(utf8.codepoint))) {
-                        var curfont: *Font = self.fonts;
+                        var curfont: *Font = fonts;
                         while (curfont.next) |next| : (curfont = next) {}
                         curfont.next = usedfont;
                     } else {
@@ -378,9 +360,14 @@ pub const Drw = struct {
     }
 
     /// (dwm) drw_fontset_getwidth
-    pub fn fontSetGetWidth(self: *Self, allocator: Allocator, text: []const u8) error{OutOfMemory}!u32 {
+    pub fn fontSetGetWidth(
+        self: *Self,
+        allocator: Allocator,
+        fonts: *Font,
+        text: []const u8,
+    ) error{OutOfMemory}!u32 {
         if (text.len == 0) return 0;
-        return @intCast(try self.drawText(allocator, .zero, 0, text, 0));
+        return @intCast(try self.drawText(allocator, fonts, .zero, 0, text, 0));
     }
 
     /// (dwm) drw_map

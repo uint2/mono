@@ -1132,8 +1132,19 @@ pub fn main() !void {
     setup.terminationHandling();
     setup.clearZombies();
 
+    // Initialize fonts.
+    const fonts = try Font.initMany(allocator, dpy, screen, &cfg.fonts) orelse {
+        @panic("Not a single font was valid.");
+    };
+    defer fonts.freeAll(allocator);
+
     // Initialize the X Display and Screen.
-    var z: App = .{ .dpy = dpy, .screen = X.DefaultScreen(dpy) };
+    var z: App = .{
+        .dpy = dpy,
+        .screen = X.DefaultScreen(dpy),
+        .fonts = fonts,
+        .lrpad = @intCast(fonts.height),
+    };
 
     // Initialize colors.
     for (std.enums.values(SchemeState)) |ss| {
@@ -1170,20 +1181,12 @@ pub fn main() !void {
         X.XChangeProperty(dpy, checkWin, atoms.net(.WMName), utf8string, 8, .Replace, NAME.ptr, NAME.len);
     }
 
-    // Initialize all the fonts specified in the config.
-    const fonts = try Font.initMany(allocator, dpy, screen, &cfg.fonts) orelse {
-        @panic("Not a single font was valid.");
-    };
-    defer fonts.freeAll(allocator);
-    z.lrpad = @intCast(fonts.height);
-
     z.drw = try .init(.{
         .dpy = dpy,
         .screen = screen,
         .root = z.root,
         .width = z.s.w,
         .height = z.s.h,
-        .fonts = fonts,
         .colors = &cfg.colors,
     });
     defer z.drw.deinit();

@@ -158,8 +158,8 @@ pub const Monitor = struct {
         if (!self.show_bar) return;
 
         var tw: u32 = 0;
-        const boxs = @divTrunc(z.drw.fonts.height, 9);
-        const boxw = @divTrunc(z.drw.fonts.height, 6) + 2;
+        const boxs = @divTrunc(z.fonts.height, 9);
+        const boxw = @divTrunc(z.fonts.height, 6) + 2;
 
         const occ = self.getOccupiedBitmask();
         const urg = self.getUrgentBitmask();
@@ -168,7 +168,7 @@ pub const Monitor = struct {
         if (self == z.selmon) { // status text is only drawn on selected monitor
             z.drw.setScheme(z.scheme.get(.Normal));
             tw = try z.TEXTW(allocator, z.stext.get());
-            _ = try z.drw.drawText(allocator, .{
+            _ = try z.drw.drawText(allocator, z.fonts, .{
                 .x = @as(c_int, @intCast(self.w.w)) - @as(c_int, @intCast(tw)),
                 .y = 0,
                 .w = tw,
@@ -185,6 +185,7 @@ pub const Monitor = struct {
             z.drw.setScheme(z.scheme.get(if (selected) .Selected else .Normal));
             _ = try z.drw.drawText(
                 allocator,
+                z.fonts,
                 .{ .x = x, .y = 0, .w = w, .h = z.bar_height },
                 z.lrpad / 2,
                 cfg.tags[i].text,
@@ -207,6 +208,7 @@ pub const Monitor = struct {
         z.drw.setScheme(z.scheme.get(.Normal));
         x = try z.drw.drawText(
             allocator,
+            z.fonts,
             .{ .x = x, .y = 0, .w = w, .h = z.bar_height },
             z.lrpad / 2,
             self.lt.now.symbol,
@@ -220,7 +222,7 @@ pub const Monitor = struct {
                 const name = c.name.get();
                 const r = Rect{ .x = x, .y = 0, .w = w, .h = z.bar_height };
                 z.drw.setScheme(z.scheme.get(if (self == z.selmon) .Bar else .Normal));
-                _ = try z.drw.drawText(allocator, r, z.lrpad / 2, name, 0);
+                _ = try z.drw.drawText(allocator, z.fonts, r, z.lrpad / 2, name, 0);
             } else {
                 z.drw.setScheme(z.scheme.get(.Normal));
                 z.drw.drawRect(.{ .x = x, .y = 0, .w = w, .h = z.bar_height }, true, true);

@@ -18,6 +18,7 @@ const Client = @import("client.zig").Client;
 const Allocator = std.mem.Allocator;
 const EnumArray = @import("enum_array.zig").EnumArray;
 const cfg = @import("config.zig");
+const Font = @import("font.zig").Font;
 const Clk = @import("enums.zig").Clk;
 
 const NAME = @import("build_opts").name;
@@ -63,6 +64,9 @@ stext: fstr(256) = .empty,
 
 numlockmask: NumLockMask = .empty,
 
+/// Linked list of all fonts.
+fonts: *Font,
+
 running: bool = true,
 
 pub fn init(allocator: Allocator, dpy: *X.Display, screen: c_int) error{OutOfMemory}!Self {
@@ -76,8 +80,12 @@ pub fn init(allocator: Allocator, dpy: *X.Display, screen: c_int) error{OutOfMem
 }
 
 /// (dwm) TEXTW
-pub fn TEXTW(self: *Self, allocator: Allocator, text: []const u8) error{OutOfMemory}!u32 {
-    return try self.drw.fontSetGetWidth(allocator, text) + self.lrpad;
+pub fn TEXTW(
+    self: *Self,
+    allocator: Allocator,
+    text: []const u8,
+) error{OutOfMemory}!u32 {
+    return try self.drw.fontSetGetWidth(allocator, self.fonts, text) + self.lrpad;
 }
 
 /// (dwm) getrootptr

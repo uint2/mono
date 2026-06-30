@@ -110,4 +110,14 @@ pub const Font = struct {
         }
         return ret;
     }
+
+    /// Find the first font that supports the UTF-8 codepoint requested.
+    pub fn getFontThatHasChar(self: *Self, utf8Codepoint: u21) ?*Font {
+        const codepoint: c_uint = @intCast(utf8Codepoint);
+        var f_opt: ?*Font = self;
+        while (f_opt) |f| : (f_opt = f.next) {
+            if (X.XftCharExists(self.dpy, f.xfont, codepoint)) return f;
+        }
+        return null;
+    }
 };
