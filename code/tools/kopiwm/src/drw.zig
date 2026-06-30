@@ -345,7 +345,7 @@ pub const Drw = struct {
                         state.nomatch.insert(utf8.codepoint);
                         continue;
                     };
-                    if (X.XftCharExists(self.dpy, usedfont.xfont, @intCast(utf8.codepoint))) {
+                    if (usedfont.xftCharExists(self.dpy, utf8.codepoint)) {
                         var curfont: *Font = fonts;
                         while (curfont.next) |next| : (curfont = next) {}
                         curfont.next = usedfont;
