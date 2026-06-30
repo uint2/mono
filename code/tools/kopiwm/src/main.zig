@@ -1174,7 +1174,7 @@ pub fn main() !void {
     const fonts = try Font.initMany(allocator, dpy, screen, &cfg.fonts) orelse {
         @panic("Not a single font was valid.");
     };
-    defer fonts.free(allocator);
+    defer fonts.freeAll(allocator);
     z.lrpad = @intCast(fonts.height);
 
     z.drw = try .init(.{

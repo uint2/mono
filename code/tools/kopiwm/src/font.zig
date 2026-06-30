@@ -30,8 +30,8 @@ pub const Font = struct {
     /// Frees the entire linked list of fonts.
     ///
     /// (dwm) drw_fontset_free
-    pub fn free(self: *Self, allocator: Allocator) void {
-        if (self.next) |next| next.free(allocator);
+    pub fn freeAll(self: *Self, allocator: Allocator) void {
+        if (self.next) |next| next.freeAll(allocator);
         self.deinit(allocator);
     }
 
