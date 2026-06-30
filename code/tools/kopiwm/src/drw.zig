@@ -214,7 +214,6 @@ pub const Drw = struct {
         var overflow: bool = false;
         var ty: i32 = 0;
         var charexists = false;
-        var match_opt: ?*X.FcPattern = null;
         var result: X.XftResult = undefined;
         // The number of bytes that the next UTF-8 char uses.
         var ew: u32 = undefined;
@@ -334,25 +333,24 @@ pub const Drw = struct {
 
                 _ = X.FcConfigSubstitute(null, fcpattern, .Pattern);
                 X.FcDefaultSubstitute(fcpattern);
-                match_opt = X.XftFontMatch(self.dpy, self.screen, fcpattern, &result);
 
-                X.FcCharSetDestroy(fccharset);
-                X.FcPatternDestroy(fcpattern);
+                defer X.FcCharSetDestroy(fccharset);
+                defer X.FcPatternDestroy(fcpattern);
 
-                if (match_opt) |match| {
-                    usedfont = try allocator.create(Font);
-                    usedfont.fromPattern(self.dpy, match) catch {
+                const fontMatch = X.XftFontMatch(self.dpy, self.screen, fcpattern, &result) orelse continue;
+
+                usedfont = Font.initFromPattern(allocator, self.dpy, fontMatch) catch |err| switch (err) {
+                    error.OutOfMemory => return error.OutOfMemory,
+                    error.FontCreateError => {
                         state.nomatch.insert(utf8.codepoint);
                         continue;
-                    };
-                    if (usedfont.xftCharExists(self.dpy, utf8.codepoint)) {
-                        var curfont: *Font = fonts;
-                        while (curfont.next) |next| : (curfont = next) {}
-                        curfont.next = usedfont;
-                    } else {
-                        state.nomatch.insert(utf8.codepoint);
-                        usedfont.deinit(allocator);
-                    }
+                    },
+                };
+                if (usedfont.xftCharExists(self.dpy, utf8.codepoint)) {
+                    fonts.pushBack(usedfont);
+                } else {
+                    state.nomatch.insert(utf8.codepoint);
+                    usedfont.deinit(allocator);
                 }
             }
         }
