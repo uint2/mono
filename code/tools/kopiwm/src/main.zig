@@ -1141,9 +1141,14 @@ pub fn main() !void {
     // Initialize the X Display and Screen.
     var z: App = .{
         .dpy = dpy,
-        .screen = X.DefaultScreen(dpy),
+        .screen = screen,
+        .root = X.RootWindow(dpy, screen),
         .fonts = fonts,
         .lrpad = @intCast(fonts.height),
+        .s = .{
+            .w = @intCast(X.DisplayWidth(dpy, screen)),
+            .h = @intCast(X.DisplayHeight(dpy, screen)),
+        },
     };
 
     // Initialize colors.
@@ -1154,11 +1159,6 @@ pub fn main() !void {
     defer for (std.enums.values(SchemeState)) |ss| z.scheme.get(ss).deinit(allocator, dpy, screen);
 
     // Initialize dimensions, and establish first window and monitor.
-    z.s = .{
-        .w = @intCast(X.DisplayWidth(dpy, screen)),
-        .h = @intCast(X.DisplayHeight(dpy, screen)),
-    };
-    z.root = X.RootWindow(dpy, screen);
     z.selmon = try Monitor.init(allocator);
     z.mons = z.selmon;
     _ = z.updategeom();
