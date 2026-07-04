@@ -102,9 +102,9 @@ require('lazy').setup {
         telescope.load_extension('fzy_native')
       end,
     }, -->
-    --< nguyenvukhang/lean.nvim
+    --< brachiosauruses/lean.nvim
     {
-      'nguyenvukhang/lean.nvim', -- Julian
+      'brachiosauruses/lean.nvim', -- Julian
       dependencies = {
         'neovim/nvim-lspconfig',
         'nvim-lua/plenary.nvim',
