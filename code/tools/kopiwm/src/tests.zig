@@ -53,3 +53,17 @@ test "Don't use weird quotes" {
     try std.testing.expect(!std.mem.containsAtLeast(u8, X_TUTORIAL_SOURCE, 1, q.Q_RIGHT_DOUBLE_QUOTATION_MARK));
     try std.testing.expect(!std.mem.containsAtLeast(u8, X_TUTORIAL_SOURCE, 1, q.Q_LEFT_DOUBLE_QUOTATION_MARK));
 }
+
+fn num_digits(n: u16) usize {
+    return std.math.log10(n) + 1;
+}
+
+test "num_digits" {
+    try std.testing.expectEqual(num_digits(1), 1);
+    try std.testing.expectEqual(num_digits(9), 1);
+    try std.testing.expectEqual(num_digits(10), 2);
+    try std.testing.expectEqual(num_digits(99), 2);
+    try std.testing.expectEqual(num_digits(100), 3);
+    try std.testing.expectEqual(num_digits(999), 3);
+    try std.testing.expectEqual(num_digits(1000), 4);
+}
