@@ -1,0 +1,2037 @@
+
+
+X.Org X Server 1.21.1.16
+X Protocol Version 11, Revision 0
+Current Operating System: Linux box 6.12.94+deb13-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.12.94-1 (2026-06-20) x86_64
+Kernel command line: BOOT_IMAGE=/boot/vmlinuz-6.12.94+deb13-amd64 root=UUID=2b4a72aa-dd1b-4018-917e-b4a267138d2a ro quiet
+xorg-server 2:21.1.16-1.3+deb13u2 (https://www.debian.org/support) 
+Current version of pixman: 0.44.0
+	Before reporting problems, check http://wiki.x.org
+	to make sure that you have the latest version.
+Markers: (--) probed, (**) from config file, (==) default setting,
+	(++) from command line, (!!) notice, (II) informational,
+	(WW) warning, (EE) error, (NI) not implemented, (??) unknown.
+(==) Log file: "/home/khang/.local/share/xorg/Xorg.0.log", Time: Sun Jul  5 18:03:03 2026
+(==) Using system config directory "/usr/share/X11/xorg.conf.d"
+xf86EnableIO: failed to enable I/O ports 0000-03ff (Operation not permitted)
+info: ----------------------------------------------------------------------
+info: Started execution of kopiwm
+info: ----------------------------------------------------------------------
+info: Initialized a monitor!
+info: Create bar window(4194318): (x=0, y=0, w=1920, h=20)
+info: Focusing a client...
+info: No focus target found.
+info: ----------------------------------------------------------------------
+info: Starting event loop
+info: ----------------------------------------------------------------------
+info: view with bitmask: 10
+info: Focusing a client...
+info: No focus target found.
+info: view with bitmask: 1
+info: Focusing a client...
+info: No focus target found.
+[0.190] Could not find included config file: /home/khang/.config/kitty/boilerplate.conf, ignoring
+[0.191] Could not find included config file: /home/khang/.config/kitty/math_symbols.conf, ignoring
+info: Start managing window 12582926 (mapRequest)
+info: Created client client.Client@7f56c1aa0000
+info: showHide called on client.Client@7f56c1aa0000 (show)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0000
+[0.352] [glfw error 65544]: process_desktop_settings: failed with error: [org.freedesktop.DBus.Error.UnknownMethod] No such interface “org.freedesktop.portal.Settings” on object at path /org/freedesktop/portal/desktop
+[0.352] [glfw error 65544]: Notify: Failed to get server capabilities error: [org.freedesktop.DBus.Error.ServiceUnknown] The name org.freedesktop.Notifications was not provided by any .service files
+ATTENTION: default value of option mesa_glthread overridden by environment.
+info: Start managing window 8388611 (mapRequest)
+info: Created client client.Client@7f56c1aa0200
+info: Unfocusing client at: client.Client@7f56c1aa0000
+info: showHide called on client.Client@7f56c1aa0200 (hide)
+info: showHide called on client.Client@7f56c1aa0000 (show)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0000
+info: Unfocusing client at: client.Client@7f56c1aa0200
+info: view with bitmask: 10
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0200
+info: Unfocusing client at: client.Client@7f56c1aa0000
+info: showHide called on client.Client@7f56c1aa0200 (show)
+info: showHide called on client.Client@7f56c1aa0000 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 1
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0000
+info: Unfocusing client at: client.Client@7f56c1aa0200
+info: showHide called on client.Client@7f56c1aa0000 (show)
+info: showHide called on client.Client@7f56c1aa0200 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+[31.456] [PARSE ERROR] Escape codes to resize text area are not supported
+[31.462] [PARSE ERROR] Escape codes to resize text area are not supported
+[200.673] [PARSE ERROR] Escape codes to resize text area are not supported
+[200.673] [PARSE ERROR] Escape codes to resize text area are not supported
+[205.352] [PARSE ERROR] Escape codes to resize text area are not supported
+[209.438] [PARSE ERROR] Escape codes to resize text area are not supported
+[209.442] [PARSE ERROR] Escape codes to resize text area are not supported
+[212.625] [PARSE ERROR] Escape codes to resize text area are not supported
+[490.326] [PARSE ERROR] Escape codes to resize text area are not supported
+[490.326] [PARSE ERROR] Escape codes to resize text area are not supported
+[522.011] [PARSE ERROR] Escape codes to resize text area are not supported
+[572.482] [PARSE ERROR] Escape codes to resize text area are not supported
+[572.482] [PARSE ERROR] Escape codes to resize text area are not supported
+Call to org.freedesktop.portal.Settings.ReadAll failed QDBusError("org.freedesktop.DBus.Error.UnknownMethod", "No such interface “org.freedesktop.portal.Settings” on object at path /org/freedesktop/portal/desktop")
+qt.qpa.theme.gnome: dbus reply error: [ "org.freedesktop.DBus.Error.UnknownMethod" ] "No such interface “org.freedesktop.portal.Settings” on object at path /org/freedesktop/portal/desktop"
+qt.qpa.theme.gnome: dbus reply error: [ "org.freedesktop.DBus.Error.UnknownMethod" ] "No such interface “org.freedesktop.portal.Settings” on object at path /org/freedesktop/portal/desktop"
+Call for getting org.freedesktop.portal.FileChooser version failed QDBusError("org.freedesktop.DBus.Error.InvalidArgs", "No such interface “org.freedesktop.portal.FileChooser”")
+info: view with bitmask: 100
+info: Focusing a client...
+info: No focus target found.
+info: showHide called on client.Client@7f56c1aa0000 (hide)
+info: showHide called on client.Client@7f56c1aa0200 (hide)
+info: Start managing window 14680091 (mapRequest)
+info: Created client client.Client@7f56c1aa0400
+info: showHide called on client.Client@7f56c1aa0400 (show)
+info: showHide called on client.Client@7f56c1aa0000 (hide)
+info: showHide called on client.Client@7f56c1aa0200 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0400
+[libvpx-vp9 @ 0x55fb4738ff00] v1.14.1
+[libvpx-vp9 @ 0x55fb4738ff00] v1.14.1
+[libvpx-vp9 @ 0x55fb47841b80] v1.14.1
+[libvpx-vp9 @ 0x55fb47841b80] v1.14.1
+qt.gui.imageio.jpeg: Corrupt JPEG data: premature end of data segment
+info: view with bitmask: 1
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0000
+info: Unfocusing client at: client.Client@7f56c1aa0400
+info: showHide called on client.Client@7f56c1aa0000 (show)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: showHide called on client.Client@7f56c1aa0200 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 10
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0200
+info: Unfocusing client at: client.Client@7f56c1aa0000
+info: showHide called on client.Client@7f56c1aa0200 (show)
+info: showHide called on client.Client@7f56c1aa0000 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 1
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0000
+info: Unfocusing client at: client.Client@7f56c1aa0200
+info: showHide called on client.Client@7f56c1aa0000 (show)
+info: showHide called on client.Client@7f56c1aa0200 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 100
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0400
+info: Unfocusing client at: client.Client@7f56c1aa0000
+info: showHide called on client.Client@7f56c1aa0400 (show)
+info: showHide called on client.Client@7f56c1aa0000 (hide)
+info: showHide called on client.Client@7f56c1aa0200 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+[libvpx-vp9 @ 0x55fb486edd40] v1.14.1
+[libvpx-vp9 @ 0x55fb486edd40] v1.14.1
+[libvpx-vp9 @ 0x55fb442714c0] v1.14.1
+[libvpx-vp9 @ 0x55fb442714c0] v1.14.1
+[libvpx-vp9 @ 0x55fb48704980] v1.14.1
+[libvpx-vp9 @ 0x55fb48704980] v1.14.1
+[libvpx-vp9 @ 0x55fb442a6f00] v1.14.1
+[libvpx-vp9 @ 0x55fb469f0dc0] v1.14.1
+[libvpx-vp9 @ 0x55fb486a0600] v1.14.1
+[libvpx-vp9 @ 0x55fb442a6f00] v1.14.1
+[libvpx-vp9 @ 0x55fb486a0600] v1.14.1
+[libvpx-vp9 @ 0x55fb469f0dc0] v1.14.1
+[libvpx-vp9 @ 0x55fb43f83bc0] v1.14.1
+[libvpx-vp9 @ 0x55fb43f83bc0] v1.14.1
+[libvpx-vp9 @ 0x55fb44f76800] v1.14.1
+[libvpx-vp9 @ 0x55fb44f76800] v1.14.1
+info: view with bitmask: 10
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0200
+info: Unfocusing client at: client.Client@7f56c1aa0400
+info: showHide called on client.Client@7f56c1aa0200 (show)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: showHide called on client.Client@7f56c1aa0000 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 1
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0000
+info: Unfocusing client at: client.Client@7f56c1aa0200
+info: showHide called on client.Client@7f56c1aa0000 (show)
+info: showHide called on client.Client@7f56c1aa0200 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 100
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0400
+info: Unfocusing client at: client.Client@7f56c1aa0000
+info: showHide called on client.Client@7f56c1aa0400 (show)
+info: showHide called on client.Client@7f56c1aa0000 (hide)
+info: showHide called on client.Client@7f56c1aa0200 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 10
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0200
+info: Unfocusing client at: client.Client@7f56c1aa0400
+info: showHide called on client.Client@7f56c1aa0200 (show)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: showHide called on client.Client@7f56c1aa0000 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 100
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0400
+info: Unfocusing client at: client.Client@7f56c1aa0200
+info: showHide called on client.Client@7f56c1aa0400 (show)
+info: showHide called on client.Client@7f56c1aa0200 (hide)
+info: showHide called on client.Client@7f56c1aa0000 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 10
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0200
+info: Unfocusing client at: client.Client@7f56c1aa0400
+info: showHide called on client.Client@7f56c1aa0200 (show)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: showHide called on client.Client@7f56c1aa0000 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+ATTENTION: default value of option mesa_glthread overridden by environment.
+ATTENTION: default value of option mesa_glthread overridden by environment.
+ATTENTION: default value of option mesa_glthread overridden by environment.
+ATTENTION: default value of option mesa_glthread overridden by environment.
+ATTENTION: default value of option mesa_glthread overridden by environment.
+ATTENTION: default value of option mesa_glthread overridden by environment.
+info: view with bitmask: 1
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0000
+info: Unfocusing client at: client.Client@7f56c1aa0200
+info: showHide called on client.Client@7f56c1aa0000 (show)
+info: showHide called on client.Client@7f56c1aa0200 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+[1619.984] [PARSE ERROR] Escape codes to resize text area are not supported
+[1624.997] [PARSE ERROR] Escape codes to resize text area are not supported
+[1628.545] [PARSE ERROR] Escape codes to resize text area are not supported
+[1628.545] [PARSE ERROR] Escape codes to resize text area are not supported
+[1637.816] [PARSE ERROR] Escape codes to resize text area are not supported
+info: view with bitmask: 10
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0200
+info: Unfocusing client at: client.Client@7f56c1aa0000
+info: showHide called on client.Client@7f56c1aa0200 (show)
+info: showHide called on client.Client@7f56c1aa0000 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+ATTENTION: default value of option mesa_glthread overridden by environment.
+ATTENTION: default value of option mesa_glthread overridden by environment.
+ATTENTION: default value of option mesa_glthread overridden by environment.
+ATTENTION: default value of option mesa_glthread overridden by environment.
+ATTENTION: default value of option mesa_glthread overridden by environment.
+ATTENTION: default value of option mesa_glthread overridden by environment.
+ATTENTION: default value of option mesa_glthread overridden by environment.
+libva info: VA-API version 1.22.0
+libva info: Trying to open /usr/lib/x86_64-linux-gnu/dri/radeonsi_drv_video.so
+libva info: Found init function __vaDriverInit_1_22
+libva info: va_openDriver() returns 0
+ATTENTION: default value of option mesa_glthread overridden by environment.
+ATTENTION: default value of option mesa_glthread overridden by environment.
+info: view with bitmask: 10
+info: view with bitmask: 100
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0400
+info: Unfocusing client at: client.Client@7f56c1aa0200
+info: showHide called on client.Client@7f56c1aa0400 (show)
+info: showHide called on client.Client@7f56c1aa0200 (hide)
+info: showHide called on client.Client@7f56c1aa0000 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+QPainter::begin: Paint device returned engine == 0, type: 2
+QWidget::render: Cannot render with an inactive painter
+info: view with bitmask: 1
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0000
+info: Unfocusing client at: client.Client@7f56c1aa0400
+info: showHide called on client.Client@7f56c1aa0000 (show)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: showHide called on client.Client@7f56c1aa0200 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 10
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0200
+info: Unfocusing client at: client.Client@7f56c1aa0000
+info: showHide called on client.Client@7f56c1aa0200 (show)
+info: showHide called on client.Client@7f56c1aa0000 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 1
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0000
+info: Unfocusing client at: client.Client@7f56c1aa0200
+info: showHide called on client.Client@7f56c1aa0000 (show)
+info: showHide called on client.Client@7f56c1aa0200 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 10
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0200
+info: Unfocusing client at: client.Client@7f56c1aa0000
+info: showHide called on client.Client@7f56c1aa0200 (show)
+info: showHide called on client.Client@7f56c1aa0000 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 1
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0000
+info: Unfocusing client at: client.Client@7f56c1aa0200
+info: showHide called on client.Client@7f56c1aa0000 (show)
+info: showHide called on client.Client@7f56c1aa0200 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 10
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0200
+info: Unfocusing client at: client.Client@7f56c1aa0000
+info: showHide called on client.Client@7f56c1aa0200 (show)
+info: showHide called on client.Client@7f56c1aa0000 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 1
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0000
+info: Unfocusing client at: client.Client@7f56c1aa0200
+info: showHide called on client.Client@7f56c1aa0000 (show)
+info: showHide called on client.Client@7f56c1aa0200 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 10
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0200
+info: Unfocusing client at: client.Client@7f56c1aa0000
+info: showHide called on client.Client@7f56c1aa0200 (show)
+info: showHide called on client.Client@7f56c1aa0000 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 1
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0000
+info: Unfocusing client at: client.Client@7f56c1aa0200
+info: showHide called on client.Client@7f56c1aa0000 (show)
+info: showHide called on client.Client@7f56c1aa0200 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+[2031.628] [PARSE ERROR] Escape codes to resize text area are not supported
+[2031.628] [PARSE ERROR] Escape codes to resize text area are not supported
+info: view with bitmask: 10
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0200
+info: Unfocusing client at: client.Client@7f56c1aa0000
+info: showHide called on client.Client@7f56c1aa0200 (show)
+info: showHide called on client.Client@7f56c1aa0000 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+ATTENTION: default value of option mesa_glthread overridden by environment.
+ATTENTION: default value of option mesa_glthread overridden by environment.
+ATTENTION: default value of option mesa_glthread overridden by environment.
+ATTENTION: default value of option mesa_glthread overridden by environment.
+ATTENTION: default value of option mesa_glthread overridden by environment.
+info: view with bitmask: 1
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0000
+info: Unfocusing client at: client.Client@7f56c1aa0200
+info: showHide called on client.Client@7f56c1aa0000 (show)
+info: showHide called on client.Client@7f56c1aa0200 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+qt.gui.imageio.jpeg: Corrupt JPEG data: premature end of data segment
+info: view with bitmask: 100
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0400
+info: Unfocusing client at: client.Client@7f56c1aa0000
+info: showHide called on client.Client@7f56c1aa0400 (show)
+info: showHide called on client.Client@7f56c1aa0000 (hide)
+info: showHide called on client.Client@7f56c1aa0200 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+QPainter::begin: Paint device returned engine == 0, type: 2
+QWidget::render: Cannot render with an inactive painter
+qt.gui.imageio.jpeg: Corrupt JPEG data: premature end of data segment
+info: Start managing window 14680286 (mapRequest)
+info: Created client client.Client@7f56c1aa0600
+info: Unfocusing client at: client.Client@7f56c1aa0400
+info: showHide called on client.Client@7f56c1aa0600 (show)
+info: showHide called on client.Client@7f56c1aa0400 (show)
+info: showHide called on client.Client@7f56c1aa0000 (hide)
+info: showHide called on client.Client@7f56c1aa0200 (hide)
+info: tile with 2 clients, with mw=960
+debug: n=2, i=0, ty=0, my=0
+debug: n=2, i=1, ty=0, my=0
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0600
+warning: Deallocate client: client.Client@7f56c1aa0600 (will arrange monitor monitor.Monitor@7f56c1b00000)
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0400
+info: showHide called on client.Client@7f56c1aa0400 (show)
+info: showHide called on client.Client@7f56c1aa0000 (hide)
+info: showHide called on client.Client@7f56c1aa0200 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 10
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0200
+info: Unfocusing client at: client.Client@7f56c1aa0400
+info: showHide called on client.Client@7f56c1aa0200 (show)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: showHide called on client.Client@7f56c1aa0000 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 100
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0400
+info: Unfocusing client at: client.Client@7f56c1aa0200
+info: showHide called on client.Client@7f56c1aa0400 (show)
+info: showHide called on client.Client@7f56c1aa0200 (hide)
+info: showHide called on client.Client@7f56c1aa0000 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: Start managing window 14680286 (mapRequest)
+info: Created client client.Client@7f56c1aa0800
+info: Unfocusing client at: client.Client@7f56c1aa0400
+info: showHide called on client.Client@7f56c1aa0800 (show)
+info: showHide called on client.Client@7f56c1aa0400 (show)
+info: showHide called on client.Client@7f56c1aa0200 (hide)
+info: showHide called on client.Client@7f56c1aa0000 (hide)
+info: tile with 2 clients, with mw=960
+debug: n=2, i=0, ty=0, my=0
+debug: n=2, i=1, ty=0, my=0
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0800
+warning: Deallocate client: client.Client@7f56c1aa0800 (will arrange monitor monitor.Monitor@7f56c1b00000)
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0400
+info: showHide called on client.Client@7f56c1aa0400 (show)
+info: showHide called on client.Client@7f56c1aa0200 (hide)
+info: showHide called on client.Client@7f56c1aa0000 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 10
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0200
+info: Unfocusing client at: client.Client@7f56c1aa0400
+info: showHide called on client.Client@7f56c1aa0200 (show)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: showHide called on client.Client@7f56c1aa0000 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 100
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0400
+info: Unfocusing client at: client.Client@7f56c1aa0200
+info: showHide called on client.Client@7f56c1aa0400 (show)
+info: showHide called on client.Client@7f56c1aa0200 (hide)
+info: showHide called on client.Client@7f56c1aa0000 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+[libvpx-vp9 @ 0x55fb43c7edc0] v1.14.1
+[libvpx-vp9 @ 0x55fb43c7edc0] v1.14.1
+[libvpx-vp9 @ 0x55fb4444eb40] v1.14.1
+[libvpx-vp9 @ 0x55fb4444eb40] v1.14.1
+qt.gui.imageio.jpeg: Corrupt JPEG data: premature end of data segment
+[libvpx-vp9 @ 0x55fb45085b40] v1.14.1
+[libvpx-vp9 @ 0x55fb45085b40] v1.14.1
+[libvpx-vp9 @ 0x55fb48342380] v1.14.1
+[libvpx-vp9 @ 0x55fb48342380] v1.14.1
+info: view with bitmask: 1
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0000
+info: Unfocusing client at: client.Client@7f56c1aa0400
+info: showHide called on client.Client@7f56c1aa0000 (show)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: showHide called on client.Client@7f56c1aa0200 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+[5535.916] [PARSE ERROR] Escape codes to resize text area are not supported
+[5540.175] [PARSE ERROR] Escape codes to resize text area are not supported
+[5540.175] [PARSE ERROR] Escape codes to resize text area are not supported
+info: view with bitmask: 10
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0200
+info: Unfocusing client at: client.Client@7f56c1aa0000
+info: showHide called on client.Client@7f56c1aa0200 (show)
+info: showHide called on client.Client@7f56c1aa0000 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 1
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0000
+info: Unfocusing client at: client.Client@7f56c1aa0200
+info: showHide called on client.Client@7f56c1aa0000 (show)
+info: showHide called on client.Client@7f56c1aa0200 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+[5779.028] [PARSE ERROR] Escape codes to resize text area are not supported
+[5783.549] [PARSE ERROR] Escape codes to resize text area are not supported
+[5783.549] [PARSE ERROR] Escape codes to resize text area are not supported
+[5866.984] [PARSE ERROR] Escape codes to resize text area are not supported
+[5866.984] [PARSE ERROR] Escape codes to resize text area are not supported
+[5880.903] [PARSE ERROR] Escape codes to resize text area are not supported
+info: view with bitmask: 10
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0200
+info: Unfocusing client at: client.Client@7f56c1aa0000
+info: showHide called on client.Client@7f56c1aa0200 (show)
+info: showHide called on client.Client@7f56c1aa0000 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 1
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0000
+info: Unfocusing client at: client.Client@7f56c1aa0200
+info: showHide called on client.Client@7f56c1aa0000 (show)
+info: showHide called on client.Client@7f56c1aa0200 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+[6102.567] [PARSE ERROR] Escape codes to resize text area are not supported
+[6102.571] [PARSE ERROR] Escape codes to resize text area are not supported
+[6229.869] [PARSE ERROR] Escape codes to resize text area are not supported
+[6364.083] [PARSE ERROR] Escape codes to resize text area are not supported
+[6364.857] [PARSE ERROR] Escape codes to resize text area are not supported
+[6364.857] [PARSE ERROR] Escape codes to resize text area are not supported
+[6372.390] [PARSE ERROR] Escape codes to resize text area are not supported
+[6373.816] [PARSE ERROR] Escape codes to resize text area are not supported
+[6373.816] [PARSE ERROR] Escape codes to resize text area are not supported
+info: view with bitmask: 10
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0200
+info: Unfocusing client at: client.Client@7f56c1aa0000
+info: showHide called on client.Client@7f56c1aa0200 (show)
+info: showHide called on client.Client@7f56c1aa0000 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 100
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0400
+info: Unfocusing client at: client.Client@7f56c1aa0200
+info: showHide called on client.Client@7f56c1aa0400 (show)
+info: showHide called on client.Client@7f56c1aa0200 (hide)
+info: showHide called on client.Client@7f56c1aa0000 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 1
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0000
+info: Unfocusing client at: client.Client@7f56c1aa0400
+info: showHide called on client.Client@7f56c1aa0000 (show)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: showHide called on client.Client@7f56c1aa0200 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 10
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0200
+info: Unfocusing client at: client.Client@7f56c1aa0000
+info: showHide called on client.Client@7f56c1aa0200 (show)
+info: showHide called on client.Client@7f56c1aa0000 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 100
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0400
+info: Unfocusing client at: client.Client@7f56c1aa0200
+info: showHide called on client.Client@7f56c1aa0400 (show)
+info: showHide called on client.Client@7f56c1aa0200 (hide)
+info: showHide called on client.Client@7f56c1aa0000 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+[libvpx-vp9 @ 0x55fb4545e140] v1.14.1
+[libvpx-vp9 @ 0x55fb4738ff00] v1.14.1
+[libvpx-vp9 @ 0x55fb486edd40] v1.14.1
+[libvpx-vp9 @ 0x55fb4545e140] v1.14.1
+[libvpx-vp9 @ 0x55fb486edd40] v1.14.1
+[libvpx-vp9 @ 0x55fb4738ff00] v1.14.1
+[libvpx-vp9 @ 0x55fb47721000] v1.14.1
+[libvpx-vp9 @ 0x55fb442714c0] v1.14.1
+[libvpx-vp9 @ 0x55fb47841b80] v1.14.1
+[libvpx-vp9 @ 0x55fb442714c0] v1.14.1
+[libvpx-vp9 @ 0x55fb47721000] v1.14.1
+[libvpx-vp9 @ 0x55fb47841b80] v1.14.1
+[libvpx-vp9 @ 0x55fb4738ff00] v1.14.1
+[libvpx-vp9 @ 0x55fb486edd40] v1.14.1
+[libvpx-vp9 @ 0x55fb48704980] v1.14.1
+[libvpx-vp9 @ 0x55fb469f0dc0] v1.14.1
+[libvpx-vp9 @ 0x55fb4738ff00] v1.14.1
+[libvpx-vp9 @ 0x55fb486edd40] v1.14.1
+[libvpx-vp9 @ 0x55fb469f0dc0] v1.14.1
+[libvpx-vp9 @ 0x55fb47841b80] v1.14.1
+[libvpx-vp9 @ 0x55fb48704980] v1.14.1
+[libvpx-vp9 @ 0x55fb44f76800] v1.14.1
+[libvpx-vp9 @ 0x55fb442714c0] v1.14.1
+[libvpx-vp9 @ 0x55fb47841b80] v1.14.1
+[libvpx-vp9 @ 0x55fb44f76800] v1.14.1
+[libvpx-vp9 @ 0x55fb442714c0] v1.14.1
+[libvpx-vp9 @ 0x55fb442a6f00] v1.14.1
+[libvpx-vp9 @ 0x55fb442a6f00] v1.14.1
+[libvpx-vp9 @ 0x55fb4738ff00] v1.14.1
+[libvpx-vp9 @ 0x55fb4738ff00] v1.14.1
+[libvpx-vp9 @ 0x55fb47841b80] v1.14.1
+[libvpx-vp9 @ 0x55fb47841b80] v1.14.1
+[libvpx-vp9 @ 0x55fb486edd40] v1.14.1
+[libvpx-vp9 @ 0x55fb486edd40] v1.14.1
+[libvpx-vp9 @ 0x55fb442714c0] v1.14.1
+[libvpx-vp9 @ 0x55fb442714c0] v1.14.1
+info: view with bitmask: 1
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0000
+info: Unfocusing client at: client.Client@7f56c1aa0400
+info: showHide called on client.Client@7f56c1aa0000 (show)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: showHide called on client.Client@7f56c1aa0200 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 10
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0200
+info: Unfocusing client at: client.Client@7f56c1aa0000
+info: showHide called on client.Client@7f56c1aa0200 (show)
+info: showHide called on client.Client@7f56c1aa0000 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 1
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0000
+info: Unfocusing client at: client.Client@7f56c1aa0200
+info: showHide called on client.Client@7f56c1aa0000 (show)
+info: showHide called on client.Client@7f56c1aa0200 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 1
+info: view with bitmask: 10
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0200
+info: Unfocusing client at: client.Client@7f56c1aa0000
+info: showHide called on client.Client@7f56c1aa0200 (show)
+info: showHide called on client.Client@7f56c1aa0000 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 1
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0000
+info: Unfocusing client at: client.Client@7f56c1aa0200
+info: showHide called on client.Client@7f56c1aa0000 (show)
+info: showHide called on client.Client@7f56c1aa0200 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 10
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0200
+info: Unfocusing client at: client.Client@7f56c1aa0000
+info: showHide called on client.Client@7f56c1aa0200 (show)
+info: showHide called on client.Client@7f56c1aa0000 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 1
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0000
+info: Unfocusing client at: client.Client@7f56c1aa0200
+info: showHide called on client.Client@7f56c1aa0000 (show)
+info: showHide called on client.Client@7f56c1aa0200 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 10
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0200
+info: Unfocusing client at: client.Client@7f56c1aa0000
+info: showHide called on client.Client@7f56c1aa0200 (show)
+info: showHide called on client.Client@7f56c1aa0000 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 1
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0000
+info: Unfocusing client at: client.Client@7f56c1aa0200
+info: showHide called on client.Client@7f56c1aa0000 (show)
+info: showHide called on client.Client@7f56c1aa0200 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+[7959.664] [PARSE ERROR] Escape codes to resize text area are not supported
+[7959.664] [PARSE ERROR] Escape codes to resize text area are not supported
+[8283.699] [PARSE ERROR] Escape codes to resize text area are not supported
+[8283.699] [PARSE ERROR] Escape codes to resize text area are not supported
+[8286.044] [PARSE ERROR] Escape codes to resize text area are not supported
+info: view with bitmask: 10
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0200
+info: Unfocusing client at: client.Client@7f56c1aa0000
+info: showHide called on client.Client@7f56c1aa0200 (show)
+info: showHide called on client.Client@7f56c1aa0000 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 1
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0000
+info: Unfocusing client at: client.Client@7f56c1aa0200
+info: showHide called on client.Client@7f56c1aa0000 (show)
+info: showHide called on client.Client@7f56c1aa0200 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+[8444.697] [PARSE ERROR] Escape codes to resize text area are not supported
+[8444.697] [PARSE ERROR] Escape codes to resize text area are not supported
+[8451.607] [PARSE ERROR] Escape codes to resize text area are not supported
+info: view with bitmask: 10
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0200
+info: Unfocusing client at: client.Client@7f56c1aa0000
+info: showHide called on client.Client@7f56c1aa0200 (show)
+info: showHide called on client.Client@7f56c1aa0000 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 100
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0400
+info: Unfocusing client at: client.Client@7f56c1aa0200
+info: showHide called on client.Client@7f56c1aa0400 (show)
+info: showHide called on client.Client@7f56c1aa0200 (hide)
+info: showHide called on client.Client@7f56c1aa0000 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+[libvpx-vp9 @ 0x55fb486edd40] v1.14.1
+[libvpx-vp9 @ 0x55fb4738ff00] v1.14.1
+[libvpx-vp9 @ 0x55fb48704980] v1.14.1
+[libvpx-vp9 @ 0x55fb469f0dc0] v1.14.1
+[libvpx-vp9 @ 0x55fb4738ff00] v1.14.1
+[libvpx-vp9 @ 0x55fb469f0dc0] v1.14.1
+[libvpx-vp9 @ 0x55fb486edd40] v1.14.1
+[libvpx-vp9 @ 0x55fb48704980] v1.14.1
+[libvpx-vp9 @ 0x55fb47841b80] v1.14.1
+[libvpx-vp9 @ 0x55fb44f76800] v1.14.1
+[libvpx-vp9 @ 0x55fb442714c0] v1.14.1
+[libvpx-vp9 @ 0x55fb44f76800] v1.14.1
+[libvpx-vp9 @ 0x55fb442a6f00] v1.14.1
+[libvpx-vp9 @ 0x55fb47841b80] v1.14.1
+[libvpx-vp9 @ 0x55fb442714c0] v1.14.1
+[libvpx-vp9 @ 0x55fb442a6f00] v1.14.1
+[libvpx-vp9 @ 0x55fb4738ff00] v1.14.1
+[libvpx-vp9 @ 0x55fb486edd40] v1.14.1
+[libvpx-vp9 @ 0x55fb486edd40] v1.14.1
+[libvpx-vp9 @ 0x55fb4738ff00] v1.14.1
+[libvpx-vp9 @ 0x55fb442714c0] v1.14.1
+[libvpx-vp9 @ 0x55fb47841b80] v1.14.1
+[libvpx-vp9 @ 0x55fb442714c0] v1.14.1
+[libvpx-vp9 @ 0x55fb47841b80] v1.14.1
+[libvpx-vp9 @ 0x55fb4738ff00] v1.14.1
+[libvpx-vp9 @ 0x55fb486edd40] v1.14.1
+[libvpx-vp9 @ 0x55fb486edd40] v1.14.1
+[libvpx-vp9 @ 0x55fb442714c0] v1.14.1
+[libvpx-vp9 @ 0x55fb4738ff00] v1.14.1
+[libvpx-vp9 @ 0x55fb442714c0] v1.14.1
+[libvpx-vp9 @ 0x55fb47841b80] v1.14.1
+[libvpx-vp9 @ 0x55fb47841b80] v1.14.1
+[libvpx-vp9 @ 0x55fb48704980] v1.14.1
+[libvpx-vp9 @ 0x55fb48704980] v1.14.1
+[libvpx-vp9 @ 0x55fb442a6f00] v1.14.1
+[libvpx-vp9 @ 0x55fb442a6f00] v1.14.1
+qt.text.font.db: OpenType support missing for "Open Sans", script 14
+qt.text.font.db: OpenType support missing for "vazirmatn ui nl", script 14
+qt.text.font.db: OpenType support missing for "FreeSerif", script 14
+qt.text.font.db: OpenType support missing for "DejaVu Sans", script 14
+qt.text.font.db: OpenType support missing for "Nimbus Sans", script 14
+qt.text.font.db: OpenType support missing for "URW Gothic", script 14
+qt.text.font.db: OpenType support missing for "Nimbus Sans Narrow", script 14
+qt.text.font.db: OpenType support missing for "FreeSans", script 14
+qt.text.font.db: OpenType support missing for "FreeMono", script 14
+qt.text.font.db: OpenType support missing for "Fira Code", script 14
+qt.text.font.db: OpenType support missing for "FontAwesome", script 14
+qt.text.font.db: OpenType support missing for "Courier Prime Code", script 14
+qt.text.font.db: OpenType support missing for "DejaVu Math TeX Gyre", script 14
+qt.text.font.db: OpenType support missing for "DejaVu Sans Mono", script 14
+qt.text.font.db: OpenType support missing for "DejaVu Serif", script 14
+qt.text.font.db: OpenType support missing for "JetBrains Mono NL", script 14
+qt.text.font.db: OpenType support missing for "Liberation Mono", script 14
+qt.text.font.db: OpenType support missing for "Liberation Sans", script 14
+qt.text.font.db: OpenType support missing for "Liberation Serif", script 14
+qt.text.font.db: OpenType support missing for "Lato", script 14
+qt.text.font.db: OpenType support missing for "Noto Sans Mono", script 14
+qt.text.font.db: OpenType support missing for "Comic Neue", script 14
+qt.text.font.db: OpenType support missing for "D050000L", script 14
+qt.text.font.db: OpenType support missing for "Standard Symbols PS", script 14
+qt.text.font.db: OpenType support missing for "Carlito", script 14
+qt.text.font.db: OpenType support missing for "Caladea", script 14
+qt.text.font.db: OpenType support missing for "C059", script 14
+qt.text.font.db: OpenType support missing for "Nimbus Mono PS", script 14
+qt.text.font.db: OpenType support missing for "Nimbus Roman", script 14
+qt.text.font.db: OpenType support missing for "P052", script 14
+qt.text.font.db: OpenType support missing for "Noto Mono", script 14
+qt.text.font.db: OpenType support missing for "Droid Sans Fallback", script 14
+qt.text.font.db: OpenType support missing for "Cantarell", script 14
+qt.text.font.db: OpenType support missing for "Symbola", script 14
+qt.text.font.db: OpenType support missing for "Liberation Sans Narrow", script 14
+qt.text.font.db: OpenType support missing for "League Spartan", script 14
+qt.text.font.db: OpenType support missing for "Courier Prime Sans", script 14
+qt.text.font.db: OpenType support missing for "Courier Prime", script 14
+qt.text.font.db: OpenType support missing for "URW Bookman", script 14
+qt.text.font.db: OpenType support missing for "Z003", script 14
+qt.text.font.db: OpenType support missing for "Noto Color Emoji", script 14
+qt.text.font.db: OpenType support missing for "", script 14
+qt.text.font.db: OpenType support missing for "", script 14
+qt.text.font.db: OpenType support missing for "", script 14
+qt.text.font.db: OpenType support missing for "", script 14
+qt.text.font.db: OpenType support missing for "", script 14
+qt.text.font.db: OpenType support missing for "", script 14
+qt.text.font.db: OpenType support missing for "", script 14
+qt.text.font.db: OpenType support missing for "", script 14
+qt.text.font.db: OpenType support missing for "", script 14
+qt.text.font.db: OpenType support missing for "", script 14
+qt.text.font.db: OpenType support missing for "", script 14
+qt.text.font.db: OpenType support missing for "", script 14
+qt.text.font.db: OpenType support missing for "", script 14
+qt.text.font.db: OpenType support missing for "", script 14
+qt.text.font.db: OpenType support missing for "", script 14
+qt.text.font.db: OpenType support missing for "", script 14
+qt.text.font.db: OpenType support missing for "", script 14
+qt.text.font.db: OpenType support missing for "", script 14
+qt.text.font.db: OpenType support missing for "", script 14
+qt.text.font.db: OpenType support missing for "", script 14
+qt.text.font.db: OpenType support missing for "", script 14
+qt.text.font.db: OpenType support missing for "", script 14
+qt.text.font.db: OpenType support missing for "", script 14
+qt.text.font.db: OpenType support missing for "", script 14
+qt.text.font.db: OpenType support missing for "", script 14
+qt.text.font.db: OpenType support missing for "", script 14
+qt.text.font.db: OpenType support missing for "", script 14
+qt.text.font.db: OpenType support missing for "", script 14
+qt.text.font.db: OpenType support missing for "FreeSerif", script 14
+qt.text.font.db: OpenType support missing for "DejaVu Sans", script 14
+qt.text.font.db: OpenType support missing for "Nimbus Sans", script 14
+qt.text.font.db: OpenType support missing for "URW Gothic", script 14
+qt.text.font.db: OpenType support missing for "Nimbus Sans Narrow", script 14
+qt.text.font.db: OpenType support missing for "FreeSans", script 14
+qt.text.font.db: OpenType support missing for "FreeMono", script 14
+qt.text.font.db: OpenType support missing for "Vazirmatn UI NL", script 14
+qt.text.font.db: OpenType support missing for "Fira Code", script 14
+qt.text.font.db: OpenType support missing for "FontAwesome", script 14
+qt.text.font.db: OpenType support missing for "Courier Prime Code", script 14
+qt.text.font.db: OpenType support missing for "DejaVu Math TeX Gyre", script 14
+qt.text.font.db: OpenType support missing for "DejaVu Sans Mono", script 14
+qt.text.font.db: OpenType support missing for "DejaVu Serif", script 14
+qt.text.font.db: OpenType support missing for "JetBrains Mono NL", script 14
+qt.text.font.db: OpenType support missing for "Liberation Mono", script 14
+qt.text.font.db: OpenType support missing for "Liberation Sans", script 14
+qt.text.font.db: OpenType support missing for "Liberation Serif", script 14
+qt.text.font.db: OpenType support missing for "Lato", script 14
+qt.text.font.db: OpenType support missing for "Noto Sans Mono", script 14
+qt.text.font.db: OpenType support missing for "Comic Neue", script 14
+qt.text.font.db: OpenType support missing for "D050000L", script 14
+qt.text.font.db: OpenType support missing for "Standard Symbols PS", script 14
+qt.text.font.db: OpenType support missing for "Carlito", script 14
+qt.text.font.db: OpenType support missing for "Open Sans", script 14
+qt.text.font.db: OpenType support missing for "Caladea", script 14
+qt.text.font.db: OpenType support missing for "C059", script 14
+qt.text.font.db: OpenType support missing for "Nimbus Mono PS", script 14
+qt.text.font.db: OpenType support missing for "Nimbus Roman", script 14
+qt.text.font.db: OpenType support missing for "P052", script 14
+qt.text.font.db: OpenType support missing for "Noto Mono", script 14
+qt.text.font.db: OpenType support missing for "Droid Sans Fallback", script 14
+qt.text.font.db: OpenType support missing for "Cantarell", script 14
+qt.text.font.db: OpenType support missing for "Symbola", script 14
+qt.text.font.db: OpenType support missing for "Liberation Sans Narrow", script 14
+qt.text.font.db: OpenType support missing for "League Spartan", script 14
+qt.text.font.db: OpenType support missing for "Courier Prime Sans", script 14
+qt.text.font.db: OpenType support missing for "Courier Prime", script 14
+qt.text.font.db: OpenType support missing for "URW Bookman", script 14
+qt.text.font.db: OpenType support missing for "Z003", script 14
+qt.text.font.db: OpenType support missing for "Noto Color Emoji", script 14
+qt.text.font.db: OpenType support missing for "", script 14
+qt.text.font.db: OpenType support missing for "", script 14
+qt.text.font.db: OpenType support missing for "", script 14
+qt.text.font.db: OpenType support missing for "", script 14
+qt.text.font.db: OpenType support missing for "", script 14
+qt.text.font.db: OpenType support missing for "", script 14
+qt.text.font.db: OpenType support missing for "", script 14
+qt.text.font.db: OpenType support missing for "", script 14
+qt.text.font.db: OpenType support missing for "", script 14
+qt.text.font.db: OpenType support missing for "", script 14
+qt.text.font.db: OpenType support missing for "", script 14
+qt.text.font.db: OpenType support missing for "", script 14
+qt.text.font.db: OpenType support missing for "", script 14
+qt.text.font.db: OpenType support missing for "", script 14
+qt.text.font.db: OpenType support missing for "", script 14
+qt.text.font.db: OpenType support missing for "", script 14
+qt.text.font.db: OpenType support missing for "", script 14
+qt.text.font.db: OpenType support missing for "", script 14
+qt.text.font.db: OpenType support missing for "", script 14
+qt.text.font.db: OpenType support missing for "", script 14
+qt.text.font.db: OpenType support missing for "", script 14
+qt.text.font.db: OpenType support missing for "", script 14
+qt.text.font.db: OpenType support missing for "", script 14
+qt.text.font.db: OpenType support missing for "", script 14
+qt.text.font.db: OpenType support missing for "", script 14
+qt.text.font.db: OpenType support missing for "", script 14
+qt.text.font.db: OpenType support missing for "", script 14
+qt.text.font.db: OpenType support missing for "", script 14
+qt.text.font.db: OpenType support missing for "", script 14
+qt.text.font.db: OpenType support missing for "Open Sans", script 17
+qt.text.font.db: OpenType support missing for "vazirmatn ui nl", script 17
+qt.text.font.db: OpenType support missing for "DejaVu Sans", script 17
+qt.text.font.db: OpenType support missing for "Nimbus Sans", script 17
+qt.text.font.db: OpenType support missing for "URW Gothic", script 17
+qt.text.font.db: OpenType support missing for "Nimbus Sans Narrow", script 17
+qt.text.font.db: OpenType support missing for "FreeSans", script 17
+qt.text.font.db: OpenType support missing for "FreeSerif", script 17
+qt.text.font.db: OpenType support missing for "FreeMono", script 17
+qt.text.font.db: OpenType support missing for "Fira Code", script 17
+qt.text.font.db: OpenType support missing for "FontAwesome", script 17
+qt.text.font.db: OpenType support missing for "Courier Prime Code", script 17
+qt.text.font.db: OpenType support missing for "DejaVu Math TeX Gyre", script 17
+qt.text.font.db: OpenType support missing for "DejaVu Sans Mono", script 17
+qt.text.font.db: OpenType support missing for "DejaVu Serif", script 17
+qt.text.font.db: OpenType support missing for "JetBrains Mono NL", script 17
+qt.text.font.db: OpenType support missing for "Liberation Mono", script 17
+qt.text.font.db: OpenType support missing for "Liberation Sans", script 17
+qt.text.font.db: OpenType support missing for "Liberation Serif", script 17
+qt.text.font.db: OpenType support missing for "Lato", script 17
+qt.text.font.db: OpenType support missing for "Noto Sans Mono", script 17
+qt.text.font.db: OpenType support missing for "Comic Neue", script 17
+qt.text.font.db: OpenType support missing for "D050000L", script 17
+qt.text.font.db: OpenType support missing for "Standard Symbols PS", script 17
+qt.text.font.db: OpenType support missing for "Carlito", script 17
+qt.text.font.db: OpenType support missing for "Caladea", script 17
+qt.text.font.db: OpenType support missing for "C059", script 17
+qt.text.font.db: OpenType support missing for "Nimbus Mono PS", script 17
+qt.text.font.db: OpenType support missing for "Nimbus Roman", script 17
+qt.text.font.db: OpenType support missing for "P052", script 17
+qt.text.font.db: OpenType support missing for "Noto Mono", script 17
+qt.text.font.db: OpenType support missing for "Droid Sans Fallback", script 17
+qt.text.font.db: OpenType support missing for "Cantarell", script 17
+qt.text.font.db: OpenType support missing for "Symbola", script 17
+qt.text.font.db: OpenType support missing for "Liberation Sans Narrow", script 17
+qt.text.font.db: OpenType support missing for "League Spartan", script 17
+qt.text.font.db: OpenType support missing for "Courier Prime Sans", script 17
+qt.text.font.db: OpenType support missing for "Courier Prime", script 17
+qt.text.font.db: OpenType support missing for "URW Bookman", script 17
+qt.text.font.db: OpenType support missing for "Z003", script 17
+qt.text.font.db: OpenType support missing for "Noto Color Emoji", script 17
+qt.text.font.db: OpenType support missing for "", script 17
+qt.text.font.db: OpenType support missing for "", script 17
+qt.text.font.db: OpenType support missing for "", script 17
+qt.text.font.db: OpenType support missing for "", script 17
+qt.text.font.db: OpenType support missing for "", script 17
+qt.text.font.db: OpenType support missing for "", script 17
+qt.text.font.db: OpenType support missing for "", script 17
+qt.text.font.db: OpenType support missing for "", script 17
+qt.text.font.db: OpenType support missing for "", script 17
+qt.text.font.db: OpenType support missing for "", script 17
+qt.text.font.db: OpenType support missing for "", script 17
+qt.text.font.db: OpenType support missing for "", script 17
+qt.text.font.db: OpenType support missing for "", script 17
+qt.text.font.db: OpenType support missing for "", script 17
+qt.text.font.db: OpenType support missing for "", script 17
+qt.text.font.db: OpenType support missing for "", script 17
+qt.text.font.db: OpenType support missing for "", script 17
+qt.text.font.db: OpenType support missing for "", script 17
+qt.text.font.db: OpenType support missing for "", script 17
+qt.text.font.db: OpenType support missing for "", script 17
+qt.text.font.db: OpenType support missing for "", script 17
+qt.text.font.db: OpenType support missing for "", script 17
+qt.text.font.db: OpenType support missing for "", script 17
+qt.text.font.db: OpenType support missing for "", script 17
+qt.text.font.db: OpenType support missing for "", script 17
+qt.text.font.db: OpenType support missing for "", script 17
+qt.text.font.db: OpenType support missing for "", script 17
+qt.text.font.db: OpenType support missing for "", script 17
+qt.text.font.db: OpenType support missing for "DejaVu Sans", script 17
+qt.text.font.db: OpenType support missing for "Nimbus Sans", script 17
+qt.text.font.db: OpenType support missing for "URW Gothic", script 17
+qt.text.font.db: OpenType support missing for "Nimbus Sans Narrow", script 17
+qt.text.font.db: OpenType support missing for "FreeSans", script 17
+qt.text.font.db: OpenType support missing for "FreeSerif", script 17
+qt.text.font.db: OpenType support missing for "FreeMono", script 17
+qt.text.font.db: OpenType support missing for "Vazirmatn UI NL", script 17
+qt.text.font.db: OpenType support missing for "Fira Code", script 17
+qt.text.font.db: OpenType support missing for "FontAwesome", script 17
+qt.text.font.db: OpenType support missing for "Courier Prime Code", script 17
+qt.text.font.db: OpenType support missing for "DejaVu Math TeX Gyre", script 17
+qt.text.font.db: OpenType support missing for "DejaVu Sans Mono", script 17
+qt.text.font.db: OpenType support missing for "DejaVu Serif", script 17
+qt.text.font.db: OpenType support missing for "JetBrains Mono NL", script 17
+qt.text.font.db: OpenType support missing for "Liberation Mono", script 17
+qt.text.font.db: OpenType support missing for "Liberation Sans", script 17
+qt.text.font.db: OpenType support missing for "Liberation Serif", script 17
+qt.text.font.db: OpenType support missing for "Lato", script 17
+qt.text.font.db: OpenType support missing for "Noto Sans Mono", script 17
+qt.text.font.db: OpenType support missing for "Comic Neue", script 17
+qt.text.font.db: OpenType support missing for "D050000L", script 17
+qt.text.font.db: OpenType support missing for "Standard Symbols PS", script 17
+qt.text.font.db: OpenType support missing for "Carlito", script 17
+qt.text.font.db: OpenType support missing for "Open Sans", script 17
+qt.text.font.db: OpenType support missing for "Caladea", script 17
+qt.text.font.db: OpenType support missing for "C059", script 17
+qt.text.font.db: OpenType support missing for "Nimbus Mono PS", script 17
+qt.text.font.db: OpenType support missing for "Nimbus Roman", script 17
+qt.text.font.db: OpenType support missing for "P052", script 17
+qt.text.font.db: OpenType support missing for "Noto Mono", script 17
+qt.text.font.db: OpenType support missing for "Droid Sans Fallback", script 17
+qt.text.font.db: OpenType support missing for "Cantarell", script 17
+qt.text.font.db: OpenType support missing for "Symbola", script 17
+qt.text.font.db: OpenType support missing for "Liberation Sans Narrow", script 17
+qt.text.font.db: OpenType support missing for "League Spartan", script 17
+qt.text.font.db: OpenType support missing for "Courier Prime Sans", script 17
+qt.text.font.db: OpenType support missing for "Courier Prime", script 17
+qt.text.font.db: OpenType support missing for "URW Bookman", script 17
+qt.text.font.db: OpenType support missing for "Z003", script 17
+qt.text.font.db: OpenType support missing for "Noto Color Emoji", script 17
+qt.text.font.db: OpenType support missing for "", script 17
+qt.text.font.db: OpenType support missing for "", script 17
+qt.text.font.db: OpenType support missing for "", script 17
+qt.text.font.db: OpenType support missing for "", script 17
+qt.text.font.db: OpenType support missing for "", script 17
+qt.text.font.db: OpenType support missing for "", script 17
+qt.text.font.db: OpenType support missing for "", script 17
+qt.text.font.db: OpenType support missing for "", script 17
+qt.text.font.db: OpenType support missing for "", script 17
+qt.text.font.db: OpenType support missing for "", script 17
+qt.text.font.db: OpenType support missing for "", script 17
+qt.text.font.db: OpenType support missing for "", script 17
+qt.text.font.db: OpenType support missing for "", script 17
+qt.text.font.db: OpenType support missing for "", script 17
+qt.text.font.db: OpenType support missing for "", script 17
+qt.text.font.db: OpenType support missing for "", script 17
+qt.text.font.db: OpenType support missing for "", script 17
+qt.text.font.db: OpenType support missing for "", script 17
+qt.text.font.db: OpenType support missing for "", script 17
+qt.text.font.db: OpenType support missing for "", script 17
+qt.text.font.db: OpenType support missing for "", script 17
+qt.text.font.db: OpenType support missing for "", script 17
+qt.text.font.db: OpenType support missing for "", script 17
+qt.text.font.db: OpenType support missing for "", script 17
+qt.text.font.db: OpenType support missing for "", script 17
+qt.text.font.db: OpenType support missing for "", script 17
+qt.text.font.db: OpenType support missing for "", script 17
+qt.text.font.db: OpenType support missing for "", script 17
+qt.text.font.db: OpenType support missing for "", script 17
+[libvpx-vp9 @ 0x55fb469f0dc0] v1.14.1
+[libvpx-vp9 @ 0x55fb469f0dc0] v1.14.1
+[libvpx-vp9 @ 0x55fb44f76800] v1.14.1
+[libvpx-vp9 @ 0x55fb486a0600] v1.14.1
+[libvpx-vp9 @ 0x55fb44f76800] v1.14.1
+[libvpx-vp9 @ 0x55fb486a0600] v1.14.1
+[libvpx-vp9 @ 0x55fb43f83bc0] v1.14.1
+[libvpx-vp9 @ 0x55fb43f83bc0] v1.14.1
+[libvpx-vp9 @ 0x55fb43c7edc0] v1.14.1
+[libvpx-vp9 @ 0x55fb45085b40] v1.14.1
+[libvpx-vp9 @ 0x55fb47721000] v1.14.1
+[libvpx-vp9 @ 0x55fb4469db40] v1.14.1
+[libvpx-vp9 @ 0x55fb49a34e80] v1.14.1
+[libvpx-vp9 @ 0x55fb45085b40] v1.14.1
+[libvpx-vp9 @ 0x55fb47721000] v1.14.1
+[libvpx-vp9 @ 0x55fb4b191400] v1.14.1
+[libvpx-vp9 @ 0x55fb43c7edc0] v1.14.1
+[libvpx-vp9 @ 0x55fb4583d240] v1.14.1
+[libvpx-vp9 @ 0x55fb48342380] v1.14.1
+[libvpx-vp9 @ 0x55fb45ec0a00] v1.14.1
+[libvpx-vp9 @ 0x55fb4469db40] v1.14.1
+[libvpx-vp9 @ 0x55fb49a34e80] v1.14.1
+[libvpx-vp9 @ 0x55fb473db600] v1.14.1
+[libvpx-vp9 @ 0x55fb4444eb40] v1.14.1
+[libvpx-vp9 @ 0x55fb48342380] v1.14.1
+[libvpx-vp9 @ 0x55fb4b191400] v1.14.1
+[libvpx-vp9 @ 0x55fb4637c280] v1.14.1
+[libvpx-vp9 @ 0x55fb4583d240] v1.14.1
+[libvpx-vp9 @ 0x55fb45ec0a00] v1.14.1
+[libvpx-vp9 @ 0x55fb4777e100] v1.14.1
+[libvpx-vp9 @ 0x55fb4444eb40] v1.14.1
+[libvpx-vp9 @ 0x55fb473db600] v1.14.1
+[libvpx-vp9 @ 0x55fb4825ccc0] v1.14.1
+[libvpx-vp9 @ 0x55fb4637c280] v1.14.1
+[libvpx-vp9 @ 0x55fb451e78c0] v1.14.1
+[libvpx-vp9 @ 0x55fb43c38d80] v1.14.1
+[libvpx-vp9 @ 0x55fb4777e100] v1.14.1
+[libvpx-vp9 @ 0x55fb43c38d80] v1.14.1
+[libvpx-vp9 @ 0x55fb4825ccc0] v1.14.1
+[libvpx-vp9 @ 0x55fb451e78c0] v1.14.1
+[libvpx-vp9 @ 0x55fb488ff540] v1.14.1
+[libvpx-vp9 @ 0x55fb4a51dfc0] v1.14.1
+[libvpx-vp9 @ 0x55fb488ff540] v1.14.1
+[libvpx-vp9 @ 0x55fb4a51dfc0] v1.14.1
+[libvpx-vp9 @ 0x55fb48a4c5c0] v1.14.1
+[libvpx-vp9 @ 0x55fb44efd8c0] v1.14.1
+[libvpx-vp9 @ 0x55fb43d8f480] v1.14.1
+[libvpx-vp9 @ 0x55fb4b9de5c0] v1.14.1
+[libvpx-vp9 @ 0x55fb48a4c5c0] v1.14.1
+[libvpx-vp9 @ 0x55fb4b9de1c0] v1.14.1
+[libvpx-vp9 @ 0x55fb44efd8c0] v1.14.1
+[libvpx-vp9 @ 0x55fb43d8f480] v1.14.1
+[libvpx-vp9 @ 0x55fb4b9de5c0] v1.14.1
+[libvpx-vp9 @ 0x55fb44df5100] v1.14.1
+[libvpx-vp9 @ 0x55fb4c520840] v1.14.1
+[libvpx-vp9 @ 0x55fb4b9de1c0] v1.14.1
+[libvpx-vp9 @ 0x55fb4c520840] v1.14.1
+[libvpx-vp9 @ 0x55fb44df5100] v1.14.1
+[libvpx-vp9 @ 0x55fb47ac8300] v1.14.1
+[libvpx-vp9 @ 0x55fb489e0680] v1.14.1
+[libvpx-vp9 @ 0x55fb41962580] v1.14.1
+[libvpx-vp9 @ 0x55fb4d09d600] v1.14.1
+[libvpx-vp9 @ 0x55fb47ac8300] v1.14.1
+[libvpx-vp9 @ 0x55fb489e0680] v1.14.1
+[libvpx-vp9 @ 0x55fb41962580] v1.14.1
+[libvpx-vp9 @ 0x55fb4d09d600] v1.14.1
+[libvpx-vp9 @ 0x55fb4d8810c0] v1.14.1
+[libvpx-vp9 @ 0x55fb473daac0] v1.14.1
+[libvpx-vp9 @ 0x55fb48b24200] v1.14.1
+[libvpx-vp9 @ 0x55fb4d8810c0] v1.14.1
+[libvpx-vp9 @ 0x55fb48b24200] v1.14.1
+[libvpx-vp9 @ 0x55fb473daac0] v1.14.1
+[libvpx-vp9 @ 0x55fb4e039b80] v1.14.1
+[libvpx-vp9 @ 0x55fb4e2fdf40] v1.14.1
+[libvpx-vp9 @ 0x55fb4e039b80] v1.14.1
+[libvpx-vp9 @ 0x55fb48a5dc00] v1.14.1
+[libvpx-vp9 @ 0x55fb43c72bc0] v1.14.1
+[libvpx-vp9 @ 0x55fb4e2fdf40] v1.14.1
+[libvpx-vp9 @ 0x55fb4e301900] v1.14.1
+[libvpx-vp9 @ 0x55fb43c72bc0] v1.14.1
+[libvpx-vp9 @ 0x55fb4e301900] v1.14.1
+[libvpx-vp9 @ 0x55fb48a5dc00] v1.14.1
+[libvpx-vp9 @ 0x55fb4e302bc0] v1.14.1
+[libvpx-vp9 @ 0x55fb4e302bc0] v1.14.1
+[libvpx-vp9 @ 0x55fb4532a740] v1.14.1
+[libvpx-vp9 @ 0x55fb4532a740] v1.14.1
+[libvpx-vp9 @ 0x55fb44c96140] v1.14.1
+[libvpx-vp9 @ 0x55fb4f057dc0] v1.14.1
+[libvpx-vp9 @ 0x55fb4aa0c780] v1.14.1
+[libvpx-vp9 @ 0x55fb44c96140] v1.14.1
+[libvpx-vp9 @ 0x55fb4f057dc0] v1.14.1
+[libvpx-vp9 @ 0x55fb4aa0c780] v1.14.1
+[libvpx-vp9 @ 0x55fb4ba3a580] v1.14.1
+[libvpx-vp9 @ 0x55fb453a0740] v1.14.1
+[libvpx-vp9 @ 0x55fb4ba3a580] v1.14.1
+[libvpx-vp9 @ 0x55fb453a0740] v1.14.1
+[libvpx-vp9 @ 0x55fb4c29c040] v1.14.1
+[libvpx-vp9 @ 0x55fb4c29c040] v1.14.1
+[libvpx-vp9 @ 0x55fb4c2a2740] v1.14.1
+[libvpx-vp9 @ 0x55fb4c2a2740] v1.14.1
+info: view with bitmask: 1
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0000
+info: Unfocusing client at: client.Client@7f56c1aa0400
+info: showHide called on client.Client@7f56c1aa0000 (show)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: showHide called on client.Client@7f56c1aa0200 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 10
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0200
+info: Unfocusing client at: client.Client@7f56c1aa0000
+info: showHide called on client.Client@7f56c1aa0200 (show)
+info: showHide called on client.Client@7f56c1aa0000 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 1
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0000
+info: Unfocusing client at: client.Client@7f56c1aa0200
+info: showHide called on client.Client@7f56c1aa0000 (show)
+info: showHide called on client.Client@7f56c1aa0200 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 10
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0200
+info: Unfocusing client at: client.Client@7f56c1aa0000
+info: showHide called on client.Client@7f56c1aa0200 (show)
+info: showHide called on client.Client@7f56c1aa0000 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 100
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0400
+info: Unfocusing client at: client.Client@7f56c1aa0200
+info: showHide called on client.Client@7f56c1aa0400 (show)
+info: showHide called on client.Client@7f56c1aa0200 (hide)
+info: showHide called on client.Client@7f56c1aa0000 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+[libvpx-vp9 @ 0x55fb486edd40] v1.14.1
+[libvpx-vp9 @ 0x55fb486edd40] v1.14.1
+[libvpx-vp9 @ 0x55fb442714c0] v1.14.1
+[libvpx-vp9 @ 0x55fb442714c0] v1.14.1
+[libvpx-vp9 @ 0x55fb43d8f480] v1.14.1
+[libvpx-vp9 @ 0x55fb4ba3a580] v1.14.1
+[libvpx-vp9 @ 0x55fb4a51dfc0] v1.14.1
+[libvpx-vp9 @ 0x55fb48704980] v1.14.1
+[libvpx-vp9 @ 0x55fb4b9de1c0] v1.14.1
+[libvpx-vp9 @ 0x55fb4d8810c0] v1.14.1
+[libvpx-vp9 @ 0x55fb4738ff00] v1.14.1
+[libvpx-vp9 @ 0x55fb45ec0a00] v1.14.1
+[libvpx-vp9 @ 0x55fb4ba3a580] v1.14.1
+[libvpx-vp9 @ 0x55fb4a51dfc0] v1.14.1
+[libvpx-vp9 @ 0x55fb43d8f480] v1.14.1
+[libvpx-vp9 @ 0x55fb4d8810c0] v1.14.1
+[libvpx-vp9 @ 0x55fb48704980] v1.14.1
+[libvpx-vp9 @ 0x55fb4738ff00] v1.14.1
+[libvpx-vp9 @ 0x55fb4b9de1c0] v1.14.1
+[libvpx-vp9 @ 0x55fb4b9de5c0] v1.14.1
+[libvpx-vp9 @ 0x55fb45ec0a00] v1.14.1
+[libvpx-vp9 @ 0x55fb48a5dc00] v1.14.1
+[libvpx-vp9 @ 0x55fb442a6f00] v1.14.1
+[libvpx-vp9 @ 0x55fb47841b80] v1.14.1
+[libvpx-vp9 @ 0x55fb4c520840] v1.14.1
+[libvpx-vp9 @ 0x55fb488ff540] v1.14.1
+[libvpx-vp9 @ 0x55fb48a5dc00] v1.14.1
+[libvpx-vp9 @ 0x55fb489e0680] v1.14.1
+[libvpx-vp9 @ 0x55fb43c38d80] v1.14.1
+[libvpx-vp9 @ 0x55fb4b9de5c0] v1.14.1
+[libvpx-vp9 @ 0x55fb442a6f00] v1.14.1
+[libvpx-vp9 @ 0x55fb47841b80] v1.14.1
+[libvpx-vp9 @ 0x55fb488ff540] v1.14.1
+[libvpx-vp9 @ 0x55fb4c520840] v1.14.1
+[libvpx-vp9 @ 0x55fb489e0680] v1.14.1
+[libvpx-vp9 @ 0x55fb43c38d80] v1.14.1
+[libvpx-vp9 @ 0x55fb4d09d600] v1.14.1
+[libvpx-vp9 @ 0x55fb4b191400] v1.14.1
+[libvpx-vp9 @ 0x55fb48a4c5c0] v1.14.1
+[libvpx-vp9 @ 0x55fb44efd8c0] v1.14.1
+[libvpx-vp9 @ 0x55fb4b191400] v1.14.1
+[libvpx-vp9 @ 0x55fb4d09d600] v1.14.1
+[libvpx-vp9 @ 0x55fb48a4c5c0] v1.14.1
+[libvpx-vp9 @ 0x55fb44efd8c0] v1.14.1
+[libvpx-vp9 @ 0x55fb4777e100] v1.14.1
+[libvpx-vp9 @ 0x55fb4e302bc0] v1.14.1
+[libvpx-vp9 @ 0x55fb44df5100] v1.14.1
+[libvpx-vp9 @ 0x55fb4532a740] v1.14.1
+[libvpx-vp9 @ 0x55fb48b24200] v1.14.1
+[libvpx-vp9 @ 0x55fb4777e100] v1.14.1
+[libvpx-vp9 @ 0x55fb4e302bc0] v1.14.1
+[libvpx-vp9 @ 0x55fb44df5100] v1.14.1
+[libvpx-vp9 @ 0x55fb48b24200] v1.14.1
+[libvpx-vp9 @ 0x55fb4532a740] v1.14.1
+[libvpx-vp9 @ 0x55fb47721000] v1.14.1
+[libvpx-vp9 @ 0x55fb49a34e80] v1.14.1
+[libvpx-vp9 @ 0x55fb47721000] v1.14.1
+[libvpx-vp9 @ 0x55fb45085b40] v1.14.1
+[libvpx-vp9 @ 0x55fb4469db40] v1.14.1
+[libvpx-vp9 @ 0x55fb4aa0c780] v1.14.1
+[libvpx-vp9 @ 0x55fb49a34e80] v1.14.1
+[libvpx-vp9 @ 0x55fb473db600] v1.14.1
+[libvpx-vp9 @ 0x55fb45085b40] v1.14.1
+[libvpx-vp9 @ 0x55fb4469db40] v1.14.1
+[libvpx-vp9 @ 0x55fb4aa0c780] v1.14.1
+[libvpx-vp9 @ 0x55fb4825ccc0] v1.14.1
+[libvpx-vp9 @ 0x55fb486a0600] v1.14.1
+[libvpx-vp9 @ 0x55fb48342380] v1.14.1
+[libvpx-vp9 @ 0x55fb4637c280] v1.14.1
+[libvpx-vp9 @ 0x55fb43c7edc0] v1.14.1
+[libvpx-vp9 @ 0x55fb473db600] v1.14.1
+[libvpx-vp9 @ 0x55fb48342380] v1.14.1
+[libvpx-vp9 @ 0x55fb43c7edc0] v1.14.1
+[libvpx-vp9 @ 0x55fb486a0600] v1.14.1
+[libvpx-vp9 @ 0x55fb489eb600] v1.14.1
+[libvpx-vp9 @ 0x55fb4637c280] v1.14.1
+[libvpx-vp9 @ 0x55fb4825ccc0] v1.14.1
+[libvpx-vp9 @ 0x55fb43f83bc0] v1.14.1
+[libvpx-vp9 @ 0x55fb489eb600] v1.14.1
+[libvpx-vp9 @ 0x55fb4a7eeb00] v1.14.1
+[libvpx-vp9 @ 0x55fb43f83bc0] v1.14.1
+[libvpx-vp9 @ 0x55fb469f0dc0] v1.14.1
+[libvpx-vp9 @ 0x55fb4a7eeb00] v1.14.1
+[libvpx-vp9 @ 0x55fb469f0dc0] v1.14.1
+[libvpx-vp9 @ 0x55fb44de8d80] v1.14.1
+[libvpx-vp9 @ 0x55fb44f76800] v1.14.1
+[libvpx-vp9 @ 0x55fb44de8d80] v1.14.1
+[libvpx-vp9 @ 0x55fb44f76800] v1.14.1
+[libvpx-vp9 @ 0x55fb4583d240] v1.14.1
+[libvpx-vp9 @ 0x55fb4583d240] v1.14.1
+[libvpx-vp9 @ 0x55fb451e78c0] v1.14.1
+[libvpx-vp9 @ 0x55fb451e78c0] v1.14.1
+[libvpx-vp9 @ 0x55fb4536a300] v1.14.1
+[libvpx-vp9 @ 0x55fb4c785380] v1.14.1
+[libvpx-vp9 @ 0x55fb4536a300] v1.14.1
+[libvpx-vp9 @ 0x55fb44d8b640] v1.14.1
+[libvpx-vp9 @ 0x55fb4c785380] v1.14.1
+[libvpx-vp9 @ 0x55fb44d8b640] v1.14.1
+[libvpx-vp9 @ 0x55fb44c63340] v1.14.1
+[libvpx-vp9 @ 0x55fb44c63340] v1.14.1
+[libvpx-vp9 @ 0x55fb4670c800] v1.14.1
+[libvpx-vp9 @ 0x55fb4f488800] v1.14.1
+[libvpx-vp9 @ 0x55fb4f488800] v1.14.1
+[libvpx-vp9 @ 0x55fb4670c800] v1.14.1
+[libvpx-vp9 @ 0x55fb48748480] v1.14.1
+[libvpx-vp9 @ 0x55fb45a84680] v1.14.1
+[libvpx-vp9 @ 0x55fb48748480] v1.14.1
+[libvpx-vp9 @ 0x55fb45a84680] v1.14.1
+info: view with bitmask: 10
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0200
+info: Unfocusing client at: client.Client@7f56c1aa0400
+info: showHide called on client.Client@7f56c1aa0200 (show)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: showHide called on client.Client@7f56c1aa0000 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 100
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0400
+info: Unfocusing client at: client.Client@7f56c1aa0200
+info: showHide called on client.Client@7f56c1aa0400 (show)
+info: showHide called on client.Client@7f56c1aa0200 (hide)
+info: showHide called on client.Client@7f56c1aa0000 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+[libvpx-vp9 @ 0x55fb40c0a800] v1.14.1
+[libvpx-vp9 @ 0x55fb40c0a800] v1.14.1
+[libvpx-vp9 @ 0x55fb416ce0c0] v1.14.1
+[libvpx-vp9 @ 0x55fb416ce0c0] v1.14.1
+[libvpx-vp9 @ 0x55fb48748480] v1.14.1
+[libvpx-vp9 @ 0x55fb43686800] v1.14.1
+[libvpx-vp9 @ 0x55fb48748480] v1.14.1
+[libvpx-vp9 @ 0x55fb4583d240] v1.14.1
+[libvpx-vp9 @ 0x55fb43686800] v1.14.1
+[libvpx-vp9 @ 0x55fb43e99300] v1.14.1
+[libvpx-vp9 @ 0x55fb4583d240] v1.14.1
+[libvpx-vp9 @ 0x55fb43e99300] v1.14.1
+info: Start managing window 14680286 (mapRequest)
+info: Created client client.Client@7f56c1aa0a00
+info: Unfocusing client at: client.Client@7f56c1aa0400
+info: showHide called on client.Client@7f56c1aa0a00 (show)
+info: showHide called on client.Client@7f56c1aa0400 (show)
+info: showHide called on client.Client@7f56c1aa0200 (hide)
+info: showHide called on client.Client@7f56c1aa0000 (hide)
+info: tile with 2 clients, with mw=960
+debug: n=2, i=0, ty=0, my=0
+debug: n=2, i=1, ty=0, my=0
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0a00
+warning: Deallocate client: client.Client@7f56c1aa0a00 (will arrange monitor monitor.Monitor@7f56c1b00000)
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0400
+info: showHide called on client.Client@7f56c1aa0400 (show)
+info: showHide called on client.Client@7f56c1aa0200 (hide)
+info: showHide called on client.Client@7f56c1aa0000 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+[libvpx-vp9 @ 0x55fb48748480] v1.14.1
+[libvpx-vp9 @ 0x55fb48748480] v1.14.1
+[libvpx-vp9 @ 0x55fb4583d240] v1.14.1
+[libvpx-vp9 @ 0x55fb4583d240] v1.14.1
+info: Start managing window 14680286 (mapRequest)
+info: Created client client.Client@7f56c1aa0c00
+info: Unfocusing client at: client.Client@7f56c1aa0400
+info: showHide called on client.Client@7f56c1aa0c00 (show)
+info: showHide called on client.Client@7f56c1aa0400 (show)
+info: showHide called on client.Client@7f56c1aa0200 (hide)
+info: showHide called on client.Client@7f56c1aa0000 (hide)
+info: tile with 2 clients, with mw=960
+debug: n=2, i=0, ty=0, my=0
+debug: n=2, i=1, ty=0, my=0
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0c00
+warning: Deallocate client: client.Client@7f56c1aa0c00 (will arrange monitor monitor.Monitor@7f56c1b00000)
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0400
+info: showHide called on client.Client@7f56c1aa0400 (show)
+info: showHide called on client.Client@7f56c1aa0200 (hide)
+info: showHide called on client.Client@7f56c1aa0000 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 1
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0000
+info: Unfocusing client at: client.Client@7f56c1aa0400
+info: showHide called on client.Client@7f56c1aa0000 (show)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: showHide called on client.Client@7f56c1aa0200 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 10
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0200
+info: Unfocusing client at: client.Client@7f56c1aa0000
+info: showHide called on client.Client@7f56c1aa0200 (show)
+info: showHide called on client.Client@7f56c1aa0000 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 1
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0000
+info: Unfocusing client at: client.Client@7f56c1aa0200
+info: showHide called on client.Client@7f56c1aa0000 (show)
+info: showHide called on client.Client@7f56c1aa0200 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+[8918.309] [PARSE ERROR] Escape codes to resize text area are not supported
+[8918.309] [PARSE ERROR] Escape codes to resize text area are not supported
+info: view with bitmask: 10
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0200
+info: Unfocusing client at: client.Client@7f56c1aa0000
+info: showHide called on client.Client@7f56c1aa0200 (show)
+info: showHide called on client.Client@7f56c1aa0000 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 1
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0000
+info: Unfocusing client at: client.Client@7f56c1aa0200
+info: showHide called on client.Client@7f56c1aa0000 (show)
+info: showHide called on client.Client@7f56c1aa0200 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 10
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0200
+info: Unfocusing client at: client.Client@7f56c1aa0000
+info: showHide called on client.Client@7f56c1aa0200 (show)
+info: showHide called on client.Client@7f56c1aa0000 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 1
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0000
+info: Unfocusing client at: client.Client@7f56c1aa0200
+info: showHide called on client.Client@7f56c1aa0000 (show)
+info: showHide called on client.Client@7f56c1aa0200 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 10
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0200
+info: Unfocusing client at: client.Client@7f56c1aa0000
+info: showHide called on client.Client@7f56c1aa0200 (show)
+info: showHide called on client.Client@7f56c1aa0000 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 1
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0000
+info: Unfocusing client at: client.Client@7f56c1aa0200
+info: showHide called on client.Client@7f56c1aa0000 (show)
+info: showHide called on client.Client@7f56c1aa0200 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 10
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0200
+info: Unfocusing client at: client.Client@7f56c1aa0000
+info: showHide called on client.Client@7f56c1aa0200 (show)
+info: showHide called on client.Client@7f56c1aa0000 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 1
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0000
+info: Unfocusing client at: client.Client@7f56c1aa0200
+info: showHide called on client.Client@7f56c1aa0000 (show)
+info: showHide called on client.Client@7f56c1aa0200 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 10
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0200
+info: Unfocusing client at: client.Client@7f56c1aa0000
+info: showHide called on client.Client@7f56c1aa0200 (show)
+info: showHide called on client.Client@7f56c1aa0000 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 1
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0000
+info: Unfocusing client at: client.Client@7f56c1aa0200
+info: showHide called on client.Client@7f56c1aa0000 (show)
+info: showHide called on client.Client@7f56c1aa0200 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 10
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0200
+info: Unfocusing client at: client.Client@7f56c1aa0000
+info: showHide called on client.Client@7f56c1aa0200 (show)
+info: showHide called on client.Client@7f56c1aa0000 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 1
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0000
+info: Unfocusing client at: client.Client@7f56c1aa0200
+info: showHide called on client.Client@7f56c1aa0000 (show)
+info: showHide called on client.Client@7f56c1aa0200 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 10
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0200
+info: Unfocusing client at: client.Client@7f56c1aa0000
+info: showHide called on client.Client@7f56c1aa0200 (show)
+info: showHide called on client.Client@7f56c1aa0000 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 1
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0000
+info: Unfocusing client at: client.Client@7f56c1aa0200
+info: showHide called on client.Client@7f56c1aa0000 (show)
+info: showHide called on client.Client@7f56c1aa0200 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 10
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0200
+info: Unfocusing client at: client.Client@7f56c1aa0000
+info: showHide called on client.Client@7f56c1aa0200 (show)
+info: showHide called on client.Client@7f56c1aa0000 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 1
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0000
+info: Unfocusing client at: client.Client@7f56c1aa0200
+info: showHide called on client.Client@7f56c1aa0000 (show)
+info: showHide called on client.Client@7f56c1aa0200 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 10
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0200
+info: Unfocusing client at: client.Client@7f56c1aa0000
+info: showHide called on client.Client@7f56c1aa0200 (show)
+info: showHide called on client.Client@7f56c1aa0000 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 1
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0000
+info: Unfocusing client at: client.Client@7f56c1aa0200
+info: showHide called on client.Client@7f56c1aa0000 (show)
+info: showHide called on client.Client@7f56c1aa0200 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+[9087.311] [PARSE ERROR] Escape codes to resize text area are not supported
+[9105.700] [PARSE ERROR] Escape codes to resize text area are not supported
+[9105.700] [PARSE ERROR] Escape codes to resize text area are not supported
+info: view with bitmask: 10
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0200
+info: Unfocusing client at: client.Client@7f56c1aa0000
+info: showHide called on client.Client@7f56c1aa0200 (show)
+info: showHide called on client.Client@7f56c1aa0000 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 1
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0000
+info: Unfocusing client at: client.Client@7f56c1aa0200
+info: showHide called on client.Client@7f56c1aa0000 (show)
+info: showHide called on client.Client@7f56c1aa0200 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 10
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0200
+info: Unfocusing client at: client.Client@7f56c1aa0000
+info: showHide called on client.Client@7f56c1aa0200 (show)
+info: showHide called on client.Client@7f56c1aa0000 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 1
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0000
+info: Unfocusing client at: client.Client@7f56c1aa0200
+info: showHide called on client.Client@7f56c1aa0000 (show)
+info: showHide called on client.Client@7f56c1aa0200 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+[9179.377] [PARSE ERROR] Escape codes to resize text area are not supported
+info: view with bitmask: 10
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0200
+info: Unfocusing client at: client.Client@7f56c1aa0000
+info: showHide called on client.Client@7f56c1aa0200 (show)
+info: showHide called on client.Client@7f56c1aa0000 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 1
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0000
+info: Unfocusing client at: client.Client@7f56c1aa0200
+info: showHide called on client.Client@7f56c1aa0000 (show)
+info: showHide called on client.Client@7f56c1aa0200 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 10
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0200
+info: Unfocusing client at: client.Client@7f56c1aa0000
+info: showHide called on client.Client@7f56c1aa0200 (show)
+info: showHide called on client.Client@7f56c1aa0000 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 1
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0000
+info: Unfocusing client at: client.Client@7f56c1aa0200
+info: showHide called on client.Client@7f56c1aa0000 (show)
+info: showHide called on client.Client@7f56c1aa0200 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+[9271.900] [PARSE ERROR] Escape codes to resize text area are not supported
+[9271.901] [PARSE ERROR] Escape codes to resize text area are not supported
+[9272.784] [PARSE ERROR] Escape codes to resize text area are not supported
+[9278.592] [PARSE ERROR] Escape codes to resize text area are not supported
+[9278.592] [PARSE ERROR] Escape codes to resize text area are not supported
+info: view with bitmask: 10
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0200
+info: Unfocusing client at: client.Client@7f56c1aa0000
+info: showHide called on client.Client@7f56c1aa0200 (show)
+info: showHide called on client.Client@7f56c1aa0000 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 1
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0000
+info: Unfocusing client at: client.Client@7f56c1aa0200
+info: showHide called on client.Client@7f56c1aa0000 (show)
+info: showHide called on client.Client@7f56c1aa0200 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+[9321.791] [PARSE ERROR] Escape codes to resize text area are not supported
+info: view with bitmask: 10
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0200
+info: Unfocusing client at: client.Client@7f56c1aa0000
+info: showHide called on client.Client@7f56c1aa0200 (show)
+info: showHide called on client.Client@7f56c1aa0000 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 1
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0000
+info: Unfocusing client at: client.Client@7f56c1aa0200
+info: showHide called on client.Client@7f56c1aa0000 (show)
+info: showHide called on client.Client@7f56c1aa0200 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 10
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0200
+info: Unfocusing client at: client.Client@7f56c1aa0000
+info: showHide called on client.Client@7f56c1aa0200 (show)
+info: showHide called on client.Client@7f56c1aa0000 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 1
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0000
+info: Unfocusing client at: client.Client@7f56c1aa0200
+info: showHide called on client.Client@7f56c1aa0000 (show)
+info: showHide called on client.Client@7f56c1aa0200 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+[9351.991] [PARSE ERROR] Escape codes to resize text area are not supported
+[9351.991] [PARSE ERROR] Escape codes to resize text area are not supported
+[9353.987] [PARSE ERROR] Escape codes to resize text area are not supported
+[9363.675] [PARSE ERROR] Escape codes to resize text area are not supported
+[9363.675] [PARSE ERROR] Escape codes to resize text area are not supported
+[9368.969] [PARSE ERROR] Escape codes to resize text area are not supported
+info: view with bitmask: 10
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0200
+info: Unfocusing client at: client.Client@7f56c1aa0000
+info: showHide called on client.Client@7f56c1aa0200 (show)
+info: showHide called on client.Client@7f56c1aa0000 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 1
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0000
+info: Unfocusing client at: client.Client@7f56c1aa0200
+info: showHide called on client.Client@7f56c1aa0000 (show)
+info: showHide called on client.Client@7f56c1aa0200 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+[9412.611] [PARSE ERROR] Escape codes to resize text area are not supported
+[9441.388] [PARSE ERROR] Escape codes to resize text area are not supported
+[9441.388] [PARSE ERROR] Escape codes to resize text area are not supported
+[9475.229] [PARSE ERROR] Escape codes to resize text area are not supported
+[9508.228] [PARSE ERROR] Escape codes to resize text area are not supported
+[9508.229] [PARSE ERROR] Escape codes to resize text area are not supported
+[9510.300] [PARSE ERROR] Escape codes to resize text area are not supported
+info: view with bitmask: 10
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0200
+info: Unfocusing client at: client.Client@7f56c1aa0000
+info: showHide called on client.Client@7f56c1aa0200 (show)
+info: showHide called on client.Client@7f56c1aa0000 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 1
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0000
+info: Unfocusing client at: client.Client@7f56c1aa0200
+info: showHide called on client.Client@7f56c1aa0000 (show)
+info: showHide called on client.Client@7f56c1aa0200 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+[9543.694] [PARSE ERROR] Escape codes to resize text area are not supported
+[9543.694] [PARSE ERROR] Escape codes to resize text area are not supported
+[9553.315] [PARSE ERROR] Escape codes to resize text area are not supported
+[9554.494] [PARSE ERROR] Escape codes to resize text area are not supported
+[9554.494] [PARSE ERROR] Escape codes to resize text area are not supported
+[9560.564] [PARSE ERROR] Escape codes to resize text area are not supported
+[9571.342] [PARSE ERROR] Escape codes to resize text area are not supported
+[9571.342] [PARSE ERROR] Escape codes to resize text area are not supported
+[9581.447] [PARSE ERROR] Escape codes to resize text area are not supported
+[9588.272] [PARSE ERROR] Escape codes to resize text area are not supported
+[9588.272] [PARSE ERROR] Escape codes to resize text area are not supported
+[9594.517] [PARSE ERROR] Escape codes to resize text area are not supported
+info: view with bitmask: 10
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0200
+info: Unfocusing client at: client.Client@7f56c1aa0000
+info: showHide called on client.Client@7f56c1aa0200 (show)
+info: showHide called on client.Client@7f56c1aa0000 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 1
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0000
+info: Unfocusing client at: client.Client@7f56c1aa0200
+info: showHide called on client.Client@7f56c1aa0000 (show)
+info: showHide called on client.Client@7f56c1aa0200 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+[9635.676] [PARSE ERROR] Escape codes to resize text area are not supported
+[9635.676] [PARSE ERROR] Escape codes to resize text area are not supported
+info: view with bitmask: 10
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0200
+info: Unfocusing client at: client.Client@7f56c1aa0000
+info: showHide called on client.Client@7f56c1aa0200 (show)
+info: showHide called on client.Client@7f56c1aa0000 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 1
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0000
+info: Unfocusing client at: client.Client@7f56c1aa0200
+info: showHide called on client.Client@7f56c1aa0000 (show)
+info: showHide called on client.Client@7f56c1aa0200 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 10
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0200
+info: Unfocusing client at: client.Client@7f56c1aa0000
+info: showHide called on client.Client@7f56c1aa0200 (show)
+info: showHide called on client.Client@7f56c1aa0000 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 1
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0000
+info: Unfocusing client at: client.Client@7f56c1aa0200
+info: showHide called on client.Client@7f56c1aa0000 (show)
+info: showHide called on client.Client@7f56c1aa0200 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+[9725.651] [PARSE ERROR] Escape codes to resize text area are not supported
+info: view with bitmask: 10
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0200
+info: Unfocusing client at: client.Client@7f56c1aa0000
+info: showHide called on client.Client@7f56c1aa0200 (show)
+info: showHide called on client.Client@7f56c1aa0000 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 1
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0000
+info: Unfocusing client at: client.Client@7f56c1aa0200
+info: showHide called on client.Client@7f56c1aa0000 (show)
+info: showHide called on client.Client@7f56c1aa0200 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 10
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0200
+info: Unfocusing client at: client.Client@7f56c1aa0000
+info: showHide called on client.Client@7f56c1aa0200 (show)
+info: showHide called on client.Client@7f56c1aa0000 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 1
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0000
+info: Unfocusing client at: client.Client@7f56c1aa0200
+info: showHide called on client.Client@7f56c1aa0000 (show)
+info: showHide called on client.Client@7f56c1aa0200 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 10
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0200
+info: Unfocusing client at: client.Client@7f56c1aa0000
+info: showHide called on client.Client@7f56c1aa0200 (show)
+info: showHide called on client.Client@7f56c1aa0000 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 1
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0000
+info: Unfocusing client at: client.Client@7f56c1aa0200
+info: showHide called on client.Client@7f56c1aa0000 (show)
+info: showHide called on client.Client@7f56c1aa0200 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+[9772.140] [PARSE ERROR] Escape codes to resize text area are not supported
+[9772.140] [PARSE ERROR] Escape codes to resize text area are not supported
+[9782.455] [PARSE ERROR] Escape codes to resize text area are not supported
+info: view with bitmask: 10
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0200
+info: Unfocusing client at: client.Client@7f56c1aa0000
+info: showHide called on client.Client@7f56c1aa0200 (show)
+info: showHide called on client.Client@7f56c1aa0000 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 1
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0000
+info: Unfocusing client at: client.Client@7f56c1aa0200
+info: showHide called on client.Client@7f56c1aa0000 (show)
+info: showHide called on client.Client@7f56c1aa0200 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 10
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0200
+info: Unfocusing client at: client.Client@7f56c1aa0000
+info: showHide called on client.Client@7f56c1aa0200 (show)
+info: showHide called on client.Client@7f56c1aa0000 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: Start managing window 8389160 (mapRequest)
+info: Created client client.Client@7f56c1aa0e00
+info: Unfocusing client at: client.Client@7f56c1aa0200
+info: showHide called on client.Client@7f56c1aa0e00 (show)
+info: showHide called on client.Client@7f56c1aa0200 (show)
+info: showHide called on client.Client@7f56c1aa0000 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 2 clients, with mw=960
+debug: n=2, i=0, ty=0, my=0
+debug: n=2, i=1, ty=0, my=0
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0e00
+warning: Deallocate client: client.Client@7f56c1aa0e00 (will arrange monitor monitor.Monitor@7f56c1b00000)
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0200
+info: showHide called on client.Client@7f56c1aa0200 (show)
+info: showHide called on client.Client@7f56c1aa0000 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 1
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0000
+info: Unfocusing client at: client.Client@7f56c1aa0200
+info: showHide called on client.Client@7f56c1aa0000 (show)
+info: showHide called on client.Client@7f56c1aa0200 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 10
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0200
+info: Unfocusing client at: client.Client@7f56c1aa0000
+info: showHide called on client.Client@7f56c1aa0200 (show)
+info: showHide called on client.Client@7f56c1aa0000 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 1
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0000
+info: Unfocusing client at: client.Client@7f56c1aa0200
+info: showHide called on client.Client@7f56c1aa0000 (show)
+info: showHide called on client.Client@7f56c1aa0200 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+[9878.762] [PARSE ERROR] Escape codes to resize text area are not supported
+[9878.762] [PARSE ERROR] Escape codes to resize text area are not supported
+info: view with bitmask: 10
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0200
+info: Unfocusing client at: client.Client@7f56c1aa0000
+info: showHide called on client.Client@7f56c1aa0200 (show)
+info: showHide called on client.Client@7f56c1aa0000 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 1
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0000
+info: Unfocusing client at: client.Client@7f56c1aa0200
+info: showHide called on client.Client@7f56c1aa0000 (show)
+info: showHide called on client.Client@7f56c1aa0200 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+info: view with bitmask: 10
+info: Focusing a client...
+info: Focusing client @ client.Client@7f56c1aa0200
+info: Unfocusing client at: client.Client@7f56c1aa0000
+info: showHide called on client.Client@7f56c1aa0200 (show)
+info: showHide called on client.Client@7f56c1aa0000 (hide)
+info: showHide called on client.Client@7f56c1aa0400 (hide)
+info: tile with 1 clients, with mw=1920
+debug: n=1, i=0, ty=0, my=0
+General protection exception (no address available)
+/home/khang/mono/code/tools/kopiwm/src/font.zig:173:41: 0x1192400 in getFontThatHasChar (main.zig)
+        return X.XftCharExists(dpy, self.xfont, @intCast(codepoint));
+                                        ^
+/home/khang/mono/code/tools/kopiwm/src/drw.zig:244:45: 0x117de51 in drawText (main.zig)
+                if (fonts.getFontThatHasChar(utf8.codepoint)) |font| {
+                                            ^
+/home/khang/mono/code/tools/kopiwm/src/monitor.zig:225:39: 0x116cce8 in drawbar (main.zig)
+                _ = try z.drw.drawText(allocator, z.fonts, r, z.lrpad / 2, name, 0);
+                                      ^
+/home/khang/mono/code/tools/kopiwm/src/main.zig:571:38: 0x118ae0e in propertyNotify (main.zig)
+                    try c.mon.drawbar(allocator, z);
+                                     ^
+/home/khang/mono/code/tools/kopiwm/src/main.zig:181:49: 0x11743b4 in runOne (main.zig)
+        X.PropertyNotify => try R.propertyNotify(z, alloc, &ev.xproperty),
+                                                ^
+/home/khang/mono/code/tools/kopiwm/src/main.zig:163:19: 0x115fdb7 in run (main.zig)
+        try runOne(z, allocator, &ev);
+                  ^
+/home/khang/mono/code/tools/kopiwm/src/main.zig:1230:12: 0x1156a5f in main (main.zig)
+    try run(&z, allocator);
+           ^
+/home/khang/.local/zig/lib/std/start.zig:627:37: 0x1158fb1 in main (std.zig)
+            const result = root.main() catch |err| {
+                                    ^
+???:?:?: 0x7f56c235eca7 in ??? (libc.so.6)
+Unwind information for `libc.so.6:0x7f56c235eca7` was not available, trace may be incomplete
+
+xinit: connection to X server lost
+
+waiting for X server to shut down XIO:  fatal IO error 0 (Success) on X server ":0"
+      after 317764 requests (317764 known processed) with 0 events remaining.
+The X11 connection broke (error 1). Did the X11 server die?
+(II) Server terminated successfully (0). Closing log file.
+
+Exiting due to channel error.
+Exiting due to channel error.
+Exiting due to channel error.
+Exiting due to channel error.
+Exiting due to channel error.
+Exiting due to channel error.
+Exiting due to channel error.
+Exiting due to channel error.
+Exiting due to channel error.
+Exiting due to channel error.
+Exiting due to channel error.
+Exiting due to channel error.
+Exiting due to channel error.
+Exiting due to channel error.
+Exiting due to channel error.
+Exiting due to channel error.
