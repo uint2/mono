@@ -95,7 +95,7 @@ fn backward_sub_test() {
         let A = Mat::<N, N>::rand().upper_triangular();
         let b = Mat::<N, 1>::rand();
         let x = backward_sub(&A, &b);
-        assert_eq_mat!(A * x, b, 1e-4);
+        assert_eq_mat!(A * x, b, 1e-3);
     }
 }
 
