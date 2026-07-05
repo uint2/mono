@@ -92,7 +92,7 @@ jobs:
           - ubuntu-24.04
           - ubuntu-22.04
           - macos-15
-          - macos-14
+          - macos-26
       fail-fast: false
     timeout-minutes: 5
     runs-on: ${{ matrix.os }}
@@ -171,7 +171,7 @@ jobs:
           - ubuntu-24.04
           - ubuntu-22.04
           - macos-15
-          - macos-14
+          - macos-26
       fail-fast: false
     timeout-minutes: 5
     runs-on: ${{ matrix.os }}
@@ -193,7 +193,7 @@ jobs:
           - ubuntu-24.04
           - ubuntu-22.04
           - macos-15
-          - macos-14
+          - macos-26
       fail-fast: false
     timeout-minutes: 5
     runs-on: ${{ matrix.os }}
@@ -217,7 +217,7 @@ jobs:
           - ubuntu-24.04
           - ubuntu-22.04
           - macos-15
-          - macos-14
+          - macos-26
       fail-fast: false
     timeout-minutes: 5
     runs-on: ${{ matrix.os }}
@@ -242,8 +242,8 @@ jobs:
           - macos-latest
           - ubuntu-24.04
           - ubuntu-22.04
+          - macos-26
           - macos-15
-          - macos-14
       fail-fast: false
     timeout-minutes: 5
     runs-on: ${{ matrix.os }}
@@ -275,7 +275,7 @@ jobs:
             ubuntu-24.04,
             ubuntu-22.04,
             macos-15,
-            macos-14,
+            macos-26,
             # [unsupported]
             # windows-latest,
             # windows-2025,
@@ -306,7 +306,7 @@ jobs:
             ubuntu-24.04,
             ubuntu-22.04,
             macos-15,
-            macos-14,
+            macos-26,
             # [unsupported]
             windows-latest,
             windows-2025,
@@ -356,7 +356,7 @@ jobs:
           - ubuntu-24.04
           - ubuntu-22.04
           - macos-15
-          - macos-14
+          - macos-26
       fail-fast: false
     timeout-minutes: 5
     runs-on: ${{ matrix.os }}
@@ -386,7 +386,7 @@ jobs:
           - ubuntu-24.04
           - ubuntu-22.04
           - macos-15
-          - macos-14
+          - macos-26
       fail-fast: false
     timeout-minutes: 5
     runs-on: ${{ matrix.os }}
@@ -442,7 +442,7 @@ jobs:
     strategy:
       matrix:
         os:
-          - macos-14
+          - macos-26
           - macos-15
         arch:
           - arm64
@@ -475,7 +475,7 @@ jobs:
     strategy:
       matrix:
         os:
-          - macos-14
+          - macos-26
           - macos-15
         arch:
           - arm64
@@ -539,7 +539,7 @@ jobs:
           - ubuntu-24.04
           - ubuntu-22.04
           - macos-15
-          - macos-14
+          - macos-26
       fail-fast: false
     timeout-minutes: 5
     runs-on: ${{ matrix.os }}
@@ -564,7 +564,7 @@ jobs:
           - ubuntu-24.04
           - ubuntu-22.04
           - macos-15
-          - macos-14
+          - macos-26
       fail-fast: false
     timeout-minutes: 5
     runs-on: ${{ matrix.os }}
@@ -587,7 +587,7 @@ jobs:
           - ubuntu-24.04
           - ubuntu-22.04
           - macos-15
-          - macos-14
+          - macos-26
           - windows-2025
           - windows-2022
       fail-fast: false
@@ -616,7 +616,7 @@ jobs:
           - ubuntu-24.04
           - ubuntu-22.04
           - macos-15
-          - macos-14
+          - macos-26
       fail-fast: false
     timeout-minutes: 5
     runs-on: ${{ matrix.os }}
@@ -649,7 +649,7 @@ jobs:
           - ubuntu-24.04
           - ubuntu-22.04
           - macos-15
-          - macos-14
+          - macos-26
       fail-fast: false
     timeout-minutes: 5
     runs-on: ${{ matrix.os }}
@@ -707,7 +707,7 @@ jobs:
           - ubuntu-24.04
           - ubuntu-22.04
           - macos-15
-          - macos-14
+          - macos-26
       fail-fast: false
     timeout-minutes: 5
     runs-on: ${{ matrix.os }}
@@ -729,7 +729,7 @@ jobs:
           - ubuntu-24.04
           - ubuntu-22.04
           - macos-15
-          - macos-14
+          - macos-26
       fail-fast: false
     timeout-minutes: 5
     runs-on: ${{ matrix.os }}
@@ -751,7 +751,7 @@ jobs:
           - ubuntu-24.04
           - ubuntu-22.04
           - macos-15
-          - macos-14
+          - macos-26
       fail-fast: false
     timeout-minutes: 5
     runs-on: ${{ matrix.os }}
