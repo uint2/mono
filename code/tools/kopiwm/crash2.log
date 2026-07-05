@@ -4,7 +4,7 @@ X.Org X Server 1.21.1.16
 X Protocol Version 11, Revision 0
 Current Operating System: Linux box 6.12.94+deb13-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.12.94-1 (2026-06-20) x86_64
 Kernel command line: BOOT_IMAGE=/boot/vmlinuz-6.12.94+deb13-amd64 root=UUID=2b4a72aa-dd1b-4018-917e-b4a267138d2a ro quiet
-xorg-server 2:21.1.16-1.3+deb13u2 (https://www.debian.org/support) 
+xorg-server 2:21.1.16-1.3+deb13u2 (https://www.debian.org/support)
 Current version of pixman: 0.44.0
 	Before reporting problems, check http://wiki.x.org
 	to make sure that you have the latest version.
