@@ -20,6 +20,3 @@ FetchContent_MakeAvailable(googletest)
 add_library(nk_test nk_test_printer.cpp)
 target_include_directories(nk_test PUBLIC .)
 target_link_libraries(nk_test PUBLIC GTest::gtest_main GTest::gmock_main)
-
-# Create compile_commands.json for clangd to latch on to.
-file(CREATE_LINK ${CMAKE_BINARY_DIR}/compile_commands.json compile_commands.json SYMBOLIC)
