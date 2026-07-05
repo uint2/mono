@@ -8,7 +8,7 @@ jobs:
   delta:
     runs-on: ubuntu-latest
     outputs:
-      all: ${{ toJson(steps.f.outputs) }}
+      all: ${{ toJson(steps.g.outputs) }}
     steps:
       - uses: actions/checkout@v6
       - run: python3 .github/path-filters.py
@@ -17,6 +17,17 @@ jobs:
         id: f
         with:
           filters: .github/path-filters.yml
+      - id: g
+        run: |
+          if [ '${{ github.ref }}' = 'refs/heads/main' ]; then
+            echo '${{ toJson(steps.f.outputs) }}' \
+            | jq -r 'with_entries(select(.value == "false" or .value == "true"))|to_entries|map("\(.key)")|.[]' \
+            | xargs -I '{}' echo "{}=true" >> $GITHUB_OUTPUT
+          else
+            echo '${{ toJson(steps.f.outputs) }}' \
+            | jq -r 'to_entries|map("\(.key)\n\(.value)")|.[]' \
+            | xargs -n2 sh -c 'echo "$1=$2"' sh >> $GITHUB_OUTPUT
+          fi
 
   # ----------------------------------------------------------------------------
 
