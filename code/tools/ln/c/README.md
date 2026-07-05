@@ -72,6 +72,6 @@ hyphen), enabling commands like `git -C <repo> ln --all`.
 
 There is a quick and simple `valgrind` command in the Makefile to evaluate
 `ln`'s memory profile. It does find _one_ leak when `ln` is compiled with
-`glibc`, but that's due to `fdopen`'s leak ( (cf)
+`glibc`, but that's due to `fdopen`'s leak (cf.
 [here](https://sourceware.org/bugzilla/show_bug.cgi?id=31840) and
 [here](https://stackoverflow.com/questions/78569261/)).
