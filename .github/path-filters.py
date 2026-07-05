@@ -58,5 +58,6 @@ with open(OUTPUT_FILE, "w") as f:
         print2(f"{key}:", file=f)
         print2(f'  - "{subpath}/**/*"', file=f)
         print2(f"  - {__file_rel__}", file=f)
+        print2(f"  - .github/workflows/ci.yml", file=f)
         abs_subpath = path.join(__root__, subpath)
         assert path.isdir(abs_subpath), "Subpath does not exist!\n" + abs_subpath
