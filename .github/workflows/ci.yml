@@ -38,7 +38,7 @@ jobs:
 
   aquarium-rust-build:
     needs: delta
-    if: ${{ fromJson(needs.delta.outputs.all).aquarium == 'true' }}
+    if: fromJson(needs.delta.outputs.all).aquarium == 'true'
     strategy:
       matrix:
         os:
@@ -58,7 +58,7 @@ jobs:
 
   aquarium-swift-build:
     needs: delta
-    if: ${{ fromJson(needs.delta.outputs.all).aquarium == 'true' }}
+    if: fromJson(needs.delta.outputs.all).aquarium == 'true'
     timeout-minutes: 5
     runs-on: macos-latest
     steps:
@@ -72,7 +72,7 @@ jobs:
 
   canvas-sync-cli-test:
     needs: delta
-    if: ${{ fromJson(needs.delta.outputs.all).canvas-sync-cli == 'true' }}
+    if: fromJson(needs.delta.outputs.all).canvas-sync-cli == 'true'
     strategy:
       matrix:
         os:
@@ -99,7 +99,7 @@ jobs:
 
   debian13-setup-instructions-deploy:
     needs: delta
-    if: ${{ fromJson(needs.delta.outputs.all).debian13 == 'true' }}
+    if: fromJson(needs.delta.outputs.all).debian13 == 'true'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -128,7 +128,7 @@ jobs:
 
   diff-rs-build:
     needs: delta
-    if: ${{ fromJson(needs.delta.outputs.all).diff-rs == 'true' }}
+    if: fromJson(needs.delta.outputs.all).diff-rs == 'true'
     strategy:
       matrix:
         os:
@@ -150,7 +150,7 @@ jobs:
 
   draw-rs-build:
     needs: delta
-    if: ${{ fromJson(needs.delta.outputs.all).draw-rs == 'true' }}
+    if: fromJson(needs.delta.outputs.all).draw-rs == 'true'
     strategy:
       matrix:
         os:
@@ -174,7 +174,7 @@ jobs:
 
   git-checkout2-build-and-test-c:
     needs: delta
-    if: ${{ fromJson(needs.delta.outputs.all).git-checkout2 == 'true' }}
+    if: fromJson(needs.delta.outputs.all).git-checkout2 == 'true'
     strategy:
       matrix:
         os:
@@ -200,7 +200,7 @@ jobs:
 
   git-checkout2-build-zig:
     needs: delta
-    if: ${{ fromJson(needs.delta.outputs.all).git-checkout2 == 'true' }}
+    if: fromJson(needs.delta.outputs.all).git-checkout2 == 'true'
     strategy:
       matrix:
         os:
@@ -226,7 +226,7 @@ jobs:
 
   git-ln-build-c:
     needs: delta
-    if: ${{ fromJson(needs.delta.outputs.all).git-ln == 'true' }}
+    if: fromJson(needs.delta.outputs.all).git-ln == 'true'
     strategy:
       matrix:
         os: [
@@ -257,7 +257,7 @@ jobs:
 
   git-ln-build-zig-rust:
     needs: delta
-    if: ${{ fromJson(needs.delta.outputs.all).git-ln == 'true' }}
+    if: fromJson(needs.delta.outputs.all).git-ln == 'true'
     strategy:
       matrix:
         os: [
@@ -297,7 +297,7 @@ jobs:
 
   gitlab-api-build:
     needs: delta
-    if: ${{ fromJson(needs.delta.outputs.all).gitlab-api == 'true' }}
+    if: fromJson(needs.delta.outputs.all).gitlab-api == 'true'
     timeout-minutes: 5
     runs-on: ubuntu-latest
     steps:
@@ -309,7 +309,7 @@ jobs:
 
   gitnu-c-build-and-test:
     needs: delta
-    if: ${{ fromJson(needs.delta.outputs.all).gitnu-c == 'true' }}
+    if: fromJson(needs.delta.outputs.all).gitnu-c == 'true'
     strategy:
       matrix:
         os:
@@ -339,7 +339,7 @@ jobs:
 
   gitnu-rs-build-and-test:
     needs: delta
-    if: ${{ fromJson(needs.delta.outputs.all).gitnu-rs == 'true' }}
+    if: fromJson(needs.delta.outputs.all).gitnu-rs == 'true'
     strategy:
       matrix:
         os:
@@ -364,7 +364,7 @@ jobs:
 
   gitnu-rs-meta:
     needs: delta
-    if: ${{ fromJson(needs.delta.outputs.all).gitnu-rs == 'true' }}
+    if: fromJson(needs.delta.outputs.all).gitnu-rs == 'true'
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.V.outputs.version }}
@@ -400,7 +400,7 @@ jobs:
 
   helium-build:
     needs: delta
-    if: ${{ fromJson(needs.delta.outputs.all).helium == 'true' }}
+    if: fromJson(needs.delta.outputs.all).helium == 'true'
     strategy:
       matrix:
         os:
@@ -433,7 +433,7 @@ jobs:
 
   heliumd-build:
     needs: delta
-    if: ${{ fromJson(needs.delta.outputs.all).heliumd == 'true' }}
+    if: fromJson(needs.delta.outputs.all).heliumd == 'true'
     strategy:
       matrix:
         os:
@@ -462,7 +462,7 @@ jobs:
 
   kopiwm-build:
     needs: delta
-    if: ${{ fromJson(needs.delta.outputs.all).kopiwm == 'true' }}
+    if: fromJson(needs.delta.outputs.all).kopiwm == 'true'
     strategy:
       matrix:
         os: [
@@ -492,7 +492,7 @@ jobs:
 
   loan-payoff-strategy-build:
     needs: delta
-    if: ${{ fromJson(needs.delta.outputs.all).loan-payoff-strategy == 'true' }}
+    if: fromJson(needs.delta.outputs.all).loan-payoff-strategy == 'true'
     strategy:
       matrix:
         os:
@@ -517,7 +517,7 @@ jobs:
 
   make-rs-build:
     needs: delta
-    if: ${{ fromJson(needs.delta.outputs.all).make-rs == 'true' }}
+    if: fromJson(needs.delta.outputs.all).make-rs == 'true'
     strategy:
       matrix:
         os:
@@ -539,7 +539,7 @@ jobs:
 
   numerical-methods-test:
     needs: delta
-    if: ${{ fromJson(needs.delta.outputs.all).numerical-methods == 'true' }}
+    if: fromJson(needs.delta.outputs.all).numerical-methods == 'true'
     strategy:
       matrix:
         os:
@@ -569,7 +569,7 @@ jobs:
 
   rofi-pdf-search-build:
     needs: delta
-    if: ${{ fromJson(needs.delta.outputs.all).rofi-pdf-search == 'true' }}
+    if: fromJson(needs.delta.outputs.all).rofi-pdf-search == 'true'
     strategy:
       matrix:
         os:
@@ -591,7 +591,7 @@ jobs:
 
   sudoku-build:
     needs: delta
-    if: ${{ fromJson(needs.delta.outputs.all).sudoku == 'true' }}
+    if: fromJson(needs.delta.outputs.all).sudoku == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -602,7 +602,7 @@ jobs:
 
   stats-calc-test:
     needs: delta
-    if: ${{ fromJson(needs.delta.outputs.all).stats-calc == 'true' }}
+    if: fromJson(needs.delta.outputs.all).stats-calc == 'true'
     strategy:
       matrix:
         os:
@@ -644,7 +644,7 @@ jobs:
 
   t-runner-build:
     needs: [t-runner-get-matrix, delta]
-    if: ${{ fromJson(needs.delta.outputs.all).t-runner == 'true' }}
+    if: fromJson(needs.delta.outputs.all).t-runner == 'true'
     strategy:
       matrix:
         os: ${{ fromJson(needs.t-runner-get-matrix.outputs.matrix) }}
@@ -660,7 +660,7 @@ jobs:
 
   solid-rect-build:
     needs: delta
-    if: ${{ fromJson(needs.delta.outputs.all).solid-rect == 'true' }}
+    if: fromJson(needs.delta.outputs.all).solid-rect == 'true'
     strategy:
       matrix:
         os:
@@ -682,7 +682,7 @@ jobs:
 
   tailwind-rs-build:
     needs: delta
-    if: ${{ fromJson(needs.delta.outputs.all).tailwind-rs == 'true' }}
+    if: fromJson(needs.delta.outputs.all).tailwind-rs == 'true'
     strategy:
       matrix:
         os:
@@ -704,7 +704,7 @@ jobs:
 
   tmux-fzf-build:
     needs: delta
-    if: ${{ fromJson(needs.delta.outputs.all).tmux-fzf == 'true' }}
+    if: fromJson(needs.delta.outputs.all).tmux-fzf == 'true'
     strategy:
       matrix:
         os:
@@ -726,7 +726,7 @@ jobs:
 
   wordle-build:
     needs: delta
-    if: ${{ fromJson(needs.delta.outputs.all).wordle == 'true' }}
+    if: fromJson(needs.delta.outputs.all).wordle == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
