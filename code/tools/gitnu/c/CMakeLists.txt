@@ -39,9 +39,10 @@ FetchContent_Declare(
 )
 FetchContent_Declare(
   nk_test
-  GIT_REPOSITORY https://github.com/nvkcc/nk_test
-  GIT_TAG        9b5e86dee066dfce8db73f007f68946adadbe74b
-  DOWNLOAD_EXTRACT_TIMESTAMP false
+  SOURCE_DIR     ${CMAKE_SOURCE_DIR}/../../googletest-custom-printer
+  # GIT_REPOSITORY https://github.com/nvkcc/nk_test
+  # GIT_TAG        9b5e86dee066dfce8db73f007f68946adadbe74b
+  # DOWNLOAD_EXTRACT_TIMESTAMP false
 )
 FetchContent_MakeAvailable(libgit2 cwalk)
 # ==============================================================================
