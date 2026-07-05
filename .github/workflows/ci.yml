@@ -108,6 +108,29 @@ jobs:
 
   # ----------------------------------------------------------------------------
 
+  c-bufreader:
+    needs: delta
+    if: fromJson(needs.delta.outputs.all).c-bufreader == 'true'
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+          - ubuntu-24.04
+          - ubuntu-22.04
+      fail-fast: false
+    timeout-minutes: 5
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: code/tools/c-bufreader
+    steps:
+      - uses: actions/checkout@v6
+      - run: make configure
+      - run: make build
+      - run: make test
+
+  # ----------------------------------------------------------------------------
+
   debian13-setup-instructions-deploy:
     needs: delta
     if: fromJson(needs.delta.outputs.all).debian13 == 'true'

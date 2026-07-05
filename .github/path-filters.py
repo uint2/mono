@@ -12,32 +12,39 @@ __file_rel__ = path.relpath(__rfile__, __root__)
 
 OUTPUT_FILE = path.join(__cwd__, "path-filters.yml")
 
+# Lines are sorted alphabetically.
+pairs2 = """
+code/docs/debian13-setup                       :debian13
+code/games/aquarium                            :aquarium
+code/games/sudoku                              :sudoku
+code/games/wordle                              :wordle
+code/tools/c-bufreader                         :c-bufreader
+code/tools/canvas-sync-cli                     :canvas-sync-cli
+code/tools/diff-rs                             :diff-rs
+code/tools/draw-rs                             :draw-rs
+code/tools/git-checkout2                       :git-checkout2
+code/tools/gitlab-api                          :gitlab-api
+code/tools/gitnu/c                             :gitnu-c
+code/tools/gitnu/rust                          :gitnu-rs
+code/tools/kopiwm                              :kopiwm
+code/tools/ln                                  :git-ln
+code/tools/loan-payoff-strategy                :loan-payoff-strategy
+code/tools/make-rs                             :make-rs
+code/tools/numerical-methods                   :numerical-methods
+code/tools/rofi-pdf-search                     :rofi-pdf-search
+code/tools/solid-rect                          :solid-rect
+code/tools/stats-calc                          :stats-calc
+code/tools/t-runner                            :t-runner
+code/tools/tailwind-rs                         :tailwind-rs
+code/tools/tmux-fzf                            :tmux-fzf
+code/tools/wacom-macos-precision-mode-daemon   :heliumd
+code/tools/wacom-macos-precision-mode-gui      :helium
+code/web/site                                  :personal-site
+"""
+
 pairs = [
-    ("aquarium", "code/games/aquarium"),
-    ("canvas-sync-cli", "code/tools/canvas-sync-cli"),
-    ("debian13", "code/docs/debian13-setup"),
-    ("diff-rs", "code/tools/diff-rs"),
-    ("draw-rs", "code/tools/draw-rs"),
-    ("git-checkout2", "code/tools/git-checkout2"),
-    ("git-ln", "code/tools/ln"),
-    ("gitlab-api", "code/tools/gitlab-api"),
-    ("gitnu-c", "code/tools/gitnu/c"),
-    ("gitnu-rs", "code/tools/gitnu/rust"),
-    ("helium", "code/tools/wacom-macos-precision-mode-gui"),
-    ("heliumd", "code/tools/wacom-macos-precision-mode-daemon"),
-    ("kopiwm", "code/tools/kopiwm"),
-    ("loan-payoff-strategy", "code/tools/loan-payoff-strategy"),
-    ("make-rs", "code/tools/make-rs"),
-    ("numerical-methods", "code/tools/numerical-methods"),
-    ("personal-site", "code/web/site"),
-    ("rofi-pdf-search", "code/tools/rofi-pdf-search"),
-    ("solid-rect", "code/tools/solid-rect"),
-    ("stats-calc", "code/tools/stats-calc"),
-    ("sudoku", "code/games/sudoku"),
-    ("t-runner", "code/tools/t-runner"),
-    ("tailwind-rs", "code/tools/tailwind-rs"),
-    ("tmux-fzf", "code/tools/tmux-fzf"),
-    ("wordle", "code/games/wordle"),
+    (path.strip(), name.strip())
+    for path, name in (x.split(":", maxsplit=1) for x in pairs2.strip().splitlines())
 ]
 
 
@@ -47,7 +54,7 @@ def print2(*v, file):
 
 
 with open(OUTPUT_FILE, "w") as f:
-    for key, subpath in pairs:
+    for subpath, key in pairs:
         print2(f"{key}:", file=f)
         print2(f'  - "{subpath}/**/*"', file=f)
         print2(f"  - {__file_rel__}", file=f)
