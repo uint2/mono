@@ -252,6 +252,10 @@ jobs:
         working-directory: code/tools/git-checkout2/zig
     steps:
       - uses: actions/checkout@v6
+      # https://codeberg.org/ziglang/zig/issues/31658#issuecomment-12078438
+      # https://github.com/actions/runner-images/blob/main/images/macos/macos-26-Readme.md
+      - if: startsWith(matrix.os, 'macos')
+        run: sudo xcode-select --switch /Applications/Xcode_26.3.app/Contents/Developer
       - run: cp build.zig.zon ${{ github.workspace }}
       - uses: mlugg/setup-zig@v2
       - run: zig build run
