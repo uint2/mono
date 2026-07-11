@@ -38,10 +38,12 @@ pub const Font = struct {
     dpy: *X.Display,
 
     /// Standardized height of the font as computed at initialization.
-    height: c_int = 0,
+    height: c_int,
 
     /// X's font struct.
     xfont: *X.XftFont,
+
+    pattern: ?*X.FcPattern,
 
     /// The next font in the linked list.
     next: ?*Self = null,
@@ -57,23 +59,31 @@ pub const Font = struct {
             std.debug.print("No font specified.", .{});
             return error.FontCreateError;
         }
-        var self = try allocator.create(Self);
-        self.dpy = dpy;
+
         // Using the pattern found at font->xfont->pattern does not yield the
         // same substitution results as using the pattern returned by
         // FcNameParse; using the latter results in the desired fallback
         // behaviour whereas the former just results in missing-character
         // rectangles being drawn, at least with some fonts.
-        self.xfont = X.XftFontOpenName(dpy, screen, fontName) orelse {
+        const xfont = X.XftFontOpenName(dpy, screen, fontName) orelse {
             std.debug.print("error, cannot load font from name: '{s}'\n", .{fontName});
             return error.FontCreateError;
         };
-        self.xfont.pattern = X.FcNameParse(fontName) orelse {
+        errdefer X.XftFontClose(dpy, xfont);
+
+        const pattern = X.FcNameParse(fontName) orelse {
             std.debug.print("error, cannot parse font name to pattern: '{s}'\n", .{fontName});
-            X.XftFontClose(dpy, self.xfont);
             return error.FontCreateError;
         };
-        self.height = self.xfont.ascent + self.xfont.descent;
+        errdefer X.FcPatternDestroy(pattern);
+
+        const self = try allocator.create(Self);
+        self.* = Self{
+            .dpy = dpy,
+            .xfont = xfont,
+            .pattern = pattern,
+            .height = xfont.ascent + xfont.descent,
+        };
         return self;
     }
 
@@ -83,21 +93,25 @@ pub const Font = struct {
         dpy: *X.Display,
         font_pattern: *X.FcPattern,
     ) error{ OutOfMemory, FontCreateError }!*Self {
-        var self = try allocator.create(Self);
-        self.dpy = dpy;
-        self.xfont = X.XftFontOpenPattern(dpy, font_pattern) orelse {
+        const xfont = X.XftFontOpenPattern(dpy, font_pattern) orelse {
             std.debug.print("error, cannot load font from pattern\n", .{});
             return error.FontCreateError;
         };
-        self.height = self.xfont.ascent + self.xfont.descent;
+        errdefer X.XftFontClose(dpy, xfont);
+
+        const self = try allocator.create(Self);
+        self.* = Self{
+            .dpy = dpy,
+            .xfont = xfont,
+            .pattern = null,
+            .height = xfont.ascent + xfont.descent,
+        };
         return self;
     }
 
     pub fn deinit(self: *Self, allocator: Allocator) void {
         log.warn("Trying to deallocate font: {*}", .{self});
-        if (self.xfont.pattern) |pattern| {
-            X.FcPatternDestroy(pattern);
-        }
+        if (self.pattern) |p| X.FcPatternDestroy(p);
         X.XftFontClose(self.dpy, self.xfont);
         log.warn("Deallocate font: {*}", .{self});
         allocator.destroy(self);
