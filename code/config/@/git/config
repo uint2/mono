@@ -2,6 +2,7 @@
 [user]
 	name = nguyenvukhang
 	email = brew4k@gmail.com
+	signingKey = 64297C977F7C003E34CF7AC6932D23C495692514
 [pull]
 	rebase = false
 [push]
