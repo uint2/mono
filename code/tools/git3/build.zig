@@ -4,7 +4,7 @@ pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
 
-    const mod = b.addModule("git3", .{
+    const git3_mod = b.addModule("git3", .{
         .root_source_file = b.path("src/git3/root.zig"),
         .target = target,
     });
@@ -16,10 +16,13 @@ pub fn build(b: *std.Build) void {
             .target = target,
             .optimize = optimize,
             .imports = &.{
-                .{ .name = "git3", .module = mod },
+                .{ .name = "git3", .module = git3_mod },
             },
         }),
     });
+    if (b.lazyDependency("monologue", .{})) |dep| {
+        exe.root_module.addImport("monologue", dep.module("monologue"));
+    }
 
     b.installArtifact(exe);
 
@@ -35,7 +38,7 @@ pub fn build(b: *std.Build) void {
     }
 
     const mod_tests = b.addTest(.{
-        .root_module = mod,
+        .root_module = git3_mod,
     });
 
     const run_mod_tests = b.addRunArtifact(mod_tests);

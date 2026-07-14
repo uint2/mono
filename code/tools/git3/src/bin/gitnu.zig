@@ -1,6 +1,13 @@
 const std = @import("std");
 const git3 = @import("git3");
 
+const logger = @import("monologue").init(.{ .print_colors = true });
+
+pub const std_options: std.Options = .{
+    .log_level = .err,
+    .logFn = logger.logFn,
+};
+
 pub fn main() !void {
     // Prints to stderr, ignoring potential errors.
     std.debug.print("All your {s} are belong to us.\n", .{"codebase"});
