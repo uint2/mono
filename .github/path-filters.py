@@ -29,6 +29,7 @@ code/tools/gitnu/rust                          :gitnu-rs
 code/tools/kopiwm                              :kopiwm
 code/tools/ln                                  :git-ln
 code/tools/loan-payoff-strategy                :loan-payoff-strategy
+code/tools/logger.zig                          :logger-zig
 code/tools/make-rs                             :make-rs
 code/tools/numerical-methods                   :numerical-methods
 code/tools/rofi-pdf-search                     :rofi-pdf-search
