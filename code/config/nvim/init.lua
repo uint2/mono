@@ -373,6 +373,7 @@ require('lazy').setup {
           ['good'] = 'bad',
           ['ON'] = 'OFF',
           ['Open'] = 'Closed',
+          ['open'] = 'closed',
           ['Yes'] = 'No',
           ['and'] = 'or',
           ['head'] = 'tail',
