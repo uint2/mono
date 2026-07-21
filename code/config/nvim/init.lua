@@ -14,6 +14,68 @@ require('lazy').setup {
   spec = {
     'tpope/vim-surround',
     'vimplug/nvim-colorizer.lua',
+    {
+      'nvim-java/nvim-java',
+      dependencies = {
+        'MunifTanjim/nui.nvim',
+        'mfussenegger/nvim-dap',
+        {
+          'JavaHello/spring-boot.nvim',
+          commit = '218c0c26c14d99feca778e4d13f5ec3e8b1b60f0',
+        },
+      },
+      dev = true,
+      dir = vim.fn.stdpath('config') .. '/nvim-java',
+      config = function()
+        local nvim_java = require('java')
+        nvim_java.setup {
+          -- Startup checks
+          checks = {
+            nvim_version = true, -- Check Neovim version
+            nvim_jdtls_conflict = true, -- Check for nvim-jdtls conflict
+          },
+          jdtls = { path = '/home/khang/.local/jdtls' },
+          lombok = { path = '/home/khang/.local/lombok-1.18.46.jar' },
+          java_test = { enable = false },
+          java_debug_adapter = { enable = false },
+          spring_boot_tools = {
+            enable = true,
+            version = '1.55.1',
+            auto_install = true,
+          },
+          jdk = { path = '/usr/lib/jvm/java-21-openjdk-amd64' },
+        }
+        opts = vim.lsp.config['jdtls']
+        opts.on_attach = require('brew.lsp').default_on_attach
+        opts.filetypes = { 'java', 'xml' }
+        local settings = {
+          configuration = {
+            maven = {
+              globalSettings = nil,
+              userSettings = nil,
+            },
+            eclipse = { downloadSources = true },
+            import = {
+              gradle = { enabled = false },
+              maven = {
+                enabled = true,
+                offline = { enabled = true },
+              },
+            },
+            maven = { downloadSources = true },
+            runtimes = {
+              {
+                name = 'JavaSE-21',
+                path = '/usr/lib/jvm/java-21-openjdk-amd64',
+              },
+            },
+          },
+        }
+        opts.settings = { java = settings }
+        vim.lsp.config('jdtls', opts)
+        vim.lsp.enable('jdtls')
+      end,
+    },
     --< nvim-telescope/telescope.nvim
     {
       'nvim-telescope/telescope.nvim',
@@ -411,21 +473,6 @@ require('lazy').setup {
         -- print(vim.inspect(require("nvim-treesitter.parsers")))
       end,
     }, -->
-    {
-      'mfussenegger/nvim-jdtls',
-      config = function()
-        local lsp = require('brew.lsp')
-        lsp.add['jdtls'] = {
-          settings = {
-            java = {
-              -- Custom eclipse.jdt.ls options go here
-            },
-          },
-        }
-
-        -- hey
-      end,
-    },
   },
 }
 
