@@ -1,0 +1,20 @@
+# zig output
+.zig-cache/
+autodoc/
+zig-cache/
+zig-out/
+zig-pkg/
+
+util/*.ods
+util/directives.md
+*~lock*
+
+# tz submodule
+tz/
+
+# util / Python
+*.fish
+.python-version
+
+# editor
+.ropeproject

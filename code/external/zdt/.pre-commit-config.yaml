@@ -1,0 +1,26 @@
+# SPDX-FileCopyrightText: 2025-2026 FObersteiner
+# SPDX-FileContributor: Florian Obersteiner <f.obersteiner@posteo.de>
+#
+# SPDX-License-Identifier: Unlicense
+
+repos:
+    - repo: https://github.com/pre-commit/pre-commit-hooks
+      rev: v6.0.0
+      hooks:
+          - id: check-yaml
+          - id: end-of-file-fixer
+          - id: trailing-whitespace
+    #
+    - repo: https://github.com/FObersteiner/pre-commit-zig
+      rev: v0.4.0
+      hooks:
+          - id: zig-fmt
+    #
+    - repo: local
+      hooks:
+          - id: check-versions
+            name: Check version consistency
+            entry: python3 scripts/check_versions.py
+            language: system
+            pass_filenames: false
+            always_run: true

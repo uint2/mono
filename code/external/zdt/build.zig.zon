@@ -1,0 +1,19 @@
+// SPDX-FileCopyrightText: 2024-2026 FObersteiner
+// SPDX-FileContributor: Florian Obersteiner <f.obersteiner@posteo.de>
+//
+// SPDX-License-Identifier: Unlicense
+
+.{
+    .name = .zdt,
+    .fingerprint = 0xf0de2f12bc3fbdc6,
+    .version = "0.10.0",
+    .minimum_zig_version = "0.17.0-dev",
+    .paths = .{
+        // benchmark directory not included
+        "lib", // anything from lib directory
+        "scripts/gen_tzdb_prefix.zig", // enables path-to-tzdata being updated on install
+        "LICENSE",
+        "build.zig",
+        "build.zig.zon",
+    },
+}

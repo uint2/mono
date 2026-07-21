@@ -1,0 +1,230 @@
+// SPDX-FileCopyrightText: 2023-2026 Florian Obersteiner
+// SPDX-FileContributor: Florian Obersteiner <f.obersteiner@posteo.de>
+// SPDX-FileContributor: Michael Pollind <mpollind@gmail.com>
+//
+// SPDX-License-Identifier: Unlicense
+
+//! build steps:
+//! ---
+//! `test`               - run unit tests
+//! `examples`           - build examples
+//! `docs`               - run autodoc generation
+//! `update-tzdb`        - retreive tzdata version string from local copy and set in zig file
+//! `update-tzdb-prefix` - update tzdata path
+//! ---
+const builtin = @import("builtin");
+
+const std = @import("std");
+const log = std.log.scoped(.zdt_build);
+
+const zdt_version = std.SemanticVersion{ .major = 0, .minor = 10, .patch = 0 };
+const minimum_zig_version = "0.17.0-dev";
+const tzdb_release = "2026c";
+
+const example_files = [_][]const u8{
+    "demo",
+    "ex_datetime",
+    "ex_duration",
+    "ex_locale",
+    "ex_offsetTz-posixTz",
+    "ex_strings",
+    "ex_timezones",
+    // "ex_zdt-types",
+};
+
+const test_files = [_][]const u8{
+    "test_calendar",
+    "test_Datetime",
+    "test_Duration",
+    "test_Formats",
+    "test_posixtz",
+    "test_string",
+    "test_Timezone",
+};
+
+const tzdb_prefix_default = "/usr/share/zoneinfo/";
+const tzdb_submodule_dir = "tz";
+
+const min_zig = std.SemanticVersion.parse(minimum_zig_version) catch unreachable;
+comptime {
+    if (builtin.zig_version.order(min_zig) == .lt) {
+        @compileError(std.fmt.comptimePrint(
+            "Your Zig version v{f} does not meet the minimum build requirement of v{f}",
+            .{ builtin.zig_version, min_zig },
+        ));
+    }
+}
+
+pub fn build(b: *std.Build) !void {
+    const target = b.standardTargetOptions(.{});
+    const optimize = b.standardOptimizeOption(.{});
+
+    const _zig_build_help_hangindent = "                               ";
+    const tzdb_prefix = b.option(
+        []const u8,
+        "prefix_tzdb",
+        ("Absolute path to IANA time zone database, containing TZif files.\n" ++
+            _zig_build_help_hangindent ++
+            "Needed if 'zdt.Timezone.fromSystemTzdata' function is used.\n" ++
+            _zig_build_help_hangindent ++
+            "The default is '/usr/share/zoneinfo/'."),
+    ) orelse tzdb_prefix_default;
+
+    const zdt_module = b.addModule("zdt", .{ .root_source_file = b.path("lib/root.zig") });
+
+    const zdt = b.addLibrary(.{
+        .name = "zdt",
+        .root_module = b.createModule(
+            .{
+                .root_source_file = b.path("lib/root.zig"),
+                .target = target,
+                .optimize = optimize,
+            },
+        ),
+        .linkage = .static,
+        .version = zdt_version,
+    });
+
+    b.installArtifact(zdt);
+    // --------------------------------------------------------------------------------
+
+    // --------------------------------------------------------------------------------
+    // path prefix to tz data is always updated on install
+    const install = b.getInstallStep();
+
+    const set_tzdb_prefix = b.step(
+        "update-tzdb-prefix",
+        "generate timezone database prefix (path)",
+    );
+    var gen_tzdb_prefix = b.addExecutable(.{
+        .name = "gen_tzdb_prefix",
+        .root_module = b.createModule(.{
+            .root_source_file = b.path("scripts/gen_tzdb_prefix.zig"),
+            .target = b.graph.host, // tzdb is required on the host system, even if host != target
+        }),
+    });
+    const run_gen_prefix = b.addRunArtifact(gen_tzdb_prefix);
+    run_gen_prefix.step.dependOn(&gen_tzdb_prefix.step);
+    run_gen_prefix.addArg(tzdb_prefix_default);
+    run_gen_prefix.addArg(tzdb_prefix);
+
+    const out_file_p = run_gen_prefix.addOutputFileArg("tzdb_prefix.zig");
+    // since this step is run on install, we can use the prefix step as an anonymous import
+    zdt_module.addAnonymousImport("tzdb_prefix", .{ .root_source_file = out_file_p });
+
+    // the prefix step should always run since the tzdb prefix is specific to the
+    // system that the library is used on:
+    zdt.step.dependOn(set_tzdb_prefix);
+    install.dependOn(set_tzdb_prefix);
+    // --------------------------------------------------------------------------------
+
+    // --------------------------------------------------------------------------------
+    // to update the timezone database, run the following steps -
+    // note that you might have to clean the cache first, and order matters.
+    //
+    // zig build update-tzdb && zig build update-tzdb-version
+    //
+    // update tz database
+    const update_tzdb = b.step(
+        "update-tzdb",
+        "update timezone database",
+    );
+    {
+        var gen_tzdb = b.addExecutable(.{
+            .name = "gen_tzdb",
+            .root_module = b.createModule(.{
+                .root_source_file = b.path("scripts/gen_tzdb.zig"),
+                // tzdb is required on the host system, even if host != target:
+                .target = b.graph.host,
+            }),
+        });
+
+        const run_tzdata_update = b.addRunArtifact(gen_tzdb);
+        run_tzdata_update.step.dependOn(&gen_tzdb.step);
+        // tag to checkout:
+        run_tzdata_update.addArg(tzdb_release);
+        // where to run makefile of tzdata:
+        run_tzdata_update.addArg(tzdb_submodule_dir);
+        // target directory of the compilation:
+        run_tzdata_update.addArg("lib/tzdata/zoneinfo");
+        update_tzdb.dependOn(&run_tzdata_update.step);
+    }
+    // --------------------------------------------------------------------------------
+
+    // --------------------------------------------------------------------------------
+    // tests
+    const run_tests = b.step("test", "Run library tests");
+    {
+        // unit tests in lib/*.zig files
+        const root_test = b.addTest(.{
+            .name = "zdt_root",
+            .root_module = b.createModule(.{
+                .root_source_file = b.path("lib/root.zig"),
+                .target = target,
+                .optimize = optimize,
+                .link_libc = true,
+                // .test_runner = "./test_runner.zig",
+            }),
+        });
+        const run_test_root = b.addRunArtifact(root_test);
+        root_test.root_module.addImport("zdt", zdt_module);
+        run_tests.dependOn(&run_test_root.step);
+
+        for (test_files) |test_name| {
+            const _test = b.addTest(.{
+                .name = test_name,
+                .root_module = b.createModule(.{
+                    .root_source_file = b.path(b.fmt("tests/{s}.zig", .{test_name})),
+                    .target = target,
+                    .optimize = optimize,
+                    .link_libc = true,
+                    // .test_runner = "./test_runner.zig",
+                }),
+            });
+            const run_test = b.addRunArtifact(_test);
+            _test.root_module.addImport("zdt", zdt_module);
+            run_tests.dependOn(&run_test.step);
+        }
+    }
+    // --------------------------------------------------------------------------------
+
+    // --------------------------------------------------------------------------------
+    // examples
+    // - as binaries with a main() that prints stuff to stderr
+    // build via 'zig build examples'
+    // build & run via 'zig build examples && ./zig-out/bin/[example-name]'
+    const build_examples = b.step("examples", "Build examples");
+    {
+        inline for (example_files) |example_name| {
+            const example = b.addExecutable(.{
+                .name = example_name,
+                .root_module = b.createModule(.{
+                    .root_source_file = b.path(b.fmt("examples/{s}.zig", .{example_name})),
+                    .target = target,
+                    .optimize = optimize,
+                    .link_libc = true,
+                }),
+            });
+            example.root_module.addImport("zdt", zdt_module);
+            const install_example = b.addInstallArtifact(example, .{});
+            build_examples.dependOn(&example.step);
+            build_examples.dependOn(&install_example.step);
+        }
+    }
+    // --------------------------------------------------------------------------------
+
+    // --------------------------------------------------------------------------------
+    // generate docs
+    // run on a local server e.g. via
+    // python -m http.server -b 127.0.0.1 [some-unused-port] -d [your-docs-dir]
+    const generate_docs = b.step("docs", "auto-generate documentation");
+    {
+        const install_docs = b.addInstallDirectory(.{
+            .source_dir = zdt.getEmittedDocs(),
+            .install_dir = std.Build.InstallDir{ .custom = "../docs/autodoc" },
+            .install_subdir = "",
+        });
+        generate_docs.dependOn(&install_docs.step);
+    }
+    // --------------------------------------------------------------------------------
+}
