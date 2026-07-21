@@ -13,6 +13,10 @@ pub fn build(b: *std.Build) void {
         }),
     });
 
+    if (b.lazyDependency("zdt", .{})) |dep| {
+        exe.root_module.addImport("zdt", dep.module("zdt"));
+    }
+
     b.installArtifact(exe);
 
     const run_step = b.step("run", "Run the app");
