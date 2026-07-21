@@ -11,6 +11,11 @@
 	<artifactId>myproject</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 
-	<!-- Additional lines to be added here... -->
+  <dependencies>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-webmvc</artifactId>
+    </dependency>
+  </dependencies>
 
 </project>
