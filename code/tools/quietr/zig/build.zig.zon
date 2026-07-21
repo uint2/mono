@@ -1,0 +1,24 @@
+.{
+    .name = .quietr,
+    .version = "0.0.0",
+    .fingerprint = 0xbde40dd89791c6ab,
+    .minimum_zig_version = "0.15.2",
+    .dependencies = .{
+        // .datetime_loc = .{
+        //     // .path = "git+https://github.com/frmdstryr/zig-datetime?ref=master#f0533643245419b5b967679365ab8d56a472c40e",
+        //     .path = "../../external/zig-datetime",
+        //     .lazy = true,
+        // },
+        .datetime = .{
+            .url = "git+https://github.com/frmdstryr/zig-datetime?ref=master#f0533643245419b5b967679365ab8d56a472c40e",
+            .hash = "datetime-0.8.0-cJNXzPbbAQCHDBI-QqciRLaUQ12kd3y_oCXiTbjyqDhT",
+            .lazy = true,
+        },
+        .known_folders = .{
+            .url = "git+https://github.com/ziglibs/known-folders.git#6da0d0c41b78b9ed2d34fa364fcb81b5ebece6c4",
+            .hash = "known_folders-0.0.0-Fy-PJiDLAAB98m3uYUzatrTb2mO2fpvwx2zpSroEtfbO",
+            .lazy = true,
+        },
+    },
+    .paths = .{ "build.zig", "build.zig.zon", "src" },
+}

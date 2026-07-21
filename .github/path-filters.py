@@ -32,6 +32,7 @@ code/tools/loan-payoff-strategy                :loan-payoff-strategy
 code/tools/logger.zig                          :logger-zig
 code/tools/make-rs                             :make-rs
 code/tools/numerical-methods                   :numerical-methods
+code/tools/quietr/rust                         :quietr
 code/tools/rofi-pdf-search                     :rofi-pdf-search
 code/tools/solid-rect                          :solid-rect
 code/tools/stats-calc                          :stats-calc

@@ -13,8 +13,8 @@ pub fn build(b: *std.Build) void {
         }),
     });
 
-    if (b.lazyDependency("zdt", .{})) |dep| {
-        exe.root_module.addImport("zdt", dep.module("zdt"));
+    if (b.lazyDependency("datetime", .{})) |dep| {
+        exe.root_module.addImport("datetime", dep.module("datetime"));
     }
 
     b.installArtifact(exe);
