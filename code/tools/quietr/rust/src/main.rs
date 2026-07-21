@@ -4,6 +4,10 @@ use std::path::{Path, PathBuf};
 use std::process::{Command, ExitCode, ExitStatus};
 use std::time;
 
+const APP_NAME: &str = "quietr";
+const STDOUT_FILENAME: &str = "stdout.txt";
+const STDERR_FILENAME: &str = "stderr.txt";
+
 fn fingerprint() -> u64 {
     let mut s = DefaultHasher::new();
     time::UNIX_EPOCH.elapsed().unwrap().hash(&mut s);
@@ -18,25 +22,23 @@ fn build_bypassed_command() -> Option<Command> {
     Some(cmd)
 }
 
-const STDOUT_FILENAME: &str = "stdout.txt";
-const STDERR_FILENAME: &str = "stderr.txt";
-
 fn timestamp_to_log_dir(now: jiff::Zoned) -> PathBuf {
     Path::new(".cache")
+        .join(APP_NAME)
         .join(now.strftime("%Y-%m-%d").to_string())
         .join(&format!("{:x}", fingerprint())[0..7])
 }
 
 fn try_main() -> Result<(ExitStatus, String), ()> {
     let Some(mut cmd) = build_bypassed_command() else {
-        return Err(println!("[quietr] Nothing happend - no args passed."));
+        return Err(println!("[{APP_NAME}] Nothing happend - no args passed."));
     };
 
     // let mut cmd = Command::new("sh");
     // cmd.arg("-c").arg(std::env::args().skip(1).collect::<Vec<_>>().join(" "));
 
     let Some(home_dir) = std::env::home_dir() else {
-        return Err(println!("[quietr] Error: home directory not found."));
+        return Err(println!("[{APP_NAME}] Error: home directory not found."));
     };
 
     let mut log_dir: PathBuf;
