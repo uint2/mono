@@ -47,6 +47,8 @@ pub const Monitor = struct {
     barwin: X.Window = 0,
     lt: toggle(*const Layout),
 
+    drarBarMutex: *std.Thread.Mutex,
+
     /// (dwm) createmon
     ///
     /// As of this initialization, there are no ties to anything X-related yet.
@@ -55,12 +57,14 @@ pub const Monitor = struct {
         const m = try allocator.create(Self);
         m.* = .{
             .lt = .init(&cfg.layouts[0]),
+            .drarBarMutex = try allocator.create(std.Thread.Mutex),
         };
         std.log.info("Initialized a monitor!", .{});
         return m;
     }
 
     pub fn deinit(self: *Self, allocator: Allocator, dpy: *X.Display) void {
+        allocator.destroy(self.drarBarMutex);
         X.XUnmapWindow(dpy, self.barwin);
         X.XDestroyWindow(dpy, self.barwin);
         log.warn("Deallocate monitor: {*}", .{self});
@@ -155,6 +159,8 @@ pub const Monitor = struct {
 
     /// (dwm) drawbar
     pub fn drawbar(self: *Self, allocator: Allocator, z: *App) error{OutOfMemory}!void {
+        self.drarBarMutex.lock();
+        defer self.drarBarMutex.unlock();
         if (!self.show_bar) return;
 
         var tw: u32 = 0;

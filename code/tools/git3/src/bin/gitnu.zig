@@ -16,4 +16,13 @@ pub fn main() !void {
         return std.debug.print("Failed to get current working directory.\n{any}", .{err});
     };
     log.info("cwd: {s}", .{cwd});
+    // var t = try std.Thread.spawn(.{}, yes, .{});
+    // t.join();
+}
+
+fn yes() void {
+    while (true) {
+        std.Thread.sleep(std.time.ns_per_s * 1);
+        log.info("HEYY", .{});
+    }
 }

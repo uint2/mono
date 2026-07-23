@@ -35,6 +35,7 @@ const C = @cImport({
     @cInclude("locale.h");
     @cInclude("signal.h");
     @cInclude("unistd.h");
+    @cInclude("time.h");
 });
 
 pub const std_options: std.Options = .{
@@ -159,7 +160,7 @@ fn run(z: *App, allocator: Allocator) DwmError!void {
     const start = std.time.timestamp();
 
     while (z.running and X.XNextEvent(z.dpy, &ev)) {
-        if (TIMEOUT) |t| if (@abs(std.time.timestamp() - start) > t) @panic("End please");
+        if (comptime TIMEOUT) |t| if (@abs(std.time.timestamp() - start) > t) @panic("End please");
         try runOne(z, allocator, &ev);
     }
 }
@@ -1114,7 +1115,7 @@ pub fn main() !void {
     }
 
     // Initialize the global allocator.
-    var gpa: std.heap.GeneralPurposeAllocator(.{}) = .init;
+    var gpa: std.heap.GeneralPurposeAllocator(.{ .thread_safe = true }) = .init;
     defer _ = gpa.deinit();
     const allocator = gpa.allocator();
 
@@ -1224,12 +1225,37 @@ pub fn main() !void {
     try z.resolveClientAndFocus(allocator, null);
     try setup.scan(&z, allocator);
 
+    // var timeThread = try std.Thread.spawn(.{}, statusUpdateLoop, .{ &z, allocator });
+    // defer timeThread.join();
+
     log.info("{s}", .{LINE});
     log.info("Starting event loop", .{});
     log.info("{s}", .{LINE});
     try run(&z, allocator);
 }
 
+fn statusUpdateLoop(z: *App, allocator: Allocator) void {
+    const time = @import("time.zig");
+
+    var sgDateBuf: [32]u8 = undefined;
+    var ukDateBuf: [32]u8 = undefined;
+    var buffer: [64]u8 = undefined;
+
+    while (z.running) {
+        log.info("Heyllo from cron", .{});
+        const sgDate = time.strftime(&sgDateBuf, "%a %b %d, %H:%M", "Asia/Singapore");
+        const ukDate = time.strftime(&ukDateBuf, "%H:%M", "Europe/London");
+
+        const line = std.fmt.bufPrint(&buffer, "({s}) {s}", .{ ukDate, sgDate }) catch continue;
+        std.debug.print("clock: {s}\n", .{line});
+        z.stext.set(line);
+        z.selmon.drawbar(allocator, z) catch continue; // Just fail silently.
+
+        std.Thread.sleep(std.time.ns_per_s * 30); // Sleep for 30 seconds.
+    }
+}
+
 test {
     _ = @import("tests.zig");
+    _ = @import("time.zig");
 }
