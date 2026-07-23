@@ -56,6 +56,11 @@ cmd('Date', function()
   feedkeys('O' .. date .. '<esc>', 'n')
 end)
 
+cmd('Ymd', function()
+  local date = vim.fn.strftime('%Y-%m-%d')
+  feedkeys('O' .. date .. '<esc>', 'n')
+end)
+
 -- create new line (at current cursor position) and insert date
 cmd('Time', function()
   local time = vim.fn.strftime('%H:%M:%S')
