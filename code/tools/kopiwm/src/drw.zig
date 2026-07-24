@@ -322,7 +322,7 @@ pub const Drw = struct {
                 const fccharset = X.FcCharSetCreate() orelse unreachable;
                 _ = X.FcCharSetAddChar(fccharset, @intCast(utf8.codepoint));
 
-                const self_fonts_pattern = fonts.xfont.pattern orelse {
+                const self_fonts_pattern = fonts.pattern orelse {
                     // Refer to the comment in Font.fromName for more information.
                     @panic("the first font in the cache must be loaded from a font string.");
                 };
