@@ -29,7 +29,8 @@ install:
 # Development
 # ====================================================================
 
-run: debug-run log
+run: debug-install
+	sh run.sh
 
 # Runs kopiwm in debug mode, and logs the stderr to a log file.
 debug-run: debug-install
