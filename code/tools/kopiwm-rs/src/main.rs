@@ -1,5 +1,12 @@
-pub mod c;
+mod c;
+mod logger;
+
+use log::LevelFilter;
 
 fn main() {
-    println!("Hello, world!");
+    logger::init(LevelFilter::Debug);
+
+    unsafe { c::XOpenDisplay(std::ptr::null()) };
+
+    log::info!("Heyy");
 }

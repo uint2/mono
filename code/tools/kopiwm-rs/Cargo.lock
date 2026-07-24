@@ -85,10 +85,11 @@ dependencies = [
 ]
 
 [[package]]
-name = "kopiwm-rs"
+name = "kopiwm"
 version = "0.1.0"
 dependencies = [
  "bindgen",
+ "log",
  "pkg-config",
 ]
 
