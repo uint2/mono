@@ -1,5 +1,13 @@
 mod C;
+mod app;
+mod client;
+mod enum_array;
+mod enums;
+mod font;
+mod monitor;
+mod numlockmask;
 mod prelude;
+mod rect;
 mod setup;
 mod x11;
 
@@ -86,8 +94,10 @@ fn check_locale_support() {
     }
 }
 
-const LOCAL_ONLY: bool = false;
-fn safe_local_testing() {}
+const LOCAL_ONLY: bool = true;
+fn safe_local_testing() {
+    println!("{}", CursorState::COUNT);
+}
 
 fn try_main() -> Result<()> {
     let false = handle_cli_args() else { return Ok(()) };
