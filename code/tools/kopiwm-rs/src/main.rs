@@ -94,11 +94,6 @@ fn check_locale_support() {
     }
 }
 
-const LOCAL_ONLY: bool = true;
-fn safe_local_testing() {
-    println!("{}", CursorState::COUNT);
-}
-
 fn try_main() -> Result<()> {
     let false = handle_cli_args() else { return Ok(()) };
     check_locale_support();
@@ -109,26 +104,26 @@ fn try_main() -> Result<()> {
     check_other_wm(&dpy);
     setup::setup_sigaction()?;
     setup::clean_up_zombies();
+    let screen = dpy.default_screen();
+    let screen_size = dpy.display_size(screen);
+    let root = dpy.default_root_window();
     Ok(())
 }
 
 fn main() -> ExitCode {
     use ExitCode as EC;
 
+    log::init(Some(log::LevelFilter::Debug));
+    log::info!("Started execution of kopiwm-rs!");
+
+    const LOCAL_ONLY: bool = true;
     if LOCAL_ONLY {
-        safe_local_testing();
+        println!("{}", CursorState::COUNT);
         return EC::SUCCESS;
     }
-
-    log::init(Some(log::LevelFilter::Debug));
-
-    log::info!("Started execution of kopiwm-rs!");
 
     match try_main() {
         Ok(_) => ExitCode::SUCCESS,
         Err(_) => ExitCode::FAILURE,
     }
-
-    //
-    // EC::SUCCESS
 }

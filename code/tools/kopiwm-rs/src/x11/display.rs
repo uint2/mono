@@ -3,8 +3,6 @@ use crate::prelude::*;
 
 pub struct Display(*mut C::Display);
 
-unsafe impl Sync for Display {}
-
 impl Display {
     /// The XOpenDisplay function returns a Display structure that serves as
     /// the connection to the X server and that contains all the information
@@ -87,11 +85,6 @@ impl Display {
         unsafe { C::XSelectInput(self.0, window.to_c(), event_mask) };
     }
 
-    pub fn default_root_window(&self) -> Window {
-        let window = unsafe { C::XDefaultRootWindow(self.0) };
-        Window::from_c(window)
-    }
-
     /// The XSync function flushes the output buffer and then waits until all
     /// requests have been received and processed by the X server. Any errors
     /// generated must be handled by the error handler. For each protocol error
@@ -110,5 +103,26 @@ impl Display {
         // in the other functions documented on that html page, but not XSync. So
         // we discard it.
         unsafe { C::XSync(self.0, discard as c_int) };
+    }
+
+    pub fn default_root_window(&self) -> Window {
+        let window = unsafe { C::XDefaultRootWindow(self.0) };
+        Window::from_c(window)
+    }
+
+    pub fn default_screen(&self) -> c_int {
+        unsafe { C::XDefaultScreen(self.0) }
+    }
+
+    pub fn display_width(&self, screen: c_int) -> c_int {
+        unsafe { C::XDisplayWidth(self.0, screen) }
+    }
+
+    pub fn display_height(&self, screen: c_int) -> c_int {
+        unsafe { C::XDisplayHeight(self.0, screen) }
+    }
+
+    pub fn display_size(&self, screen: c_int) -> Size<c_int> {
+        Size::new(self.display_width(screen), self.display_height(screen))
     }
 }

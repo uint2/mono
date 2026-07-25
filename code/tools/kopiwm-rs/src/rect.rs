@@ -1,13 +1,25 @@
 use crate::prelude::*;
 
-pub struct Size<D = c_uint> {
-    width: D,
-    height: D,
+pub struct Size<T = c_uint> {
+    width: T,
+    height: T,
 }
 
-pub struct Loc<C = c_int> {
-    x: C,
-    y: C,
+impl<T> Size<T> {
+    pub fn new(width: T, height: T) -> Self {
+        Self { width, height }
+    }
+}
+
+pub struct Loc<T = c_int> {
+    x: T,
+    y: T,
+}
+
+impl<T> Loc<T> {
+    pub fn new(x: T, y: T) -> Self {
+        Self { x, y }
+    }
 }
 
 /// C: type for Coordinates.
