@@ -25,17 +25,6 @@ fn handle_cli_args() -> Option<ExitCode> {
     }
 }
 
-// fn open_display() -> Option<(RustConnection, usize)> {
-//     match x11rb::connect(None) {
-//         Ok(v) => Some(v),
-//         Err(err) => {
-//             log::error!("{NAME}: cannot open X display.");
-//             log::error!("{err}");
-//             None
-//         }
-//     }
-// }
-
 /// Global X error handler.
 static mut XERRORXLIB: Option<
     unsafe extern "C" fn(*mut C::Display, *mut C::XErrorEvent) -> c_int,
@@ -47,21 +36,49 @@ unsafe extern "C" fn xerrorstart(_: *mut C::Display, _: *mut C::XErrorEvent) -> 
 }
 
 unsafe extern "C" fn xerror(dpy: *mut C::Display, event: *mut C::XErrorEvent) -> c_int {
-    0
+    const BAD_WINDOW: u8 = C::BadWindow as u8;
+    const BAD_MATCH: u8 = C::BadMatch as u8;
+    const BAD_DRAWABLE: u8 = C::BadDrawable as u8;
+    const BAD_ACCESS: u8 = C::BadAccess as u8;
+
+    const SET_INPUT_FOCUS: u8 = C::X_SetInputFocus as u8;
+    const POLY_TEXT_8: u8 = C::X_PolyText8 as u8;
+    const POLY_FILL_RECTANGLE: u8 = C::X_PolyFillRectangle as u8;
+    const POLY_SEGMENT: u8 = C::X_PolySegment as u8;
+    const CONFIGURE_WINDOW: u8 = C::X_ConfigureWindow as u8;
+    const GRAB_BUTTON: u8 = C::X_GrabButton as u8;
+    const GRAB_KEY: u8 = C::X_GrabKey as u8;
+    const COPY_AREA: u8 = C::X_CopyArea as u8;
+
+    let ev = unsafe { event.read() };
+
+    match (ev.error_code, ev.request_code) {
+        (BAD_WINDOW, _) => return 0,
+        (BAD_MATCH, SET_INPUT_FOCUS | CONFIGURE_WINDOW) => return 0,
+        (BAD_DRAWABLE, COPY_AREA) => return 0,
+        (BAD_DRAWABLE, POLY_TEXT_8 | POLY_FILL_RECTANGLE | POLY_SEGMENT) => return 0,
+        (BAD_ACCESS, GRAB_BUTTON | GRAB_KEY) => return 0,
+        _ => {}
+    }
+    log::error!(
+        "{NAME}: fatal error: request code={}, error code={}",
+        ev.request_code,
+        ev.error_code,
+    );
+    let Some(xerrorlib) = (unsafe { XERRORXLIB }) else {
+        panic!("{NAME}: xerrorlib handler missing")
+    };
+    unsafe { xerrorlib(dpy, event) }
 }
 
 fn check_other_wm(dpy: &x11::Display) {
     let handler = unsafe { C::XSetErrorHandler(Some(xerrorstart)) };
     unsafe { XERRORXLIB = handler };
+    // this causes an error if some other window manager is running.
     dpy.select_input(dpy.default_root_window(), C::SubstructureRedirectMask as c_long);
-
-    // C::XSelectInput();
-    // xerrorxlib = XSetErrorHandler(xerrorstart);
-    // /* this causes an error if some other window manager is running */
-    // XSelectInput(dpy, DefaultRootWindow(dpy), SubstructureRedirectMask);
-    // XSync(dpy, False);
-    // XSetErrorHandler(xerror);
-    // XSync(dpy, False);
+    dpy.sync(false);
+    unsafe { C::XSetErrorHandler(Some(xerror)) };
+    dpy.sync(false);
 }
 
 fn check_locale_support() {
@@ -98,9 +115,6 @@ fn main() -> ExitCode {
         return EC::FAILURE;
     };
     check_other_wm(&dpy);
-
-    // let Some((dpy, screen)) = open_display() else { return ExitCode::FAILURE };
-    // println!("{dpy:?}");
 
     EC::SUCCESS
 }
