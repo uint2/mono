@@ -1,7 +1,9 @@
 use std::process::ExitCode;
 
-mod c;
-mod x11;
+use x11rb::connection::Connection;
+use x11rb::errors::ConnectError;
+use x11rb::errors::ConnectionError;
+use x11rb::rust_connection::RustConnection;
 
 const VERSION: &str = env!("CARGO_PKG_VERSION");
 const NAME: &str = env!("CARGO_PKG_NAME");
@@ -22,16 +24,16 @@ fn handle_cli_args() -> Option<ExitCode> {
     }
 }
 
-// fn open_display() -> Option<(RustConnection, usize)> {
-//     match x11rb::connect(None) {
-//         Ok(v) => Some(v),
-//         Err(err) => {
-//             log::error!("{NAME}: cannot open X display.");
-//             log::error!("{err}");
-//             None
-//         }
-//     }
-// }
+fn open_display() -> Option<(RustConnection, usize)> {
+    match x11rb::connect(None) {
+        Ok(v) => Some(v),
+        Err(err) => {
+            log::error!("{NAME}: cannot open X display.");
+            log::error!("{err}");
+            None
+        }
+    }
+}
 
 fn check_other_wm() {
     // xerrorxlib = XSetErrorHandler(xerrorstart);
@@ -57,8 +59,8 @@ fn main() -> ExitCode {
         // TODO: port XSupportsLocale
     }
 
-    // let Some((dpy, screen)) = open_display() else { return ExitCode::FAILURE };
-    // println!("{dpy:?}");
+    let Some((dpy, screen)) = open_display() else { return ExitCode::FAILURE };
+    println!("{dpy:?}");
 
     ExitCode::SUCCESS
 }
