@@ -32,6 +32,7 @@ dependencies = [
 name = "kopiwm"
 version = "0.1.0"
 dependencies = [
+ "libc",
  "log 0.1.0",
  "x11rb",
 ]

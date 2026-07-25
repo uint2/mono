@@ -65,6 +65,11 @@ end
 function M.init(set_statusline)
   M.set_statusline = set_statusline
   M.find_git_dir()
+  -- Reinvoke this function every time we switch buffers.
+  vim.api.nvim_create_autocmd(
+    { 'BufEnter' },
+    { callback = function() M.find_git_dir() end }
+  )
 end
 
 --[[
