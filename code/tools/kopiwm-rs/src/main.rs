@@ -1,12 +1,7 @@
-mod c;
-mod logger;
-
-use log::LevelFilter;
-
 fn main() {
-    logger::init(LevelFilter::Debug);
+    log::init(Some(log::LevelFilter::Debug));
 
-    unsafe { c::XOpenDisplay(std::ptr::null()) };
+    log::info!("Started execution of kopiwm-rs!");
 
     log::info!("Heyy");
 }

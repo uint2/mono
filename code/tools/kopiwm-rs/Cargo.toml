@@ -4,8 +4,5 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-log = "0.4.33"
-
-[build-dependencies]
-bindgen = "0.72.1"
-pkg-config = "0.3.33"
+x11rb = { version = "0.14.0", features = ["all-extensions"] }
+log = { path = "../logger.rs" }

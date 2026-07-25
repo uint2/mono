@@ -1,19 +1,25 @@
 /*!
 Defines a super simple logger that works with the `log` crate.
+Pulled from the ripgrep project. Alomst everything below is a direct requote of
+their code/comments.
 
 We don't do anything fancy. We just need basic log levels and the ability to
 print to stderr. We therefore avoid bringing in extra dependencies just for
 this functionality.
 */
 
-use log::{Level, LevelFilter, Log};
+use ext_log as log;
+
+pub use log::{Level, LevelFilter};
+
+// Re-export the logging functions.
+pub use log::{debug, error, info, trace, warn};
 
 /// Like eprintln, but locks stdout to prevent interleaving lines.
 ///
 /// This locks stdout, not stderr, even though this prints to stderr. This
 /// avoids the appearance of interleaving output when stdout and stderr both
 /// correspond to a tty.
-#[macro_export]
 macro_rules! eprintln_locked {
     ($($tt:tt)*) => {{
         {
@@ -62,17 +68,35 @@ impl Logger {
     }
 }
 
-const fn color(level: Level) -> &'static str {
-    match level {
-        Level::Trace => "\x1b[34m",
-        Level::Debug => "\x1b[35m",
-        Level::Info => "\x1b[32m",
-        Level::Warn => "\x1b[33m",
-        Level::Error => "\x1b[31m",
+static mut IS_TERMINAL: Option<bool> = None;
+
+fn is_terminal() -> bool {
+    match unsafe { IS_TERMINAL } {
+        Some(true) => true,
+        _ => false,
     }
 }
 
-impl Log for Logger {
+fn color(level: Level) -> &'static str {
+    if let None = unsafe { IS_TERMINAL } {
+        use std::io::IsTerminal;
+        let is_terminal = std::io::stderr().is_terminal();
+        unsafe { IS_TERMINAL = Some(is_terminal) };
+    }
+    return if is_terminal() {
+        match level {
+            Level::Trace => "\x1b[34m",
+            Level::Debug => "\x1b[35m",
+            Level::Info => "\x1b[32m",
+            Level::Warn => "\x1b[33m",
+            Level::Error => "\x1b[31m",
+        }
+    } else {
+        ""
+    };
+}
+
+impl log::Log for Logger {
     fn enabled(&self, _: &log::Metadata<'_>) -> bool {
         // We set the log level via log::set_max_level, so we don't need to
         // implement filtering here.
@@ -84,24 +108,26 @@ impl Log for Logger {
         let level = record.level();
         let color = color(level);
         let args = record.args();
-        const COLON: &str = "\x1b[37m:\x1b[m";
+
+        let tcolor0 = if is_terminal() { "\x1b[37m" } else { "" };
+        let reset = if is_terminal() { "\x1b[m" } else { "" };
+        let colon = if is_terminal() { "\x1b[37m:\x1b[m" } else { ":" };
+
         match (record.file(), record.line()) {
             (Some(file), Some(line)) => {
                 eprintln_locked!(
-                    "{color}{level} \x1b[37m{target}\x1b[m {}:{}{COLON} {args}",
+                    "{color}{level} {tcolor0}{target}{reset} {}:{}{colon} {args}",
                     file,
                     line
                 );
             }
             (Some(file), None) => {
                 eprintln_locked!(
-                    "{color}{level} \x1b[37m{target}\x1b[m {}{COLON} {args}",
+                    "{color}{level} {tcolor0}{target}{reset} {}{colon} {args}",
                     file
                 );
             }
-            _ => {
-                eprintln_locked!("{color}{level} \x1b[37m{target}{COLON} {args}");
-            }
+            _ => eprintln_locked!("{color}{level} {tcolor0}{target}{colon} {args}"),
         }
     }
 
@@ -110,7 +136,9 @@ impl Log for Logger {
     }
 }
 
-pub fn init(level_filter: LevelFilter) {
-    log::set_max_level(level_filter);
+pub fn init(level_filter: Option<LevelFilter>) {
+    if let Some(level_filter) = level_filter {
+        log::set_max_level(level_filter);
+    }
     Logger::init().expect("Unable to initialize logger");
 }
