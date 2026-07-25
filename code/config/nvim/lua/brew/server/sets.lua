@@ -35,8 +35,9 @@ v.mouse = ''
 v.cinoptions:append('L0') -- so that typing `std::` in cpp doesn't de-dent it halfway
 v.formatoptions = 'jcroql' -- see :h fo-table too
 v.colorcolumn = '81'
+v.textwidth = 80
 
 -- honorary set
 -- set leader to <space>
 vim.g.mapleader = ' '
-vim.g.rust_recommended_style = false
+-- vim.g.rust_recommended_style = false

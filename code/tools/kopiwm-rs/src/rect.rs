@@ -1,8 +1,8 @@
 use crate::prelude::*;
 
 pub struct Size<T = c_uint> {
-    width: T,
-    height: T,
+    pub width: T,
+    pub height: T,
 }
 
 impl<T> Size<T> {
@@ -11,9 +11,13 @@ impl<T> Size<T> {
     }
 }
 
+#[rustfmt::skip]
+impl<T: Clone> Clone for Size<T> { fn clone(&self) -> Self { Self { width: self.width.clone(), height: self.height.clone() } } }
+impl<T: Copy> Copy for Size<T> {}
+
 pub struct Loc<T = c_int> {
-    x: T,
-    y: T,
+    pub x: T,
+    pub y: T,
 }
 
 impl<T> Loc<T> {
@@ -21,6 +25,10 @@ impl<T> Loc<T> {
         Self { x, y }
     }
 }
+
+#[rustfmt::skip]
+impl<T: Clone> Clone for Loc<T> { fn clone(&self) -> Self { Self { x: self.x.clone(), y: self.y.clone() } } }
+impl<T: Copy> Copy for Loc<T> {}
 
 /// C: type for Coordinates.
 /// D: type for Distance.

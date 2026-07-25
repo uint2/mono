@@ -16,6 +16,9 @@ fn main() {
     let bindings = builder
         .header("wrapper.h")
         .parse_callbacks(Box::new(bindgen::CargoCallbacks::new()))
+        // .allowlist_item("RevertToNone")
+        // .allowlist_item("RevertToParent")
+        // .allowlist_item("RevertToPointerRoot")
         .generate()
         .expect("Unable to generate bindings");
 

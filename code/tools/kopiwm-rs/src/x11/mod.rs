@@ -1,10 +1,11 @@
 mod color;
 mod cursor;
 mod display;
+pub mod enums;
 mod window;
 mod window_attributes;
 
-pub use color::ColorScheme;
-pub use cursor::Cursor;
-pub use display::Display;
-pub use window::Window;
+pub(crate) use color::ColorScheme;
+pub(crate) use cursor::Cursor;
+pub(crate) use display::Display;
+pub(crate) use window::Window;

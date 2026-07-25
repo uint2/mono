@@ -1,6 +1,7 @@
 mod C;
 mod app;
 mod client;
+mod drw;
 mod enum_array;
 mod enums;
 mod font;

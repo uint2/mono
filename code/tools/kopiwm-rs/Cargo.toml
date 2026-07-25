@@ -12,5 +12,5 @@ strum = "0.28.0"
 strum_macros = "0.28.0"
 
 [build-dependencies]
-bindgen = "0.72.1"
+bindgen = { git = "https://github.com/rust-lang/rust-bindgen", rev = "9d26c6eddeff9192ddedb563192abe3128fc5aae" }
 pkg-config = "0.3.33"

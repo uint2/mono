@@ -125,4 +125,51 @@ impl Display {
     pub fn display_size(&self, screen: c_int) -> Size<c_int> {
         Size::new(self.display_width(screen), self.display_height(screen))
     }
+
+    pub fn default_depth(&self, screen: c_int) -> c_int {
+        unsafe { C::XDefaultDepth(self.0, screen) }
+    }
+
+    pub fn create_pixmap(
+        &self,
+        window: Window,
+        dimensions: Size<c_uint>,
+        depth: c_uint,
+    ) -> C::Pixmap {
+        let w = dimensions.width;
+        let h = dimensions.height;
+        unsafe { C::XCreatePixmap(self.0, window.to_c(), w, h, depth) }
+    }
+
+    pub fn free_pixmap(&self, pixmap: C::Pixmap) {
+        unsafe { C::XFreePixmap(self.0, pixmap) };
+    }
+
+    pub fn create_graphics_ctx(&self, window: Window) -> C::GC {
+        unsafe { C::XCreateGC(self.0, window.to_c(), 0, ptr::null_mut()) }
+    }
+
+    pub fn free_graphics_ctx(&self, graphics_ctx: C::GC) {
+        unsafe { C::XFreeGC(self.0, graphics_ctx) };
+    }
+
+    pub fn set_line_attributes(
+        &self,
+        graphics_ctx: C::GC,
+        line_width: c_uint,
+        line_style: LineStyle,
+        cap_style: CapStyle,
+        join_style: JoinStyle,
+    ) {
+        unsafe {
+            C::XSetLineAttributes(
+                self.0,
+                graphics_ctx,
+                line_width,
+                line_style.to_c(),
+                cap_style.to_c(),
+                join_style.to_c(),
+            );
+        }
+    }
 }
