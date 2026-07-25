@@ -2,3 +2,11 @@
 #![allow(unnecessary_transmutes)]
 
 include!("generated_bindings.rs");
+
+impl Default for XSetWindowAttributes {
+    /// Initialize with zeroes to all values. XSetWindowAttributes is a struct
+    /// full of integers anyway.
+    fn default() -> Self {
+        unsafe { core::mem::zeroed() }
+    }
+}

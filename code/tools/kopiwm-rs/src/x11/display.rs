@@ -3,6 +3,8 @@ use crate::prelude::*;
 
 pub struct Display(*mut C::Display);
 
+unsafe impl Sync for Display {}
+
 impl Display {
     /// The XOpenDisplay function returns a Display structure that serves as
     /// the connection to the X server and that contains all the information

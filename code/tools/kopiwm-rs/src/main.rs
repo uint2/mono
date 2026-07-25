@@ -1,26 +1,22 @@
 mod C;
 mod prelude;
+mod setup;
 mod x11;
 
 use prelude::*;
 
-use std::process::ExitCode;
-
-const VERSION: &str = env!("CARGO_PKG_VERSION");
-const NAME: &str = env!("CARGO_PKG_NAME");
-
-fn handle_cli_args() -> Option<ExitCode> {
+fn handle_cli_args() -> bool {
     let argv = std::env::args().collect::<Vec<_>>();
     match argv.len() {
         0 => panic!("How did you even get here"),
-        1 => return None, // continue execution
+        1 => return false, // continue execution
         2 if argv[1] == "-v" => {
             println!("{NAME}-{VERSION}");
-            return Some(ExitCode::SUCCESS);
+            return true;
         }
         _ => {
             println!("usage: {NAME} [-v]");
-            return Some(ExitCode::SUCCESS);
+            return true;
         }
     }
 }
@@ -93,6 +89,19 @@ fn check_locale_support() {
 const LOCAL_ONLY: bool = false;
 fn safe_local_testing() {}
 
+fn try_main() -> Result<()> {
+    let false = handle_cli_args() else { return Ok(()) };
+    check_locale_support();
+
+    let Some(dpy) = x11::Display::open() else {
+        return Err(log::error!("{NAME}: cannot open display"));
+    };
+    check_other_wm(&dpy);
+    setup::setup_sigaction()?;
+    setup::clean_up_zombies();
+    Ok(())
+}
+
 fn main() -> ExitCode {
     use ExitCode as EC;
 
@@ -105,16 +114,11 @@ fn main() -> ExitCode {
 
     log::info!("Started execution of kopiwm-rs!");
 
-    if let Some(exit_code) = handle_cli_args() {
-        return exit_code;
+    match try_main() {
+        Ok(_) => ExitCode::SUCCESS,
+        Err(_) => ExitCode::FAILURE,
     }
-    check_locale_support();
 
-    let Some(dpy) = x11::Display::open() else {
-        log::error!("{NAME}: cannot open display");
-        return EC::FAILURE;
-    };
-    check_other_wm(&dpy);
-
-    EC::SUCCESS
+    //
+    // EC::SUCCESS
 }
