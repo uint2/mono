@@ -39,3 +39,4 @@ v.colorcolumn = '81'
 -- honorary set
 -- set leader to <space>
 vim.g.mapleader = ' '
+vim.g.rust_recommended_style = false
