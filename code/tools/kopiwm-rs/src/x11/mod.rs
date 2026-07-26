@@ -1,13 +1,19 @@
 mod color;
 mod cursor;
 mod display;
-pub mod enums;
+mod enums;
 mod screen;
 mod window;
 mod window_attributes;
+mod wrapped;
 
-pub(crate) use color::ColorScheme;
-pub(crate) use cursor::Cursor;
-pub(crate) use display::Display;
-pub(crate) use screen::Screen;
-pub(crate) use window::Window;
+pub mod prelude {
+    use super::*;
+    pub use color::ColorScheme;
+    pub use cursor::Cursor;
+    pub use display::Display;
+    pub use enums::*;
+    pub use screen::Screen;
+    pub use window::Window;
+    pub use wrapped::*;
+}

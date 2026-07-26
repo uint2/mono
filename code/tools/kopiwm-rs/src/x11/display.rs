@@ -2,11 +2,11 @@ use crate::C;
 use crate::prelude::*;
 
 #[derive(Clone, Copy)]
-pub struct Display(*mut C::Display);
+pub struct Display(NonNull<C::Display>);
 
 impl Display {
-    pub const fn to_c(&self) -> *mut C::Display {
-        self.0
+    pub const fn c(&self) -> *mut C::Display {
+        self.0.as_ptr()
     }
 
     /// The XOpenDisplay function returns a Display structure that serves as
@@ -36,7 +36,7 @@ impl Display {
     /// source: https://x.org/releases/X11R7.7/doc/man/man3/XOpenDisplay.3.xhtml
     pub fn open() -> Option<Self> {
         let dpy = unsafe { C::XOpenDisplay(std::ptr::null()) };
-        if dpy.is_null() { return None } else { Some(Self(dpy)) }
+        NonNull::new(dpy).map(Self)
     }
 
     /// The XCloseDisplay function closes the connection to the X server for
@@ -54,7 +54,7 @@ impl Display {
     ///
     /// source: https://x.org/releases/X11R7.7/doc/man/man3/XOpenDisplay.3.xhtml
     pub fn close(self) {
-        unsafe { C::XCloseDisplay(self.0) };
+        unsafe { C::XCloseDisplay(self.c()) };
     }
 
     /// The XSelectInput function requests that the X server report the events
@@ -87,7 +87,7 @@ impl Display {
     ///
     /// source: https://x.org/releases/X11R7.7/doc/man/man3/XSendEvent.3.xhtml
     pub fn select_input(&self, window: Window, event_mask: c_long) {
-        unsafe { C::XSelectInput(self.0, window.to_c(), event_mask) };
+        unsafe { C::XSelectInput(self.c(), window.c(), event_mask) };
     }
 
     /// The XSync function flushes the output buffer and then waits until all
@@ -107,24 +107,24 @@ impl Display {
         // According to the docs in the source, the c_int output is only important
         // in the other functions documented on that html page, but not XSync. So
         // we discard it.
-        unsafe { C::XSync(self.0, discard as c_int) };
+        unsafe { C::XSync(self.c(), discard as c_int) };
     }
 
     pub fn default_root_window(&self) -> Window {
-        let window = unsafe { C::XDefaultRootWindow(self.0) };
+        let window = unsafe { C::XDefaultRootWindow(self.c()) };
         Window::from_c(window)
     }
 
     pub fn default_screen(&self) -> Screen {
-        Screen::from_c(unsafe { C::XDefaultScreen(self.0) })
+        Screen::from_c(unsafe { C::XDefaultScreen(self.c()) })
     }
 
     pub fn display_width(&self, screen: Screen) -> c_int {
-        unsafe { C::XDisplayWidth(self.0, screen.to_c()) }
+        unsafe { C::XDisplayWidth(self.c(), screen.c()) }
     }
 
     pub fn display_height(&self, screen: Screen) -> c_int {
-        unsafe { C::XDisplayHeight(self.0, screen.to_c()) }
+        unsafe { C::XDisplayHeight(self.c(), screen.c()) }
     }
 
     pub fn display_size(&self, screen: Screen) -> Size<c_int> {
@@ -132,7 +132,7 @@ impl Display {
     }
 
     pub fn default_depth(&self, screen: Screen) -> c_int {
-        unsafe { C::XDefaultDepth(self.0, screen.to_c()) }
+        unsafe { C::XDefaultDepth(self.c(), screen.c()) }
     }
 
     pub fn create_pixmap(
@@ -143,19 +143,19 @@ impl Display {
     ) -> C::Pixmap {
         let w = dimensions.width;
         let h = dimensions.height;
-        unsafe { C::XCreatePixmap(self.0, window.to_c(), w, h, depth) }
+        unsafe { C::XCreatePixmap(self.c(), window.c(), w, h, depth) }
     }
 
     pub fn free_pixmap(&self, pixmap: C::Pixmap) {
-        unsafe { C::XFreePixmap(self.0, pixmap) };
+        unsafe { C::XFreePixmap(self.c(), pixmap) };
     }
 
     pub fn create_graphics_ctx(&self, window: Window) -> C::GC {
-        unsafe { C::XCreateGC(self.0, window.to_c(), 0, ptr::null_mut()) }
+        unsafe { C::XCreateGC(self.c(), window.c(), 0, ptr::null_mut()) }
     }
 
     pub fn free_graphics_ctx(&self, graphics_ctx: C::GC) {
-        unsafe { C::XFreeGC(self.0, graphics_ctx) };
+        unsafe { C::XFreeGC(self.c(), graphics_ctx) };
     }
 
     pub fn set_line_attributes(
@@ -168,34 +168,35 @@ impl Display {
     ) {
         unsafe {
             C::XSetLineAttributes(
-                self.0,
+                self.c(),
                 graphics_ctx,
                 line_width,
-                line_style.to_c(),
-                cap_style.to_c(),
-                join_style.to_c(),
+                line_style.c(),
+                cap_style.c(),
+                join_style.c(),
             );
         }
     }
 
-    pub fn xft_font_open_name(&self, screen: Screen, font_name: &str) -> Option<XFont> {
-        let font =
-            unsafe { C::XftFontOpenName(self.0, screen.to_c(), font_name.c().as_ptr()) };
-        XFont::new(*self, font)
+    pub fn xft_font_open_name(&self, screen: Screen, font_name: &str) -> Option<XftFont> {
+        let font = unsafe {
+            C::XftFontOpenName(self.c(), screen.c(), font_name.c_str().as_ptr())
+        };
+        XftFont::new(*self, font)
     }
 
-    pub fn xft_font_open_pattern(&self, pattern: &XPattern) -> Option<XFont> {
-        let font = unsafe { C::XftFontOpenPattern(self.0, pattern.to_c()) };
-        XFont::new(*self, font)
+    pub fn xft_font_open_pattern(&self, pattern: &FcPattern) -> Option<XftFont> {
+        let font = unsafe { C::XftFontOpenPattern(self.c(), pattern.c()) };
+        XftFont::new(*self, font)
     }
 
     pub fn xft_text_extents_utf8(&self, font: &Font, text: &str) -> Size<c_int> {
-        let text = text.c();
+        let text = text.c_str();
         let mut extents: C::XGlyphInfo = unsafe { core::mem::zeroed() };
         unsafe {
             C::XftTextExtentsUtf8(
-                self.0,
-                font.xfont().to_c(),
+                self.c(),
+                font.xfont().c(),
                 text.as_ptr() as *const u8,
                 text.count_bytes() as c_int,
                 &mut extents,
@@ -205,7 +206,8 @@ impl Display {
     }
 
     // TODO: back here
-    pub fn get_modifier_mapping(&self) {
-        // C::XGetModifierMapping(self.0);
+    pub fn get_modifier_mapping(&self) -> Option<XModifierKeymap> {
+        let x = unsafe { C::XGetModifierMapping(self.c()) };
+        XModifierKeymap::new(x)
     }
 }

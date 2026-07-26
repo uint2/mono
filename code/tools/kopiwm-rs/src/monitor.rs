@@ -1,1 +1,1 @@
-pub(crate) struct Monitor {}
+pub struct Monitor {}

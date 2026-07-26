@@ -1,4 +1,4 @@
-pub(crate) trait LinkedListNode {
+pub trait LinkedListNode {
     fn next<'a>(&'a self) -> Option<&'a Self>
     where
         Self: Sized;

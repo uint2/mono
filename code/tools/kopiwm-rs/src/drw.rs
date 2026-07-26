@@ -1,14 +1,14 @@
 use crate::C;
 use crate::prelude::*;
 
-pub(crate) struct DrwParams {
+pub struct DrwParams {
     pub dpy: Display,
     pub screen: c_int,
     pub root: Window,
     pub size: Size,
 }
 
-pub(crate) struct Drw {
+pub struct Drw {
     dpy: Display,
     screen: Screen,
     root: Window,

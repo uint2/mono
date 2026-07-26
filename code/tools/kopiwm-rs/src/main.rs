@@ -89,7 +89,7 @@ fn try_main() -> Result<()> {
     let false = handle_cli_args() else { return Ok(()) };
     check_locale_support();
 
-    let Some(dpy) = x11::Display::open() else {
+    let Some(dpy) = Display::open() else {
         return Err(log::error!("{NAME}: cannot open display"));
     };
     log::info!("Established connection to x-server");

@@ -5,7 +5,7 @@ macro_rules! repr_enum {
     (($name:ident, $int:ty), $(($enum:ident, $value:expr)),+ $(,)?) => {
         pub enum $name { $($enum,)* }
         impl $name {
-            pub const fn to_c(&self) -> $int {
+            pub const fn c(&self) -> $int {
                 match self { $(Self::$enum => $value as $int,)* }
             }
         }

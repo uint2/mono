@@ -2,7 +2,7 @@ use crate::prelude::*;
 
 /// C: type for Coordinates.
 /// D: type for Distance.
-pub(crate) struct App<'app, D = c_uint> {
+pub struct App<'app, D = c_uint> {
     dpy: Display,
     screen: c_int,
     /// Screen size.

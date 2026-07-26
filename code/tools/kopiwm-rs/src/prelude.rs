@@ -7,13 +7,12 @@ pub(crate) use crate::drw::{Drw, DrwParams};
 pub(crate) use crate::enums::{Clk, CursorState, Scheme, SchemeState};
 pub(crate) use crate::enums::{CursorStateArray, SchemeStateArray};
 pub(crate) use crate::ffi2::ConvertToC;
-pub(crate) use crate::font::{Font, Fonts, XFont, XPattern};
+pub(crate) use crate::font::{Font, Fonts};
 pub(crate) use crate::linked_list::LinkedListNode;
 pub(crate) use crate::monitor::Monitor;
 pub(crate) use crate::numlockmask::NumLockMask;
 pub(crate) use crate::rect::{Loc, Rect, Size};
-pub(crate) use crate::x11::enums::*;
-pub(crate) use crate::x11::{ColorScheme, Cursor, Display, Screen, Window};
+pub(crate) use crate::x11::prelude::*;
 
 // std::*
 pub(crate) use std::collections::LinkedList;

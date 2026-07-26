@@ -1,7 +1,7 @@
 use crate::C;
 use crate::prelude::*;
 
-pub(crate) struct NumLockMask {
+pub struct NumLockMask {
     modifiers: [c_uint; 4],
 }
 
@@ -14,6 +14,6 @@ impl NumLockMask {
     pub fn update(&mut self, dpy: &Display) {
         // Reset numlockmask.
         self.modifiers[2] = 0;
-        // TODO: back here
+        // core::ptr::NonNull::new();
     }
 }

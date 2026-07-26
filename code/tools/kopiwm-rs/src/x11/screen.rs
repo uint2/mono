@@ -4,7 +4,7 @@ use crate::prelude::*;
 pub struct Screen(c_int);
 
 impl Screen {
-    pub const fn to_c(&self) -> c_int {
+    pub const fn c(&self) -> c_int {
         self.0
     }
 

@@ -1,1 +1,1 @@
-pub(crate) struct Client {}
+pub struct Client {}

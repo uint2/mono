@@ -4,7 +4,7 @@ use crate::C;
 pub struct Window(C::Window);
 
 impl Window {
-    pub const fn to_c(&self) -> C::Window {
+    pub const fn c(&self) -> C::Window {
         self.0
     }
 
