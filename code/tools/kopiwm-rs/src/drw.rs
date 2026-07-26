@@ -1,17 +1,16 @@
 use crate::C;
 use crate::prelude::*;
 
-pub(crate) struct DrwParams<'a> {
+pub(crate) struct DrwParams {
     pub dpy: Display,
     pub screen: c_int,
     pub root: Window,
     pub size: Size,
-    pub colors: &'a EnumArray<SchemeState, Scheme<&'static str>>,
 }
 
 pub(crate) struct Drw {
     dpy: Display,
-    screen: c_int,
+    screen: Screen,
     root: Window,
     /// Width and height of the drawing area.
     sz: Size,
@@ -22,20 +21,11 @@ pub(crate) struct Drw {
 }
 
 impl Drw {
-    pub fn new(params: DrwParams) -> Self {
-        let depth = params.dpy.default_depth(params.screen);
-        let dpy = params.dpy;
-        let drawable = dpy.create_pixmap(params.root, params.size, depth as c_uint);
-        let gc = dpy.create_graphics_ctx(params.root);
-        let drw = Self {
-            dpy,
-            screen: params.screen,
-            root: params.root,
-            sz: params.size,
-            drawable,
-            gc,
-            scheme: None,
-        };
+    pub fn new(dpy: Display, root: Window, screen: Screen, screen_size: Size) -> Self {
+        let depth = dpy.default_depth(screen);
+        let drawable = dpy.create_pixmap(root, screen_size, depth as c_uint);
+        let gc = dpy.create_graphics_ctx(root);
+        let drw = Self { dpy, screen, root, sz: screen_size, drawable, gc, scheme: None };
         drw.set_line_attributes(1, LineStyle::Solid, CapStyle::Butt, JoinStyle::Miter);
         drw
     }

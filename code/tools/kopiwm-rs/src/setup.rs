@@ -1,20 +1,23 @@
+use crate::C;
 use crate::prelude::*;
 
 use nix::sys::signal::{SaFlags, SigAction, SigHandler, SigSet, Signal, sigaction};
 
-fn setup() {
-    let mut sa = libc::sigaction {
-        sa_sigaction: 0,
-        sa_mask: unsafe { core::mem::zeroed() },
-        sa_flags: 0,
-        sa_restorer: None,
-    };
-    // do not transform children into zombies when they terminate
-    unsafe { libc::sigemptyset(&mut sa.sa_mask) };
+use crate::{XERRORXLIB, xerror};
 
-    // The sigaction() system call is used to change the action taken by a
-    // process on receipt of a specific signal.
-    unsafe { libc::sigaction(libc::SIGCHLD, &sa, ptr::null_mut()) };
+/// Startup error handler to check if another window manager is already running.
+unsafe extern "C" fn xerrorstart(_: *mut C::Display, _: *mut C::XErrorEvent) -> c_int {
+    panic!("{NAME}: another window manager is already running");
+}
+
+pub fn check_other_wm(dpy: &Display) {
+    let handler = unsafe { C::XSetErrorHandler(Some(xerrorstart)) };
+    unsafe { XERRORXLIB = handler };
+    // this causes an error if some other window manager is running.
+    dpy.select_input(dpy.default_root_window(), C::SubstructureRedirectMask as c_long);
+    dpy.sync(false);
+    unsafe { C::XSetErrorHandler(Some(xerror)) };
+    dpy.sync(false);
 }
 
 pub fn setup_sigaction() -> Result<()> {

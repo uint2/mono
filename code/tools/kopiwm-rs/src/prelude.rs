@@ -11,7 +11,7 @@ pub(crate) use crate::monitor::Monitor;
 pub(crate) use crate::numlockmask::NumLockMask;
 pub(crate) use crate::rect::{Loc, Rect, Size};
 pub(crate) use crate::x11::enums::*;
-pub(crate) use crate::x11::{ColorScheme, Cursor, Display, Window};
+pub(crate) use crate::x11::{ColorScheme, Cursor, Display, Window, Screen};
 
 // std::*
 pub(crate) use std::collections::LinkedList;

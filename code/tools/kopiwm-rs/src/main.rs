@@ -38,11 +38,6 @@ static mut XERRORXLIB: Option<
     unsafe extern "C" fn(*mut C::Display, *mut C::XErrorEvent) -> c_int,
 > = None;
 
-/// Startup error handler to check if another window manager is already running.
-unsafe extern "C" fn xerrorstart(_: *mut C::Display, _: *mut C::XErrorEvent) -> c_int {
-    panic!("{NAME}: another window manager is already running");
-}
-
 unsafe extern "C" fn xerror(dpy: *mut C::Display, event: *mut C::XErrorEvent) -> c_int {
     const BAD_WINDOW: u8 = C::BadWindow as u8;
     const BAD_MATCH: u8 = C::BadMatch as u8;
@@ -79,16 +74,6 @@ unsafe extern "C" fn xerror(dpy: *mut C::Display, event: *mut C::XErrorEvent) ->
     unsafe { xerrorlib(dpy, event) }
 }
 
-fn check_other_wm(dpy: &x11::Display) {
-    let handler = unsafe { C::XSetErrorHandler(Some(xerrorstart)) };
-    unsafe { XERRORXLIB = handler };
-    // this causes an error if some other window manager is running.
-    dpy.select_input(dpy.default_root_window(), C::SubstructureRedirectMask as c_long);
-    dpy.sync(false);
-    unsafe { C::XSetErrorHandler(Some(xerror)) };
-    dpy.sync(false);
-}
-
 fn check_locale_support() {
     let result = unsafe { libc::setlocale(libc::LC_CTYPE, ptr::null()) };
     let setlocale_ok = result != ptr::null_mut();
@@ -105,19 +90,13 @@ fn try_main() -> Result<()> {
     let Some(dpy) = x11::Display::open() else {
         return Err(log::error!("{NAME}: cannot open display"));
     };
-    check_other_wm(&dpy);
+    setup::check_other_wm(&dpy);
     setup::setup_sigaction()?;
     setup::clean_up_zombies();
     let screen = dpy.default_screen();
     let screen_size = dpy.display_size(screen);
     let root = dpy.default_root_window();
-    let drw = Drw::new(DrwParams {
-        dpy,
-        root,
-        screen,
-        size: screen_size.convert(),
-        colors: todo!(),
-    });
+    let drw = Drw::new(dpy, root, screen, screen_size.convert());
     Ok(())
 }
 

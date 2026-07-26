@@ -110,24 +110,24 @@ impl Display {
         Window::from_c(window)
     }
 
-    pub fn default_screen(&self) -> c_int {
-        unsafe { C::XDefaultScreen(self.0) }
+    pub fn default_screen(&self) -> Screen {
+        Screen::from_c(unsafe { C::XDefaultScreen(self.0) })
     }
 
-    pub fn display_width(&self, screen: c_int) -> c_int {
-        unsafe { C::XDisplayWidth(self.0, screen) }
+    pub fn display_width(&self, screen: Screen) -> c_int {
+        unsafe { C::XDisplayWidth(self.0, screen.to_c()) }
     }
 
-    pub fn display_height(&self, screen: c_int) -> c_int {
-        unsafe { C::XDisplayHeight(self.0, screen) }
+    pub fn display_height(&self, screen: Screen) -> c_int {
+        unsafe { C::XDisplayHeight(self.0, screen.to_c()) }
     }
 
-    pub fn display_size(&self, screen: c_int) -> Size<c_int> {
+    pub fn display_size(&self, screen: Screen) -> Size<c_int> {
         Size::new(self.display_width(screen), self.display_height(screen))
     }
 
-    pub fn default_depth(&self, screen: c_int) -> c_int {
-        unsafe { C::XDefaultDepth(self.0, screen) }
+    pub fn default_depth(&self, screen: Screen) -> c_int {
+        unsafe { C::XDefaultDepth(self.0, screen.to_c()) }
     }
 
     pub fn create_pixmap(
