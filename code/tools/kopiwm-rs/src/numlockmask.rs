@@ -14,6 +14,32 @@ impl NumLockMask {
     pub fn update(&mut self, dpy: &Display) {
         // Reset numlockmask.
         self.modifiers[2] = 0;
-        // core::ptr::NonNull::new();
+
+        let Some(modmap) = dpy.get_modifier_mapping() else {
+            log::warn!("Unable to get modifier mapping");
+            return;
+        };
+        let mkpm = modmap.max_keypermod();
+        let mmap = modmap.modifiermap();
+        for i in 0..8 {
+            for j in 0..mkpm {
+                let keycode = mmap[i * mkpm + j];
+                if keycode == dpy.keysym_to_keycode(C::XK_Num_Lock as C::KeySym) {
+                    self.modifiers[2] = 1 << i;
+                }
+            }
+        }
+        self.modifiers[3] = self.modifiers[2] | C::LockMask;
+    }
+
+    pub fn cleanmask(&self, mask: c_uint) -> c_uint {
+        const ALL_MASK: c_uint = C::ShiftMask
+            | C::ControlMask
+            | C::Mod1Mask
+            | C::Mod2Mask
+            | C::Mod3Mask
+            | C::Mod4Mask
+            | C::Mod5Mask;
+        return (mask & !self.modifiers[3]) & ALL_MASK;
     }
 }

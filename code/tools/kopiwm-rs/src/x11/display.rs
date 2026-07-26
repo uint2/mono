@@ -205,9 +205,18 @@ impl Display {
         Size::new(extents.xOff as c_int, font.height())
     }
 
-    // TODO: back here
     pub fn get_modifier_mapping(&self) -> Option<XModifierKeymap> {
         let x = unsafe { C::XGetModifierMapping(self.c()) };
         XModifierKeymap::new(x)
+    }
+
+    pub fn keysym_to_keycode(&self, keysym: C::KeySym) -> C::KeyCode {
+        unsafe { C::XKeysymToKeycode(self.c(), keysym) }
+    }
+
+    pub fn keycode_to_keysym(&self, keycode: C::KeyCode) -> C::KeySym {
+        const GROUP: c_int = 0;
+        const LEVEL: c_int = 0;
+        unsafe { C::XkbKeycodeToKeysym(self.c(), keycode, GROUP, LEVEL) }
     }
 }
