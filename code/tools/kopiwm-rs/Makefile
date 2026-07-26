@@ -12,6 +12,7 @@ build:
 
 run: build
 	KOPIWM_BINARY=$(BINARY_PATH) ./startup.sh
+	nvim $(STDERR_LOG)
 
 # run: build
 # 	KOPIWM_BINARY=$(BINARY_PATH) XINITRC=$(XINITRC) startx \

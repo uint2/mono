@@ -179,9 +179,8 @@ impl Display {
     }
 
     pub fn xft_font_open_name(&self, screen: Screen, font_name: &str) -> Option<XFont> {
-        let font = unsafe {
-            C::XftFontOpenName(self.0, screen.to_c(), font_name.as_ptr() as *const i8)
-        };
+        let font =
+            unsafe { C::XftFontOpenName(self.0, screen.to_c(), font_name.c().as_ptr()) };
         XFont::new(*self, font)
     }
 
@@ -191,14 +190,14 @@ impl Display {
     }
 
     pub fn xft_text_extents_utf8(&self, font: &Font, text: &str) -> Size<c_int> {
-        let bytes = text.as_bytes();
+        let text = text.c();
         let mut extents: C::XGlyphInfo = unsafe { core::mem::zeroed() };
         unsafe {
             C::XftTextExtentsUtf8(
                 self.0,
                 font.xfont().to_c(),
-                bytes.as_ptr(),
-                bytes.len() as c_int,
+                text.as_ptr() as *const u8,
+                text.count_bytes() as c_int,
                 &mut extents,
             )
         };

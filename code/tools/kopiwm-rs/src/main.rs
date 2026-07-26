@@ -7,6 +7,7 @@ mod client;
 mod config;
 mod drw;
 mod enums;
+mod ffi2;
 mod font;
 mod linked_list;
 mod monitor;
@@ -91,6 +92,8 @@ fn try_main() -> Result<()> {
     let Some(dpy) = x11::Display::open() else {
         return Err(log::error!("{NAME}: cannot open display"));
     };
+    log::info!("Established connection to x-server");
+
     setup::check_other_wm(&dpy);
     setup::setup_sigaction()?;
     setup::clean_up_zombies();
@@ -106,11 +109,12 @@ fn main() -> ExitCode {
     use ExitCode as EC;
 
     log::init(Some(log::LevelFilter::Debug));
+    log::info!("------------------------------------------------------------");
     log::info!("Started execution of kopiwm-rs!");
+    log::info!("------------------------------------------------------------");
 
-    const LOCAL_ONLY: bool = true;
+    const LOCAL_ONLY: bool = false;
     if LOCAL_ONLY {
-        println!("{}", CursorState::COUNT);
         return EC::SUCCESS;
     }
 

@@ -40,7 +40,7 @@ impl XPattern {
     }
 
     pub fn from_name(name: &str) -> Option<Self> {
-        let pattern = unsafe { C::FcNameParse(name.as_ptr()) };
+        let pattern = unsafe { C::FcNameParse(name.c().as_ptr() as *const u8) };
         Self::new(pattern)
     }
 
