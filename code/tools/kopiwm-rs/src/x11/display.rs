@@ -203,4 +203,9 @@ impl Display {
         };
         Size::new(extents.xOff as c_int, font.height())
     }
+
+    // TODO: back here
+    pub fn get_modifier_mapping(&self) {
+        // C::XGetModifierMapping(self.0);
+    }
 }
