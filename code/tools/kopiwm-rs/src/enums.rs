@@ -41,7 +41,7 @@ pub enum SchemeState {
 }
 enum_array!(SchemeStateArray, SchemeState);
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub struct Scheme<T> {
     /// Foreground color.
     pub fg: T,

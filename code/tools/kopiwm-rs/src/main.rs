@@ -102,6 +102,18 @@ fn try_main() -> Result<()> {
     let root = dpy.default_root_window();
     let drw = Drw::new(dpy, root, screen, screen_size.convert());
     let fonts = Fonts::new(dpy, screen, config::FONTS);
+
+    let mut arr = SchemeStateArray::<ColorScheme>::new();
+    let mut make = |ss: SchemeState| {
+        arr.set(
+            ss,
+            ColorScheme::new(dpy, screen, *config::COLOR_SCHEME.get(ss).unwrap())
+                .unwrap(),
+        );
+    };
+    make(SchemeState::Normal);
+    make(SchemeState::Selected);
+    make(SchemeState::Bar);
     Ok(())
 }
 
