@@ -1,5 +1,5 @@
 MAKEFILE_PATH := $(realpath $(lastword $(MAKEFILE_LIST)))
-MAKEFILE_DIR := $(dir $(MAKEFILE_PATH))
+MAKEFILE_DIR  := $(realpath $(dir $(MAKEFILE_PATH)))
 BUILD_DIR := $(MAKEFILE_DIR)target
 
 current: run

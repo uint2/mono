@@ -1,5 +1,5 @@
 MAKEFILE_PATH := $(realpath $(lastword $(MAKEFILE_LIST)))
-MAKEFILE_DIR := $(realpath $(dir $(MAKEFILE_PATH)))
+MAKEFILE_DIR  := $(realpath $(dir $(MAKEFILE_PATH)))
 
 ZIG_OUT := $(MAKEFILE_DIR)/zig-out
 LOG_DIR := $(ZIG_OUT)
