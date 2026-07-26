@@ -7,7 +7,7 @@ const ACCENT_400: &str = "#d8b4fe";
 
 pub const FONTS: &[&str] = &["sans:size=10.5"];
 
-pub const COLOR_SCHEME: SchemeStateArray<Scheme<&'static str>> = {
+pub const COLOR_SCHEME: SchemeStateArray<Scheme<&str>> = {
     use {Scheme as S, SchemeState as SS};
     let mut z = SchemeStateArray::new();
     z.set(SS::Normal, S { fg: GRAY_3, bg: GRAY_1, border: GRAY_2 });

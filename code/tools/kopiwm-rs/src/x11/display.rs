@@ -119,6 +119,14 @@ impl Display {
         Screen::from_c(unsafe { C::XDefaultScreen(self.c()) })
     }
 
+    pub fn default_visual(&self, screen: Screen) -> *mut C::Visual {
+        unsafe { C::XDefaultVisual(self.c(), screen.c()) }
+    }
+
+    pub fn default_colormap(&self, screen: Screen) -> C::Colormap {
+        unsafe { C::XDefaultColormap(self.c(), screen.c()) }
+    }
+
     pub fn display_width(&self, screen: Screen) -> c_int {
         unsafe { C::XDisplayWidth(self.c(), screen.c()) }
     }
