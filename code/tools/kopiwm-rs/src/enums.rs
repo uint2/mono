@@ -10,12 +10,7 @@ pub enum CursorState {
     Resize,
     Move,
 }
-
-impl ToUsizeIndex for CursorState {
-    fn to_usize_index(&self) -> usize {
-        *self as usize
-    }
-}
+enum_array!(CursorStateArray, CursorState);
 
 /// (dwm) Clk* enums.
 #[derive(Clone, Copy, EnumCount)]
@@ -44,18 +39,13 @@ pub enum SchemeState {
     Selected,
     Bar,
 }
-
-impl ToUsizeIndex for SchemeState {
-    fn to_usize_index(&self) -> usize {
-        *self as usize
-    }
-}
+enum_array!(SchemeStateArray, SchemeState);
 
 pub struct Scheme<T> {
     /// Foreground color.
-    fg: T,
+    pub fg: T,
     /// Background color.
-    bg: T,
+    pub bg: T,
     /// Border color.
-    border: T,
+    pub border: T,
 }

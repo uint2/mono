@@ -11,6 +11,14 @@ impl<T> Size<T> {
     }
 }
 
+impl<T: Copy> Size<T> {
+    pub fn convert<U: TryFrom<T>>(&self) -> Size<U> {
+        let Ok(width) = self.width.try_into() else { panic!("Invalid conversion") };
+        let Ok(height) = self.height.try_into() else { panic!("Invalid conversion") };
+        Size { width, height }
+    }
+}
+
 #[rustfmt::skip]
 impl<T: Clone> Clone for Size<T> { fn clone(&self) -> Self { Self { width: self.width.clone(), height: self.height.clone() } } }
 impl<T: Copy> Copy for Size<T> {}
@@ -23,6 +31,14 @@ pub struct Loc<T = c_int> {
 impl<T> Loc<T> {
     pub fn new(x: T, y: T) -> Self {
         Self { x, y }
+    }
+}
+
+impl<T: Copy> Loc<T> {
+    pub fn convert<U: TryFrom<T>>(&self) -> Loc<U> {
+        let Ok(x) = self.x.try_into() else { panic!("Invalid conversion") };
+        let Ok(y) = self.y.try_into() else { panic!("Invalid conversion") };
+        Loc { x, y }
     }
 }
 

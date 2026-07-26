@@ -3,8 +3,9 @@
 // crate::*
 pub(crate) use crate::app::App;
 pub(crate) use crate::client::Client;
-pub(crate) use crate::enum_array::{EnumArray, ToUsizeIndex};
+pub(crate) use crate::drw::{Drw, DrwParams};
 pub(crate) use crate::enums::{Clk, CursorState, Scheme, SchemeState};
+pub(crate) use crate::enums::{CursorStateArray, SchemeStateArray};
 pub(crate) use crate::font::Font;
 pub(crate) use crate::monitor::Monitor;
 pub(crate) use crate::numlockmask::NumLockMask;

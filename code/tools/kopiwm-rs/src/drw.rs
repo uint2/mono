@@ -2,11 +2,11 @@ use crate::C;
 use crate::prelude::*;
 
 pub(crate) struct DrwParams<'a> {
-    dpy: Display,
-    screen: c_int,
-    root: Window,
-    size: Size,
-    colors: &'a EnumArray<SchemeState, Scheme<&'static str>>,
+    pub dpy: Display,
+    pub screen: c_int,
+    pub root: Window,
+    pub size: Size,
+    pub colors: &'a EnumArray<SchemeState, Scheme<&'static str>>,
 }
 
 pub(crate) struct Drw {

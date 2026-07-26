@@ -1,8 +1,11 @@
+#[macro_use]
+mod enum_array;
+
 mod C;
 mod app;
 mod client;
+mod config;
 mod drw;
-mod enum_array;
 mod enums;
 mod font;
 mod monitor;
@@ -108,6 +111,13 @@ fn try_main() -> Result<()> {
     let screen = dpy.default_screen();
     let screen_size = dpy.display_size(screen);
     let root = dpy.default_root_window();
+    let drw = Drw::new(DrwParams {
+        dpy,
+        root,
+        screen,
+        size: screen_size.convert(),
+        colors: todo!(),
+    });
     Ok(())
 }
 
