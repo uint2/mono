@@ -1,32 +1,43 @@
 use git_checkout2::*;
 
 use std::env;
+use std::path::Path;
+
+#[cfg(test)]
+fn git_branch(dir: &Path) -> String {
+    git!("-C", dir, "branch", "--show-current").get_stdout()
+}
+
+fn git_branches(dir: &Path) -> Vec<String> {
+    let output =
+        git!("-C", dir, "branch", "--format=%(refname:short)").get_stdout();
+    output.lines().map(|v| v.trim().to_string()).collect()
+}
 
 #[test]
 fn setup_test_branch_1() {
     let (_t, root) = setup();
-    assert_eq!(
-        git!("-C", root.join("B1"), "branch", "--show-current").get_stdout(),
-        "B1"
-    )
+    assert_eq!(git_branch(&root.join("B1")), "B1");
 }
 
 #[test]
 fn setup_test_branch_2() {
     let (_t, root) = setup();
-    assert_eq!(
-        git!("-C", root.join("B2"), "branch", "--show-current").get_stdout(),
-        "B2"
-    )
+    assert_eq!(git_branch(&root.join("B2")), "B2");
 }
 
 #[test]
 fn setup_test_branch_3() {
     let (_t, root) = setup();
-    assert_eq!(
-        git!("-C", root.join("D3"), "branch", "--show-current").get_stdout(),
-        "B3"
-    )
+    assert_eq!(git_branch(&root.join("D3")), "B3");
+}
+
+#[test]
+fn setup_all_branches() {
+    let (_t, root) = setup();
+    let mut branches = git_branches(&root);
+    branches.sort();
+    assert_eq!(branches, ["B1", "B2", "B3", "main"]);
 }
 
 /// Jump from the lift-lobby (git workspace area, but not in any git workspace)
