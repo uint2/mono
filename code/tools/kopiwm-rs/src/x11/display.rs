@@ -1,9 +1,14 @@
 use crate::C;
 use crate::prelude::*;
 
+#[derive(Clone, Copy)]
 pub struct Display(*mut C::Display);
 
 impl Display {
+    pub const fn to_c(&self) -> *mut C::Display {
+        self.0
+    }
+
     /// The XOpenDisplay function returns a Display structure that serves as
     /// the connection to the X server and that contains all the information
     /// about that X server. XOpenDisplay connects your application to the X
@@ -171,5 +176,32 @@ impl Display {
                 join_style.to_c(),
             );
         }
+    }
+
+    pub fn xft_font_open_name(&self, screen: Screen, font_name: &str) -> Option<XFont> {
+        let font = unsafe {
+            C::XftFontOpenName(self.0, screen.to_c(), font_name.as_ptr() as *const i8)
+        };
+        XFont::new(*self, font)
+    }
+
+    pub fn xft_font_open_pattern(&self, pattern: &XPattern) -> Option<XFont> {
+        let font = unsafe { C::XftFontOpenPattern(self.0, pattern.to_c()) };
+        XFont::new(*self, font)
+    }
+
+    pub fn xft_text_extents_utf8(&self, font: &Font, text: &str) -> Size<c_int> {
+        let bytes = text.as_bytes();
+        let mut extents: C::XGlyphInfo = unsafe { core::mem::zeroed() };
+        unsafe {
+            C::XftTextExtentsUtf8(
+                self.0,
+                font.xfont().to_c(),
+                bytes.as_ptr(),
+                bytes.len() as c_int,
+                &mut extents,
+            )
+        };
+        Size::new(extents.xOff as c_int, font.height())
     }
 }

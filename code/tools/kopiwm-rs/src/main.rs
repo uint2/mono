@@ -8,6 +8,7 @@ mod config;
 mod drw;
 mod enums;
 mod font;
+mod linked_list;
 mod monitor;
 mod numlockmask;
 mod prelude;
@@ -97,6 +98,7 @@ fn try_main() -> Result<()> {
     let screen_size = dpy.display_size(screen);
     let root = dpy.default_root_window();
     let drw = Drw::new(dpy, root, screen, screen_size.convert());
+    let fonts = Fonts::new(dpy, screen, config::FONTS);
     Ok(())
 }
 

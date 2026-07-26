@@ -141,18 +141,6 @@ pub const Font = struct {
         if (h) |h_ptr| h_ptr.* = @intCast(self.height); // Standardized height.
     }
 
-    /// (dwm) xfont_create
-    pub fn fromPattern(self: *Self, dpy: *X.Display, font_pattern: *X.FcPattern) FCE!void {
-        const xfont = X.XftFontOpenPattern(dpy, font_pattern) orelse {
-            std.debug.print("error, cannot load font from pattern\n", .{});
-            return error.FontCreateError;
-        };
-
-        self.xfont = xfont;
-        self.height = xfont.ascent + xfont.descent;
-        self.dpy = dpy;
-    }
-
     /// (dwm) drw_fontset_create
     /// Builds the linked list of fonts such that the first font provided in
     /// the `fonts` slice is at the head of the linked list.

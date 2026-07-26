@@ -6,12 +6,13 @@ pub(crate) use crate::client::Client;
 pub(crate) use crate::drw::{Drw, DrwParams};
 pub(crate) use crate::enums::{Clk, CursorState, Scheme, SchemeState};
 pub(crate) use crate::enums::{CursorStateArray, SchemeStateArray};
-pub(crate) use crate::font::Font;
+pub(crate) use crate::font::{Font, Fonts, XFont, XPattern};
+pub(crate) use crate::linked_list::LinkedListNode;
 pub(crate) use crate::monitor::Monitor;
 pub(crate) use crate::numlockmask::NumLockMask;
 pub(crate) use crate::rect::{Loc, Rect, Size};
 pub(crate) use crate::x11::enums::*;
-pub(crate) use crate::x11::{ColorScheme, Cursor, Display, Window, Screen};
+pub(crate) use crate::x11::{ColorScheme, Cursor, Display, Screen, Window};
 
 // std::*
 pub(crate) use std::collections::LinkedList;
@@ -22,6 +23,7 @@ pub(crate) use std::process::ExitCode;
 pub(crate) use core::cmp::Ordering;
 pub(crate) use core::ffi::{c_int, c_long, c_uint, c_ulong};
 pub(crate) use core::ptr;
+pub(crate) use core::ptr::NonNull;
 
 // external.
 pub(crate) use strum::EnumCount;

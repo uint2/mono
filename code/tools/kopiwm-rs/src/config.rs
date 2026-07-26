@@ -5,6 +5,8 @@ const GRAY_2: &str = "#444444";
 const GRAY_3: &str = "#bbbbbb";
 const ACCENT_400: &str = "#d8b4fe";
 
+pub const FONTS: &[&str] = &["sans:size=10.5"];
+
 pub const COLOR_SCHEME: SchemeStateArray<Scheme<&'static str>> = {
     use {Scheme as S, SchemeState as SS};
     let mut z = SchemeStateArray::new();
