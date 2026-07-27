@@ -9,10 +9,12 @@ pub(crate) use crate::enums::{Clk, CursorState, WindowColorState, WindowColors};
 pub(crate) use crate::enums::{CursorStateArray, WindowColorStateArray};
 pub(crate) use crate::ffi2::ConvertToC;
 pub(crate) use crate::font::{Font, Fonts};
+pub(crate) use crate::layout::Layout;
 pub(crate) use crate::linked_list::LinkedListNode;
 pub(crate) use crate::monitor::Monitor;
 pub(crate) use crate::numlockmask::NumLockMask;
 pub(crate) use crate::rect::{Loc, Rect, Size};
+pub(crate) use crate::toggle::Toggle;
 pub(crate) use crate::x11::prelude::*;
 
 // std::*

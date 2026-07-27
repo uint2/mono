@@ -2,7 +2,7 @@ use crate::prelude::*;
 
 /// C: type for Coordinates.
 /// D: type for Distance.
-pub struct App<'app, D = c_uint> {
+pub struct App<'app, C = c_int, D = c_uint> {
     dpy: Display,
     screen: c_int,
     /// Screen size.
@@ -11,8 +11,9 @@ pub struct App<'app, D = c_uint> {
     s: Size<D>,
     lrpad: D,
     bar_height: D,
-    mons: LinkedList<Monitor>,
-    selmon: &'app Monitor,
+    /// Owned list of moitors.
+    mons: Vec<Monitor<'app, C, D>>,
+    selmon: &'app Monitor<'app, C, D>,
     root: Window,
     cursors: CursorStateArray<Cursor>,
     colors: WindowColorStateArray<WindowColors<XftColor>>,

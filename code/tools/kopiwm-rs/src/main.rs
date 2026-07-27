@@ -9,12 +9,14 @@ mod drw;
 mod enums;
 mod ffi2;
 mod font;
+mod layout;
 mod linked_list;
 mod monitor;
 mod numlockmask;
 mod prelude;
 mod rect;
 mod setup;
+mod toggle;
 mod x11;
 
 use prelude::*;
