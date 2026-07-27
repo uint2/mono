@@ -1,6 +1,6 @@
 use crate::prelude::*;
 
-use strum_macros::EnumCount;
+use strum_macros::{EnumCount, EnumIter};
 
 /// (dwm) Cur* enums.
 /// The different possible states of the mouse cursor.
@@ -33,16 +33,16 @@ pub enum Clk {
 }
 
 /// Represents a possible which one might be in that warrants a unique color scheme.
-#[derive(Clone, Copy, EnumCount)]
-pub enum SchemeState {
+#[derive(Clone, Copy, EnumCount, EnumIter)]
+pub enum WindowColorState {
     Normal,
     Selected,
     Bar,
 }
-enum_array!(SchemeStateArray, SchemeState);
+enum_array!(WindowColorStateArray, WindowColorState);
 
 #[derive(Debug, Clone, Copy)]
-pub struct Scheme<T> {
+pub struct WindowColors<T> {
     /// Foreground color.
     pub fg: T,
     /// Background color.

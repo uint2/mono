@@ -17,7 +17,7 @@ pub struct Drw {
     drawable: C::Drawable,
     /// Graphics context.
     gc: C::GC,
-    scheme: Option<ColorScheme>,
+    scheme: Option<WindowColors<XftColor>>,
 }
 
 impl Drw {

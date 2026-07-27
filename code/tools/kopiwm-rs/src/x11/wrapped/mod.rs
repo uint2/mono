@@ -20,9 +20,11 @@ macro_rules! make_new {
 }
 
 mod fcpattern;
+mod xftcolor;
 mod xftfont;
 mod xmodifierkeymap;
 
 pub use fcpattern::FcPattern;
+pub use xftcolor::XftColor;
 pub use xftfont::XftFont;
 pub use xmodifierkeymap::XModifierKeymap;

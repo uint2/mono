@@ -56,3 +56,21 @@ pub fn clean_up_zombies() {
         }
     }
 }
+
+pub fn setup_color_scheme(
+    dpy: Display,
+    screen: Screen,
+) -> WindowColorStateArray<WindowColors<XftColor>> {
+    use strum::IntoEnumIterator;
+    let mut arr = WindowColorStateArray::<WindowColors<XftColor>>::new();
+    for state in WindowColorState::iter() {
+        let wc = config::COLOR_SCHEME.get(state).unwrap();
+        let wc = WindowColors {
+            fg: XftColor::from_name(dpy, screen, wc.fg).unwrap(),
+            bg: XftColor::from_name(dpy, screen, wc.bg).unwrap(),
+            border: XftColor::from_name(dpy, screen, wc.border).unwrap(),
+        };
+        arr.set(state, wc);
+    }
+    arr
+}

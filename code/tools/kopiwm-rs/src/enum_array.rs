@@ -44,6 +44,7 @@ macro_rules! enum_array {
             data: [Option<T>; $key::COUNT],
         }
 
+        #[allow(unused)]
         impl<T> $name<T> {
             pub const fn new() -> Self {
                 // This is guaranteed to be filled with `None` values.

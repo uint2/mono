@@ -15,7 +15,7 @@ pub struct App<'app, D = c_uint> {
     selmon: &'app Monitor,
     root: Window,
     cursors: CursorStateArray<Cursor>,
-    scheme: SchemeStateArray<ColorScheme>,
+    colors: WindowColorStateArray<WindowColors<XftColor>>,
     status_text: String,
     numlockmask: NumLockMask,
     fonts: Vec<Font>,

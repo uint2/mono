@@ -7,11 +7,11 @@ const ACCENT_400: &str = "#d8b4fe";
 
 pub const FONTS: &[&str] = &["sans:size=10.5"];
 
-pub const COLOR_SCHEME: SchemeStateArray<Scheme<&str>> = {
-    use {Scheme as S, SchemeState as SS};
-    let mut z = SchemeStateArray::new();
-    z.set(SS::Normal, S { fg: GRAY_3, bg: GRAY_1, border: GRAY_2 });
-    z.set(SS::Selected, S { fg: GRAY_1, bg: ACCENT_400, border: ACCENT_400 });
-    z.set(SS::Bar, S { fg: GRAY_3, bg: GRAY_2, border: GRAY_2 });
+pub const COLOR_SCHEME: WindowColorStateArray<WindowColors<&str>> = {
+    use {WindowColorState as WS, WindowColors as W};
+    let mut z = WindowColorStateArray::new();
+    z.set(WS::Normal, W { fg: GRAY_3, bg: GRAY_1, border: GRAY_2 });
+    z.set(WS::Selected, W { fg: GRAY_1, bg: ACCENT_400, border: ACCENT_400 });
+    z.set(WS::Bar, W { fg: GRAY_3, bg: GRAY_2, border: GRAY_2 });
     z
 };

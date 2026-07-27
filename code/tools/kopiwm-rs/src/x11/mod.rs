@@ -1,4 +1,3 @@
-mod color;
 mod cursor;
 mod display;
 mod enums;
@@ -9,7 +8,6 @@ mod wrapped;
 
 pub mod prelude {
     use super::*;
-    pub use color::ColorScheme;
     pub use cursor::Cursor;
     pub use display::Display;
     pub use enums::*;
