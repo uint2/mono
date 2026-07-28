@@ -1,0 +1,112 @@
+use std::fs::DirEntry;
+use std::io::Write;
+use std::path::Path;
+use std::process::{Command, ExitCode};
+
+macro_rules! banner {
+    () => {
+        "(\x1b[35mt\x1b[m)"
+    };
+    ($value:expr) => {
+        concat!("(\x1b[35mt\x1b[m) \x1b[37m", $value, "\x1b[m\n")
+    };
+}
+
+enum Trigger {
+    /// Matches this file exactly.
+    Path(&'static str),
+    /// Runs a predicate.
+    Pred(fn(&Path) -> bool),
+}
+
+impl Trigger {
+    fn hit(&self, files: &[DirEntry]) -> bool {
+        match self {
+            Self::Path(path) => Path::new(path).exists(),
+            Self::Pred(f) => true,
+        }
+    }
+}
+
+struct Matcher {
+    trigger: Trigger,
+    args: &'static [&'static str],
+    message: Option<&'static str>,
+}
+
+const MATCHERS: &'static [Matcher] = &[
+    Matcher {
+        trigger: Trigger::Path("Makefile"),
+        args: &["make", "--no-print-directory"],
+        message: Some("Makefile"),
+    },
+    Matcher {
+        trigger: Trigger::Path("Cargo.toml"),
+        args: &["cargo", "run"],
+        message: Some("cargo (Cargo.toml)"),
+    },
+    Matcher {
+        trigger: Trigger::Path("package.json"),
+        args: &["npm", "run"],
+        message: Some("npm run (package.json)"),
+    },
+    Matcher {
+        trigger: Trigger::Path("build.sh"),
+        args: &["bash", "build.sh"],
+        message: Some("bash (build.sh)"),
+    },
+    Matcher {
+        trigger: Trigger::Path("run.py"),
+        args: &["python3", "run.py"],
+        message: Some("python3 (run.py)"),
+    },
+];
+
+impl Matcher {
+    fn run(&self) -> ExitCode {
+        use std::os::unix::process::CommandExt;
+
+        let err = Command::new(self.args[0])
+            .args(&self.args[1..])
+            .args(std::env::args().skip(1))
+            .exec();
+        println!("Error during `execvp` call: {err}");
+        ExitCode::FAILURE
+    }
+}
+
+fn try_run(cwd: &Path) -> Option<ExitCode> {
+    let Ok(files) = cwd.read_dir() else {
+        println!("Unable to list files at {:?}", cwd);
+        return Some(ExitCode::FAILURE);
+    };
+    let files: Vec<_> = files.filter_map(|v| v.ok()).collect();
+
+    let Some(m) = MATCHERS.into_iter().find(|v| v.trigger.hit(&files)) else {
+        return None;
+    };
+    if let Some(message) = m.message {
+        println!("{} \x1b[37m{message}\x1b[m", banner!());
+    }
+    Some(m.run())
+}
+
+fn main() -> ExitCode {
+    let Ok(mut cwd) = std::env::current_dir() else {
+        println!("Unable to get current working directory");
+        return ExitCode::FAILURE;
+    };
+
+    if let Some(exit_code) = try_run(&cwd) {
+        return exit_code;
+    }
+    std::io::stdout().write(banner!("traversing upwards...").as_bytes()).unwrap();
+    while cwd.pop() && cwd.parent().is_some() {
+        println!("{} \x1b[37m{}\x1b[m", banner!(), cwd.display());
+        if let Some(exit_code) = try_run(&cwd) {
+            return exit_code;
+        }
+    }
+    std::io::stdout().write(banner!("nothing to do.").as_bytes()).unwrap();
+    ExitCode::SUCCESS
+}

@@ -37,6 +37,7 @@ code/tools/rofi-pdf-search                     :rofi-pdf-search
 code/tools/solid-rect                          :solid-rect
 code/tools/stats-calc                          :stats-calc
 code/tools/t-runner                            :t-runner
+code/tools/t-runner/rust                       :t-runner-rs
 code/tools/tailwind-rs                         :tailwind-rs
 code/tools/tmux-fzf                            :tmux-fzf
 code/tools/wacom-macos-precision-mode-daemon   :heliumd
