@@ -6,7 +6,7 @@ pub struct Size<T = c_uint> {
 }
 
 impl<T> Size<T> {
-    pub fn new(width: T, height: T) -> Self {
+    pub const fn new(width: T, height: T) -> Self {
         Self { width, height }
     }
 }
@@ -29,7 +29,7 @@ pub struct Loc<T = c_int> {
 }
 
 impl<T> Loc<T> {
-    pub fn new(x: T, y: T) -> Self {
+    pub const fn new(x: T, y: T) -> Self {
         Self { x, y }
     }
 }
@@ -76,5 +76,11 @@ impl<C: Copy, D> Rect<C, D> {
     #[inline]
     pub const fn y(&self) -> C {
         self.loc.y
+    }
+}
+
+impl<C, D> Rect<C, D> {
+    pub const fn new(x: C, y: C, width: D, height: D) -> Self {
+        Self { loc: Loc::new(x, y), sz: Size::new(width, height) }
     }
 }

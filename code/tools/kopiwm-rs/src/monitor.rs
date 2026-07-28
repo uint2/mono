@@ -33,12 +33,30 @@ pub struct Monitor<'app, C = c_int, D = c_uint> {
     /// then A is before B in the stacking order.
     stack: Vec<&'app Client>,
 
-    /// The X window that manages the status bar.
-    bar_window: Window,
+    /// The X window that manages the status bar. The only time when this is
+    /// none should be when the monitor is freshly created, and we just haven't
+    /// initialized the bar window.
+    bar_window: Option<Window>,
 
     lt: Toggle<&'static Layout>,
 }
 
-/*
-// lt: toggle(*const Layout),
-*/
+impl<'app> Monitor<'app, c_int, c_uint> {
+    pub fn new() -> Self {
+        Self {
+            mfact: config::MFACT,
+            nmaster: config::NMASTER,
+            by: 0,
+            m: Rect::new(0, 0, 0, 0),
+            w: Rect::new(0, 0, 0, 0),
+            tags: 0b1,
+            show_bar: config::SHOW_BAR,
+            bar_pos: config::BAR_POSITION,
+            clients: vec![],
+            sel: None,
+            stack: vec![],
+            bar_window: None,
+            lt: Toggle::new(&EMPTY_LAYOUT),
+        }
+    }
+}

@@ -15,3 +15,14 @@ pub const COLOR_SCHEME: WindowColorStateArray<WindowColors<&str>> = {
     z.set(WS::Bar, W { fg: GRAY_3, bg: GRAY_2, border: GRAY_2 });
     z
 };
+
+/// Factor of the master area size [0.05...0.95].
+pub const MFACT: f32 = 0.5;
+
+/// Number of clients in master area
+pub const NMASTER: u8 = 1;
+
+/// False means hide bar.
+pub const SHOW_BAR: bool = true;
+
+pub const BAR_POSITION: BarPosition = BarPosition::Top;
