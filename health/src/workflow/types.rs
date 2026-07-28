@@ -25,6 +25,21 @@ pub struct GithubWorkflowJob<'a> {
     pub yml_key: &'a str,
     pub name: Option<&'a str>,
     pub steps: Vec<GithubWorkflowStep<'a>>,
+    pub if_cond: Option<&'a str>,
+}
+
+impl<'a> GithubWorkflowJob<'a> {
+    /// Gets the project key out of the if-condition.
+    pub fn if_condition_project_key(&self) -> Option<&'a str> {
+        let text = self.if_cond?;
+        let (_, text) = text.split_once("needs.delta.outputs.all")?;
+        // At this point, we're expecting
+        // "fromJson(needs.delta.outputs.all).wordle == 'true'"
+        let text = text.trim().strip_prefix(")").unwrap();
+        let text = text.trim().strip_prefix(".").unwrap();
+        let text = text.trim().split_once('=').unwrap().0.trim();
+        Some(text)
+    }
 }
 
 /// Represents the data in a YAML file of a GitHub Workflow.
@@ -52,6 +67,7 @@ impl<'a> From<&'a Yaml> for GithubWorkflow<'a> {
                     yml_key: key.as_str().unwrap(),
                     name: value["name"].as_str(),
                     steps: yml_steps.into_iter().map(GithubWorkflowStep::from).collect(),
+                    if_cond: value["if"].as_str(),
                 });
             }
             z.jobs = Some(jobs);

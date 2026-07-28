@@ -49,6 +49,10 @@ fn check_main_ci_yml() {
     let wf = GithubWorkflow::from(&docs[0]);
     for job in wf.jobs() {
         println!("{:?}", job);
+        // TODO: continue from here to implement #50
+        if let Some(v) = job.if_condition_project_key() {
+            println!("-- {v}");
+        }
     }
 }
 
