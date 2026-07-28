@@ -5,12 +5,15 @@ local s = { silent = true }
 -- no-ops
 k('n', '<space>', '<nop>')
 k('n', '<bs>', '<nop>')
-k('n', 'Q', '<nop>')
 k('n', 'K', '<nop>')
 k('n', '<left>', '<nop>')
 k('n', '<right>', '<nop>')
 k('n', '<up>', '<nop>')
 k('n', '<down>', '<nop>')
+
+-- Fix q because q is used to quit stuff too.
+k('n', 'Q', 'q')
+k('n', 'q', '<nop>')
 
 -- remap Shift + Tab to actually give a tab char
 k('i', '<S-Tab>', '<C-V><Tab>')
