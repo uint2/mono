@@ -74,6 +74,7 @@ ol {
   list-style-position: outside;
   /* Distance of the bullet list indent. */
   padding-left: calc(6px + 1ch);
+  list-style-type: disc;
 }
 ul > li,
 ol > li {

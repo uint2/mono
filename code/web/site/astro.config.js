@@ -219,4 +219,7 @@ export default defineConfig({
     shikiConfig: { theme: githubLight, wrap: false },
   },
   integrations: [solid(), mdx(), parseOutputs(), urlChecks(), noSmallHeaders()],
+  devToolbar: {
+    enabled: false,
+  },
 })
