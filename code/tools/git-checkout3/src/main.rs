@@ -16,37 +16,20 @@ mod test_utils;
 #[cfg(test)]
 mod tests;
 
+mod shell;
+
+use shell::ExitCode;
+
 use core::str;
 use std::io;
 use std::io::Write;
-use std::path::Path;
-use std::process::{Command, ExitStatus, Termination};
-
-struct ExitCode(i32);
-
-impl ExitCode {
-    const FAILURE: Self = Self(1);
-    const SUCCESS: Self = Self(0);
-    const ACCEPT: Self = Self(64);
-
-    pub fn exit(&self) -> ! {
-        std::process::exit(self.0);
-    }
-
-    pub fn of(value: ExitStatus) -> Self {
-        Self(value.code().unwrap_or(1))
-    }
-
-    pub const fn new(value: i32) -> Self {
-        Self(value)
-    }
-}
+use std::process::Command;
 
 #[derive(Debug)]
 struct GitWorktree<'a> {
     /// Absolute path to the worktree.
     path: &'a str,
-    head: &'a str,
+    head: Result<&'a str, ()>,
     /// The branch. Parsed from one of
     /// * "branch refs/heads/main",
     /// * "detached".
@@ -83,7 +66,7 @@ impl<'a> GitWorktree<'a> {
                         return Err(());
                     };
                     let path = line.trim_start();
-                    worktrees.push(GitWorktree { path, head: "", branch: None });
+                    worktrees.push(GitWorktree { path, head: Err(()), branch: None });
                     state = 1;
                 }
                 1 => {
@@ -93,7 +76,7 @@ impl<'a> GitWorktree<'a> {
                         );
                         return Err(());
                     };
-                    worktrees.last_mut().unwrap().head = line.trim_start();
+                    worktrees.last_mut().unwrap().head = Ok(line.trim_start());
                     state = 2;
                 }
                 2 if line.is_empty() => state = 0,
@@ -151,20 +134,7 @@ fn try_main(goal: &str) -> Result<ExitCode, ()> {
         }
     }
 
-    run2(git!("checkout", goal));
-}
-
-#[cfg(unix)]
-fn run2(mut cmd: Command) -> ! {
-    use std::os::unix::process::CommandExt;
-    let err = cmd.exec();
-    eprintln!("Failed execvp call: {err}");
-    ExitCode::FAILURE.exit();
-}
-
-#[cfg(not(unix))]
-fn run2(mut cmd: Command) -> ! {
-    ExitCode::of(cmd.spawn().unwrap().wait().unwrap()).exit();
+    shell::run(git!("checkout", goal));
 }
 
 fn main() -> std::process::ExitCode {
@@ -175,7 +145,7 @@ fn main() -> std::process::ExitCode {
         let mut cmd = Command::new("git");
         cmd.arg("checkout");
         cmd.args(args);
-        run2(cmd);
+        shell::run(cmd);
     };
     let Some(goal) = args[0].to_str() else {
         eprintln!("Failed to decode target.");
