@@ -1,3 +1,7 @@
+//! git-checkout3
+//!
+//! Prioritize directory names over branch names.
+
 macro_rules! git {
     ($($arg:expr),*) => {{
         let mut cmd = std::process::Command::new("git");
@@ -16,19 +20,40 @@ use core::str;
 use std::io;
 use std::io::Write;
 use std::path::Path;
-use std::process::{Command, ExitCode, ExitStatus};
+use std::process::{Command, ExitStatus, Termination};
+
+struct ExitCode(i32);
+
+impl ExitCode {
+    const FAILURE: Self = Self(1);
+    const SUCCESS: Self = Self(0);
+    const ACCEPT: Self = Self(64);
+
+    pub fn exit(&self) -> ! {
+        std::process::exit(self.0);
+    }
+
+    pub fn of(value: ExitStatus) -> Self {
+        Self(value.code().unwrap_or(1))
+    }
+
+    pub const fn new(value: i32) -> Self {
+        Self(value)
+    }
+}
 
 #[derive(Debug)]
 struct GitWorktree<'a> {
-    path: &'a Path,
+    /// Absolute path to the worktree.
+    path: &'a str,
     head: &'a str,
-    /// The full ref of the branch. Parsed from one of
+    /// The branch. Parsed from one of
     /// * "branch refs/heads/main",
     /// * "detached".
     ///
     /// The other cases are just not considered. We really only care when the
     /// branch ref actually exists.
-    ref_name: Option<&'a str>,
+    branch: Option<&'a str>,
 }
 
 macro_rules! err {
@@ -38,10 +63,11 @@ macro_rules! err {
 }
 
 impl<'a> GitWorktree<'a> {
-    /// The short branch name, if it exists.
-    pub fn canonical_branch(&self) -> Option<&'a str> {
-        let Some(ref_name) = self.ref_name else { return None };
-        ref_name.strip_prefix("refs/heads/")
+    pub fn directory(&self) -> &'a str {
+        match self.path.rsplit_once(std::path::MAIN_SEPARATOR) {
+            Some((_, dir)) => dir,
+            None => self.path,
+        }
     }
 
     pub fn parse(text: &'a str) -> Result<Vec<Self>, ()> {
@@ -56,11 +82,8 @@ impl<'a> GitWorktree<'a> {
                         );
                         return Err(());
                     };
-                    worktrees.push(GitWorktree {
-                        path: Path::new(line.trim_start()),
-                        head: "",
-                        ref_name: None,
-                    });
+                    let path = line.trim_start();
+                    worktrees.push(GitWorktree { path, head: "", branch: None });
                     state = 1;
                 }
                 1 => {
@@ -76,13 +99,21 @@ impl<'a> GitWorktree<'a> {
                 2 if line.is_empty() => state = 0,
                 2 => {
                     if let Some(line) = line.strip_prefix("branch") {
-                        worktrees.last_mut().unwrap().ref_name = Some(line.trim_start());
+                        // example: refs/heads/main
+                        let full_ref_name = line.trim_start();
+                        let branch = full_ref_name.strip_prefix("refs/heads/");
+                        worktrees.last_mut().unwrap().branch = branch
                     }
                 }
                 _ => return Err(eprintln!("Invalid git worktree parser state.")),
             }
         }
         Ok(worktrees)
+    }
+
+    pub fn accept(&self) -> ExitCode {
+        io::stdout().write(self.path.as_bytes()).unwrap();
+        ExitCode::ACCEPT
     }
 }
 
@@ -97,27 +128,46 @@ fn try_main(goal: &str) -> Result<ExitCode, ()> {
         // fatal: not a git repository (or any parent up to mount point)
         // fatal: not a git repository (or any of the parent directories)
         io::stderr().write(&worktrees.stderr).unwrap();
-        return Ok(status_to_code(worktrees.status));
+        return Ok(ExitCode::of(worktrees.status));
     }
     let Ok(stdout) = str::from_utf8(&worktrees.stdout) else {
         return err!("Unable to decode `git worktree` stdout as utf-8.");
     };
     let worktrees = GitWorktree::parse(stdout)?;
 
-    println!("{:?}", worktrees);
-
-    Ok(ExitCode::from(64))
-}
-
-fn status_to_code(status: ExitStatus) -> ExitCode {
-    match status.code() {
-        Some(v) => ExitCode::from(v as u8),
-        None => ExitCode::FAILURE,
+    // 1. Prioritize the directory match.
+    for worktree in &worktrees {
+        if worktree.directory() == goal {
+            return Ok(worktree.accept());
+        }
     }
-}
-// return worktrees.status.code().map(|v| ExitCode::from(v as u8)).ok_or(());
 
-fn main() -> ExitCode {
+    // 2. Find a match in the branch. This is done _intentionally_ before
+    // running git checkout on the goal directly.
+    for worktree in &worktrees {
+        let Some(branch) = worktree.branch else { continue };
+        if branch == goal {
+            return Ok(worktree.accept());
+        }
+    }
+
+    run2(git!("checkout", goal));
+}
+
+#[cfg(unix)]
+fn run2(mut cmd: Command) -> ! {
+    use std::os::unix::process::CommandExt;
+    let err = cmd.exec();
+    eprintln!("Failed execvp call: {err}");
+    ExitCode::FAILURE.exit();
+}
+
+#[cfg(not(unix))]
+fn run2(mut cmd: Command) -> ! {
+    ExitCode::of(cmd.spawn().unwrap().wait().unwrap()).exit();
+}
+
+fn main() -> std::process::ExitCode {
     // To keep things simple, we only run the complicated logic when there is
     // exactly 1 CLI argument (that is not the binary itself).
     let args: Vec<_> = std::env::args_os().skip(1).collect();
@@ -125,21 +175,14 @@ fn main() -> ExitCode {
         let mut cmd = Command::new("git");
         cmd.arg("checkout");
         cmd.args(args);
-        return if cfg!(unix) {
-            use std::os::unix::process::CommandExt;
-            let err = cmd.exec();
-            eprintln!("Failed execvp call: {err}");
-            ExitCode::FAILURE
-        } else {
-            status_to_code(cmd.spawn().unwrap().wait().unwrap())
-        };
+        run2(cmd);
     };
     let Some(goal) = args[0].to_str() else {
         eprintln!("Failed to decode target.");
-        return ExitCode::FAILURE;
+        return std::process::ExitCode::FAILURE;
     };
     match try_main(goal) {
-        Ok(v) => v,
-        Err(()) => ExitCode::FAILURE,
+        Ok(v) => v.exit(),
+        Err(()) => return std::process::ExitCode::FAILURE,
     }
 }

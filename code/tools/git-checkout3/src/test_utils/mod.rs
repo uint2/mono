@@ -49,40 +49,32 @@ pub fn setup() -> (Test, PathBuf) {
     eprintln!("=== Initialized a git repo ===");
 
     commit_file(&mut t, "README.md");
-    commit_file(&mut t, "file-1.txt");
 
-    git!("rev-parse", "--verify", "HEAD").snw();
-    let c1 = git!("rev-parse", "--verify", "HEAD").get_stdout();
-    commit_file(&mut t, "file-2.txt");
+    let mut commits = vec![];
 
-    git!("rev-parse", "--verify", "HEAD").snw();
-    let c2 = git!("rev-parse", "--verify", "HEAD").get_stdout();
-    commit_file(&mut t, "file-3.txt");
-
-    git!("rev-parse", "--verify", "HEAD").snw();
-    let c3 = git!("rev-parse", "--verify", "HEAD").get_stdout();
-    commit_file(&mut t, "last.txt");
+    for i in 0..6 {
+        commit_file(&mut t, &format!("file-{i}.txt"));
+        let c = git!("rev-parse", "--verify", "HEAD").get_stdout();
+        commits.push(c);
+    }
 
     {
         fn ok(sha: &str) -> bool {
             sha.is_ascii() && sha.len() == 40
         }
-        assert!(ok(&c1), "Commit #1 is a strange one: {c1}");
-        assert!(ok(&c2), "Commit #2 is a strange one: {c2}");
-        assert!(ok(&c3), "Commit #3 is a strange one: {c3}");
+        for (i, commit) in commits.iter().enumerate() {
+            let i = i + 1;
+            assert!(ok(&commit), "Commit #{i} is a strange one: {commit}");
+        }
     }
 
-    git!("checkout", "-b", "B1").snw();
-    git!("reset", "--hard", c1).snw();
-    assert_eq!(git!("branch", "--show-current").get_stdout(), "B1");
+    let branches = ["B1", "B2", "B3", "B4"];
 
-    git!("checkout", "-b", "B2").snw();
-    git!("reset", "--hard", c2).snw();
-    assert_eq!(git!("branch", "--show-current").get_stdout(), "B2");
-
-    git!("checkout", "-b", "B3").snw();
-    git!("reset", "--hard", c3).snw();
-    assert_eq!(git!("branch", "--show-current").get_stdout(), "B3");
+    for (branch, commit) in branches.into_iter().zip(&commits) {
+        git!("checkout", "-b", branch).snw();
+        git!("reset", "--hard", commit).snw();
+        assert_eq!(git!("branch", "--show-current").get_stdout(), branch);
+    }
 
     git!("checkout", "main").snw();
     assert_eq!(git!("branch", "--show-current").get_stdout(), "main");

@@ -1,7 +1,7 @@
 MAKEFILE_PATH := $(realpath $(lastword $(MAKEFILE_LIST)))
 MAKEFILE_DIR  := $(realpath $(dir $(MAKEFILE_PATH)))
 
-current: run
+current: test
 
 run:
 	sh run.sh
@@ -9,6 +9,8 @@ run:
 build:
 	cargo build
 
+TEST_ONE := tests::empty_directory
+TEST_ONE :=
+
 test: build
-	PATH=$(MAKEFILE_LIST)/target/debug:$$PATH cargo test \
-		-- --test-threads=1
+	cargo test $(TEST_ONE) -- --test-threads=1

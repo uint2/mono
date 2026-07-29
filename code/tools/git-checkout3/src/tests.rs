@@ -38,12 +38,11 @@ fn setup_all_branches() {
     let (_t, root) = setup();
     let mut branches = git_branches(&root);
     branches.sort();
-    assert_eq!(branches, ["B1", "B2", "B3", "main"]);
+    assert_eq!(branches, ["B1", "B2", "B3", "B4", "main"]);
 }
 
 /// Jump from the lift-lobby (git workspace area, but not in any git workspace)
 #[test]
-#[ignore]
 fn t1() {
     let (_t, root) = setup();
     env::set_current_dir(&root).unwrap();
@@ -55,7 +54,6 @@ fn t1() {
 /// Jump using ref, from B1 -> B2. Expected to parse:
 /// fatal: 'B2' is already used by worktree at '/tmp/gco/repo/B2'
 #[test]
-#[ignore]
 fn t2() {
     let (_t, root) = setup();
     env::set_current_dir(root.join("B1")).unwrap();
@@ -68,7 +66,6 @@ fn t2() {
 /// branch name:
 /// fatal: 'B3' is already used by worktree at '/tmp/gco/repo/D3'
 #[test]
-#[ignore]
 fn t3() {
     let (_t, root) = setup();
     env::set_current_dir(root.join("B1")).unwrap();
@@ -80,7 +77,6 @@ fn t3() {
 /// Jump using directory, from B1 -> B3, but we use D3 as the target instead
 /// of B3.
 #[test]
-#[ignore]
 fn t4() {
     let (_t, root) = setup();
     env::set_current_dir(root.join("B1")).unwrap();
@@ -89,10 +85,17 @@ fn t4() {
     assert_eq!(output.status.code(), Some(64));
 }
 
+#[test]
+fn t5() {
+    let (_t, root) = setup();
+    env::set_current_dir(root.join("B1")).unwrap();
+    git!(CHECKOUT, "B4").snw();
+    assert_eq!(git!("branch", "--show-current").get_stdout(), "B4");
+}
+
 /// `git-checkout3` should return the same exit code as `git checkout` in an
 /// empty repository.
 #[test]
-#[ignore]
 fn empty_directory() {
     let t = Test::new("gco-test");
     let _ = std::fs::remove_dir_all(t.as_path()).unwrap();

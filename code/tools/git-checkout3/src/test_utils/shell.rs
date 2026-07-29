@@ -15,7 +15,7 @@ pub struct Output2 {
     pub status: ExitStatus,
 }
 
-pub fn commit_file(t: &mut Test, pathspec: &'static str) {
+pub fn commit_file(t: &mut Test, pathspec: &str) {
     let mut f = File::options().create(true).append(true).open(pathspec).unwrap();
     writeln!(f, "data({})", t.id()).unwrap();
     git!("add", pathspec).snw();
@@ -45,6 +45,7 @@ impl CommandExt for Command {
         self.output().unwrap()
     }
 
+    /// Spawn and wait.
     fn snw(&mut self) {
         let output = self.get();
         println!("{}", output.stderr);
