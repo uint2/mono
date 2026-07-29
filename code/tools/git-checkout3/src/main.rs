@@ -16,7 +16,7 @@ use core::str;
 use std::io;
 use std::io::Write;
 use std::path::Path;
-use std::process::ExitCode;
+use std::process::{Command, ExitCode};
 
 #[derive(Debug)]
 struct GitWorktree<'a> {
@@ -28,10 +28,16 @@ struct GitWorktree<'a> {
     ///
     /// The other cases are just not considered. We really only care when the
     /// branch ref actually exists.
-    branch: Option<&'a str>,
+    ref_name: Option<&'a str>,
 }
 
 impl<'a> GitWorktree<'a> {
+    /// The short branch name, if it exists.
+    pub fn canonical_branch(&self) -> Option<&'a str> {
+        let Some(ref_name) = self.ref_name else { return None };
+        ref_name.strip_prefix("refs/heads/")
+    }
+
     pub fn parse(text: &'a str) -> Result<Vec<Self>, ()> {
         let mut worktrees = vec![];
         let mut state: u8 = 0;
@@ -47,7 +53,7 @@ impl<'a> GitWorktree<'a> {
                     worktrees.push(GitWorktree {
                         path: Path::new(line.trim_start()),
                         head: "",
-                        branch: None,
+                        ref_name: None,
                     });
                     state = 1;
                 }
@@ -64,7 +70,7 @@ impl<'a> GitWorktree<'a> {
                 2 if line.is_empty() => state = 0,
                 2 => {
                     if let Some(line) = line.strip_prefix("branch") {
-                        worktrees.last_mut().unwrap().branch = Some(line.trim_start());
+                        worktrees.last_mut().unwrap().ref_name = Some(line.trim_start());
                     }
                 }
                 _ => return Err(eprintln!("Invalid git worktree parser state.")),
@@ -101,6 +107,25 @@ fn try_main() -> Result<ExitCode, ()> {
 }
 
 fn main() -> ExitCode {
+    // To keep things simple, we only run the complicated logic when there is
+    // exactly 1 CLI argument (that is not the binary itself).
+    let args: Vec<_> = std::env::args_os().skip(1).collect();
+    let 1 = args.len() else {
+        let mut cmd = Command::new("git");
+        cmd.arg("checkout");
+        cmd.args(args);
+        if cfg!(unix) {
+            use std::os::unix::process::CommandExt;
+            let err = cmd.exec();
+            eprintln!("Failed execvp call: {err}");
+            return ExitCode::FAILURE;
+        } else {
+
+        }
+
+        todo!();
+        // return E;
+    };
     match try_main() {
         Ok(v) => v,
         Err(()) => ExitCode::FAILURE,
