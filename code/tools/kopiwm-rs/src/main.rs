@@ -106,6 +106,8 @@ fn try_main() -> Result<()> {
     let fonts = Fonts::new(dpy, screen, config::FONTS);
     let colors = setup::setup_color_scheme(dpy, screen);
     log::info!("Ran to the end of try_main()");
+
+    let monitors = vec![Monitor::new()];
     Ok(())
 }
 
