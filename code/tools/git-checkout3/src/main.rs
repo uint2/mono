@@ -16,7 +16,7 @@ use core::str;
 use std::io;
 use std::io::Write;
 use std::path::Path;
-use std::process::{Command, ExitCode};
+use std::process::{Command, ExitCode, ExitStatus};
 
 #[derive(Debug)]
 struct GitWorktree<'a> {
@@ -29,6 +29,12 @@ struct GitWorktree<'a> {
     /// The other cases are just not considered. We really only care when the
     /// branch ref actually exists.
     ref_name: Option<&'a str>,
+}
+
+macro_rules! err {
+    ($($arg:tt)*) => {{
+        Err(eprintln!($($arg)*))
+    }};
 }
 
 impl<'a> GitWorktree<'a> {
@@ -80,24 +86,21 @@ impl<'a> GitWorktree<'a> {
     }
 }
 
-fn try_main() -> Result<ExitCode, ()> {
+fn try_main(goal: &str) -> Result<ExitCode, ()> {
     let Ok(worktrees) = git!("worktree", "list", "--porcelain").output() else {
-        eprintln!("Failed to execute shell command to get git worktrees.");
-        return Err(());
+        return err!("Failed to execute shell command to get git worktrees.");
     };
     let Ok(stderr) = str::from_utf8(&worktrees.stderr) else {
-        eprintln!("Unable to decode `git worktree` stderr as utf-8.");
-        return Err(());
+        return err!("Unable to decode `git worktree` stderr as utf-8.");
     };
     if stderr.starts_with("fatal: not a git repository") {
         // fatal: not a git repository (or any parent up to mount point)
         // fatal: not a git repository (or any of the parent directories)
         io::stderr().write(&worktrees.stderr).unwrap();
-        return worktrees.status.code().map(|v| ExitCode::from(v as u8)).ok_or(());
+        return Ok(status_to_code(worktrees.status));
     }
     let Ok(stdout) = str::from_utf8(&worktrees.stdout) else {
-        eprintln!("Unable to decode `git worktree` stdout as utf-8.");
-        return Err(());
+        return err!("Unable to decode `git worktree` stdout as utf-8.");
     };
     let worktrees = GitWorktree::parse(stdout)?;
 
@@ -105,6 +108,14 @@ fn try_main() -> Result<ExitCode, ()> {
 
     Ok(ExitCode::from(64))
 }
+
+fn status_to_code(status: ExitStatus) -> ExitCode {
+    match status.code() {
+        Some(v) => ExitCode::from(v as u8),
+        None => ExitCode::FAILURE,
+    }
+}
+// return worktrees.status.code().map(|v| ExitCode::from(v as u8)).ok_or(());
 
 fn main() -> ExitCode {
     // To keep things simple, we only run the complicated logic when there is
@@ -114,19 +125,20 @@ fn main() -> ExitCode {
         let mut cmd = Command::new("git");
         cmd.arg("checkout");
         cmd.args(args);
-        if cfg!(unix) {
+        return if cfg!(unix) {
             use std::os::unix::process::CommandExt;
             let err = cmd.exec();
             eprintln!("Failed execvp call: {err}");
-            return ExitCode::FAILURE;
+            ExitCode::FAILURE
         } else {
-
-        }
-
-        todo!();
-        // return E;
+            status_to_code(cmd.spawn().unwrap().wait().unwrap())
+        };
     };
-    match try_main() {
+    let Some(goal) = args[0].to_str() else {
+        eprintln!("Failed to decode target.");
+        return ExitCode::FAILURE;
+    };
+    match try_main(goal) {
         Ok(v) => v,
         Err(()) => ExitCode::FAILURE,
     }
