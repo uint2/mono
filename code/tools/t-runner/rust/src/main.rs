@@ -22,7 +22,7 @@ enum Trigger {
 impl Trigger {
     fn hit(&self, files: &[DirEntry]) -> bool {
         match self {
-            Self::Path(path) => Path::new(path).exists(),
+            Self::Path(path) => files.iter().any(|f| f.path().ends_with(path)),
             Self::Pred(f) => true,
         }
     }
@@ -66,10 +66,11 @@ impl Matcher {
     fn run(&self) -> ExitCode {
         use std::os::unix::process::CommandExt;
 
-        let err = Command::new(self.args[0])
-            .args(&self.args[1..])
-            .args(std::env::args().skip(1))
-            .exec();
+        let mut cmd = Command::new(self.args[0]);
+        cmd.args(&self.args[1..]).args(std::env::args_os().skip(1));
+        println!("{:?}", cmd);
+
+        let err = cmd.exec();
         println!("Error during `execvp` call: {err}");
         ExitCode::FAILURE
     }
@@ -102,6 +103,10 @@ fn main() -> ExitCode {
     }
     std::io::stdout().write(banner!("traversing upwards...").as_bytes()).unwrap();
     while cwd.pop() && cwd.parent().is_some() {
+        let Ok(()) = std::env::set_current_dir(&cwd) else {
+            println!("Unable to set current working directory");
+            return ExitCode::FAILURE;
+        };
         println!("{} \x1b[37m{}\x1b[m", banner!(), cwd.display());
         if let Some(exit_code) = try_run(&cwd) {
             return exit_code;
