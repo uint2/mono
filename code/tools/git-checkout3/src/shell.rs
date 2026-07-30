@@ -3,6 +3,7 @@ use std::process::{Command, ExitStatus};
 pub struct ExitCode(i32);
 
 impl ExitCode {
+    pub const SUCCESS: Self = Self(0);
     pub const FAILURE: Self = Self(1);
     pub const ACCEPT: Self = Self(64);
 

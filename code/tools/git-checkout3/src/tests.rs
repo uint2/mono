@@ -1,3 +1,4 @@
+use crate::STICKY_NO_JUMP;
 use crate::test_utils::*;
 
 use std::env;
@@ -88,9 +89,32 @@ fn t4() {
 #[test]
 fn t5() {
     let (_t, root) = setup();
-    env::set_current_dir(root.join("B1")).unwrap();
+    let cwd = root.join("B1");
+    env::set_current_dir(&cwd).unwrap();
     git!(CHECKOUT, "B4").snw();
-    assert_eq!(git!("branch", "--show-current").get_stdout(), "B4");
+    assert_eq!(git_branch(&cwd), "B4");
+}
+
+#[test]
+fn t6() {
+    let (_t, root) = setup();
+    let cwd = root.join("B1");
+    env::set_current_dir(&cwd).unwrap();
+    git!("config", "git-checkout3.sticky", "some,sticky,branches,B4,to,consider").snw();
+    git!(CHECKOUT, "B4").snw();
+    assert_eq!(git_branch(&cwd), "B4");
+}
+
+#[test]
+fn t7() {
+    let (_t, root) = setup();
+    let cwd = root.join("B1");
+    env::set_current_dir(&cwd).unwrap();
+    git!("config", "git-checkout3.sticky", "some,sticky,branches,B1,to,consider").snw();
+    let output = git!(CHECKOUT, "B4").output().unwrap();
+    let stdout = core::str::from_utf8(&output.stdout).unwrap();
+    assert_eq!(stdout, STICKY_NO_JUMP);
+    assert_eq!(git_branch(&cwd), "B1");
 }
 
 /// `git-checkout3` should return the same exit code as `git checkout` in an

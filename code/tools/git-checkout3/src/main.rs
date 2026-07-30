@@ -24,6 +24,7 @@ use core::str;
 use std::io;
 use std::io::Write;
 use std::process::Command;
+use std::process::Stdio;
 
 #[derive(Debug)]
 struct GitWorktree<'a> {
@@ -44,6 +45,12 @@ macro_rules! err {
         Err(eprintln!($($arg)*))
     }};
 }
+
+const STICKY_NO_JUMP: &str = "\
+No jump - currently on sticky branch. Instead, either
+1. go to a different worktree first, or
+2. create a new worktree.
+";
 
 impl<'a> GitWorktree<'a> {
     pub fn directory(&self) -> &'a str {
@@ -134,6 +141,28 @@ fn try_main(goal: &str) -> Result<ExitCode, ()> {
         }
     }
 
+    let current_branch_is_sticky = {
+        let Ok(sticky) = git!("config", "get", "git-checkout3.sticky").output() else {
+            return err!("Failed to execute shell command to get git config.");
+        };
+        let Ok(sticky) = str::from_utf8(&sticky.stdout) else {
+            return err!("Unable to decode sticky config as utf-8.");
+        };
+        let Ok(current_branch) = git!("branch", "--show-current").output() else {
+            return err!("Failed to execute shell command to get git branch.");
+        };
+        let Ok(current_branch) = str::from_utf8(&current_branch.stdout) else {
+            return err!("Unable to decode git branch as utf-8.");
+        };
+        let current_branch = current_branch.trim();
+        sticky.split(',').any(|v| v.trim() == current_branch)
+    };
+
+    if current_branch_is_sticky {
+        io::stdout().write(STICKY_NO_JUMP.as_bytes()).unwrap();
+        return Ok(ExitCode::SUCCESS);
+    }
+
     shell::run(git!("checkout", goal));
 }
 
@@ -151,7 +180,7 @@ fn main() -> std::process::ExitCode {
         eprintln!("Failed to decode target.");
         return std::process::ExitCode::FAILURE;
     };
-    match try_main(goal) {
+    match try_main(goal.trim()) {
         Ok(v) => v.exit(),
         Err(()) => return std::process::ExitCode::FAILURE,
     }
