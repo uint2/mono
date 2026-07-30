@@ -21,15 +21,14 @@ mod shell;
 use shell::ExitCode;
 
 use core::str;
-use std::io;
-use std::io::Write;
+use std::io::{self, Write};
+use std::path::Path;
 use std::process::Command;
-use std::process::Stdio;
 
 #[derive(Debug)]
 struct GitWorktree<'a> {
     /// Absolute path to the worktree.
-    path: &'a str,
+    abs_path: &'a str,
     head: Result<&'a str, ()>,
     /// The branch. Parsed from one of
     /// * "branch refs/heads/main",
@@ -46,6 +45,7 @@ macro_rules! err {
     }};
 }
 
+const STICKY_CONFIG_KEY: &str = "checkout.sticky";
 const STICKY_NO_JUMP: &str = "\
 No jump - currently on sticky branch. Instead, either
 1. go to a different worktree first, or
@@ -54,9 +54,9 @@ No jump - currently on sticky branch. Instead, either
 
 impl<'a> GitWorktree<'a> {
     pub fn directory(&self) -> &'a str {
-        match self.path.rsplit_once(std::path::MAIN_SEPARATOR) {
+        match self.abs_path.rsplit_once(std::path::MAIN_SEPARATOR) {
             Some((_, dir)) => dir,
-            None => self.path,
+            None => self.abs_path,
         }
     }
 
@@ -72,8 +72,8 @@ impl<'a> GitWorktree<'a> {
                         );
                         return Err(());
                     };
-                    let path = line.trim_start();
-                    worktrees.push(GitWorktree { path, head: Err(()), branch: None });
+                    let abs_path = line.trim_start();
+                    worktrees.push(GitWorktree { abs_path, head: Err(()), branch: None });
                     state = 1;
                 }
                 1 => {
@@ -101,9 +101,41 @@ impl<'a> GitWorktree<'a> {
         Ok(worktrees)
     }
 
-    pub fn accept(&self) -> ExitCode {
-        io::stdout().write(self.path.as_bytes()).unwrap();
-        ExitCode::ACCEPT
+    /// Returns the relative path from `base_dir` if `self.abs_path` is
+    /// contained under `base_dir`. Otherwise `None`.
+    fn relpath<'p>(&self, base_dir: &'p Path) -> Option<&'p Path> {
+        if self.branch.is_none() || !base_dir.starts_with(self.abs_path) {
+            return None;
+        }
+        println!("base: {base_dir:?} vs abspath: {:?}", self.abs_path);
+        base_dir.strip_prefix(self.abs_path).ok()
+    }
+
+    pub fn accept_and_resolve(&self, trees: &[Self]) -> Result<ExitCode, ()> {
+        io::stdout().write(self.abs_path.as_bytes()).unwrap();
+        if true {
+            return Ok(ExitCode::ACCEPT);
+        }
+        let Ok(cwd) = std::env::current_dir() else {
+            return err!("Unable to get current working directory.");
+        };
+        let relpath = match trees.into_iter().find_map(|v| v.relpath(&cwd)) {
+            Some(v) => v,
+            None => {
+                io::stdout().write(self.abs_path.as_bytes()).unwrap();
+                return Ok(ExitCode::ACCEPT);
+            }
+        };
+        io::stdout().write(self.abs_path.as_bytes()).unwrap();
+        // println!("t: {:?}", trees);
+        // println!("basedir: {:?}", cwd);
+        // println!("abspath: {:?} {}", self.abs_path, cwd.starts_with(self.abs_path));
+        // println!("r: {:?}", relpath);
+        // let target = Path::new(self.abs_path).join(relpath);
+        // let target = target.to_str().unwrap();
+        // // target = "HEY";
+        // io::stdout().write(target.as_bytes()).unwrap();
+        Ok(ExitCode::ACCEPT)
     }
 }
 
@@ -128,7 +160,7 @@ fn try_main(goal: &str) -> Result<ExitCode, ()> {
     // 1. Prioritize the directory match.
     for worktree in &worktrees {
         if worktree.directory() == goal {
-            return Ok(worktree.accept());
+            return worktree.accept_and_resolve(&worktrees);
         }
     }
 
@@ -137,12 +169,12 @@ fn try_main(goal: &str) -> Result<ExitCode, ()> {
     for worktree in &worktrees {
         let Some(branch) = worktree.branch else { continue };
         if branch == goal {
-            return Ok(worktree.accept());
+            return worktree.accept_and_resolve(&worktrees);
         }
     }
 
     let current_branch_is_sticky = {
-        let Ok(sticky) = git!("config", "get", "git-checkout3.sticky").output() else {
+        let Ok(sticky) = git!("config", "get", STICKY_CONFIG_KEY).output() else {
             return err!("Failed to execute shell command to get git config.");
         };
         let Ok(sticky) = str::from_utf8(&sticky.stdout) else {

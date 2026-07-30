@@ -24,12 +24,12 @@ pub fn commit_file(t: &mut Test, pathspec: &str) {
 
 /// To deal with macOS's weird implementation of the `/tmp` directory, we shall
 /// use this quick little routine to obtain the OS's view of the directory.
-pub fn cd<P: AsRef<Path>>(dir: P) -> PathBuf {
-    let cwd = env::current_dir().unwrap();
-    env::set_current_dir(dir).unwrap();
-    let result = env::current_dir().unwrap();
-    env::set_current_dir(cwd).unwrap();
-    result
+pub fn cd<P: AsRef<Path>>(dir: P) -> Option<PathBuf> {
+    let cwd = env::current_dir().ok()?;
+    env::set_current_dir(dir).ok()?;
+    let result = env::current_dir().ok()?;
+    env::set_current_dir(cwd).ok()?;
+    Some(result)
 }
 
 pub trait CommandExt {
