@@ -1,5 +1,11 @@
-use crate::test_utils::*;
-use crate::{STICKY_CONFIG_KEY, STICKY_NO_JUMP};
+mod common;
+
+#[path = "../src/consts.rs"]
+mod consts;
+
+use consts::{STICKY_CONFIG_KEY, STICKY_NO_JUMP};
+
+use common::*;
 
 use std::env;
 use std::path::Path;

@@ -10,14 +10,10 @@ macro_rules! git {
     }};
 }
 
-#[cfg(test)]
-mod test_utils;
-
-#[cfg(test)]
-mod tests;
-
+mod consts;
 mod shell;
 
+use consts::{STICKY_CONFIG_KEY, STICKY_NO_JUMP};
 use shell::ExitCode;
 
 use core::str;
@@ -44,13 +40,6 @@ macro_rules! err {
         Err(eprintln!($($arg)*))
     }};
 }
-
-const STICKY_CONFIG_KEY: &str = "checkout.sticky";
-const STICKY_NO_JUMP: &str = "\
-No jump - currently on sticky branch. Instead, either
-1. go to a different worktree first, or
-2. create a new worktree.
-";
 
 impl<'a> GitWorktree<'a> {
     pub fn directory(&self) -> &'a str {

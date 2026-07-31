@@ -1,17 +1,13 @@
 use std::path::{Path, PathBuf};
 use std::{env, fs};
 
+const BIN: &str = env!("CARGO_BIN_EXE_git-checkout3");
+
 pub struct Test {
     // Root directory for the test files.
     root_dir: PathBuf,
     // Unique id for anything.
     id: u32,
-}
-
-/// Get the path to the debug binary
-fn bin_dir() -> String {
-    let mut p = env::current_exe().unwrap();
-    (p.pop(), p.pop(), p.to_string_lossy().trim().to_string()).2
 }
 
 /// Gets an environment variable with a maximum of 100 retries.
@@ -32,7 +28,12 @@ fn env_var(name: &str) -> String {
 
 impl Test {
     pub fn new(suffix: &'static str) -> Self {
-        let new_path = format!("{}:{}", bin_dir(), env_var("PATH"));
+        let bin_dir = {
+            let mut p = PathBuf::from(BIN);
+            p.pop();
+            p
+        };
+        let new_path = format!("{}:{}", bin_dir.display(), env_var("PATH"));
         unsafe { env::set_var("PATH", new_path) };
 
         let temp_dir = env::temp_dir().join(suffix);

@@ -1,4 +1,4 @@
-use crate::test_utils::Test;
+use super::Test;
 
 use std::{
     env,
