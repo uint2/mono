@@ -7,8 +7,8 @@ use consts::{STICKY_CONFIG_KEY, STICKY_NO_JUMP};
 
 use common::*;
 
-use std::env;
 use std::path::Path;
+use std::{env, fs};
 
 const CHECKOUT: &str = "checkout3";
 
@@ -158,6 +158,8 @@ fn t7() {
     let cwd = root.join("B1");
     env::set_current_dir(&cwd).unwrap();
     git!("config", "checkout.sticky", "some,sticky,branches,B1,to,consider").snw();
+    // Use this way of getting output to be able to compare even the trailing
+    // newline.
     let output = git!(CHECKOUT, "B4").output().unwrap();
     let stdout = core::str::from_utf8(&output.stdout).unwrap();
     assert_eq!(stdout, STICKY_NO_JUMP);
@@ -168,13 +170,23 @@ fn t7() {
 #[test]
 fn t8() {
     let (_t, root) = setup(function!());
-    let cwd = root.join("B1");
+    let cwd = root.join("B1/src/main");
     env::set_current_dir(&cwd).unwrap();
-    git!("config", "checkout.sticky", "some,sticky,branches,B1,to,consider").snw();
-    let output = git!(CHECKOUT, "B4").output().unwrap();
-    let stdout = core::str::from_utf8(&output.stdout).unwrap();
-    assert_eq!(stdout, STICKY_NO_JUMP);
-    assert_eq!(git_branch(&cwd), "B1");
+    let output = git!(CHECKOUT, "B2").get();
+    assert!(output.stdout.ends_with("B2/src/main"));
+}
+
+/// Retreat to closest directory.
+#[test]
+fn t9() {
+    let (_t, root) = setup(function!());
+    let subdir = "java/foo/bar/baz";
+    let cwd = root.join("B1/src/main");
+    env::set_current_dir(&cwd).unwrap();
+    fs::create_dir_all(subdir).unwrap();
+    env::set_current_dir(cwd.join(subdir)).unwrap();
+    let output = git!(CHECKOUT, "B2").get();
+    assert!(output.stdout.ends_with("B2/src/main/java"), "Got: {}", output.stdout);
 }
 
 /// `git-checkout3` should return the same exit code as `git checkout` in an

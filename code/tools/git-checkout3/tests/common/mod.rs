@@ -11,24 +11,30 @@ pub use {
     types::Test,
 };
 
-use std::env;
-use std::{fs, path::PathBuf};
+use std::path::{Path, PathBuf};
+use std::{env, fs};
 
 /// Set up the test directory to a git repo of the state below, and returns the
 /// path to the `repo/` dir here:
 /// └── repo
-///    ├── .git (bare repo)
-///    ├── B1
-///    │  ├── one
+///    ├── .git                  bare repo
+///    ├── B1                    worktree
+///    │  ├── src
+///    │  │   └── main
+///    │  │       └── java
+///    │  │           └── Main.java
 ///    │  └── README.md
 ///    ├── B2
-///    │  ├── one
-///    │  ├── two
+///    │  ├── src
+///    │  │   └── main
+///    │  │       └── java
+///    │  │           └── Main.java
 ///    │  └── README.md
 ///    └── D3
-///       ├── one
-///       ├── two
-///       ├── three
+///       ├── src
+///       │   └── main
+///       │       └── java
+///       │           └── Main.java
 ///       └── README.md
 pub fn setup(name: &'static str) -> (Test, PathBuf) {
     let mut t = Test::new(name);
@@ -52,11 +58,13 @@ pub fn setup(name: &'static str) -> (Test, PathBuf) {
 
     let mut commits = vec![];
 
-    let mut dir = PathBuf::new();
-    for i in 0..6 {
-        dir.push(format!("dir{i}"));
-        commit_file(&mut t, dir.join(".gitkeep"));
-        commit_file(&mut t, &format!("file-{i}.txt"));
+    let dir = Path::new("src/main/java");
+    fs::create_dir_all(dir).unwrap();
+    let main_java = dir.join("Main.java");
+
+    for _ in 0..6 {
+        commit_file(&mut t, &main_java);
+        commit_file(&mut t, "README.md");
         let c = git!("rev-parse", "--verify", "HEAD").get_stdout();
         commits.push(c);
     }
@@ -82,11 +90,13 @@ pub fn setup(name: &'static str) -> (Test, PathBuf) {
     git!("checkout", "main").snw();
     assert_eq!(git!("branch", "--show-current").get_stdout(), "main");
 
+    // Convert to bare repo.
     git!("-C", d_base.join(".git"), "config", "--bool", "core.bare", "true");
     fs::rename(d_base.join(".git"), &d_repo).unwrap();
     fs::remove_dir_all(d_base).unwrap(); // Intentionally drop `d_base`
     env::set_current_dir(&d_repo).unwrap();
 
+    // Create the worktrees.
     git!("worktree", "add", "B1").snw();
     git!("worktree", "add", "B2").snw();
     git!("worktree", "add", "D3").snw();
