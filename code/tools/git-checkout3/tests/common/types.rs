@@ -2,6 +2,7 @@ use std::path::{Path, PathBuf};
 use std::{env, fs};
 
 const BIN: &str = env!("CARGO_BIN_EXE_git-checkout3");
+const TMPDIR: &str = env!("CARGO_TARGET_TMPDIR");
 
 pub struct Test {
     // Root directory for the test files.
@@ -36,7 +37,7 @@ impl Test {
         let new_path = format!("{}:{}", bin_dir.display(), env_var("PATH"));
         unsafe { env::set_var("PATH", new_path) };
 
-        let temp_dir = env::temp_dir().join(suffix);
+        let temp_dir = Path::new(TMPDIR).join(suffix);
         let _ = fs::remove_dir_all(&temp_dir);
         fs::create_dir_all(&temp_dir).unwrap();
         Self { root_dir: temp_dir, id: 0 }
