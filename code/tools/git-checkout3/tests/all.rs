@@ -12,7 +12,17 @@ use std::path::Path;
 
 const CHECKOUT: &str = "checkout3";
 
-#[cfg(test)]
+macro_rules! function {
+    () => {{
+        fn f() {}
+        type_name_of(f).strip_suffix("::f").unwrap()
+    }};
+}
+
+fn type_name_of<T>(_: T) -> &'static str {
+    core::any::type_name::<T>()
+}
+
 fn git_branch(dir: &Path) -> String {
     git!("-C", dir, "branch", "--show-current").get_stdout()
 }
@@ -24,7 +34,7 @@ fn git_branches(dir: &Path) -> Vec<String> {
 
 #[test]
 fn worktree_list_output() {
-    let (_t, root) = setup();
+    let (_t, root) = setup(function!());
     let output = git!("worktree", "list", "--porcelain").get();
     let s = output.stdout.as_str();
     let l: Vec<_> = s.lines().collect();
@@ -53,25 +63,25 @@ fn worktree_list_output() {
 
 #[test]
 fn setup_test_branch_1() {
-    let (_t, root) = setup();
+    let (_t, root) = setup(function!());
     assert_eq!(git_branch(&root.join("B1")), "B1");
 }
 
 #[test]
 fn setup_test_branch_2() {
-    let (_t, root) = setup();
+    let (_t, root) = setup(function!());
     assert_eq!(git_branch(&root.join("B2")), "B2");
 }
 
 #[test]
 fn setup_test_branch_3() {
-    let (_t, root) = setup();
+    let (_t, root) = setup(function!());
     assert_eq!(git_branch(&root.join("D3")), "B3");
 }
 
 #[test]
 fn setup_all_branches() {
-    let (_t, root) = setup();
+    let (_t, root) = setup(function!());
     let mut branches = git_branches(&root);
     branches.sort();
     assert_eq!(branches, ["B1", "B2", "B3", "B4", "main"]);
@@ -80,7 +90,7 @@ fn setup_all_branches() {
 /// Jump from the lift-lobby (git workspace area, but not in any git workspace)
 #[test]
 fn t1() {
-    let (_t, root) = setup();
+    let (_t, root) = setup(function!());
     env::set_current_dir(&root).unwrap();
     let output = git!(CHECKOUT, "B1").get();
     assert_eq!(cd(&output.stdout), cd(root.join("B1")), "Mismatch: {}", output.stdout);
@@ -91,7 +101,7 @@ fn t1() {
 /// fatal: 'B2' is already used by worktree at '/tmp/gco/repo/B2'
 #[test]
 fn t2() {
-    let (_t, root) = setup();
+    let (_t, root) = setup(function!());
     env::set_current_dir(root.join("B1")).unwrap();
     let output = git!(CHECKOUT, "B2").get();
     assert_eq!(cd(&output.stdout), cd(root.join("B2")), "Mismatch: {}", output.stdout);
@@ -103,7 +113,7 @@ fn t2() {
 /// fatal: 'B3' is already used by worktree at '/tmp/gco/repo/D3'
 #[test]
 fn t3() {
-    let (_t, root) = setup();
+    let (_t, root) = setup(function!());
     env::set_current_dir(root.join("B1")).unwrap();
     let output = git!(CHECKOUT, "B3").get();
     assert_eq!(cd(&output.stdout), cd(root.join("D3")), "Mismatch: {}", output.stdout);
@@ -114,7 +124,7 @@ fn t3() {
 /// of B3.
 #[test]
 fn t4() {
-    let (_t, root) = setup();
+    let (_t, root) = setup(function!());
     env::set_current_dir(root.join("B1")).unwrap();
     let output = git!(CHECKOUT, "D3").get();
     assert_eq!(cd(&output.stdout), cd(root.join("D3")), "Mismatch: {}", output.stdout);
@@ -123,7 +133,7 @@ fn t4() {
 
 #[test]
 fn t5() {
-    let (_t, root) = setup();
+    let (_t, root) = setup(function!());
     let cwd = root.join("B1");
     env::set_current_dir(&cwd).unwrap();
     git!(CHECKOUT, "B4").snw();
@@ -132,7 +142,7 @@ fn t5() {
 
 #[test]
 fn t6() {
-    let (_t, root) = setup();
+    let (_t, root) = setup(function!());
     let cwd = root.join("B1");
     env::set_current_dir(&cwd).unwrap();
     git!("config", STICKY_CONFIG_KEY, "some,sticky,branches,B4,to,consider").snw();
@@ -144,7 +154,20 @@ fn t6() {
 /// not jump, and print the help message.
 #[test]
 fn t7() {
-    let (_t, root) = setup();
+    let (_t, root) = setup(function!());
+    let cwd = root.join("B1");
+    env::set_current_dir(&cwd).unwrap();
+    git!("config", "checkout.sticky", "some,sticky,branches,B1,to,consider").snw();
+    let output = git!(CHECKOUT, "B4").output().unwrap();
+    let stdout = core::str::from_utf8(&output.stdout).unwrap();
+    assert_eq!(stdout, STICKY_NO_JUMP);
+    assert_eq!(git_branch(&cwd), "B1");
+}
+
+/// Try to maintain relative path.
+#[test]
+fn t8() {
+    let (_t, root) = setup(function!());
     let cwd = root.join("B1");
     env::set_current_dir(&cwd).unwrap();
     git!("config", "checkout.sticky", "some,sticky,branches,B1,to,consider").snw();
@@ -171,7 +194,7 @@ fn empty_directory() {
 /// branch doesn't exist.
 #[test]
 fn branch_not_exists() {
-    let (_t, root) = setup();
+    let (_t, root) = setup(function!());
     env::set_current_dir(root.join("B1")).unwrap();
     let lhs = git!(CHECKOUT, "zeno").get();
     let rhs = git!("checkout", "zeno").get();

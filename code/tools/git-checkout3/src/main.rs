@@ -100,30 +100,41 @@ impl<'a> GitWorktree<'a> {
         base_dir.strip_prefix(self.abs_path).ok()
     }
 
+    fn find_closest_parent<'t>(abs_cwd: &Path, trees: &'t [Self]) -> Option<&'t Self> {
+        trees
+            .iter()
+            .filter(|t| t.branch.is_some())
+            .filter(|t| abs_cwd.starts_with(t.abs_path))
+            .max_by(|a, b| a.abs_path.len().cmp(&b.abs_path.len()))
+    }
+
     pub fn accept_and_resolve(&self, trees: &[Self]) -> Result<ExitCode, ()> {
-        io::stdout().write(self.abs_path.as_bytes()).unwrap();
-        if true {
-            return Ok(ExitCode::ACCEPT);
-        }
+        // io::stdout().write(self.abs_path.as_bytes()).unwrap();
+        // if true {
+        //     return Ok(ExitCode::ACCEPT);
+        // }
+
         let Ok(cwd) = std::env::current_dir() else {
             return err!("Unable to get current working directory.");
         };
-        let relpath = match trees.into_iter().find_map(|v| v.relpath(&cwd)) {
+
+        let parent_tree = match Self::find_closest_parent(&cwd, trees) {
             Some(v) => v,
             None => {
                 io::stdout().write(self.abs_path.as_bytes()).unwrap();
                 return Ok(ExitCode::ACCEPT);
             }
         };
-        io::stdout().write(self.abs_path.as_bytes()).unwrap();
+        let relpath = cwd.strip_prefix(parent_tree.abs_path).unwrap();
+        // io::stdout().write(self.abs_path.as_bytes()).unwrap();
         // println!("t: {:?}", trees);
         // println!("basedir: {:?}", cwd);
         // println!("abspath: {:?} {}", self.abs_path, cwd.starts_with(self.abs_path));
         // println!("r: {:?}", relpath);
-        // let target = Path::new(self.abs_path).join(relpath);
-        // let target = target.to_str().unwrap();
+        let target = Path::new(self.abs_path).join(relpath);
+        let target = target.to_str().unwrap();
         // // target = "HEY";
-        // io::stdout().write(target.as_bytes()).unwrap();
+        io::stdout().write(target.as_bytes()).unwrap();
         Ok(ExitCode::ACCEPT)
     }
 }

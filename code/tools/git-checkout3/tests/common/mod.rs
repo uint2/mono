@@ -30,8 +30,8 @@ use std::{fs, path::PathBuf};
 ///       ├── two
 ///       ├── three
 ///       └── README.md
-pub fn setup() -> (Test, PathBuf) {
-    let mut t = Test::new("gco-test");
+pub fn setup(name: &'static str) -> (Test, PathBuf) {
+    let mut t = Test::new(name);
 
     // The place where we initialize the git history. Fill it out with events.
     let d_base = t.as_path().join("base");
@@ -52,7 +52,10 @@ pub fn setup() -> (Test, PathBuf) {
 
     let mut commits = vec![];
 
+    let mut dir = PathBuf::new();
     for i in 0..6 {
+        dir.push(format!("dir{i}"));
+        commit_file(&mut t, dir.join(".gitkeep"));
         commit_file(&mut t, &format!("file-{i}.txt"));
         let c = git!("rev-parse", "--verify", "HEAD").get_stdout();
         commits.push(c);

@@ -1,4 +1,6 @@
+use std::collections::HashSet;
 use std::path::{Path, PathBuf};
+use std::sync::{LazyLock, Mutex};
 use std::{env, fs};
 
 const BIN: &str = env!("CARGO_BIN_EXE_git-checkout3");
@@ -28,7 +30,13 @@ fn env_var(name: &str) -> String {
 }
 
 impl Test {
-    pub fn new(suffix: &'static str) -> Self {
+    pub fn new(name: &'static str) -> Self {
+        static TEST_NAMES: LazyLock<Mutex<HashSet<&'static str>>> =
+            LazyLock::new(|| Mutex::new(HashSet::new()));
+        let mut lock = TEST_NAMES.lock().unwrap();
+        assert!(lock.insert(name), "Duplicate test name: {name}");
+        drop(lock);
+
         let bin_dir = {
             let mut p = PathBuf::from(BIN);
             p.pop();
@@ -37,7 +45,7 @@ impl Test {
         let new_path = format!("{}:{}", bin_dir.display(), env_var("PATH"));
         unsafe { env::set_var("PATH", new_path) };
 
-        let temp_dir = Path::new(TMPDIR).join(suffix);
+        let temp_dir = Path::new(TMPDIR).join(name);
         let _ = fs::remove_dir_all(&temp_dir);
         fs::create_dir_all(&temp_dir).unwrap();
         Self { root_dir: temp_dir, id: 0 }
@@ -51,11 +59,5 @@ impl Test {
     pub fn id(&mut self) -> u32 {
         self.id += 1;
         self.id
-    }
-}
-
-impl Drop for Test {
-    fn drop(&mut self) {
-        let _ = fs::remove_dir_all(&self.root_dir);
     }
 }

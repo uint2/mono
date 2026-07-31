@@ -1,5 +1,6 @@
 use super::Test;
 
+use std::fs;
 use std::{
     env,
     fs::File,
@@ -15,11 +16,13 @@ pub struct Output2 {
     pub status: ExitStatus,
 }
 
-pub fn commit_file(t: &mut Test, pathspec: &str) {
+pub fn commit_file<P: AsRef<Path>>(t: &mut Test, pathspec: P) {
+    let pathspec = pathspec.as_ref();
+    let _ = fs::create_dir_all(pathspec.parent().unwrap());
     let mut f = File::options().create(true).append(true).open(pathspec).unwrap();
     writeln!(f, "data({})", t.id()).unwrap();
     git!("add", pathspec).snw();
-    git!("commit", "-m", format!("Updated \"{pathspec}\"")).snw();
+    git!("commit", "-m", format!("Updated \"{}\"", pathspec.display())).snw();
 }
 
 /// To deal with macOS's weird implementation of the `/tmp` directory, we shall
