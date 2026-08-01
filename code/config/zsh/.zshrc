@@ -179,9 +179,9 @@ gp() {
   [ $1 ] && $EDITOR $($GIT ls-files --deduplicate $@)
 }
 
-if binary_exists git-checkout2; then
+if binary_exists git-checkout3; then
   gco() {
-    TARGET=$($GIT checkout2 $@)
+    TARGET=$($GIT checkout3 $@)
     local EC=$?
     if [ $EC -eq 64 ]; then
       cd $TARGET
