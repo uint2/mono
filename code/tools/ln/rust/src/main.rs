@@ -5,7 +5,7 @@ mod vlist;
 use logline::*;
 use vlist::*;
 
-use std::io::{BufRead, BufReader, LineWriter, Write, stdout};
+use std::io::{stdout, BufRead, BufReader, LineWriter, Write};
 use std::process::{ChildStdout, Command, Stdio};
 
 const HEIGHT_RATIO: f32 = 0.7;

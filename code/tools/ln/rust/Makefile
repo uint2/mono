@@ -7,11 +7,11 @@ current: bound
 
 debug:
 	cargo build
-	PATH=$(CARGO_DEBUG_DIR):$$PATH git -C ~/repos/math ln -n 200
+	PATH=$(CARGO_DEBUG_DIR):$$PATH git -C $(HOME)/mono ln -n 200
 
 bound:
 	cargo build
-	PATH=$(CARGO_DEBUG_DIR):$$PATH git -C ~/repos/math ln --bound
+	PATH=$(CARGO_DEBUG_DIR):$$PATH git -C $(HOME)/mono ln --bound
 
 install:
 	cargo install --locked --force --path .
