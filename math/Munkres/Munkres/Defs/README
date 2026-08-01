@@ -1,0 +1,2 @@
+Sometimes, Munkres differs from Mathlib in the way he defines things. That's
+natural. This directory serves to reconcile those differences as equivalences.

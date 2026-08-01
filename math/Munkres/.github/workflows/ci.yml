@@ -1,0 +1,25 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+"
+
+permissions:
+  contents: write
+
+jobs:
+  lean:
+    runs-on: ubuntu-24.04
+    steps:
+      - run: cargo install --git https://github.com/nguyenvukhang/slope.git
+      - uses: actions/checkout@v4
+      - uses: leanprover/lean-action@v1
+        with:
+          build: false
+          lint: false
+          test: false
+      - run: make all
