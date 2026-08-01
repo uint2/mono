@@ -1,22 +1,31 @@
 use std::process::{Command, Stdio};
 
-macro_rules! FMT {
-    ($($x:expr),*) => {
-        concat!("--format=", $("\u{2}", $x),*)
-    }
-}
-
 /// Git log PRETTY FORMATS options.
 /// %h  : abbreviated commit hash
 /// %ar : author date, relative
 /// %s  : subject
 /// %D  : ref names without the " (", ")" wrapping.
-const FMT_ARGS: &str = FMT!("%h", "%ar", "%s", "%C(auto)%D");
+const GIT_LOG_ARGS: [&str; 6] = [
+    "-c",
+    "color.diff.commit=241", // Colors the parentheses around the refs.
+    "log",
+    "--graph",
+    "--color=always",
+    concat!(
+        "--format=",
+        "%C(yellow)%h",                                        // commit SHA
+        "%C(auto)",                                            // ref colors
+        "%(decorate:prefix= {,suffix=},pointer= \x1b[33m-> )", // refs
+        " %s ",                                                // commit subject (message)
+        "%C(240)(%C(246)\u{2}",
+        "%ar", // relative author time
+    ),
+];
 
 /// Gets the base `git log` command.
 pub fn git_log() -> Command {
     let mut git = Command::new("git");
-    git.args(["log", "--graph", "--color=always", FMT_ARGS]);
+    git.args(GIT_LOG_ARGS);
     git
 }
 
@@ -25,13 +34,9 @@ pub fn git_log() -> Command {
 /// content is less than that of one screen.
 pub fn less() -> Command {
     let mut less = Command::new("less");
-    less.arg("-RF").arg("--cmd=/HEAD\nkkkkkkkkkk").stdin(Stdio::piped());
+    less.arg("-RF");
+    #[cfg(feature = "less_cmd")]
+    less.arg("--cmd=/smash\nkkkkkkkkkk");
+    less.stdin(Stdio::piped());
     less
-}
-
-/// Gets the path to the `.git` directory.
-pub fn git_dir() -> Command {
-    let mut git = Command::new("git");
-    git.args(["rev-parse", "--git-dir"]);
-    git
 }

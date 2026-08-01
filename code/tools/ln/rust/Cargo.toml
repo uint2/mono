@@ -15,3 +15,7 @@ lto = "fat"
 
 [dependencies]
 crossterm = "0.28.1"
+
+[features]
+# Enabled for later versions of less that support the `--cmd` flag.
+less_cmd = []

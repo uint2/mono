@@ -1,83 +1,78 @@
 mod cmd;
-mod logline;
-mod vlist;
 
-use logline::*;
-use vlist::*;
-
-use std::io::{stdout, BufRead, BufReader, LineWriter, Write};
+use std::io::{stdout, BufRead, BufReader, BufWriter, LineWriter, Write};
 use std::process::{ChildStdout, Command, Stdio};
 
 const HEIGHT_RATIO: f32 = 0.7;
 
-/// Light Gray.
-const L: &str = "\x1b[38;5;246m";
-
-/// Dark Gray.
-const D: &str = "\x1b[38;5;240m";
-
-/// Green.
-const G: &str = "\x1b[32m";
-
-/// Yellow.
-const Y: &str = "\x1b[33m";
-
-/// Reset.
-const R: &str = "\x1b[m";
-
 macro_rules! _write { ($f:expr, $($x:tt)+) => {{ let _ = std::write!($f, $($x)*); }}}
 
-/// Prints one line in the `git log` output.
-fn print_git_log_line<W: Write>(line: &str, mut f: W, vlist: &mut VList) {
-    let ll = match line.split_once(SP) {
-        Some((graph, line)) => {
-            _write!(f, "{graph}");
-            LogLine::from(line)
-        }
-        // entire line is just the graph visual.
-        None => return (_ = writeln!(f, "{line}")),
-    };
-
-    // Write the SHA.
-    if vlist.contains(ll.sha) {
-        _write!(f, "{G}{}", ll.sha);
-    } else {
-        _write!(f, "{Y}{}", ll.sha);
-    }
-
-    // Write the refs, if they exist
-    if ll.has_refs() {
-        _write!(f, " {D}{{{}{D}}}", ll.refs)
-    }
-
-    // Write the subject (commit message) and the timestamp.
-    let (n, u) = ll.get_time();
-    let _ = writeln!(f, " {R}{} {D}({L}{n}{u}{D}){R}", ll.subj);
+// Gets the upper bound on number of lines to print on a bounded run.
+fn get_line_limit() -> (u16, u16) {
+    let (width, height) = crossterm::terminal::size().unwrap();
+    (width, (height as f32 * HEIGHT_RATIO) as u16)
 }
 
-// Gets the upper bound on number of lines to print on a bounded run.
-fn get_line_limit() -> u32 {
-    let (_, lines) = crossterm::terminal::size().unwrap();
-    (lines as f32 * HEIGHT_RATIO) as u32
+fn get_time(timestamp: &str) -> (&str, char) {
+    let (n, u) = timestamp.split_once(' ').unwrap();
+    (n, if u.starts_with("mo") { 'M' } else { u.chars().next().unwrap() })
+}
+
+struct LogLineWriter<W: Write> {
+    bw: BufWriter<W>,
+    written: usize,
+}
+
+impl<W: Write> LogLineWriter<W> {
+    pub fn write(&mut self, value: &str) {
+        self.written += value.chars().count();
+        self.bw.write(value.as_bytes()).unwrap();
+    }
+
+    pub fn lines_consumed(&self, width: u16) -> u16 {
+        (self.written as u16).div_ceil(width)
+    }
 }
 
 /// Iterates over the git log and writes the outputs to `f`.
-fn run<W: Write>(is_bounded: bool, log: ChildStdout, mut target: W) {
+fn run<W: Write>(is_bounded: bool, log: ChildStdout, target: W) {
     let mut buffer = String::with_capacity(256);
-    let mut limit = if is_bounded { get_line_limit() } else { u32::MAX };
-
-    let vlist_raw = VList::raw();
-    let mut vlist = VList::new(vlist_raw.as_ref().map(|v| v.as_str()));
+    let (width, height) = get_line_limit();
+    let mut limit = is_bounded.then_some(height);
 
     let mut log = BufReader::new(log);
-    while limit > 0 {
+    let mut writer = LogLineWriter { bw: BufWriter::new(target), written: 0 };
+
+    loop {
         buffer.clear();
+        writer.written = 0;
         let line = match log.read_line(&mut buffer) {
             Ok(0) | Err(_) => break,
             _ => buffer.trim_end(),
         };
-        print_git_log_line(line, &mut target, &mut vlist);
-        limit -= 1;
+        if let Some((text, timestamp)) = line.rsplit_once('\u{2}') {
+            let i_paren = text.rfind('(').unwrap();
+            let light_gray = &text[i_paren + 1..];
+            let i_space = text[..i_paren].rfind(' ').unwrap();
+            let dark_gray = &text[i_space + 1..i_paren];
+            let (timestamp, unit) = get_time(timestamp);
+
+            writer.write(text);
+            writer.write(light_gray);
+            writer.write(timestamp);
+            writer.bw.write(&[unit as u8]).unwrap();
+            writer.written += 1;
+            writer.write(dark_gray);
+            writer.write(")\x1b[m\n");
+        } else {
+            // The entire line is just a git log --graph visual line.
+            writer.write(line);
+        }
+
+        // r := remaining lines to print.
+        let Some(r) = limit else { continue };
+        let Some(r) = r.checked_sub(writer.lines_consumed(width)) else { break };
+        limit = Some(r);
     }
 }
 
@@ -114,7 +109,7 @@ fn main() {
         }
         Err(_) => {
             // `less` not found: just run normal git log and print to stdout.
-            run(is_bounded, git_log_stdout, LineWriter::new(stdout()));
+            run(is_bounded, git_log_stdout, LineWriter::new(stdout().lock()));
         }
     }
 }

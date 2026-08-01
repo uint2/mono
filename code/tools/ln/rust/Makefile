@@ -15,3 +15,6 @@ bound:
 
 install:
 	cargo install --locked --force --path .
+
+install-:
+	cargo install --features=less_cmd --locked --force --path .
