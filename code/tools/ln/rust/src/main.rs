@@ -1,6 +1,6 @@
 mod cmd;
 
-use std::io::{stdout, BufRead, BufReader, BufWriter, LineWriter, Write};
+use std::io::{BufRead, BufReader, BufWriter, LineWriter, Write, stdout};
 use std::process::{ChildStdout, Command, Stdio};
 
 const HEIGHT_RATIO: f32 = 0.7;
