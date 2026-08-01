@@ -40,8 +40,7 @@ struct pipedata {
     pid_t pid;
 };
 
-/// Checks for the "--bounded" argument, if any. Return its location too. 0 if
-/// not found (it will never be at position 0).
+/// Checks for the "--bounded" argument, if any, and update GIT_LN_FLAGS.
 static void setup_bounded_cli_arg_idx(int argc, const char *argv[]) {
     for (int i = 1; i < argc; ++i) {
         if (strncmp(argv[i], "--bound", 7) == 0) {
@@ -57,8 +56,7 @@ int exec_git_log(const int argc, const char *argv[], int max_rows) {
     const char **p = args;
     *p++ = GIT;
     *p++ = "-c";
-    *p++ =
-        "color.diff.commit=241"; // This colors the parentheses around the refs.
+    *p++ = "color.diff.commit=241"; // Colors the parentheses around the refs.
     *p++ = "--no-pager";
     *p++ = "log";
     if (max_rows > 0) {

@@ -14,14 +14,10 @@ VALGRIND_FLAGS += --log-file=$(VALGRIND_LOG)
 # VALGRIND_FLAGS += --xml=yes
 # VALGRIND_FLAGS += --xml-file=valgrind.xml
 
-current: install
-
-# Use zig's C compiler.
-install-zig:
-	zig cc -o /usr/local/bin/git-ln -O3 src/main.c
+current: run
 
 configure:
-	cmake -S . -B $(BUILD_DIR)
+	cmake -DCMAKE_INSTALL_PREFIX=$(HOME)/.local -S . -B $(BUILD_DIR)
 
 build:
 	cmake --build $(BUILD_DIR)
@@ -30,11 +26,7 @@ install: build
 	cmake --install $(BUILD_DIR)
 
 run: install
-	# git -C /home/khang/repos/alatty ln --bound --all -n 10
-	# git -C /home/khang/repos/alatty ln --all
-	git -C /home/khang/repos/alatty ln --bound --all -n 100
-	#===================================================
-	# git -C /home/khang/repos/gitnu ln --bound --all -n 100
+	git -C $(HOME)/mono ln --bound --all -n 100
 
 valgrind-clear:
 	-@rm -f $(BUILD_DIR)/valgrind-log*.txt
