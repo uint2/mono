@@ -15,6 +15,7 @@ use std::path::{Path, PathBuf};
 use yaml_rust2::YamlLoader;
 
 const WORKFLOW_DIR: &str = ".github/workflows";
+const PROJECT_MAP_PATH: &str = ".github/project-map.txt";
 const MAIN_CI_YML: &str = "ci.yml";
 
 fn get_yml_files_in_dir<P: AsRef<Path>>(dir: P) -> Vec<PathBuf> {
@@ -30,7 +31,7 @@ fn get_yml_files_in_dir<P: AsRef<Path>>(dir: P) -> Vec<PathBuf> {
         .collect()
 }
 
-fn check_main_ci_yml() {
+fn check_main_ci_yml(project_maps: &[ProjectMap]) {
     let yml_path = Path::new(WORKFLOW_DIR).join(MAIN_CI_YML);
     let raw_yml = match fs::read_to_string(&yml_path) {
         Ok(v) => v,
@@ -48,15 +49,32 @@ fn check_main_ci_yml() {
     };
     let wf = GithubWorkflow::from(&docs[0]);
     for job in wf.jobs() {
-        println!("{:?}", job);
-        // TODO: continue from here to implement #50
-        if let Some(v) = job.if_condition_project_key() {
-            println!("-- {v}");
+        if let Some(key) = job.if_condition_project_key() {
+            let Some(_) = project_maps.iter().find(|v| v.key == key) else {
+                panic!("Job run condition key not in project map: {key}");
+            };
         }
     }
 }
 
+#[derive(Debug)]
+struct ProjectMap<'a> {
+    path: &'a Path,
+    key: &'a str,
+}
+
 pub fn main() {
+    let project_maps = std::fs::read_to_string(PROJECT_MAP_PATH).unwrap();
+    let project_maps: Vec<_> = project_maps
+        .lines()
+        .map(|v| v.rsplit_once(':').unwrap())
+        .map(|(path, key)| ProjectMap { path: Path::new(path.trim()), key: key.trim() })
+        .collect();
+
+    for project in &project_maps {
+        assert!(project.path.is_dir(), "Project path does not exist: {project:?}");
+    }
+
     let workflow_yml_paths = get_yml_files_in_dir(WORKFLOW_DIR);
 
     match workflow_yml_paths.len() {
@@ -97,6 +115,7 @@ pub fn main() {
         }
         println!("{}", path_display);
         for j in wf.jobs() {
+            let false = true else { continue };
             match j.name {
                 Some(name) => println!("  - {} ({name})", j.yml_key),
                 None => println!("  - {}", j.yml_key),
@@ -106,5 +125,5 @@ pub fn main() {
 
     println!("All {n} workflow(s) validated.", n = workflow_yml_paths.len());
 
-    check_main_ci_yml();
+    check_main_ci_yml(&project_maps);
 }

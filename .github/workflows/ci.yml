@@ -13,7 +13,7 @@ jobs:
       all: ${{ toJson(steps.g.outputs) }}
     steps:
       - uses: actions/checkout@v6
-      - run: python3 .github/path-filters.py
+      - run: python3 .github/path-filters.py generate
       - run: cat .github/path-filters.yml
       - uses: dorny/paths-filter@v4
         id: f

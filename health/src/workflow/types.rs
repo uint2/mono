@@ -26,6 +26,7 @@ pub struct GithubWorkflowJob<'a> {
     pub name: Option<&'a str>,
     pub steps: Vec<GithubWorkflowStep<'a>>,
     pub if_cond: Option<&'a str>,
+    pub defaults: &'a Yaml,
 }
 
 impl<'a> GithubWorkflowJob<'a> {
@@ -68,6 +69,7 @@ impl<'a> From<&'a Yaml> for GithubWorkflow<'a> {
                     name: value["name"].as_str(),
                     steps: yml_steps.into_iter().map(GithubWorkflowStep::from).collect(),
                     if_cond: value["if"].as_str(),
+                    defaults: &value["defaults"],
                 });
             }
             z.jobs = Some(jobs);
