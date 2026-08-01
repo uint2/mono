@@ -14,6 +14,7 @@ require('lazy').setup {
   spec = {
     'tpope/vim-surround',
     'vimplug/nvim-colorizer.lua',
+    --< nvim-java/nvim-java
     {
       'nvim-java/nvim-java',
       dependencies = {
@@ -75,7 +76,19 @@ require('lazy').setup {
         vim.lsp.config('jdtls', opts)
         vim.lsp.enable('jdtls')
       end,
-    },
+    }, -->
+    --< f-person/git-blame.nvim
+    {
+      'f-person/git-blame.nvim',
+      event = 'VeryLazy',
+      keys = { { '<leader>gb', ':GitBlameToggle<cr>' } },
+      opts = {
+        enabled = false,
+        message_template = ' [<sha>] <date> @<author>: <summary>',
+        date_format = '%Y-%m-%d',
+        virtual_text_column = 1, -- virtual text start column, check Start virtual text at column section for more options
+      },
+    }, -->
     --< nvim-telescope/telescope.nvim
     {
       'nvim-telescope/telescope.nvim',
