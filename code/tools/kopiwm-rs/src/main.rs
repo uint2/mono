@@ -12,6 +12,7 @@ mod font;
 mod layout;
 mod linked_list;
 mod monitor;
+mod nonempty;
 mod numlockmask;
 mod prelude;
 mod rect;
@@ -108,6 +109,10 @@ fn try_main() -> Result<()> {
     let cursors = setup::setup_cursors(dpy);
 
     let monitors = vec![Monitor::new(dpy)];
+
+    // TODO: this eventually doesn't fly because that's an immutable
+    // reference to the monitors list.
+    let selmon = &monitors[0];
 
     log::info!("Ran to the end of try_main()");
     Ok(())

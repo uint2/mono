@@ -1,5 +1,6 @@
 use crate::C;
 use crate::prelude::*;
+use config::{DEFAULT_COORDINATE_TYPE, DEFAULT_DISTANCE_TYPE};
 
 #[derive(Clone, Copy)]
 pub enum BarPosition {
@@ -7,7 +8,7 @@ pub enum BarPosition {
     Bottom,
 }
 
-pub struct Monitor<'app, C = c_int, D = c_uint> {
+pub struct Monitor<'app, C = DEFAULT_COORDINATE_TYPE, D = DEFAULT_DISTANCE_TYPE> {
     dpy: Display,
     /// Master window factor.
     mfact: f32,
@@ -16,10 +17,10 @@ pub struct Monitor<'app, C = c_int, D = c_uint> {
     /// Status bar's y-coordinate.
     by: C,
     /// The Rect that every pixel on the monitor lives in.
-    m: Rect<C, D>,
+    pub m: Rect<C, D>,
     /// The Rect that windows live in. This is simply the monitor's Rect minus
     /// the status bar's Rect.
-    w: Rect<C, D>,
+    pub w: Rect<C, D>,
     /// The bitmask of visible tags. Initialize with the first tag visible.
     tags: u32,
     /// false means hide bar.
@@ -42,7 +43,7 @@ pub struct Monitor<'app, C = c_int, D = c_uint> {
     lt: Toggle<&'static Layout>,
 }
 
-impl<'app> Monitor<'app, c_int, c_uint> {
+impl<'app> Monitor<'app> {
     pub fn new(dpy: Display) -> Self {
         Self {
             dpy,
@@ -72,4 +73,8 @@ impl<C, D> Drop for Monitor<'_, C, D> {
             unsafe { X::XDestroyWindow(self.dpy.c(), barwin.c()) };
         }
     }
+}
+
+impl<'app, C, D> Monitor<'app, C, D> {
+    pub fn update_bar_pos(&mut self, bar_height: D) {}
 }

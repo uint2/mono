@@ -12,6 +12,7 @@ pub(crate) use crate::font::{Font, Fonts};
 pub(crate) use crate::layout::{EMPTY_LAYOUT, Layout};
 pub(crate) use crate::linked_list::LinkedListNode;
 pub(crate) use crate::monitor::{BarPosition, Monitor};
+pub(crate) use crate::nonempty::NonEmpty;
 pub(crate) use crate::numlockmask::NumLockMask;
 pub(crate) use crate::rect::{Loc, Rect, Size};
 pub(crate) use crate::toggle::Toggle;

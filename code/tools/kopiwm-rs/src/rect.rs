@@ -55,6 +55,16 @@ pub struct Rect<C = c_int, D = c_uint> {
     sz: Size<D>,
 }
 
+impl<C, D> Rect<C, D> {
+    pub fn set_location(&mut self, location: Loc<C>) {
+        self.loc = location;
+    }
+
+    pub fn set_size(&mut self, size: Size<D>) {
+        self.sz = size;
+    }
+}
+
 impl<C, D: Copy> Rect<C, D> {
     #[inline]
     pub const fn width(&self) -> D {
