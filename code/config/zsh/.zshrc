@@ -26,6 +26,7 @@ prepend_to_path_if_exists() {
 
 source_if_exists $HOME/.cargo/env               # cargo (rust)
 source_if_exists $HOME/.opam/opam-init/init.zsh # opam (OCaml)
+source_if_exists $HOME/.elan/env                # elan (Lean)
 [ -f /opt/homebrew/bin/brew ] && eval "$(/opt/homebrew/bin/brew shellenv)"
 
 #  ///////////////////////////////////////////////////////////////////

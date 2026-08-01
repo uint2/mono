@@ -28,3 +28,4 @@ code/tools/tmux-fzf                            :tmux-fzf
 code/tools/wacom-macos-precision-mode-daemon   :heliumd
 code/tools/wacom-macos-precision-mode-gui      :helium
 code/web/site                                  :personal-site
+math/Munkres                                   :munkres

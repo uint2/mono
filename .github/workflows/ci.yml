@@ -586,6 +586,18 @@ jobs:
       - run: cargo run
         working-directory: code/tools/make-rs
   # }}}
+  munkres: # {{{
+    needs: delta
+    if: fromJson(needs.delta.outputs.all).munkres == 'true'
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - run: make install # install `slope`, our Lean helper.
+        working-directory: math/slope
+      - run: make all
+        working-directory: math/Munkres
+  # }}}
   numerical-methods-test: # {{{
     needs: delta
     if: fromJson(needs.delta.outputs.all).numerical-methods == 'true'
