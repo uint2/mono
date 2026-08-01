@@ -74,3 +74,11 @@ pub fn setup_color_scheme(
     }
     arr
 }
+
+pub fn setup_cursors(dpy: Display) -> CursorStateArray<Cursor> {
+    let mut arr = CursorStateArray::new();
+    arr.set(CursorState::Normal, Cursor::new(dpy, C::XC_left_ptr));
+    arr.set(CursorState::Resize, Cursor::new(dpy, C::XC_sizing));
+    arr.set(CursorState::Move, Cursor::new(dpy, C::XC_fleur));
+    arr
+}

@@ -1,4 +1,3 @@
-mod cursor;
 mod display;
 mod enums;
 mod screen;
@@ -8,7 +7,6 @@ mod wrapped;
 
 pub mod prelude {
     use super::*;
-    pub use cursor::Cursor;
     pub use display::Display;
     pub use enums::*;
     pub use screen::Screen;

@@ -19,11 +19,13 @@ macro_rules! make_new {
     };
 }
 
+mod cursor;
 mod fcpattern;
 mod xftcolor;
 mod xftfont;
 mod xmodifierkeymap;
 
+pub use cursor::Cursor;
 pub use fcpattern::FcPattern;
 pub use xftcolor::XftColor;
 pub use xftfont::XftFont;
