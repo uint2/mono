@@ -155,10 +155,6 @@ jobs:
         os:
           - ubuntu-latest
           - macos-latest
-          - ubuntu-24.04
-          - ubuntu-22.04
-          - macos-15
-          - macos-26
       fail-fast: false
     timeout-minutes: 5
     runs-on: ${{ matrix.os }}
@@ -593,21 +589,8 @@ jobs:
   numerical-methods-test: # {{{
     needs: delta
     if: fromJson(needs.delta.outputs.all).numerical-methods == 'true'
-    strategy:
-      matrix:
-        os:
-          - ubuntu-latest
-          - macos-latest
-          - windows-latest
-          - ubuntu-24.04
-          - ubuntu-22.04
-          - macos-15
-          - macos-26
-          - windows-2025
-          - windows-2022
-      fail-fast: false
     timeout-minutes: 5
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: code/tools/numerical-methods
@@ -670,18 +653,8 @@ jobs:
   stats-calc-test: # {{{
     needs: delta
     if: fromJson(needs.delta.outputs.all).stats-calc == 'true'
-    strategy:
-      matrix:
-        os:
-          - ubuntu-latest
-          - macos-latest
-          - ubuntu-24.04
-          - ubuntu-22.04
-          - macos-15
-          - macos-26
-      fail-fast: false
     timeout-minutes: 5
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: code/tools/stats-calc
@@ -764,18 +737,8 @@ jobs:
   tailwind-rs-build: # {{{
     needs: delta
     if: fromJson(needs.delta.outputs.all).tailwind-rs == 'true'
-    strategy:
-      matrix:
-        os:
-          - ubuntu-latest
-          - macos-latest
-          - ubuntu-24.04
-          - ubuntu-22.04
-          - macos-15
-          - macos-26
-      fail-fast: false
     timeout-minutes: 5
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
       - run: cargo run
@@ -789,10 +752,6 @@ jobs:
         os:
           - ubuntu-latest
           - macos-latest
-          - ubuntu-24.04
-          - ubuntu-22.04
-          - macos-15
-          - macos-26
       fail-fast: false
     timeout-minutes: 5
     runs-on: ${{ matrix.os }}
