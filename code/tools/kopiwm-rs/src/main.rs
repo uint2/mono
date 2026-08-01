@@ -107,7 +107,7 @@ fn try_main() -> Result<()> {
     let colors = setup::setup_color_scheme(dpy, screen);
     log::info!("Ran to the end of try_main()");
 
-    let monitors = vec![Monitor::new()];
+    let monitors = vec![Monitor::new(dpy)];
     Ok(())
 }
 
