@@ -23,8 +23,8 @@ fn type_name_of<T>(_: T) -> &'static str {
     core::any::type_name::<T>()
 }
 
-fn git_branch(dir: &Path) -> String {
-    git!("-C", dir, "branch", "--show-current").get_stdout()
+fn git_branch<P: AsRef<Path>>(dir: P) -> String {
+    git!("-C", dir.as_ref(), "branch", "--show-current").get_stdout()
 }
 
 fn git_branches(dir: &Path) -> Vec<String> {
@@ -33,55 +33,12 @@ fn git_branches(dir: &Path) -> Vec<String> {
 }
 
 #[test]
-fn worktree_list_output() {
+fn setup_branches() {
     let (_t, root) = setup(function!());
-    let output = git!("worktree", "list", "--porcelain").get();
-    let s = output.stdout.as_str();
-    let l: Vec<_> = s.lines().collect();
-    // assert_eq!(l[0], "worktree /tmp/gco-test/repo");
-    assert!(l[1].starts_with("HEAD"));
-    //     assert_eq!(
-    //         output.stdout,
-    //         "\
-    // worktree /tmp/gco-test/repo
-    // HEAD f6bf9d3a00711fb4bc2df681c32c4b9c88899146
-    // branch refs/heads/main
-    //
-    // worktree /tmp/gco-test/repo/B1
-    // HEAD c4d8564470c845c57beecfed4afda7845215bbab
-    // branch refs/heads/B1
-    //
-    // worktree /tmp/gco-test/repo/B2
-    // HEAD 3151dfef7e523f0091c88130398892a87959922a
-    // branch refs/heads/B2
-    //
-    // worktree /tmp/gco-test/repo/D3
-    // HEAD 20374554ab3b648dafa72737ffd879ae6eef7b65
-    // branch refs/heads/B3"
-    //     );
-}
+    assert_eq!(git_branch(root.join("B1")), "B1");
+    assert_eq!(git_branch(root.join("B2")), "B2");
+    assert_eq!(git_branch(root.join("D3")), "B3");
 
-#[test]
-fn setup_test_branch_1() {
-    let (_t, root) = setup(function!());
-    assert_eq!(git_branch(&root.join("B1")), "B1");
-}
-
-#[test]
-fn setup_test_branch_2() {
-    let (_t, root) = setup(function!());
-    assert_eq!(git_branch(&root.join("B2")), "B2");
-}
-
-#[test]
-fn setup_test_branch_3() {
-    let (_t, root) = setup(function!());
-    assert_eq!(git_branch(&root.join("D3")), "B3");
-}
-
-#[test]
-fn setup_all_branches() {
-    let (_t, root) = setup(function!());
     let mut branches = git_branches(&root);
     branches.sort();
     assert_eq!(branches, ["B1", "B2", "B3", "B4", "main"]);
@@ -93,7 +50,7 @@ fn t1() {
     let (_t, root) = setup(function!());
     env::set_current_dir(&root).unwrap();
     let output = git!(CHECKOUT, "B1").get();
-    assert_eq!(cd(&output.stdout), cd(root.join("B1")), "Mismatch: {}", output.stdout);
+    assert_eq!(output.stdout, root.join("B1"), "Mismatch: {}", output.stdout);
     assert_eq!(output.status.code(), Some(64));
 }
 
@@ -104,7 +61,7 @@ fn t2() {
     let (_t, root) = setup(function!());
     env::set_current_dir(root.join("B1")).unwrap();
     let output = git!(CHECKOUT, "B2").get();
-    assert_eq!(cd(&output.stdout), cd(root.join("B2")), "Mismatch: {}", output.stdout);
+    assert_eq!(output.stdout, root.join("B2"), "Mismatch: {}", output.stdout);
     assert_eq!(output.status.code(), Some(64));
 }
 
@@ -116,7 +73,7 @@ fn t3() {
     let (_t, root) = setup(function!());
     env::set_current_dir(root.join("B1")).unwrap();
     let output = git!(CHECKOUT, "B3").get();
-    assert_eq!(cd(&output.stdout), cd(root.join("D3")), "Mismatch: {}", output.stdout);
+    assert_eq!(output.stdout, root.join("D3"), "Mismatch: {}", output.stdout);
     assert_eq!(output.status.code(), Some(64));
 }
 
@@ -127,7 +84,7 @@ fn t4() {
     let (_t, root) = setup(function!());
     env::set_current_dir(root.join("B1")).unwrap();
     let output = git!(CHECKOUT, "D3").get();
-    assert_eq!(cd(&output.stdout), cd(root.join("D3")), "Mismatch: {}", output.stdout);
+    assert_eq!(output.stdout, root.join("D3"), "Mismatch: {}", output.stdout);
     assert_eq!(output.status.code(), Some(64));
 }
 
@@ -145,7 +102,7 @@ fn t6() {
     let (_t, root) = setup(function!());
     let cwd = root.join("B1");
     env::set_current_dir(&cwd).unwrap();
-    git!("config", STICKY_CONFIG_KEY, "some,sticky,branches,B4,to,consider").snw();
+    git!("config", STICKY_CONFIG_KEY, "sticky,branches,B4,hello,world").snw();
     git!(CHECKOUT, "B4").snw();
     assert_eq!(git_branch(&cwd), "B4");
 }
@@ -157,7 +114,7 @@ fn t7() {
     let (_t, root) = setup(function!());
     let cwd = root.join("B1");
     env::set_current_dir(&cwd).unwrap();
-    git!("config", "checkout.sticky", "some,sticky,branches,B1,to,consider").snw();
+    git!("config", "checkout.sticky", "sticky,branches,B1,hello,world").snw();
     // Use this way of getting output to be able to compare even the trailing
     // newline.
     let output = git!(CHECKOUT, "B4").output().unwrap();
@@ -166,7 +123,7 @@ fn t7() {
     assert_eq!(git_branch(&cwd), "B1");
 }
 
-/// Try to maintain relative path.
+/// When the current relative path in the repo is availble, jump to that.
 #[test]
 fn t8() {
     let (_t, root) = setup(function!());
@@ -176,15 +133,15 @@ fn t8() {
     assert!(output.stdout.ends_with("B2/src/main"));
 }
 
-/// Retreat to closest directory.
+/// If the relative path from the worktree root is not available, retreat back
+/// until it exists.
 #[test]
 fn t9() {
+    const SUBDIRECTORY: &str = "B1/src/main/java/foo/bar/baz";
+
     let (_t, root) = setup(function!());
-    let subdir = "java/foo/bar/baz";
-    let cwd = root.join("B1/src/main");
-    env::set_current_dir(&cwd).unwrap();
-    fs::create_dir_all(subdir).unwrap();
-    env::set_current_dir(cwd.join(subdir)).unwrap();
+    fs::create_dir_all(root.join(SUBDIRECTORY)).unwrap();
+    env::set_current_dir(root.join(SUBDIRECTORY)).unwrap();
     let output = git!(CHECKOUT, "B2").get();
     assert!(output.stdout.ends_with("B2/src/main/java"), "Got: {}", output.stdout);
 }
@@ -193,9 +150,9 @@ fn t9() {
 /// empty repository.
 #[test]
 fn empty_directory() {
-    let t = Test::new("gco-test");
-    let _ = std::fs::remove_dir_all(t.as_path()).unwrap();
-    std::fs::create_dir(t.as_path()).unwrap();
+    let t = Test::new(function!());
+    fs::remove_dir_all(t.as_path()).unwrap();
+    fs::create_dir(t.as_path()).unwrap();
     env::set_current_dir(t.as_path()).unwrap();
     let lhs = git!(CHECKOUT, "zeno").get();
     let rhs = git!("checkout", "zeno").get();

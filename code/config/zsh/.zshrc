@@ -330,7 +330,7 @@ ed() {
 alias 2A="cd /Applications"
 alias 2c="cd $HOME/.config"
 alias 2d="cd $DOTS"
-alias 2i="cd $HOME/iCloud"
+alias 2i="cd $HOME/repos/issues"
 alias 2j="cd $HOME/Downloads"
 alias 2l="cd $HOME/.local"
 alias 2lb="cd $HOME/.local/bin"

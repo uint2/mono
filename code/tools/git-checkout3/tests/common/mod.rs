@@ -7,7 +7,7 @@ mod shell;
 mod types;
 
 pub use {
-    shell::{CommandExt, OutputExt, cd, commit_file},
+    shell::{CommandExt, OutputExt, commit_file},
     types::Test,
 };
 

@@ -14,3 +14,6 @@ TEST_ONE :=
 
 test: build
 	cargo test $(TEST_ONE) -- --test-threads=1
+
+install:
+		cargo install --locked --force --path .
