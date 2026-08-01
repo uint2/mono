@@ -24,17 +24,9 @@ k('n', 'L', '$')
 k('v', 'H', '^')
 k('v', 'L', '$')
 
--- open file under cursor in a split
--- k('n', 'gF', ':vs <cfile><cr>', s)
-
--- open file under cursor with `open` (macOS)
-k('n', 'go', ':!open <cfile><cr>', s)
-
 -- slowly increase this until I can use the default
-k('n', '<C-d>', '13j', s)
-k('n', '<C-u>', '13k', s)
-k('v', '<C-d>', '13j', s)
-k('v', '<C-u>', '13k', s)
+k({ 'n', 'v' }, '<C-d>', '13j', s)
+k({ 'n', 'v' }, '<C-u>', '13k', s)
 
 -- quickfix list navigation
 k('n', '<C-j>', ':cnext<cr>', s)
@@ -45,8 +37,7 @@ k('n', '<leader>7', ':set colorcolumn=71<cr>', s)
 k('n', '<leader>8', ':set colorcolumn=81<cr>', s)
 
 -- yank to clipboard (confirmed to work on mac)
-k('n', '<leader>y', '"+y')
-k('v', '<leader>y', '"+y')
+k({ 'n', 'v' }, '<leader>y', '"+y')
 
 -- Yank the entire buffer to clipboard
 k('n', '<leader>Y', 'gg"+yG<c-o>')
@@ -110,27 +101,6 @@ k('n', '<leader>p', function()
   print('[fmt]', table.concat(fmt, ', '))
   cf.format { async = true }
 end)
-
---[[
-vim.keymap.set('n', '*', function()
-  local line, r = vim.fn.getline('.'), vim.fn.col('.')
-  local want = function(x) return x == 46 or (48 <= x and x <= 57) end
-  if not want(line:byte(r)) then return c.search(vim.fn.expand('<cword>')) end
-  local l, n = r, line:len()
-  while l > 1 and want(line:byte(l - 1)) do
-    l = l - 1
-  end
-  while r < n and want(line:byte(r + 1)) do
-    r = r + 1
-  end
-  local query = line:sub(l, r)
-  if query:match('[0-9]+%.[0-9]+%.[0-9]+') then
-    return c.search(query:gsub('%.', '\\.'))
-  else
-    return c.search(vim.fn.expand('<cword>'))
-  end
-end)
---]]
 
 -- Load current buffer into quickfix list.
 k('n', '<leader>Q', function()

@@ -1,13 +1,12 @@
 #!/bin/sh
 
-S=/Users/khang/Downloads/nvim-macos.tar.gz
+TAR_GZ=/home/khang/Downloads/nvim-linux-x86_64.tar.gz
+INSTALL_PREFIX=/home/khang/Downloads/tmp
 
-IDIR=/usr/local
+rm -f $INSTALL_PREFIX/share/icons/hicolor/128x128/apps/nvim.png
+rm -fr $INSTALL_PREFIX/bin/nvim
+rm -fr $INSTALL_PREFIX/lib/nvim
+rm -fr $INSTALL_PREFIX/share/nvim
+rm -f $INSTALL_PREFIX/share/man/man1/nvim.1
 
-sudo rm -rf /usr/local/share/icons/hicolor/128x128/apps/nvim.png
-sudo rm -rf /usr/local/bin/nvim
-sudo rm -rf /usr/local/lib/nvim
-sudo rm -rf /usr/local/share/nvim
-sudo rm -rf /usr/local/share/man/man1/nvim.1
-
-sudo tar -xf $S -C /usr/local --strip-components=1
+tar -xf $TAR_GZ -C $INSTALL_PREFIX --strip-components=1

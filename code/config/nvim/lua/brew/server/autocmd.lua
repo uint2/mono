@@ -1,10 +1,15 @@
 local utils = require('brew.server.utils')
 
 -- automatically redistribute splits when vim is resized
-utils.autocmd({ command = 'wincmd =' }, { 'VimResized' })
+utils.nvim_create_autocmd({ 'VimResized' }, { command = 'wincmd =' })
 
-local autocmd = setmetatable({}, {
-  __newindex = function(_, p, c) utils.autocmd { pattern = p, callback = c } end,
+local bufenter = setmetatable({}, {
+  __newindex = function(_, pattern, callback)
+    utils.nvim_create_autocmd({ 'BufRead', 'BufNewFile', 'BufEnter' }, {
+      pattern = pattern,
+      callback = callback,
+    })
+  end,
 })
 local k = function(mode, lhs, rhs)
   vim.keymap.set(mode, lhs, rhs, { silent = true, buffer = true })
@@ -22,7 +27,7 @@ local function set_tab(n)
 end
 
 -- Lean 4
-autocmd['*.lean'] = function()
+bufenter['*.lean'] = function()
   vim.opt_local.foldmarker = ':= by --,-- ∎'
   vim.opt_local.commentstring = '-- %s'
   vim.opt_local.comments = 's0:/-,mb: ,ex:-/,:--' -- see `h: comments`
@@ -31,13 +36,13 @@ autocmd['*.lean'] = function()
 end
 
 -- C/C++
-autocmd[{ '*.cpp', '*.hpp', '*.h', '*.c', '*.cc' }] = function()
+bufenter[{ '*.cpp', '*.hpp', '*.h', '*.c', '*.cc' }] = function()
   vim.opt_local.commentstring = '// %s'
   set_tab(4)
 end
 
 -- LaTeX
-autocmd['*.tex'] = function()
+bufenter['*.tex'] = function()
   vim.opt.textwidth = 80
   vim.opt.formatoptions = vim.opt.formatoptions + 't'
   vim.bo.filetype = 'tex'
@@ -96,22 +101,22 @@ autocmd['*.tex'] = function()
 end
 
 -- Assembly
-autocmd['*.asm'] = function() vim.opt_local.commentstring = '# %s' end
+bufenter['*.asm'] = function() vim.opt_local.commentstring = '# %s' end
 
 -- Swift
-autocmd['*.swift'] = function() vim.opt_local.commentstring = '// %s' end
+bufenter['*.swift'] = function() vim.opt_local.commentstring = '// %s' end
 
 -- Java
-autocmd['*.java'] = function() set_tab(4) end
+bufenter['*.java'] = function() set_tab(4) end
 
 -- Astro
-autocmd['*.astro'] = function() vim.opt_local.commentstring = '// %s' end
+bufenter['*.astro'] = function() vim.opt_local.commentstring = '// %s' end
 
 -- Prolog
-autocmd['*.pl'] = function() vim.opt_local.commentstring = '% %s' end
+bufenter['*.pl'] = function() vim.opt_local.commentstring = '% %s' end
 
 -- Markdown
-autocmd[{ '*.mdx', '*.md' }] = function()
+bufenter[{ '*.mdx', '*.md' }] = function()
   vim.opt_local.textwidth = 80
   vim.bo.filetype = 'markdown'
   dollarDollar()

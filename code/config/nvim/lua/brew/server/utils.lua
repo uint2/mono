@@ -73,12 +73,12 @@ vim.api.nvim_create_augroup(M.common_augroup, { clear = true })
 
 ---@param opts any
 ---@param ev? string[]
-M.autocmd = function(opts, ev)
+---For more help, see ":h nvim_create_autocmd".
+---Behaves exactly as `nvim_create_autocmd`'s API, but with the group set to our
+---common one.
+M.nvim_create_autocmd = function(event, opts)
   opts['group'] = M.common_augroup
-  vim.api.nvim_create_autocmd(
-    ev or { 'BufRead', 'BufNewFile', 'BufEnter' },
-    opts
-  )
+  vim.api.nvim_create_autocmd(event, opts)
 end
 
 ---@param cs string comment string e.g. '// %s'

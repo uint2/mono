@@ -68,8 +68,6 @@ impl Matcher {
 
         let mut cmd = Command::new(self.args[0]);
         cmd.args(&self.args[1..]).args(std::env::args_os().skip(1));
-        println!("{:?}", cmd);
-
         let err = cmd.exec();
         println!("Error during `execvp` call: {err}");
         ExitCode::FAILURE

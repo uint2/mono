@@ -186,8 +186,4 @@ function M.set_mark_list(new_list)
   harpoon.save()
 end
 
-function M.get_current_index()
-  return M.get_index_of(vim.api.nvim_buf_get_name(0))
-end
-
 return M
