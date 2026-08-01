@@ -34,7 +34,7 @@ instance (K : Set α) : SetLike (sOpenCover K) (Set α) where
   coe_injective' _ _ := sOpenCover.ext
 
 -- instance (K : Set α) : HasSubset (sOpenCover K) where
---   Subset a b := 
+--   Subset a b :=
 
 -- example {K : Set α} : IsCompact K ↔ ∀ (U : sOpenCover K),
 --   ∃ F ⊆ U, true

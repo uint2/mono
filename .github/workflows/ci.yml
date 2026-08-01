@@ -595,6 +595,12 @@ jobs:
       - uses: actions/checkout@v6
       - run: make install # install `slope`, our Lean helper.
         working-directory: math/slope
+      - uses: leanprover/lean-action@v1
+        with:
+          build: false
+          lint: false
+          test: false
+          lake-package-directory: math/Munkres
       - run: make all
         working-directory: math/Munkres
   # }}}

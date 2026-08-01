@@ -1,7 +1,7 @@
-MAKEFILE_PATH   := $(abspath $(lastword $(MAKEFILE_LIST)))
-MAKEFILE_DIR    := $(dir $(MAKEFILE_PATH))
+MAKEFILE_PATH := $(realpath $(lastword $(MAKEFILE_LIST)))
+MAKEFILE_DIR  := $(realpath $(dir $(MAKEFILE_PATH)))
 
-LEAN_DIR        := /home/khang/repos/math
+LEAN_DIR        := $(MAKEFILE_DIR)/../Munkres
 CARGO_DEBUG_DIR := $(MAKEFILE_DIR)target/debug
 
 CARGO_INSTALL := cargo install --locked --all-features --force
