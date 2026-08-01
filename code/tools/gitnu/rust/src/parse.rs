@@ -39,15 +39,15 @@ pub fn parse<A: ArgHolder>(
 
     // BEFORE git command is found
     while !args.is_empty() {
-        let arg = args[0].as_str();
+        let arg = args[0].clone();
+        argh.add_arg(&arg);
         args = &args[1..];
         match GitCommand::from_arg(&aliases, arg) {
             Some(v) => {
                 git_cmd = Some(v);
-                argh.add_arg(arg);
                 break;
             }
-            _ => argh.add_arg(arg),
+            _ => {}
         }
     }
 

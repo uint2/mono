@@ -1,4 +1,3 @@
-use std::any::Any;
 use std::io;
 
 #[derive(Debug)]
@@ -8,7 +7,6 @@ pub enum Error {
     NotGitRepository,
     NotImplemented,
     Io(io::Error),
-    ThreadError(Box<dyn Any + Send + 'static>),
 }
 
 impl PartialEq for Error {
@@ -21,7 +19,6 @@ impl PartialEq for Error {
             (InvalidCache, InvalidCache) => true,
             (NotGitCommand, NotGitCommand) => true,
             (Io(lhs), Io(rhs)) => lhs.kind() == rhs.kind(),
-            (ThreadError(_), ThreadError(_)) => true,
             _ => false,
         }
     }
@@ -42,4 +39,3 @@ macro_rules! error {
 }
 
 error!(Io, io::Error);
-error!(ThreadError, Box<dyn Any + Send + 'static>);
