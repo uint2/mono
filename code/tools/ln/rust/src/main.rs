@@ -1,6 +1,6 @@
 mod cmd;
 
-use std::io::{BufRead, BufReader, BufWriter, LineWriter, Write, stdout};
+use std::io::{stdout, BufRead, BufReader, BufWriter, LineWriter, Write};
 use std::process::{ChildStdout, Command, Stdio};
 
 const HEIGHT_RATIO: f32 = 0.7;
@@ -48,7 +48,7 @@ fn run<W: Write>(is_bounded: bool, log: ChildStdout, target: W) {
         writer.written = 0;
         let line = match log.read_line(&mut buffer) {
             Ok(0) | Err(_) => break,
-            _ => buffer.trim_end(),
+            _ => buffer.as_str(),
         };
         if let Some((text, timestamp)) = line.rsplit_once('\u{2}') {
             let i_paren = text.rfind('(').unwrap();
