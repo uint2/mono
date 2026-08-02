@@ -49,6 +49,7 @@ impl<T: Copy> Copy for Loc<T> {}
 
 /// As per X, the coordinate system's x-value increases from left to right, and
 /// the y-value increases from top to bottom.
+#[derive(Clone, Copy)]
 pub struct Rect {
     /// The left-most coordinate of the rectangle.
     pub x: Coordinate,
