@@ -76,7 +76,7 @@ impl<T> NonEmpty<T> {
         }
     }
 
-    pub fn iter(&self) -> slice::Iter<T> {
+    pub fn iter<'a>(&'a self) -> slice::Iter<'a, T> {
         self.inner.iter()
     }
 

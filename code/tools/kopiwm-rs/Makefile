@@ -8,7 +8,7 @@ STDOUT_LOG := $(MAKEFILE_DIR)/stdout.log
 STDERR_LOG := $(MAKEFILE_DIR)/stderr.log
 
 build:
-	cargo build
+	RUSTFLAGS="$$RUSTFLAGS -A unused" cargo build
 
 run: build
 	KOPIWM_BINARY=$(BINARY_PATH) ./startup.sh
