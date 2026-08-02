@@ -5,6 +5,11 @@ pub struct Font {
     dpy: Display,
     height: c_int,
     xfont: XftFont,
+    /// Using the pattern found at xfont->pattern does not yield the same
+    /// substitution results as using the pattern returned by FcNameParse; using
+    /// the latter results in the desired fallback behaviour whereas the former
+    /// just results in missing-character rectangles being drawn, at least with
+    /// some fonts.
     pattern: Option<FcPattern>,
 }
 
@@ -20,7 +25,7 @@ impl Font {
         };
         let Some(pattern) = FcPattern::from_name(name) else {
             log::error!("Cannot parse font name to pattern: {name}");
-            todo!();
+            return None;
         };
         let height = xfont.ascent() + xfont.descent();
         Some(Self { dpy, height, xfont, pattern: Some(pattern) })

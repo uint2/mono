@@ -112,11 +112,7 @@ fn try_main() -> Result<()> {
     let colors = setup::setup_color_scheme(dpy, screen);
     let cursors = setup::setup_cursors(dpy);
 
-    let monitors = vec![Monitor::new(dpy)];
-
-    // TODO: this eventually doesn't fly because that's an immutable
-    // reference to the monitors list.
-    let selmon = &monitors[0];
+    let monitors = NonEmpty::new(Monitor::new(dpy));
 
     log::info!("Ran to the end of try_main()");
     Ok(())
