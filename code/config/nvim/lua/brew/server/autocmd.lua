@@ -26,6 +26,12 @@ local function set_tab(n)
   vim.opt.tabstop, vim.opt.shiftwidth = n, n
 end
 
+-- Rust
+bufenter['*.rust'] = function()
+  --
+  vim.opt.textwidth = 80
+end
+
 -- Lean 4
 bufenter['*.lean'] = function()
   vim.opt_local.foldmarker = ':= by --,-- ∎'
