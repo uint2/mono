@@ -107,7 +107,7 @@ fn try_main() -> Result<()> {
     let screen = dpy.default_screen();
     let screen_size = dpy.display_size(screen);
     let root = dpy.default_root_window();
-    let drw = Drw::new(dpy, root, screen, screen_size.convert());
+    let drw = Drw::new(dpy, root.clone(), screen, screen_size.convert());
     let fonts = Fonts::new(dpy, screen, config::FONTS);
     let colors = setup::setup_color_scheme(dpy, screen);
     let cursors = setup::setup_cursors(dpy);
@@ -115,6 +115,9 @@ fn try_main() -> Result<()> {
     let monitors = NonEmpty::new(Monitor::new(dpy));
     let wmatoms = WM::init(dpy);
     let netatoms = Net::init(dpy);
+
+    let check_win =
+        unsafe { C::XCreateSimpleWindow(dpy.c(), root.c(), 0, 0, 1, 1, 0, 0, 0) };
 
     log::info!("Ran to the end of try_main()");
     Ok(())

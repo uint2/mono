@@ -112,7 +112,7 @@ impl Display {
 
     pub fn default_root_window(&self) -> Window {
         let window = unsafe { C::XDefaultRootWindow(self.c()) };
-        Window::from_c(window)
+        Window::new(*self, window)
     }
 
     pub fn default_screen(&self) -> Screen {
@@ -145,7 +145,7 @@ impl Display {
 
     pub fn create_pixmap(
         &self,
-        window: Window,
+        window: &Window,
         dimensions: Size<c_uint>,
         depth: c_uint,
     ) -> C::Pixmap {
@@ -158,7 +158,7 @@ impl Display {
         unsafe { C::XFreePixmap(self.c(), pixmap) };
     }
 
-    pub fn create_graphics_ctx(&self, window: Window) -> C::GC {
+    pub fn create_graphics_ctx(&self, window: &Window) -> C::GC {
         unsafe { C::XCreateGC(self.c(), window.c(), 0, ptr::null_mut()) }
     }
 

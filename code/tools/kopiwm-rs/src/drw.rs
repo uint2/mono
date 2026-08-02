@@ -23,8 +23,8 @@ pub struct Drw {
 impl Drw {
     pub fn new(dpy: Display, root: Window, screen: Screen, screen_size: Size) -> Self {
         let depth = dpy.default_depth(screen);
-        let drawable = dpy.create_pixmap(root, screen_size, depth as c_uint);
-        let gc = dpy.create_graphics_ctx(root);
+        let drawable = dpy.create_pixmap(&root, screen_size, depth as c_uint);
+        let gc = dpy.create_graphics_ctx(&root);
         let drw = Self { dpy, screen, root, sz: screen_size, drawable, gc, scheme: None };
         drw.set_line_attributes(1, LineStyle::Solid, CapStyle::Butt, JoinStyle::Miter);
         drw

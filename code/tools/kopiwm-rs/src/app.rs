@@ -59,7 +59,7 @@ impl App {
             m.update_bar_pos(self.bar_height);
         }
         if dirty {
-            let id = self.window_to_monitor(self.root);
+            let id = self.window_to_monitor(&self.root);
             let idx = self.mons.position(|v| v.id() == id).unwrap();
             self.mons.set_sel(idx);
         }
@@ -68,8 +68,8 @@ impl App {
 
     /// Finds the monitor that contains `window`.
     /// Fallback: currently selected monitor.
-    pub fn window_to_monitor(&self, window: Window) -> MonitorId {
-        if window == self.root {
+    pub fn window_to_monitor(&self, window: &Window) -> MonitorId {
+        if window == &self.root {
             if let Some(loc) = self.get_root_ptr() {
                 let r = Rect { x: loc.x, y: loc.y, width: 1, height: 1 };
                 // To guarantee a return value, we deviate a tad from dwm's
@@ -93,7 +93,7 @@ impl App {
         self.selmon().id()
     }
 
-    pub fn window_to_client(&self, window: Window) -> Option<&Client> {
+    pub fn window_to_client(&self, window: &Window) -> Option<&Client> {
         self.mons.iter().flat_map(Monitor::clients).find(|c| c.win() == window)
     }
 

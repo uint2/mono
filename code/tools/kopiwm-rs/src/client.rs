@@ -7,7 +7,10 @@ pub struct Client {
 }
 
 impl Client {
-    getter!(win, Window);
     getter!(mon, MonitorId);
     getter!(id, ClientId);
+
+    pub const fn win(&self) -> &Window {
+        &self.win
+    }
 }

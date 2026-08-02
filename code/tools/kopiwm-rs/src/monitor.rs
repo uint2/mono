@@ -68,7 +68,10 @@ impl Monitor {
     }
 
     getter!(id, MonitorId);
-    getter!(bar_window, Option<Window>);
+
+    pub const fn bar_window(&self) -> Option<&Window> {
+        self.bar_window.as_ref()
+    }
 
     pub const fn clients(&self) -> &[Client] {
         self.clients.as_slice()
