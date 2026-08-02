@@ -77,7 +77,7 @@ impl App {
             }
         }
 
-        self.mons.sel().id()
+        self.selmon().id()
     }
 
     pub fn window_to_client(&self, window: Window) -> Option<&Client> {
@@ -89,11 +89,16 @@ impl App {
     ///
     /// If nothing is found, return the currently selected monitor.
     pub fn rect_to_monitor(&self, rect: &Rect) -> MonitorId {
-        let mut j = 0;
-        let mut max_area: c_int = 0;
-        todo!();
-        // let mut idx = None;
-        self.mons.sel().id()
+        let mut id = self.selmon().id();
+        let mut max_area = 0;
+        for mon in &self.mons {
+            let area = rect.intersect(&mon.w);
+            if max_area < area {
+                max_area = area;
+                id = mon.id();
+            }
+        }
+        id
     }
 
     pub fn get_root_ptr(&self) -> Option<Loc> {

@@ -101,7 +101,7 @@ impl Rect {
     }
 
     /// Get the area of intersection. Always returns a non-negative value.
-    pub fn intersect(&mut self, rhs: &Self) -> Distance {
+    pub fn intersect(&self, rhs: &Self) -> Distance {
         let width = self.r().min(rhs.r()) - self.l().max(rhs.l());
         let height = self.b().min(rhs.b()) - self.t().max(rhs.t());
         width.max(0) as Distance * height.max(0) as Distance
