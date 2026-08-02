@@ -19,6 +19,7 @@ pub(crate) use crate::nonempty::NonEmpty;
 pub(crate) use crate::numlockmask::NumLockMask;
 pub(crate) use crate::rect::{Loc, Rect, Size};
 pub(crate) use crate::toggle::Toggle;
+pub(crate) use crate::x11;
 pub(crate) use crate::x11::prelude::*;
 
 // std::*

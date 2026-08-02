@@ -73,12 +73,10 @@ impl WM {
         }
     }
 
-    pub fn init(dpy: Display) -> WMArray<C::Atom> {
+    pub fn init(dpy: &Display) -> WMArray<C::Atom> {
         let mut arr = WMArray::new();
-        let dpy = dpy.c();
         for variant in WM::iter() {
-            let key = variant.as_str().c_str();
-            arr.set(variant, unsafe { C::XInternAtom(dpy, key.as_ptr(), 0) });
+            arr.set(variant, x11::XInternAtom(dpy, variant.as_str(), false).unwrap());
         }
         arr
     }
@@ -139,12 +137,10 @@ impl Net {
         }
     }
 
-    pub fn init(dpy: Display) -> NetArray<C::Atom> {
+    pub fn init(dpy: &Display) -> NetArray<C::Atom> {
         let mut arr = NetArray::new();
-        let dpy = dpy.c();
         for variant in Net::iter() {
-            let key = variant.as_str().c_str();
-            arr.set(variant, unsafe { C::XInternAtom(dpy, key.as_ptr(), 0) });
+            arr.set(variant, x11::XInternAtom(dpy, variant.as_str(), false).unwrap());
         }
         arr
     }

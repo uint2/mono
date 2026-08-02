@@ -27,6 +27,12 @@ impl Window {
     pub const fn c(&self) -> C::Window {
         self.window
     }
+
+    pub fn check_win(dpy: Display, root: &Window) -> Self {
+        let check_win =
+            unsafe { C::XCreateSimpleWindow(dpy.c(), root.c(), 0, 0, 1, 1, 0, 0, 0) };
+        Self::new(dpy, check_win)
+    }
 }
 
 impl PartialEq for Window {
