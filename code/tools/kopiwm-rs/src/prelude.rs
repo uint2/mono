@@ -5,7 +5,9 @@ pub(crate) use crate::app::App;
 pub(crate) use crate::client::Client;
 pub(crate) use crate::config;
 pub(crate) use crate::drw::{Drw, DrwParams};
-pub(crate) use crate::enums::{Clk, CursorState, WindowColorState, WindowColors};
+pub(crate) use crate::enums::{
+    Clk, CursorState, Net, NetArray, WM, WMArray, WindowColorState, WindowColors,
+};
 pub(crate) use crate::enums::{CursorStateArray, WindowColorStateArray};
 pub(crate) use crate::ffi2::ConvertToC;
 pub(crate) use crate::font::{Font, Fonts};

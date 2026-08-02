@@ -25,12 +25,25 @@ pub struct App {
     numlockmask: NumLockMask,
     fonts: NonEmpty<Font>,
     running: bool,
+
+    net_atoms: NetArray<C::Atom>,
+    wm_atoms: WMArray<C::Atom>,
 }
 
 /// Getters.
 impl App {
     pub fn selmon(&self) -> &Monitor {
         self.mons.sel()
+    }
+
+    /// Gets an Atom from the pre-computed array.
+    pub const fn wm(&self, atom: WM) -> C::Atom {
+        *self.wm_atoms.get(atom).unwrap()
+    }
+
+    /// Gets an Atom from the pre-computed array.
+    pub const fn net(&self, atom: Net) -> C::Atom {
+        *self.net_atoms.get(atom).unwrap()
     }
 }
 

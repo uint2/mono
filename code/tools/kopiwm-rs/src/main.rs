@@ -113,6 +113,8 @@ fn try_main() -> Result<()> {
     let cursors = setup::setup_cursors(dpy);
 
     let monitors = NonEmpty::new(Monitor::new(dpy));
+    let wmatoms = WM::init(dpy);
+    let netatoms = Net::init(dpy);
 
     log::info!("Ran to the end of try_main()");
     Ok(())

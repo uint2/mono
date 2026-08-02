@@ -1,5 +1,7 @@
+use crate::C;
 use crate::prelude::*;
 
+use strum::IntoEnumIterator;
 use strum_macros::{EnumCount, EnumIter};
 
 /// (dwm) Cur* enums.
@@ -49,4 +51,101 @@ pub struct WindowColors<T> {
     pub bg: T,
     /// Border color.
     pub border: T,
+}
+
+/// (dwm) WM* atoms.
+#[derive(Clone, Copy, EnumCount, EnumIter)]
+pub enum WM {
+    Delete,
+    Protocols,
+    State,
+    TakeFocus,
+}
+enum_array!(WMArray, WM);
+
+impl WM {
+    pub const fn as_str(&self) -> &'static str {
+        match self {
+            Self::Delete => "WM_DELETE_WINDOW",
+            Self::Protocols => "WM_PROTOCOLS",
+            Self::State => "WM_STATE",
+            Self::TakeFocus => "WM_TAKE_FOCUS",
+        }
+    }
+
+    pub fn init(dpy: Display) -> WMArray<C::Atom> {
+        let mut arr = WMArray::new();
+        let dpy = dpy.c();
+        for variant in WM::iter() {
+            let key = variant.as_str().c_str();
+            arr.set(variant, unsafe { C::XInternAtom(dpy, key.as_ptr(), 0) });
+        }
+        arr
+    }
+}
+
+/// (dwm) Net* atoms.
+///
+/// See  https://specifications.freedesktop.org/wm/1.5/  For more details.
+#[derive(Clone, Copy, EnumCount, EnumIter)]
+pub enum Net {
+    ActiveWindow,
+    ClientList,
+    /// This property MUST be set by the Window Manager to indicate which
+    /// hints it supports. For example: considering _NET_WM_STATE both this
+    /// atom and all supported states e.g. _NET_WM_STATE_MODAL,
+    /// _NET_WM_STATE_STICKY, would be listed. This assumes that backwards
+    /// incompatible changes will not be made to the hints (without being
+    /// renamed).
+    Supported,
+    /// The Window Manager MUST set this property on the root window to be the
+    /// ID of a child window created by himself, to indicate that a compliant
+    /// window manager is active. The child window MUST also have the
+    /// _NET_SUPPORTING_WM_CHECK property set to the ID of the child window.
+    /// The child window MUST also have the _NET_WM_NAME property set to the
+    /// name of the Window Manager.
+    ///
+    /// Rationale: The child window is used to distinguish an active Window
+    /// Manager from a stale _NET_SUPPORTING_WM_CHECK property that happens to
+    /// point to another window. If the _NET_SUPPORTING_WM_CHECK window on the
+    /// client window is missing or not properly set, clients SHOULD assume
+    /// that no conforming Window Manager is present.
+    ///
+    /// source: https://specifications.freedesktop.org/wm/1.5/
+    ///
+    /// Look for "_NET_SUPPORTING_WM_CHECK" in the subpages (for the subpage,
+    /// look for "Root Window Properties (and Related Messages)").
+    WMCheck,
+    WMFullscreen,
+    WMName,
+    WMState,
+    WMWindowType,
+    WMWindowTypeDialog,
+}
+enum_array!(NetArray, Net);
+
+impl Net {
+    pub const fn as_str(&self) -> &'static str {
+        match self {
+            Self::ActiveWindow => "_NET_ACTIVE_WINDOW",
+            Self::ClientList => "_NET_CLIENT_LIST",
+            Self::Supported => "_NET_SUPPORTED",
+            Self::WMCheck => "_NET_SUPPORTING_WM_CHECK",
+            Self::WMFullscreen => "_NET_WM_STATE_FULLSCREEN",
+            Self::WMName => "_NET_WM_NAME",
+            Self::WMState => "_NET_WM_STATE",
+            Self::WMWindowType => "_NET_WM_WINDOW_TYPE",
+            Self::WMWindowTypeDialog => "_NET_WM_WINDOW_TYPE_DIALOG",
+        }
+    }
+
+    pub fn init(dpy: Display) -> NetArray<C::Atom> {
+        let mut arr = NetArray::new();
+        let dpy = dpy.c();
+        for variant in Net::iter() {
+            let key = variant.as_str().c_str();
+            arr.set(variant, unsafe { C::XInternAtom(dpy, key.as_ptr(), 0) });
+        }
+        arr
+    }
 }
