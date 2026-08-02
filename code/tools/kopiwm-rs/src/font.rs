@@ -35,13 +35,8 @@ impl Font {
         Some(Self { dpy, height, xfont, pattern: Some(pattern) })
     }
 
-    pub const fn xfont(&self) -> &XftFont {
-        &self.xfont
-    }
-
-    pub const fn height(&self) -> c_int {
-        self.height
-    }
+    getter!(&xfont, XftFont);
+    getter!(height, c_int);
 
     /// Uses `XftCharExists` to check if the character is supported.
     pub fn supports_char(&self, utf8codepoint: char) -> bool {

@@ -4,4 +4,9 @@ macro_rules! getter {
             self.$field
         }
     };
+    (&$field:ident, $ret:ty) => {
+        pub const fn $field(&self) -> &$ret {
+            &self.$field
+        }
+    };
 }
