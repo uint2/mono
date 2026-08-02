@@ -1,6 +1,7 @@
 use crate::prelude::*;
+use config::{Coordinate, Distance};
 
-pub struct Size<T = c_uint> {
+pub struct Size<T = Distance> {
     pub width: T,
     pub height: T,
 }
@@ -23,7 +24,7 @@ impl<T: Copy> Size<T> {
 impl<T: Clone> Clone for Size<T> { fn clone(&self) -> Self { Self { width: self.width.clone(), height: self.height.clone() } } }
 impl<T: Copy> Copy for Size<T> {}
 
-pub struct Loc<T = c_int> {
+pub struct Loc<T = Coordinate> {
     pub x: T,
     pub y: T,
 }
@@ -46,51 +47,63 @@ impl<T: Copy> Loc<T> {
 impl<T: Clone> Clone for Loc<T> { fn clone(&self) -> Self { Self { x: self.x.clone(), y: self.y.clone() } } }
 impl<T: Copy> Copy for Loc<T> {}
 
-/// C: type for Coordinates.
-/// D: type for Distance.
-pub struct Rect<C = c_int, D = c_uint> {
-    /// Location/Position.
-    loc: Loc<C>,
-    /// Size.
-    sz: Size<D>,
+/// As per X, the coordinate system's x-value increases from left to right, and
+/// the y-value increases from top to bottom.
+pub struct Rect {
+    /// The left-most coordinate of the rectangle.
+    pub x: Coordinate,
+    /// The top-most coordinate of the rectangle.
+    pub y: Coordinate,
+    pub width: Distance,
+    pub height: Distance,
 }
 
-impl<C, D> Rect<C, D> {
-    pub fn set_location(&mut self, location: Loc<C>) {
-        self.loc = location;
-    }
-
-    pub fn set_size(&mut self, size: Size<D>) {
-        self.sz = size;
-    }
-}
-
-impl<C, D: Copy> Rect<C, D> {
+/// The four extremes of a Rect.
+impl Rect {
+    /// The left-most coordinate.
     #[inline]
-    pub const fn width(&self) -> D {
-        self.sz.width
+    pub const fn l(self: &Self) -> Coordinate {
+        self.x
     }
 
+    /// The right-most coordinate.
     #[inline]
-    pub const fn height(&self) -> D {
-        self.sz.height
-    }
-}
-
-impl<C: Copy, D> Rect<C, D> {
-    #[inline]
-    pub const fn x(&self) -> C {
-        self.loc.x
+    pub const fn r(self: &Self) -> Coordinate {
+        self.x + self.width as Coordinate
     }
 
+    /// The top-most coordinate.
     #[inline]
-    pub const fn y(&self) -> C {
-        self.loc.y
+    pub const fn t(self: &Self) -> Coordinate {
+        self.y
+    }
+
+    /// The bottom-most coordinate.
+    #[inline]
+    pub const fn b(self: &Self) -> Coordinate {
+        self.y + self.height as Coordinate
     }
 }
 
-impl<C, D> Rect<C, D> {
-    pub const fn new(x: C, y: C, width: D, height: D) -> Self {
-        Self { loc: Loc::new(x, y), sz: Size::new(width, height) }
+impl Rect {
+    pub const fn zero() -> Self {
+        Self { x: 0, y: 0, width: 0, height: 0 }
+    }
+
+    pub const fn set_location(&mut self, location: Loc) {
+        self.x = location.x;
+        self.y = location.y;
+    }
+
+    pub const fn set_size(&mut self, size: Size) {
+        self.width = size.width;
+        self.height = size.height;
+    }
+
+    /// Get the area of intersection. Always returns a non-negative value.
+    pub fn intersect(&mut self, rhs: &Self) -> Distance {
+        let width = self.r().min(rhs.r()) - self.l().max(rhs.l());
+        let height = self.b().min(rhs.b()) - self.t().max(rhs.t());
+        width.max(0) as Distance * height.max(0) as Distance
     }
 }

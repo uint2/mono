@@ -1,20 +1,36 @@
 use core::ops::{Index, IndexMut};
-use core::slice::SliceIndex;
+use core::slice::{self, SliceIndex};
 
-/// Simply a non-empty `Vec<T>`.
+/// Simply a non-empty `Vec<T>`, with an added feature of having a "selected"
+/// element.
 #[derive(Debug, Clone)]
 pub struct NonEmpty<T> {
     inner: Vec<T>,
+    selected_index: usize,
 }
+
+#[derive(Debug)]
+pub enum NonEmptyError {
+    IndexOutOfBounds,
+}
+type Result<T, E = NonEmptyError> = core::result::Result<T, E>;
 
 #[allow(unused)]
 impl<T> NonEmpty<T> {
     pub fn new(initial_value: T) -> Self {
-        Self { inner: vec![initial_value] }
+        Self { inner: vec![initial_value], selected_index: 0 }
+    }
+
+    pub const fn len(&self) -> usize {
+        self.inner.len()
+    }
+
+    pub const fn sel_idx(&self) -> usize {
+        self.selected_index
     }
 
     pub fn from_vec(vec: Vec<T>) -> Option<Self> {
-        if vec.is_empty() { None } else { Some(Self { inner: vec }) }
+        if vec.is_empty() { None } else { Some(Self { inner: vec, selected_index: 0 }) }
     }
 
     pub fn push(&mut self, value: T) {
@@ -40,6 +56,49 @@ impl<T> NonEmpty<T> {
     pub fn last_mut(&mut self) -> &mut T {
         self.inner.last_mut().unwrap()
     }
+
+    /// Gets the currently selected element.
+    pub fn sel(&self) -> &T {
+        &self.inner[self.selected_index]
+    }
+
+    /// Gets the currently selected element.
+    pub fn sel_mut(&mut self) -> &mut T {
+        &mut self.inner[self.selected_index]
+    }
+
+    /// Update the selected value
+    pub fn set_sel(&mut self, index: usize) -> Result<()> {
+        if index < self.inner.len() {
+            Ok(self.selected_index = index)
+        } else {
+            Err(NonEmptyError::IndexOutOfBounds)
+        }
+    }
+
+    pub fn iter(&self) -> slice::Iter<T> {
+        self.inner.iter()
+    }
+
+    pub fn find<P: Fn(&T) -> bool>(&self, predicate: P) -> Option<&T> {
+        for v in self.inner.iter() {
+            if predicate(v) {
+                return Some(v);
+            }
+        }
+        None
+    }
+
+    pub fn position<P: Fn(&T) -> bool>(&self, predicate: P) -> Option<usize> {
+        let mut j = 0;
+        while j < self.inner.len() {
+            if predicate(&self.inner[j]) {
+                return Some(j);
+            }
+            j += 1;
+        }
+        None
+    }
 }
 
 impl<T, I: SliceIndex<[T]>> Index<I> for NonEmpty<T> {
@@ -55,5 +114,23 @@ impl<T, I: SliceIndex<[T]>> IndexMut<I> for NonEmpty<T> {
     #[inline]
     fn index_mut(&mut self, index: I) -> &mut Self::Output {
         &mut self.inner[index]
+    }
+}
+
+impl<'a, T> IntoIterator for &'a NonEmpty<T> {
+    type Item = &'a T;
+    type IntoIter = slice::Iter<'a, T>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.inner.iter()
+    }
+}
+
+impl<'a, T> IntoIterator for &'a mut NonEmpty<T> {
+    type Item = &'a mut T;
+    type IntoIter = slice::IterMut<'a, T>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.inner.iter_mut()
     }
 }

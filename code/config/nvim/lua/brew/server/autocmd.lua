@@ -27,7 +27,7 @@ local function set_tab(n)
 end
 
 -- Rust
-bufenter['*.rust'] = function()
+bufenter['*.rs'] = function()
   --
   vim.opt.textwidth = 80
 end

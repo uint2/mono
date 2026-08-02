@@ -1,7 +1,7 @@
 use crate::prelude::*;
 
-pub type DEFAULT_COORDINATE_TYPE = c_int;
-pub type DEFAULT_DISTANCE_TYPE = c_uint;
+pub type Coordinate = c_int;
+pub type Distance = c_uint;
 
 const GRAY_1: &str = "#222222";
 const GRAY_2: &str = "#444444";

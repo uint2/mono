@@ -1,6 +1,6 @@
 use crate::C;
 use crate::prelude::*;
-use config::{DEFAULT_COORDINATE_TYPE, DEFAULT_DISTANCE_TYPE};
+use config::{Coordinate, Distance};
 
 #[derive(Clone, Copy)]
 pub enum BarPosition {
@@ -8,19 +8,20 @@ pub enum BarPosition {
     Bottom,
 }
 
-pub struct Monitor<'app, C = DEFAULT_COORDINATE_TYPE, D = DEFAULT_DISTANCE_TYPE> {
+pub struct Monitor {
     dpy: Display,
+    id: MonitorId,
     /// Master window factor.
     mfact: f32,
     /// Number of master windows.
     nmaster: u8,
     /// Status bar's y-coordinate.
-    by: C,
+    by: Coordinate,
     /// The Rect that every pixel on the monitor lives in.
-    pub m: Rect<C, D>,
+    pub m: Rect,
     /// The Rect that windows live in. This is simply the monitor's Rect minus
     /// the status bar's Rect.
-    pub w: Rect<C, D>,
+    pub w: Rect,
     /// The bitmask of visible tags. Initialize with the first tag visible.
     tags: u32,
     /// false means hide bar.
@@ -28,12 +29,14 @@ pub struct Monitor<'app, C = DEFAULT_COORDINATE_TYPE, D = DEFAULT_DISTANCE_TYPE>
     bar_pos: BarPosition,
     /// Owned list of clients.
     clients: Vec<Client>,
-    /// Selected client
-    sel: Option<&'app Client>,
+    /// Selected client, as an index of our own set of clients.
+    /// TODO: Figure out this exact architecture later.
+    sel: Option<usize>,
     /// Clients ordered by stacking order. That is, the order in which windows
     /// appear visually. If window A covers window B, or is laid on top of it,
     /// then A is before B in the stacking order.
-    stack: Vec<&'app Client>,
+    /// TODO: figure out this architecture later too.
+    // stack: Vec<&'app Client>,
 
     /// The X window that manages the status bar. The only time when this is
     /// none should be when the monitor is freshly created, and we just haven't
@@ -43,28 +46,36 @@ pub struct Monitor<'app, C = DEFAULT_COORDINATE_TYPE, D = DEFAULT_DISTANCE_TYPE>
     lt: Toggle<&'static Layout>,
 }
 
-impl<'app> Monitor<'app> {
+impl Monitor {
     pub fn new(dpy: Display) -> Self {
         Self {
             dpy,
+            id: MonitorId::new(),
             mfact: config::MFACT,
             nmaster: config::NMASTER,
             by: 0,
-            m: Rect::new(0, 0, 0, 0),
-            w: Rect::new(0, 0, 0, 0),
+            m: Rect::zero(),
+            w: Rect::zero(),
             tags: 0b1,
             show_bar: config::SHOW_BAR,
             bar_pos: config::BAR_POSITION,
             clients: vec![],
             sel: None,
-            stack: vec![],
+            // stack: vec![],
             bar_window: None,
             lt: Toggle::new(&EMPTY_LAYOUT),
         }
     }
+
+    getter!(id, MonitorId);
+    getter!(bar_window, Option<Window>);
+
+    pub const fn clients(&self) -> &[Client] {
+        self.clients.as_slice()
+    }
 }
 
-impl<C, D> Drop for Monitor<'_, C, D> {
+impl Drop for Monitor {
     fn drop(&mut self) {
         use crate::C as X;
 
@@ -75,6 +86,8 @@ impl<C, D> Drop for Monitor<'_, C, D> {
     }
 }
 
-impl<'app, C, D> Monitor<'app, C, D> {
-    pub fn update_bar_pos(&mut self, bar_height: D) {}
+impl Monitor {
+    pub fn update_bar_pos(&mut self, bar_height: Distance) {
+        todo!()
+    }
 }

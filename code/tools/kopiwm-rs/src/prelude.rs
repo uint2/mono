@@ -9,6 +9,7 @@ pub(crate) use crate::enums::{Clk, CursorState, WindowColorState, WindowColors};
 pub(crate) use crate::enums::{CursorStateArray, WindowColorStateArray};
 pub(crate) use crate::ffi2::ConvertToC;
 pub(crate) use crate::font::{Font, Fonts};
+pub(crate) use crate::id::{ClientId, MonitorId};
 pub(crate) use crate::layout::{EMPTY_LAYOUT, Layout};
 pub(crate) use crate::linked_list::LinkedListNode;
 pub(crate) use crate::monitor::{BarPosition, Monitor};

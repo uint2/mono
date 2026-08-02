@@ -1,6 +1,9 @@
 #[macro_use]
 mod enum_array;
 
+#[macro_use]
+mod macros;
+
 mod C;
 mod app;
 mod client;
@@ -9,6 +12,7 @@ mod drw;
 mod enums;
 mod ffi2;
 mod font;
+mod id;
 mod layout;
 mod linked_list;
 mod monitor;
