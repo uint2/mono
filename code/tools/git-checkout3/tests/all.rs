@@ -1,3 +1,4 @@
+#[macro_use]
 mod common;
 
 #[path = "../src/consts.rs"]
@@ -11,6 +12,7 @@ use std::path::Path;
 use std::{env, fs};
 
 const CHECKOUT: &str = "checkout3";
+const MAIN: &str = "main";
 
 macro_rules! function {
     () => {{
@@ -32,6 +34,10 @@ fn git_branches(dir: &Path) -> Vec<String> {
     output.lines().map(|v| v.trim().to_string()).collect()
 }
 
+fn cd<P: AsRef<Path>>(dir: P) {
+    env::set_current_dir(dir).unwrap()
+}
+
 #[test]
 fn setup_branches() {
     let (_t, root) = setup(function!());
@@ -44,57 +50,123 @@ fn setup_branches() {
     assert_eq!(branches, ["B1", "B2", "B3", "B4", "main"]);
 }
 
-/// Jump from the lift-lobby (git workspace area, but not in any git workspace)
+/// Jump from the lift lobby.
 #[test]
-fn t1() {
-    let (_t, root) = setup(function!());
-    env::set_current_dir(&root).unwrap();
-    let output = git!(CHECKOUT, "B1").get();
-    assert_eq!(output.stdout, root.join("B1"), "Mismatch: {}", output.stdout);
+fn lift_lobby() {
+    let t = Test::new(function!());
+    cd(&t);
+    git!("init", "-b", MAIN, "--bare", ".git").snw();
+    git!("worktree", "add", MAIN, "--orphan").snw();
+
+    let output = git!(CHECKOUT, MAIN).get();
+    assert_eq!(output.stdout, t.join(MAIN), "Mismatch: {output:?}");
+    assert_eq!(output.status.code(), Some(64));
+
+    cd(".git");
+    let output = git!(CHECKOUT, MAIN).get();
+    assert_eq!(output.stdout, t.join(MAIN), "Mismatch: {output:?}");
     assert_eq!(output.status.code(), Some(64));
 }
 
-/// Jump using ref, from B1 -> B2. Expected to parse:
-/// fatal: 'B2' is already used by worktree at '/tmp/gco/repo/B2'
+/// Can handle bare repos.
 #[test]
-fn t2() {
-    let (_t, root) = setup(function!());
-    env::set_current_dir(root.join("B1")).unwrap();
-    let output = git!(CHECKOUT, "B2").get();
-    assert_eq!(output.stdout, root.join("B2"), "Mismatch: {}", output.stdout);
+fn bare_repos() {
+    let t = Test::new(function!());
+    cd(&t);
+    git!("init", "-b", MAIN, "--bare", ".git").snw();
+    git!("worktree", "add", "--orphan", MAIN).snw();
+    fs::write(t.join(MAIN).join("README"), "boopus").unwrap();
+    git!("-C", MAIN, "add", "--all").snw();
+    git!("-C", MAIN, "commit", "-m", "gloopus").snw();
+
+    git!("worktree", "add", "dev").snw();
+    cd(MAIN);
+    let output = git!(CHECKOUT, "dev").get();
+    assert_eq!(output.stdout, t.join("dev"), "Mismatch: {output:?}");
     assert_eq!(output.status.code(), Some(64));
 }
 
-/// Jump using ref, from B1 -> B3, but where the directory doesn't match the
-/// branch name:
-/// fatal: 'B3' is already used by worktree at '/tmp/gco/repo/D3'
+/// Jump from to worktree using branch name.
 #[test]
-fn t3() {
-    let (_t, root) = setup(function!());
-    env::set_current_dir(root.join("B1")).unwrap();
-    let output = git!(CHECKOUT, "B3").get();
-    assert_eq!(output.stdout, root.join("D3"), "Mismatch: {}", output.stdout);
+fn jump_with_branch() {
+    let t = Test::new(function!());
+    cd(&t);
+    git!("init", "-b", MAIN, "--bare", ".git").snw();
+    git!("worktree", "add", "--orphan", MAIN).snw();
+    fs::write(t.join(MAIN).join("README"), "boopus").unwrap();
+    git!("-C", MAIN, "add", "--all").snw();
+    git!("-C", MAIN, "commit", "-m", "gloopus").snw();
+
+    git!("worktree", "add", "-b", "benjamin", "diana").snw();
+
+    cd(MAIN);
+
+    let output = git!(CHECKOUT, "benjamin").get();
+    assert_eq!(output.stdout, t.join("diana"), "Mismatch: {output:?}");
     assert_eq!(output.status.code(), Some(64));
 }
 
-/// Jump using directory, from B1 -> B3, but we use D3 as the target instead
-/// of B3.
+/// Jump from to worktree using directory name.
 #[test]
-fn t4() {
-    let (_t, root) = setup(function!());
-    env::set_current_dir(root.join("B1")).unwrap();
-    let output = git!(CHECKOUT, "D3").get();
-    assert_eq!(output.stdout, root.join("D3"), "Mismatch: {}", output.stdout);
+fn jump_with_directory() {
+    let t = Test::new(function!());
+    cd(&t);
+    git!("init", "-b", MAIN, "--bare", ".git").snw();
+    git!("worktree", "add", "--orphan", MAIN).snw();
+    fs::write(t.join(MAIN).join("README"), "boopus").unwrap();
+    git!("-C", MAIN, "add", "--all").snw();
+    git!("-C", MAIN, "commit", "-m", "gloopus").snw();
+
+    git!("worktree", "add", "-b", "benjamin", "diana").snw();
+
+    cd(MAIN);
+
+    let output = git!(CHECKOUT, "diana").get();
+    assert_eq!(output.stdout, t.join("diana"), "Mismatch: {}", output.stdout);
     assert_eq!(output.status.code(), Some(64));
 }
 
+/// Checkout a branch.
 #[test]
-fn t5() {
-    let (_t, root) = setup(function!());
-    let cwd = root.join("B1");
-    env::set_current_dir(&cwd).unwrap();
-    git!(CHECKOUT, "B4").snw();
-    assert_eq!(git_branch(&cwd), "B4");
+fn checkout_branch() {
+    let t = Test::new(function!());
+    cd(&t);
+    git!("init", "-b", MAIN, "--bare", ".git").snw();
+    git!("worktree", "add", "--orphan", MAIN).snw();
+    fs::write(t.join(MAIN).join("README"), "boopus").unwrap();
+    git!("-C", MAIN, "add", "--all").snw();
+    git!("-C", MAIN, "commit", "-m", "gloopus").snw();
+
+    git!("worktree", "add", "-b", "benjamin", "diana").snw();
+    git!("-C", "diana", "checkout", "-b", "briana").snw();
+
+    cd(MAIN);
+
+    let output = git!(CHECKOUT, "benjamin").get();
+
+    assert_eq!(output.stdout, "", "Mismatch: {output:?}");
+    assert_eq!(git_branch("."), "benjamin");
+}
+
+/// Checkout a branch that matches the current directory.
+#[test]
+fn checkout_branch_matches_directory() {
+    let t = Test::new(function!());
+    cd(&t);
+    git!("init", "-b", MAIN, "--bare", ".git").snw();
+    git!("worktree", "add", "--orphan", MAIN).snw();
+    fs::write(t.join(MAIN).join("README"), "boopus").unwrap();
+    git!("-C", MAIN, "add", "--all").snw();
+    git!("-C", MAIN, "commit", "-m", "gloopus").snw();
+
+    git!("-C", MAIN, "checkout", "-b", "dev").snw();
+
+    cd(MAIN);
+
+    let output = git!(CHECKOUT, "main").get();
+
+    assert_eq!(output.stdout, "", "Mismatch: {output:?}");
+    assert_eq!(git_branch("."), "main");
 }
 
 #[test]

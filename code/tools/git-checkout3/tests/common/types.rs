@@ -3,6 +3,8 @@ use std::path::{Path, PathBuf};
 use std::sync::{LazyLock, Mutex};
 use std::{env, fs};
 
+use core::sync::atomic::{AtomicU32, Ordering};
+
 const BIN: &str = env!("CARGO_BIN_EXE_git-checkout3");
 const TMPDIR: &str = env!("CARGO_TARGET_TMPDIR");
 
@@ -55,9 +57,24 @@ impl Test {
         self.root_dir.as_path()
     }
 
+    pub fn dir(&self) -> &Path {
+        self.root_dir.as_path()
+    }
+
+    pub fn join<P: AsRef<Path>>(&self, p: P) -> PathBuf {
+        self.root_dir.join(p)
+    }
+
     // Gets a unique id.
-    pub fn id(&mut self) -> u32 {
-        self.id += 1;
-        self.id
+    pub fn id(&self) -> u32 {
+        static COUNTER: AtomicU32 = AtomicU32::new(0);
+        let id = COUNTER.fetch_add(1, Ordering::Relaxed);
+        id
+    }
+}
+
+impl AsRef<Path> for Test {
+    fn as_ref(&self) -> &Path {
+        self.root_dir.as_path()
     }
 }

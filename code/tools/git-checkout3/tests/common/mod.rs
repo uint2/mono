@@ -1,6 +1,10 @@
-#[macro_export]
 macro_rules! git {
-    ($($arg:expr),*) => { std::process::Command::new("git")$(.arg($arg))* };
+    ($($arg:expr),* $(,)?) => { std::process::Command::new("git")$(.arg($arg))* };
+}
+
+macro_rules! sh {
+    ($first:expr) => { std::process::Command::new($first) };
+    ($first:expr, $($arg:expr),* $(,)?) => { std::process::Command::new($first)$(.arg($arg))* };
 }
 
 mod shell;

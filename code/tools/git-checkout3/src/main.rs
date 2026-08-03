@@ -17,9 +17,10 @@ use consts::{STICKY_CONFIG_KEY, STICKY_NO_JUMP};
 use shell::ExitCode;
 
 use core::str;
-use std::io::{self, Write};
-use std::path::Path;
+use std::io::Write;
+use std::path::{Path, PathBuf};
 use std::process::Command;
+use std::{env, io};
 
 #[derive(Debug)]
 struct GitWorktree<'a> {
@@ -51,10 +52,19 @@ impl<'a> GitWorktree<'a> {
 
     pub fn parse(text: &'a str) -> Result<Vec<Self>, ()> {
         let mut worktrees = vec![];
-        let mut state: u8 = 0;
+        enum State {
+            /// Looking for "worktree".
+            LFWorktree,
+            /// Looking for "HEAD". Might see "bare".
+            LFHead,
+            /// Looking for "branch", followed by an absolute path.
+            /// Might see "detached".
+            LFDirectory,
+        }
+        let mut state = State::LFWorktree;
         for line in text.lines() {
             match state {
-                0 => {
+                State::LFWorktree => {
                     let Some(line) = line.strip_prefix("worktree") else {
                         eprintln!(
                             "The first line of each worktree must start with \"worktree\"."
@@ -63,9 +73,13 @@ impl<'a> GitWorktree<'a> {
                     };
                     let abs_path = line.trim_start();
                     worktrees.push(GitWorktree { abs_path, head: Err(()), branch: None });
-                    state = 1;
+                    state = State::LFHead;
                 }
-                1 => {
+                State::LFHead => {
+                    if line.trim() == "bare" {
+                        state = State::LFDirectory;
+                        continue;
+                    }
                     let Some(line) = line.strip_prefix("HEAD") else {
                         eprintln!(
                             "The second line of each worktree must start with \"HEAD\"."
@@ -73,10 +87,10 @@ impl<'a> GitWorktree<'a> {
                         return Err(());
                     };
                     worktrees.last_mut().unwrap().head = Ok(line.trim_start());
-                    state = 2;
+                    state = State::LFDirectory;
                 }
-                2 if line.is_empty() => state = 0,
-                2 => {
+                State::LFDirectory if line.is_empty() => state = State::LFWorktree,
+                State::LFDirectory => {
                     if let Some(line) = line.strip_prefix("branch") {
                         // example: refs/heads/main
                         let full_ref_name = line.trim_start();
@@ -84,7 +98,6 @@ impl<'a> GitWorktree<'a> {
                         worktrees.last_mut().unwrap().branch = branch
                     }
                 }
-                _ => return Err(eprintln!("Invalid git worktree parser state.")),
             }
         }
         Ok(worktrees)
@@ -98,11 +111,7 @@ impl<'a> GitWorktree<'a> {
             .max_by(|a, b| a.abs_path.len().cmp(&b.abs_path.len()))
     }
 
-    pub fn accept_and_resolve(&self, trees: &[Self]) -> Result<ExitCode, ()> {
-        let Ok(cwd) = std::env::current_dir() else {
-            return err!("Unable to get current working directory.");
-        };
-
+    pub fn accept_and_resolve(&self, cwd: &Path, trees: &[Self]) -> Result<ExitCode, ()> {
         let parent_tree = match Self::find_closest_parent(&cwd, trees) {
             Some(v) => v,
             None => {
@@ -119,6 +128,11 @@ impl<'a> GitWorktree<'a> {
         io::stdout().write(target.as_bytes()).unwrap();
         Ok(ExitCode::ACCEPT)
     }
+}
+
+#[inline]
+fn getcwd() -> Result<PathBuf, ()> {
+    env::current_dir().map_err(|_| eprintln!("Unable to get current working directory."))
 }
 
 fn try_main(goal: &str) -> Result<ExitCode, ()> {
@@ -142,7 +156,13 @@ fn try_main(goal: &str) -> Result<ExitCode, ()> {
     // 1. Prioritize the directory match.
     for worktree in &worktrees {
         if worktree.directory() == goal {
-            return worktree.accept_and_resolve(&worktrees);
+            let cwd = getcwd()?;
+            let worktree_dir = Path::new(worktree.abs_path).canonicalize().ok();
+            if worktree_dir == cwd.canonicalize().ok() {
+                shell::run(git!("checkout", goal));
+            } else {
+                return worktree.accept_and_resolve(&cwd, &worktrees);
+            }
         }
     }
 
@@ -151,7 +171,7 @@ fn try_main(goal: &str) -> Result<ExitCode, ()> {
     for worktree in &worktrees {
         let Some(branch) = worktree.branch else { continue };
         if branch == goal {
-            return worktree.accept_and_resolve(&worktrees);
+            return worktree.accept_and_resolve(&getcwd()?, &worktrees);
         }
     }
 
@@ -177,13 +197,15 @@ fn try_main(goal: &str) -> Result<ExitCode, ()> {
         return Ok(ExitCode::SUCCESS);
     }
 
+    // println!("GOT HERE {goal}");
+
     shell::run(git!("checkout", goal));
 }
 
 fn main() -> std::process::ExitCode {
     // To keep things simple, we only run the complicated logic when there is
     // exactly 1 CLI argument (that is not the binary itself).
-    let args: Vec<_> = std::env::args_os().skip(1).collect();
+    let args: Vec<_> = env::args_os().skip(1).collect();
     let 1 = args.len() else {
         let mut cmd = Command::new("git");
         cmd.arg("checkout");

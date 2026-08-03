@@ -16,7 +16,7 @@ pub struct Output2 {
     pub status: ExitStatus,
 }
 
-pub fn commit_file<P: AsRef<Path>>(t: &mut Test, pathspec: P) {
+pub fn commit_file<P: AsRef<Path>>(t: &Test, pathspec: P) {
     let pathspec = pathspec.as_ref();
     let _ = fs::create_dir_all(pathspec.parent().unwrap());
     let mut f = File::options().create(true).append(true).open(pathspec).unwrap();
@@ -41,8 +41,12 @@ impl CommandExt for Command {
     /// Spawn and wait.
     fn snw(&mut self) {
         let output = self.get();
-        println!("{}", output.stderr);
-        println!("{}", output.stdout);
+        if !output.stderr.trim().is_empty() {
+            println!("stderr: {}", output.stderr.trim());
+        }
+        if !output.stdout.trim().is_empty() {
+            println!("stdout: {}", output.stdout.trim());
+        }
     }
 
     fn get_stdout(&mut self) -> String {
