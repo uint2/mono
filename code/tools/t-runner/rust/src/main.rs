@@ -16,14 +16,14 @@ enum Trigger {
     /// Matches this file exactly.
     Path(&'static str),
     /// Runs a predicate.
-    Pred(fn(&Path) -> bool),
+    Pred(fn(&Path, &[DirEntry]) -> bool),
 }
 
 impl Trigger {
-    fn hit(&self, files: &[DirEntry]) -> bool {
+    fn hit(&self, cwd: &Path, files: &[DirEntry]) -> bool {
         match self {
             Self::Path(path) => files.iter().any(|f| f.path().ends_with(path)),
-            Self::Pred(f) => true,
+            Self::Pred(f) => f(cwd, files),
         }
     }
 }
@@ -81,7 +81,7 @@ fn try_run(cwd: &Path) -> Option<ExitCode> {
     };
     let files: Vec<_> = files.filter_map(|v| v.ok()).collect();
 
-    let Some(m) = MATCHERS.into_iter().find(|v| v.trigger.hit(&files)) else {
+    let Some(m) = MATCHERS.into_iter().find(|v| v.trigger.hit(cwd, &files)) else {
         return None;
     };
     if let Some(message) = m.message {
