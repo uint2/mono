@@ -1,8 +1,14 @@
-INSTALL_LOC   := ~/.local/bin/t
+nothing: # to prevent loops
+
+build-release:
+	cargo build --release
+
+v: build-release
+	valgrind -- ./target/release/t
+
+dev: run
+run:
+	cargo run
 
 install:
-	-rm -f $(INSTALL_LOC)
-	gcc -O3 main.c -o $(INSTALL_LOC)
-
-build:
-	gcc -O3 main.c
+	cargo install --locked --force --path .
