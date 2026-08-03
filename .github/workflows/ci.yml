@@ -710,7 +710,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - run: cargo build --release
-        working-directory: code/tools/t-runner/rust
+        working-directory: code/tools/t-runner
   # }}}
   solid-rect-build: # {{{
     needs: delta

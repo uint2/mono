@@ -3,6 +3,8 @@ use std::io::Write;
 use std::path::Path;
 use std::process::{Command, ExitCode};
 
+use core::str;
+
 macro_rules! banner {
     () => {
         "(\x1b[35mt\x1b[m)"
@@ -12,18 +14,35 @@ macro_rules! banner {
     };
 }
 
+#[allow(unused)]
 enum Trigger {
     /// Matches this file exactly.
-    Path(&'static str),
+    File(&'static str),
     /// Runs a predicate.
     Pred(fn(&Path, &[DirEntry]) -> bool),
+    /// Checks for git remote.
+    GitRemote(&'static str),
+    Or(&'static [Self]),
+    And(&'static [Self]),
 }
+#[allow(unused)]
+use Trigger::{self as Tr, And, Or};
 
 impl Trigger {
     fn hit(&self, cwd: &Path, files: &[DirEntry]) -> bool {
         match self {
-            Self::Path(path) => files.iter().any(|f| f.path().ends_with(path)),
+            Self::File(path) => files.iter().any(|f| f.path().ends_with(path)),
             Self::Pred(f) => f(cwd, files),
+            Self::GitRemote(remote) => {
+                let output = Command::new("git")
+                    .args(["config", "--get", "remote.origin.url"])
+                    .output();
+                let Ok(output) = output else { return false };
+                let Ok(output) = str::from_utf8(&output.stdout) else { return false };
+                output.trim() == *remote
+            }
+            Self::Or(triggers) => triggers.iter().any(|v| v.hit(cwd, files)),
+            Self::And(triggers) => triggers.iter().all(|v| v.hit(cwd, files)),
         }
     }
 }
@@ -34,29 +53,39 @@ struct Matcher {
     message: Option<&'static str>,
 }
 
+const WORK_MATCHES: &'static [Matcher] = &[];
+
 const MATCHERS: &'static [Matcher] = &[
     Matcher {
-        trigger: Trigger::Path("Makefile"),
+        trigger: And(&[
+            Tr::GitRemote("https://github.com/neovim/neovim.git"),
+            Tr::File(".git"),
+        ]),
+        args: &["echo", "this is neovim"],
+        message: None,
+    },
+    Matcher {
+        trigger: Tr::File("Makefile"),
         args: &["make", "--no-print-directory"],
         message: Some("Makefile"),
     },
     Matcher {
-        trigger: Trigger::Path("Cargo.toml"),
+        trigger: Tr::File("Cargo.toml"),
         args: &["cargo", "run"],
         message: Some("cargo (Cargo.toml)"),
     },
     Matcher {
-        trigger: Trigger::Path("package.json"),
+        trigger: Tr::File("package.json"),
         args: &["npm", "run"],
         message: Some("npm run (package.json)"),
     },
     Matcher {
-        trigger: Trigger::Path("build.sh"),
+        trigger: Tr::File("build.sh"),
         args: &["bash", "build.sh"],
         message: Some("bash (build.sh)"),
     },
     Matcher {
-        trigger: Trigger::Path("run.py"),
+        trigger: Tr::File("run.py"),
         args: &["python3", "run.py"],
         message: Some("python3 (run.py)"),
     },
@@ -81,7 +110,9 @@ fn try_run(cwd: &Path) -> Option<ExitCode> {
     };
     let files: Vec<_> = files.filter_map(|v| v.ok()).collect();
 
-    let Some(m) = MATCHERS.into_iter().find(|v| v.trigger.hit(cwd, &files)) else {
+    let mut matchers = MATCHERS.iter().chain(WORK_MATCHES);
+
+    let Some(m) = matchers.find(|v| v.trigger.hit(cwd, &files)) else {
         return None;
     };
     if let Some(message) = m.message {

@@ -1,4 +1,5 @@
-nothing: # to prevent loops
+build:
+	cargo build
 
 build-release:
 	cargo build --release
