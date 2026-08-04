@@ -7,6 +7,12 @@ macro_rules! sh {
     ($first:expr, $($arg:expr),* $(,)?) => { std::process::Command::new($first)$(.arg($arg))* };
 }
 
+macro_rules! cd {
+    ($dir:expr) => {
+        std::env::set_current_dir(&dir).unwrap()
+    };
+}
+
 mod shell;
 mod types;
 
@@ -108,4 +114,19 @@ pub fn setup(name: &'static str) -> (Test, PathBuf) {
     git!("branch", "-D", "D3").snw();
 
     (t, d_repo)
+}
+
+/// Creates a random commit by making some file at `dir`.
+pub fn some_commit<P: AsRef<Path>>(dir: P) {
+    let dir = dir.as_ref();
+    let fingerprint = std::time::UNIX_EPOCH.elapsed().unwrap();
+    let fingerprint = format!("{:?}.txt", fingerprint.as_micros());
+    let file = dir.join(&fingerprint);
+    fs::write(&file, "hello").unwrap();
+    git!("-C", dir, "add", fingerprint).snw();
+    git!("-C", dir, "commit", "-m", "boopus gloopus").snw();
+}
+
+pub fn cd<P: AsRef<Path>>(dir: P) {
+    env::set_current_dir(dir).unwrap()
 }

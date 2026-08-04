@@ -9,13 +9,13 @@ run:
 build:
 	cargo build
 
-TEST_ONE := checkout_branch_matches_directory
+TEST_ONE := t7
 
 test1: build
 	cargo test $(TEST_ONE) -- --test-threads=1
 
 test: build
-	cargo test -- --test-threads=1
+	cargo test
 
 install:
 		cargo install --locked --force --path .

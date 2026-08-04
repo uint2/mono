@@ -135,7 +135,32 @@ fn getcwd() -> Result<PathBuf, ()> {
     env::current_dir().map_err(|_| eprintln!("Unable to get current working directory."))
 }
 
+fn is_branch_sticky(branch: &str) -> bool {
+    let Ok(sticky) = git!("config", "--get", STICKY_CONFIG_KEY).output() else {
+        eprintln!("Failed to execute shell command to get git config.");
+        return false;
+    };
+    let Ok(sticky) = str::from_utf8(&sticky.stdout) else {
+        eprintln!("Unable to decode sticky config as utf-8.");
+        return false;
+    };
+    let branch = branch.trim();
+    sticky.split(',').any(|v| v.trim() == branch)
+}
+
 fn try_main(goal: &str) -> Result<ExitCode, ()> {
+    let Ok(current_branch) = git!("branch", "--show-current").output() else {
+        return err!("Failed to execute shell command to get git branch.");
+    };
+    let Ok(current_branch) = str::from_utf8(&current_branch.stdout) else {
+        return err!("Unable to decode `git branch` as utf-8.");
+    };
+
+    if is_branch_sticky(current_branch) {
+        io::stderr().write(STICKY_NO_JUMP.as_bytes()).unwrap();
+        return Ok(ExitCode::SUCCESS);
+    }
+
     let Ok(worktrees) = git!("worktree", "list", "--porcelain").output() else {
         return err!("Failed to execute shell command to get git worktrees.");
     };
@@ -156,6 +181,7 @@ fn try_main(goal: &str) -> Result<ExitCode, ()> {
     // 1. Prioritize the directory match.
     for worktree in &worktrees {
         if worktree.directory() == goal {
+            // panic!("{:?}", worktree);
             let cwd = getcwd()?;
             let worktree_dir = Path::new(worktree.abs_path).canonicalize().ok();
             if worktree_dir == cwd.canonicalize().ok() {
@@ -174,30 +200,6 @@ fn try_main(goal: &str) -> Result<ExitCode, ()> {
             return worktree.accept_and_resolve(&getcwd()?, &worktrees);
         }
     }
-
-    let current_branch_is_sticky = {
-        let Ok(sticky) = git!("config", "get", STICKY_CONFIG_KEY).output() else {
-            return err!("Failed to execute shell command to get git config.");
-        };
-        let Ok(sticky) = str::from_utf8(&sticky.stdout) else {
-            return err!("Unable to decode sticky config as utf-8.");
-        };
-        let Ok(current_branch) = git!("branch", "--show-current").output() else {
-            return err!("Failed to execute shell command to get git branch.");
-        };
-        let Ok(current_branch) = str::from_utf8(&current_branch.stdout) else {
-            return err!("Unable to decode git branch as utf-8.");
-        };
-        let current_branch = current_branch.trim();
-        sticky.split(',').any(|v| v.trim() == current_branch)
-    };
-
-    if current_branch_is_sticky {
-        io::stdout().write(STICKY_NO_JUMP.as_bytes()).unwrap();
-        return Ok(ExitCode::SUCCESS);
-    }
-
-    // println!("GOT HERE {goal}");
 
     shell::run(git!("checkout", goal));
 }
