@@ -1,5 +1,6 @@
 mod cmd;
 
+use std::io;
 use std::io::{BufRead, BufReader, BufWriter, LineWriter, Write, stdout};
 use std::process::{ChildStdout, Command, Stdio};
 
@@ -13,9 +14,9 @@ fn get_line_limit() -> (u16, u16) {
     (width, (height as f32 * HEIGHT_RATIO) as u16)
 }
 
-fn get_time(timestamp: &str) -> (&str, char) {
+fn get_time(timestamp: &str) -> (&str, &str) {
     let (n, u) = timestamp.split_once(' ').unwrap();
-    (n, if u.starts_with("mo") { 'M' } else { u.chars().next().unwrap() })
+    (n, if u.starts_with("mo") { "M" } else { &u[0..1] })
 }
 
 struct LogLineWriter<W: Write> {
@@ -24,13 +25,28 @@ struct LogLineWriter<W: Write> {
 }
 
 impl<W: Write> LogLineWriter<W> {
-    pub fn write(&mut self, value: &str) {
+    pub fn write(&mut self, value: &str) -> io::Result<()> {
         self.written += value.chars().count();
-        self.bw.write(value.as_bytes()).unwrap();
+        self.bw.write(value.as_bytes()).map(|_| ())
     }
 
     pub fn lines_consumed(&self, width: u16) -> u16 {
         (self.written as u16).div_ceil(width)
+    }
+
+    pub fn write_line(&mut self, text: &str, timestamp: &str) -> io::Result<()> {
+        let i_paren = text.rfind('(').unwrap();
+        let light_gray = &text[i_paren + 1..];
+        let i_space = text[..i_paren].rfind(' ').unwrap();
+        let dark_gray = &text[i_space + 1..i_paren];
+        let (timestamp, unit) = get_time(timestamp);
+
+        self.write(text)?;
+        self.write(light_gray)?;
+        self.write(timestamp)?;
+        self.write(unit)?;
+        self.write(dark_gray)?;
+        self.write(")\x1b[m\n")
     }
 }
 
@@ -50,23 +66,17 @@ fn run<W: Write>(is_bounded: bool, log: ChildStdout, target: W) {
             Ok(0) | Err(_) => break,
             _ => buffer.as_str(),
         };
-        if let Some((text, timestamp)) = line.rsplit_once('\u{2}') {
-            let i_paren = text.rfind('(').unwrap();
-            let light_gray = &text[i_paren + 1..];
-            let i_space = text[..i_paren].rfind(' ').unwrap();
-            let dark_gray = &text[i_space + 1..i_paren];
-            let (timestamp, unit) = get_time(timestamp);
-
-            writer.write(text);
-            writer.write(light_gray);
-            writer.write(timestamp);
-            writer.bw.write(&[unit as u8]).unwrap();
-            writer.written += 1;
-            writer.write(dark_gray);
-            writer.write(")\x1b[m\n");
+        let result = if let Some((text, timestamp)) = line.rsplit_once('\u{2}') {
+            writer.write_line(text, timestamp)
         } else {
             // The entire line is just a git log --graph visual line.
-            writer.write(line);
+            writer.write(line)
+        };
+
+        if let Err(err) = result {
+            if let io::ErrorKind::BrokenPipe = err.kind() {
+                break;
+            }
         }
 
         // r := remaining lines to print.
