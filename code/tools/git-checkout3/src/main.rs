@@ -19,8 +19,11 @@ use shell::ExitCode;
 use core::str;
 use std::io::Write;
 use std::path::{Path, PathBuf};
-use std::process::Command;
+use std::process::{Command, Output, Stdio};
+use std::time::Duration;
 use std::{env, io};
+
+use futures::FutureExt;
 
 #[derive(Debug)]
 struct GitWorktree<'a> {
@@ -135,56 +138,98 @@ fn getcwd() -> Result<PathBuf, ()> {
     env::current_dir().map_err(|_| eprintln!("Unable to get current working directory."))
 }
 
-fn is_branch_sticky(branch: &str) -> bool {
-    let Ok(sticky) = git!("config", "--get", STICKY_CONFIG_KEY).output() else {
-        eprintln!("Failed to execute shell command to get git config.");
-        return false;
-    };
-    let Ok(sticky) = str::from_utf8(&sticky.stdout) else {
-        eprintln!("Unable to decode sticky config as utf-8.");
-        return false;
-    };
-    let branch = branch.trim();
-    sticky.split(',').any(|v| v.trim() == branch)
+/// Get the sticky branches in a comma-separated string.
+fn get_sticky_branches() -> Result<Output, ()> {
+    let output = git!("config", "--get", STICKY_CONFIG_KEY)
+        .stdout(Stdio::piped())
+        .stderr(Stdio::null())
+        .stdin(Stdio::null())
+        .output();
+    output.map_err(|_| eprintln!("Failed to execute shell command to get git config."))
+}
+
+fn canonical_eq(a: &Path, b: &Path) -> bool {
+    match (a.canonicalize(), b.canonicalize()) {
+        (Ok(a), Ok(b)) => a == b,
+        _ => false,
+    }
 }
 
 fn try_main(goal: &str) -> Result<ExitCode, ()> {
-    let Ok(current_branch) = git!("branch", "--show-current").output() else {
-        return err!("Failed to execute shell command to get git branch.");
-    };
-    let Ok(current_branch) = str::from_utf8(&current_branch.stdout) else {
-        return err!("Unable to decode `git branch` as utf-8.");
-    };
+    let pool = rayon::ThreadPoolBuilder::new().num_threads(8).build().unwrap();
 
-    if is_branch_sticky(current_branch) {
-        io::stderr().write(STICKY_NO_JUMP.as_bytes()).unwrap();
-        return Ok(ExitCode::SUCCESS);
+    let mut sticky_output: Result<Output, ()> = Err(());
+    let mut git_branch_output: Result<Output, ()> = Err(());
+    let mut git_worktree_output: Result<Output, ()> = Err(());
+
+    rayon::scope(|scope| {
+        scope.spawn(|_| {
+            sticky_output =
+                git!("config", "--get", STICKY_CONFIG_KEY).output().map_err(|_| {
+                    eprintln!("Failed to execute shell command to get git config.")
+                });
+        });
+        scope.spawn(|_| {
+            git_branch_output = git!("branch", "--show-current").output().map_err(|_| {
+                eprintln!("Failed to execute shell command to get git branch.")
+            });
+        });
+        scope.spawn(|_| {
+            git_worktree_output =
+                git!("worktree", "list", "--porcelain").output().map_err(|_| {
+                    eprintln!("Failed to execute shell command to get git worktrees.")
+                });
+        });
+    });
+    let sticky_output = sticky_output?;
+    let git_branch_output = git_branch_output?;
+    let git_worktree_output = git_worktree_output?;
+
+    {
+        // Firstly, make sure that we're in a git-enabled directory.
+        let Ok(stderr) = str::from_utf8(&git_worktree_output.stderr) else {
+            return err!("Unable to decode `git worktree` stderr as utf-8.");
+        };
+        if stderr.starts_with("fatal: not a git repository") {
+            // fatal: not a git repository (or any parent up to mount point)
+            // fatal: not a git repository (or any of the parent directories)
+            io::stderr().write(&git_worktree_output.stderr).unwrap();
+            return Ok(ExitCode::of(git_worktree_output.status));
+        }
     }
 
-    let Ok(worktrees) = git!("worktree", "list", "--porcelain").output() else {
-        return err!("Failed to execute shell command to get git worktrees.");
+    // Parse the shell outputs.
+    let Ok(sticky_branches) = str::from_utf8(&sticky_output.stdout) else {
+        return err!("Unable to decode sticky config as utf-8.");
     };
-    let Ok(stderr) = str::from_utf8(&worktrees.stderr) else {
-        return err!("Unable to decode `git worktree` stderr as utf-8.");
+    let sticky_branches = sticky_branches.trim().split(',').collect::<Vec<_>>();
+    let Ok(current_branch) = str::from_utf8(&git_branch_output.stdout) else {
+        return err!("Unable to decode `git branch` stdout as utf-8.");
     };
-    if stderr.starts_with("fatal: not a git repository") {
-        // fatal: not a git repository (or any parent up to mount point)
-        // fatal: not a git repository (or any of the parent directories)
-        io::stderr().write(&worktrees.stderr).unwrap();
-        return Ok(ExitCode::of(worktrees.status));
-    }
-    let Ok(stdout) = str::from_utf8(&worktrees.stdout) else {
+    let current_branch = current_branch.trim();
+
+    let Ok(worktrees) = str::from_utf8(&git_worktree_output.stdout) else {
         return err!("Unable to decode `git worktree` stdout as utf-8.");
     };
-    let worktrees = GitWorktree::parse(stdout)?;
+    let worktrees = worktrees.trim();
 
-    // 1. Prioritize the directory match.
+    let is_branch_sticky = sticky_branches.iter().any(|&v| current_branch == v);
+
+    // if is_branch_sticky {
+    //     io::stderr().write(STICKY_NO_JUMP.as_bytes()).unwrap();
+    //     return Ok(ExitCode::SUCCESS);
+    // }
+
+    let worktrees = GitWorktree::parse(worktrees)?;
+
+    // 1. Prioritize the directory match. Look through the worktrees and match
+    // the directory of each worktree checked out against `goal`.
     for worktree in &worktrees {
         if worktree.directory() == goal {
-            // panic!("{:?}", worktree);
             let cwd = getcwd()?;
-            let worktree_dir = Path::new(worktree.abs_path).canonicalize().ok();
-            if worktree_dir == cwd.canonicalize().ok() {
+            if canonical_eq(Path::new(worktree.abs_path), cwd.as_path()) {
+                // The goal is the same as the worktree's dir, i.e. cwd == goal,
+                // and also we're checking out `goal`.
                 shell::run(git!("checkout", goal));
             } else {
                 return worktree.accept_and_resolve(&cwd, &worktrees);
@@ -220,7 +265,8 @@ fn main() -> std::process::ExitCode {
         eprintln!("Failed to decode target.");
         return std::process::ExitCode::FAILURE;
     };
-    match try_main(goal.trim()) {
+    let pool = rayon::ThreadPoolBuilder::new().num_threads(8).build().unwrap();
+    match pool.install(|| try_main(goal.trim())) {
         Ok(v) => v.exit(),
         Err(()) => return std::process::ExitCode::FAILURE,
     }
