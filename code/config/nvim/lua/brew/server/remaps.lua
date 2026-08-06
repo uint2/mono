@@ -28,6 +28,10 @@ k('v', 'L', '$')
 k({ 'n', 'v' }, '<C-d>', '13j', s)
 k({ 'n', 'v' }, '<C-u>', '13k', s)
 
+-- horizontal scrolling
+k({ 'n', 'v' }, '<C-h>', '20zh')
+k({ 'n', 'v' }, '<C-l>', '20zl')
+
 -- quickfix list navigation
 k('n', '<C-j>', ':cnext<cr>', s)
 k('n', '<C-k>', ':cprev<cr>', s)
