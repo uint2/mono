@@ -8,6 +8,16 @@ use core::sync::atomic::{AtomicU32, Ordering};
 const BIN: &str = env!("CARGO_BIN_EXE_git-checkout3");
 const TMPDIR: &str = env!("CARGO_TARGET_TMPDIR");
 
+static CWD_MUTEX: Mutex<()> = Mutex::new(());
+
+pub fn at<T, P: AsRef<Path>, F: FnOnce() -> T>(workdir: P, f: F) -> T {
+    let lock = CWD_MUTEX.lock();
+    env::set_current_dir(workdir).unwrap();
+    let result = f();
+    drop(lock);
+    result
+}
+
 pub struct Test {
     // Root directory for the test files.
     root_dir: PathBuf,
@@ -51,6 +61,12 @@ impl Test {
         let _ = fs::remove_dir_all(&temp_dir);
         fs::create_dir_all(&temp_dir).unwrap();
         Self { root_dir: temp_dir, id: 0 }
+    }
+
+    pub fn sh<T, P: AsRef<Path>, F: FnOnce() -> T>(&self, relpath: P, f: F) -> T {
+        let _lock = CWD_MUTEX.lock();
+        env::set_current_dir(self.join(relpath)).unwrap();
+        f()
     }
 
     pub fn as_path(&self) -> &Path {

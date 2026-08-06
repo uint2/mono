@@ -18,7 +18,7 @@ mod types;
 
 pub use {
     shell::{CommandExt, OutputExt, commit_file},
-    types::Test,
+    types::{Test, at},
 };
 
 use std::path::{Path, PathBuf};

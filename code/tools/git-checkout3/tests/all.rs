@@ -8,10 +8,8 @@ use consts::{STICKY_CONFIG_KEY, STICKY_NO_JUMP};
 
 use common::*;
 
+use std::fs;
 use std::path::Path;
-use std::process::ExitStatus;
-use std::sync::Mutex;
-use std::{env, fs};
 
 const CHECKOUT: &str = "checkout3";
 const MAIN: &str = "main";
@@ -31,26 +29,16 @@ fn git_branch<P: AsRef<Path>>(dir: P) -> String {
     at(dir, || git!("branch", "--show-current").get_stdout())
 }
 
-static MUTEX: Mutex<()> = Mutex::new(());
-
-fn at<T, P: AsRef<Path>, F: FnOnce() -> T>(workdir: P, f: F) -> T {
-    let lock = MUTEX.lock();
-    env::set_current_dir(workdir).unwrap();
-    let result = f();
-    drop(lock);
-    result
-}
-
 /// Jump from the lift lobby.
 #[test]
 fn lift_lobby() {
     let t = Test::new(function!());
-    at(&t, || {
+    t.sh("", || {
         git!("init", "--bare", ".git").snw();
         git!("worktree", "add", MAIN, "--orphan").snw();
     });
 
-    let output = at(&t, || git!(CHECKOUT, MAIN).get());
+    let output = t.sh("", || git!(CHECKOUT, MAIN).get());
     assert_eq!(output.stdout, t.join(MAIN), "Mismatch: {output:?}");
     assert_eq!(output.status.code(), Some(64));
 
@@ -64,7 +52,7 @@ fn lift_lobby() {
 fn bare_repos() {
     let t = Test::new(function!());
     cd(&t);
-    at(&t, || {
+    t.sh("", || {
         git!("init", "-b", MAIN, "--bare", ".git").snw();
         git!("worktree", "add", "--orphan", MAIN).snw();
         some_commit(MAIN);
@@ -80,7 +68,7 @@ fn bare_repos() {
 #[test]
 fn jump_with_branch() {
     let t = Test::new(function!());
-    at(&t, || {
+    t.sh("", || {
         git!("init", "-b", MAIN, "--bare", ".git").snw();
         git!("worktree", "add", "--orphan", MAIN).snw();
         some_commit(MAIN);
@@ -97,7 +85,7 @@ fn jump_with_branch() {
 #[test]
 fn jump_with_directory() {
     let t = Test::new(function!());
-    at(&t, || {
+    t.sh("", || {
         git!("init", "-b", MAIN, "--bare", ".git").snw();
         git!("worktree", "add", "--orphan", MAIN).snw();
         some_commit(MAIN);
@@ -115,7 +103,7 @@ fn jump_with_directory() {
 #[test]
 fn checkout_branch() {
     let t = Test::new(function!());
-    at(&t, || {
+    t.sh("", || {
         git!("init", "-b", MAIN, "--bare", ".git").snw();
         git!("worktree", "add", "--orphan", MAIN).snw();
         some_commit(MAIN);
@@ -136,7 +124,7 @@ fn checkout_branch() {
 #[test]
 fn checkout_branch_matches_directory() {
     let t = Test::new(function!());
-    at(&t, || {
+    t.sh("", || {
         git!("init", "-b", MAIN, "--bare", ".git").snw();
         git!("worktree", "add", "--orphan", MAIN).snw();
         some_commit(MAIN);
@@ -154,7 +142,7 @@ fn checkout_branch_matches_directory() {
 #[test]
 fn t6() {
     let t = Test::new(function!());
-    at(&t, || {
+    t.sh("", || {
         git!("init", "-b", MAIN, "--bare", ".git").snw();
         git!("config", STICKY_CONFIG_KEY, "hello,world,dev,hello,world").snw();
         git!("worktree", "add", "--orphan", MAIN).snw();
@@ -172,11 +160,11 @@ fn t6() {
 fn git_config_sticky() {
     let t = Test::new(function!());
     const CONFIG_VALUE: &str = "hello,world";
-    at(&t, || {
+    t.sh("", || {
         git!("init", "-b", MAIN, "--bare", ".git").snw();
         git!("config", STICKY_CONFIG_KEY, CONFIG_VALUE).snw();
     });
-    let output = at(&t, || git!("config", "--get", STICKY_CONFIG_KEY).get());
+    let output = t.sh("", || git!("config", "--get", STICKY_CONFIG_KEY).get());
     assert_eq!(output.stdout, CONFIG_VALUE);
     assert_eq!(output.stderr, "");
     assert!(output.status.success());
@@ -187,7 +175,7 @@ fn git_config_sticky() {
 #[test]
 fn t7() {
     let t = Test::new(function!());
-    at(&t, || {
+    t.sh("", || {
         git!("init", "-b", MAIN, "--bare", ".git").snw();
         git!("config", STICKY_CONFIG_KEY, "hello,world,dev,hello,world").snw();
         git!("worktree", "add", "--orphan", MAIN).snw();
@@ -211,6 +199,14 @@ fn t7() {
 #[test]
 #[ignore]
 fn t8() {
+    let t = Test::new(function!());
+    t.sh("", || {
+        git!("init", "-b", MAIN, "--bare", ".git").snw();
+        git!("config", STICKY_CONFIG_KEY, "hello,world,dev,hello,world").snw();
+        git!("worktree", "add", "--orphan", MAIN).snw();
+        some_commit(MAIN);
+        git!("worktree", "add", "dev").snw();
+    });
     let (_t, root) = setup(function!());
     let cwd = root.join("B1/src/main");
     let output = at(&cwd, || git!(CHECKOUT, "B2").get());
@@ -239,7 +235,7 @@ fn empty_directory() {
     fs::remove_dir_all(t.dir()).unwrap();
     fs::create_dir(t.dir()).unwrap();
 
-    let (lhs, rhs) = at(&t, || {
+    let (lhs, rhs) = t.sh("", || {
         let lhs = git!(CHECKOUT, "zeno").get();
         let rhs = git!("checkout", "zeno").get();
         (lhs, rhs)
@@ -252,7 +248,7 @@ fn empty_directory() {
 #[test]
 fn branch_not_exists() {
     let t = Test::new(function!());
-    at(&t, || {
+    t.sh("", || {
         git!("init", "-b", MAIN, "--bare", ".git").snw();
         git!("config", STICKY_CONFIG_KEY, "hello,world,dev,hello,world").snw();
         git!("worktree", "add", "--orphan", MAIN).snw();
