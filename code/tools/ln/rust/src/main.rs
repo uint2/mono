@@ -106,6 +106,7 @@ fn parse_cli() -> (Command, bool) {
     (git_log, is_bounded)
 }
 
+#[cfg(not(windows))]
 fn signal_handling() {
     use signal_hook::{consts::SIGINT, iterator::Signals};
     let mut signals = Signals::new([SIGINT]).unwrap();
@@ -120,7 +121,9 @@ fn signal_handling() {
 /// Here, we operate under the assumption that we ARE using this in a
 /// tty context, and hence always have color on.
 fn main() {
+    #[cfg(not(windows))]
     signal_handling();
+
     let (mut git_log, is_bounded) = parse_cli();
 
     let mut git_log_p = git_log.spawn().unwrap(); // process
