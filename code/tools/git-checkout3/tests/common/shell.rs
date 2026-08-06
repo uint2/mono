@@ -1,13 +1,4 @@
-use super::Test;
-
-use std::fs;
-use std::{
-    env,
-    fs::File,
-    io::Write,
-    path::{Path, PathBuf},
-    process::{Command, ExitStatus, Output, Stdio},
-};
+use std::process::{Command, ExitStatus, Output, Stdio};
 
 #[derive(Debug)]
 pub struct Output2 {
@@ -16,15 +7,7 @@ pub struct Output2 {
     pub status: ExitStatus,
 }
 
-pub fn commit_file<P: AsRef<Path>>(t: &Test, pathspec: P) {
-    let pathspec = pathspec.as_ref();
-    let _ = fs::create_dir_all(pathspec.parent().unwrap());
-    let mut f = File::options().create(true).append(true).open(pathspec).unwrap();
-    writeln!(f, "data({})", t.id()).unwrap();
-    git!("add", pathspec).snw();
-    git!("commit", "-m", format!("Updated \"{}\"", pathspec.display())).snw();
-}
-
+#[allow(unused)]
 pub trait CommandExt {
     fn run(&mut self) -> Output;
     fn get_stdout(&mut self) -> String;

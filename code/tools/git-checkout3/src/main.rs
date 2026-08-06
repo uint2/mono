@@ -205,6 +205,8 @@ fn try_main(goal: &str) -> Result<ExitCode, ()> {
 }
 
 fn main() -> std::process::ExitCode {
+    log::init(Some(log::LevelFilter::Trace));
+
     // To keep things simple, we only run the complicated logic when there is
     // exactly 1 CLI argument (that is not the binary itself).
     let args: Vec<_> = env::args_os().skip(1).collect();

@@ -51,7 +51,6 @@ fn lift_lobby() {
 #[test]
 fn bare_repos() {
     let t = Test::new(function!());
-    cd(&t);
     t.sh("", || {
         git!("init", "-b", MAIN, "--bare", ".git").snw();
         git!("worktree", "add", "--orphan", MAIN).snw();
@@ -140,12 +139,19 @@ fn checkout_branch_matches_directory() {
 
 /// Checkout a sticky branch. This should result in full bypass behaviour.
 #[test]
-fn t6() {
+fn checkout_sticky() {
     let t = Test::new(function!());
     t.sh("", || {
+        println!("---");
+        sh!("pwd").snw();
         git!("init", "-b", MAIN, "--bare", ".git").snw();
+        println!("---");
+        sh!("pwd").snw();
         git!("config", STICKY_CONFIG_KEY, "hello,world,dev,hello,world").snw();
+        println!("---");
+        sh!("pwd").snw();
         git!("worktree", "add", "--orphan", MAIN).snw();
+        println!("---");
         some_commit(MAIN);
         git!("-C", MAIN, "checkout", "-b", "dev").snw();
         git!("-C", MAIN, "checkout", "-b", "feature").snw();
@@ -197,34 +203,39 @@ fn t7() {
 
 /// When the current relative path in the repo is availble, jump to that.
 #[test]
-#[ignore]
-fn t8() {
+fn successful_dir_match_jump() {
     let t = Test::new(function!());
     t.sh("", || {
-        git!("init", "-b", MAIN, "--bare", ".git").snw();
-        git!("config", STICKY_CONFIG_KEY, "hello,world,dev,hello,world").snw();
-        git!("worktree", "add", "--orphan", MAIN).snw();
-        some_commit(MAIN);
+        git!("init", "-b", "main", "--bare", ".git").snw();
+        git!("worktree", "add", "--orphan", "main").snw();
+        some_commit("main/src/main/java/com/example");
         git!("worktree", "add", "dev").snw();
     });
-    let (_t, root) = setup(function!());
-    let cwd = root.join("B1/src/main");
-    let output = at(&cwd, || git!(CHECKOUT, "B2").get());
-    assert!(output.stdout.ends_with("B2/src/main"));
+    let output = t.sh("dev/src/main/java", || git!(CHECKOUT, "main").get());
+    assert_eq!(output.stderr, "", "Mismatch: {output:?}");
+    assert_eq!(output.status.code(), Some(64));
+    let suggest = Path::new(output.stdout.as_str()).strip_prefix(t.dir()).unwrap();
+    assert_eq!(suggest, "main/src/main/java");
 }
 
 /// If the relative path from the worktree root is not available, retreat back
 /// until it exists.
 #[test]
-#[ignore]
-fn t9() {
-    const SUBDIRECTORY: &str = "B1/src/main/java/foo/bar/baz";
+fn nearest_dir_match_jump() {
+    let t = Test::new(function!());
+    t.sh("", || {
+        git!("init", "-b", "main", "--bare", ".git").snw();
+        git!("worktree", "add", "--orphan", "main").snw();
+        some_commit("main/src/main/java");
+        git!("worktree", "add", "dev").snw();
+        some_commit("dev/src/main/java/com/example");
+    });
 
-    let (_t, root) = setup(function!());
-    fs::create_dir_all(root.join(SUBDIRECTORY)).unwrap();
-
-    let output = at(root.join(SUBDIRECTORY), || git!(CHECKOUT, "B2").get());
-    assert!(output.stdout.ends_with("B2/src/main/java"), "Got: {}", output.stdout);
+    let output = t.sh("dev/src/main/java/com/example", || git!(CHECKOUT, "main").get());
+    assert_eq!(output.stderr, "", "Mismatch: {output:?}");
+    assert_eq!(output.status.code(), Some(64));
+    let suggest = Path::new(output.stdout.as_str()).strip_prefix(t.dir()).unwrap();
+    assert_eq!(suggest, "main/src/main/java");
 }
 
 /// `git-checkout3` should return the same exit code as `git checkout` in an
@@ -232,8 +243,6 @@ fn t9() {
 #[test]
 fn empty_directory() {
     let t = Test::new(function!());
-    fs::remove_dir_all(t.dir()).unwrap();
-    fs::create_dir(t.dir()).unwrap();
 
     let (lhs, rhs) = t.sh("", || {
         let lhs = git!(CHECKOUT, "zeno").get();
