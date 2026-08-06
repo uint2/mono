@@ -1,6 +1,47 @@
 //! git-checkout3
 //!
-//! Prioritize directory names over branch names.
+//! For some context on how git resolves pathspecs:
+//!   1. When the current branch is "dev" and there is a modified file called
+//!      "dev" and we run `git checkout dev`, then git responds with
+//!      "Already on 'dev'" and does not edit the "dev" file.
+//!   2. When the current branch is "dev" and there is a modified file called
+//!      "main" and we run `git checkout main`, then git responds with
+//!      "Switched to branch 'main'" and does not edit the "main" file. Of
+//!      course, if switching branches causes "main" to be overwritten, git will
+//!      instead respond with
+//!
+//!        error: Your local changes to the following files would be overwritten by checkout:
+//!          main
+//!        Please commit your changes or stash them before you switch branches.
+//!        Aborting
+//!
+//! Now, there are 5 entities that we are concerned with in git-checkout3. These
+//! are:
+//!
+//!   1. The current branch.          c_branch
+//!   2. The current directory.       c_dir
+//!   3. The worktree's branch.       w_branch
+//!   4. The worktree's directory.    w_dir
+//!   5. The goal.                    goal
+//!
+//! The problem we're trying to solve is when we're working with git worktrees,
+//! and we run into the scenario where the "dev" directory has the "main" branch
+//! checked out, and vice versa, and this required a dance with a third branch
+//! in order to swap the branches back.
+//!
+//! To prevent that, in `git-checkout3`, we shall only allow checking out to
+//! branches that do not match any of the existing worktree's directory names.
+//!
+//! Moreover, we also implement prefix constraits, where in the git config we
+//! can specify a comma-separated list of strings under the key
+//! "checkout.const-prefix". For each of these prefixes, branches that start
+//! with them can only be checked out at the worktree whose directory matches
+//! the prefix. For example, we can have a worktree dedicated to Pull Requests,
+//! and name that directory as "pr". Then, we add "pr" to the (comma-separated)
+//! list of "checkout.const-prefix". Now, branches like "pr-140" and "pr-bugfix"
+//! can be and only be checked out at the "pr" directory. That is, the "dev"
+//! worktree directory will not be allowed to check out branches with the "pr"
+//! prefix.
 
 macro_rules! git {
     ($($arg:expr),*) => {{
@@ -13,7 +54,7 @@ macro_rules! git {
 mod consts;
 mod shell;
 
-use consts::{STICKY_CONFIG_KEY, STICKY_NO_JUMP};
+use consts::*;
 use shell::ExitCode;
 
 use core::str;
@@ -23,13 +64,16 @@ use std::process::{Command, Output, Stdio};
 use std::time::Duration;
 use std::{env, io};
 
-use futures::FutureExt;
-
 #[derive(Debug)]
 struct GitWorktree<'a> {
-    /// Absolute path to the worktree.
-    abs_path: &'a str,
-    head: Result<&'a str, ()>,
+    /// Absolute path to the worktree. Canonicalized.
+    abs_path: PathBuf,
+    /// Absolute path to the worktree. Raw `git worktree` output.
+    abs_path_str: &'a str,
+    /// The branch. Parsed from one of
+    /// * "HEAD <SHA-1>",
+    /// * "bare".
+    head: Option<&'a str>,
     /// The branch. Parsed from one of
     /// * "branch refs/heads/main",
     /// * "detached".
@@ -46,11 +90,8 @@ macro_rules! err {
 }
 
 impl<'a> GitWorktree<'a> {
-    pub fn directory(&self) -> &'a str {
-        match self.abs_path.rsplit_once(std::path::MAIN_SEPARATOR) {
-            Some((_, dir)) => dir,
-            None => self.abs_path,
-        }
+    pub fn directory(&self) -> &str {
+        self.abs_path.as_path().to_str().unwrap()
     }
 
     pub fn parse(text: &'a str) -> Result<Vec<Self>, ()> {
@@ -74,8 +115,16 @@ impl<'a> GitWorktree<'a> {
                         );
                         return Err(());
                     };
-                    let abs_path = line.trim_start();
-                    worktrees.push(GitWorktree { abs_path, head: Err(()), branch: None });
+                    let abs_path_str = line.trim_start();
+                    let Ok(abs_path) = Path::new(abs_path_str).canonicalize() else {
+                        return err!("Unable to canonicalize path: {abs_path_str}");
+                    };
+                    worktrees.push(GitWorktree {
+                        abs_path,
+                        abs_path_str,
+                        head: None,
+                        branch: None,
+                    });
                     state = State::LFHead;
                 }
                 State::LFHead => {
@@ -89,7 +138,7 @@ impl<'a> GitWorktree<'a> {
                         );
                         return Err(());
                     };
-                    worktrees.last_mut().unwrap().head = Ok(line.trim_start());
+                    worktrees.last_mut().unwrap().head = Some(line.trim_start());
                     state = State::LFDirectory;
                 }
                 State::LFDirectory if line.is_empty() => state = State::LFWorktree,
@@ -110,20 +159,22 @@ impl<'a> GitWorktree<'a> {
         trees
             .iter()
             .filter(|t| t.branch.is_some())
-            .filter(|t| abs_cwd.starts_with(t.abs_path))
-            .max_by(|a, b| a.abs_path.len().cmp(&b.abs_path.len()))
+            .filter(|t| abs_cwd.starts_with(&t.abs_path))
+            .max_by(|a, b| {
+                a.abs_path.as_os_str().len().cmp(&b.abs_path.as_os_str().len())
+            })
     }
 
     pub fn accept_and_resolve(&self, cwd: &Path, trees: &[Self]) -> Result<ExitCode, ()> {
         let parent_tree = match Self::find_closest_parent(&cwd, trees) {
             Some(v) => v,
             None => {
-                io::stdout().write(self.abs_path.as_bytes()).unwrap();
+                io::stdout().write(self.abs_path_str.as_bytes()).unwrap();
                 return Ok(ExitCode::ACCEPT);
             }
         };
-        let relpath = cwd.strip_prefix(parent_tree.abs_path).unwrap();
-        let mut target = Path::new(self.abs_path).join(relpath);
+        let relpath = cwd.strip_prefix(parent_tree.abs_path_str).unwrap();
+        let mut target = self.abs_path.join(relpath);
         while !target.exists() {
             target.pop();
         }
@@ -138,16 +189,6 @@ fn getcwd() -> Result<PathBuf, ()> {
     env::current_dir().map_err(|_| eprintln!("Unable to get current working directory."))
 }
 
-/// Get the sticky branches in a comma-separated string.
-fn get_sticky_branches() -> Result<Output, ()> {
-    let output = git!("config", "--get", STICKY_CONFIG_KEY)
-        .stdout(Stdio::piped())
-        .stderr(Stdio::null())
-        .stdin(Stdio::null())
-        .output();
-    output.map_err(|_| eprintln!("Failed to execute shell command to get git config."))
-}
-
 fn canonical_eq(a: &Path, b: &Path) -> bool {
     match (a.canonicalize(), b.canonicalize()) {
         (Ok(a), Ok(b)) => a == b,
@@ -156,16 +197,15 @@ fn canonical_eq(a: &Path, b: &Path) -> bool {
 }
 
 fn try_main(goal: &str) -> Result<ExitCode, ()> {
-    let pool = rayon::ThreadPoolBuilder::new().num_threads(8).build().unwrap();
-
     let mut sticky_output: Result<Output, ()> = Err(());
     let mut git_branch_output: Result<Output, ()> = Err(());
     let mut git_worktree_output: Result<Output, ()> = Err(());
+    let mut cwd: Result<PathBuf, ()> = Err(());
 
     rayon::scope(|scope| {
         scope.spawn(|_| {
             sticky_output =
-                git!("config", "--get", STICKY_CONFIG_KEY).output().map_err(|_| {
+                git!("config", "--get", CONST_PREFIX_CONFIG_KEY).output().map_err(|_| {
                     eprintln!("Failed to execute shell command to get git config.")
                 });
         });
@@ -180,10 +220,15 @@ fn try_main(goal: &str) -> Result<ExitCode, ()> {
                     eprintln!("Failed to execute shell command to get git worktrees.")
                 });
         });
+        scope.spawn(|_| {
+            cwd = std::env::current_dir()
+                .map_err(|_| eprintln!("Unable to get current directory."))
+        });
     });
     let sticky_output = sticky_output?;
     let git_branch_output = git_branch_output?;
     let git_worktree_output = git_worktree_output?;
+    let cwd = cwd?.as_path();
 
     {
         // Firstly, make sure that we're in a git-enabled directory.
@@ -215,19 +260,14 @@ fn try_main(goal: &str) -> Result<ExitCode, ()> {
 
     let is_branch_sticky = sticky_branches.iter().any(|&v| current_branch == v);
 
-    // if is_branch_sticky {
-    //     io::stderr().write(STICKY_NO_JUMP.as_bytes()).unwrap();
-    //     return Ok(ExitCode::SUCCESS);
-    // }
-
     let worktrees = GitWorktree::parse(worktrees)?;
+    let parent_worktree = GitWorktree::find_closest_parent(cwd, &worktrees);
 
     // 1. Prioritize the directory match. Look through the worktrees and match
     // the directory of each worktree checked out against `goal`.
     for worktree in &worktrees {
         if worktree.directory() == goal {
-            let cwd = getcwd()?;
-            if canonical_eq(Path::new(worktree.abs_path), cwd.as_path()) {
+            if canonical_eq(worktree.abs_path.as_path(), cwd) {
                 // The goal is the same as the worktree's dir, i.e. cwd == goal,
                 // and also we're checking out `goal`.
                 shell::run(git!("checkout", goal));

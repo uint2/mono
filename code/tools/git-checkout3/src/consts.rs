@@ -1,6 +1,6 @@
-pub const STICKY_CONFIG_KEY: &str = "checkout.sticky";
-pub const STICKY_NO_JUMP: &str = "\
-No jump - currently on sticky branch. Instead, either
-1. go to a different worktree first, or
-2. create a new worktree.
+pub const CONST_PREFIX_CONFIG_KEY: &str = "checkout.const-prefix";
+pub const CONST_PREFIX_NO_JUMP_MESSAGE: &str = "\
+Cannot checkout a prefix-constrained branch.
+See `git config --get checkout.const-prefix` for the prefixes fixed.
+These are only checkout-able at worktrees whose directory matches the prefix.
 ";
