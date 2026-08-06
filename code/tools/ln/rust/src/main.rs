@@ -1,10 +1,14 @@
 mod cmd;
 
+use core::sync::atomic::{AtomicBool, Ordering};
+
 use std::io;
 use std::io::{BufRead, BufReader, BufWriter, LineWriter, Write, stdout};
 use std::process::{ChildStdout, Command, Stdio};
 
 const HEIGHT_RATIO: f32 = 0.7;
+
+static RUNNING: AtomicBool = AtomicBool::new(true);
 
 macro_rules! _write { ($f:expr, $($x:tt)+) => {{ let _ = std::write!($f, $($x)*); }}}
 
@@ -59,7 +63,7 @@ fn run<W: Write>(is_bounded: bool, log: ChildStdout, target: W) {
     let mut log = BufReader::new(log);
     let mut writer = LogLineWriter { bw: BufWriter::new(target), written: 0 };
 
-    loop {
+    while RUNNING.load(Ordering::Relaxed) {
         buffer.clear();
         writer.written = 0;
         let line = match log.read_line(&mut buffer) {
@@ -102,9 +106,21 @@ fn parse_cli() -> (Command, bool) {
     (git_log, is_bounded)
 }
 
+fn signal_handling() {
+    use signal_hook::{consts::SIGINT, iterator::Signals};
+    let mut signals = Signals::new([SIGINT]).unwrap();
+
+    std::thread::spawn(move || {
+        for _ in signals.forever() {
+            RUNNING.fetch_and(false, Ordering::Relaxed);
+        }
+    });
+}
+
 /// Here, we operate under the assumption that we ARE using this in a
 /// tty context, and hence always have color on.
 fn main() {
+    signal_handling();
     let (mut git_log, is_bounded) = parse_cli();
 
     let mut git_log_p = git_log.spawn().unwrap(); // process
