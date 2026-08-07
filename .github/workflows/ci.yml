@@ -84,7 +84,6 @@ jobs:
           - macos-latest
           - ubuntu-24.04
           - ubuntu-22.04
-          - macos-15
           - macos-26
       fail-fast: false
     timeout-minutes: 5
@@ -173,7 +172,6 @@ jobs:
           - macos-latest
           - ubuntu-24.04
           - ubuntu-22.04
-          - macos-15
           - macos-26
       fail-fast: false
     timeout-minutes: 5
@@ -195,7 +193,6 @@ jobs:
           - macos-latest
           - ubuntu-24.04
           - ubuntu-22.04
-          - macos-15
           - macos-26
       fail-fast: false
     timeout-minutes: 5
@@ -220,7 +217,6 @@ jobs:
           - ubuntu-24.04
           - ubuntu-22.04
           - macos-26
-          - macos-15
       fail-fast: false
     timeout-minutes: 5
     runs-on: ${{ matrix.os }}
@@ -249,7 +245,6 @@ jobs:
             # [fixed versions]
             ubuntu-24.04,
             ubuntu-22.04,
-            macos-15,
             macos-26,
             # [unsupported]
             # windows-latest,
@@ -278,7 +273,6 @@ jobs:
             # [fixed versions]
             ubuntu-24.04,
             ubuntu-22.04,
-            macos-15,
             macos-26,
             # [unsupported]
             windows-latest,
@@ -328,7 +322,6 @@ jobs:
           - macos-latest
           - ubuntu-24.04
           - ubuntu-22.04
-          - macos-15
           - macos-26
       fail-fast: false
     timeout-minutes: 5
@@ -356,7 +349,6 @@ jobs:
           - macos-latest
           - ubuntu-24.04
           - ubuntu-22.04
-          - macos-15
           - macos-26
       fail-fast: false
     timeout-minutes: 5
@@ -412,7 +404,6 @@ jobs:
       matrix:
         os:
           - macos-26
-          - macos-15
         arch:
           - arm64
           - x86_64
@@ -525,7 +516,6 @@ jobs:
           - macos-latest
           - ubuntu-24.04
           - ubuntu-22.04
-          - macos-15
           - macos-26
       fail-fast: false
     timeout-minutes: 5
@@ -549,7 +539,6 @@ jobs:
           - ubuntu-24.04
           - ubuntu-22.04
           - macos-26
-          - macos-15
       fail-fast: false
     timeout-minutes: 5
     runs-on: ${{ matrix.os }}
@@ -576,7 +565,6 @@ jobs:
           - macos-latest
           - ubuntu-24.04
           - ubuntu-22.04
-          - macos-15
           - macos-26
       fail-fast: false
     timeout-minutes: 5
@@ -629,7 +617,6 @@ jobs:
           - macos-latest
           - ubuntu-24.04
           - ubuntu-22.04
-          - macos-15
           - macos-26
       fail-fast: false
     timeout-minutes: 5
@@ -649,7 +636,6 @@ jobs:
           - macos-latest
           - ubuntu-24.04
           - ubuntu-22.04
-          - macos-15
           - macos-26
       fail-fast: false
     timeout-minutes: 5
@@ -722,7 +708,6 @@ jobs:
           - macos-latest
           - ubuntu-24.04
           - ubuntu-22.04
-          - macos-15
           - macos-26
       fail-fast: false
     timeout-minutes: 5
