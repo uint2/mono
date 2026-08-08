@@ -85,10 +85,14 @@ impl<'b, 'w> Config<'b, 'w> {
         String::from_utf8(output.stdout).expect("Unable to decode git config as utf-8")
     }
 
-    pub fn load<'a: 'b + 'w>(raw: &'a str) -> Result<Self, ()> {
+    pub fn parse<'a: 'b + 'w>(raw: &'a str) -> Result<Self, ()> {
         let mut ht = HashMap::new();
 
         let raw = raw.trim().trim_end_matches('\0').trim();
+        if raw.is_empty() {
+            return Ok(Self { data: ht });
+        }
+
         for line in raw.split('\0') {
             let (key, value) = line.split_once('\n').unwrap();
             let parsed = key

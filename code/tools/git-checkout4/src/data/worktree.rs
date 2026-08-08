@@ -1,6 +1,6 @@
 use crate::prelude::*;
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub struct Worktree<'a>(&'a str);
 
 impl<'a> Worktree<'a> {

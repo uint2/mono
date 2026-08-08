@@ -11,11 +11,11 @@ const IGNORED_ATTRS: [&str; 2] = ["locked", "prunable"];
 #[derive(Debug)]
 #[allow(non_snake_case)]
 pub struct Bundle<'a> {
-    worktree: Worktree<'a>,
-    HEAD: Option<&'a str>,
-    branch: Option<Branch<'a>>,
-    detached: bool,
-    bare: bool,
+    pub worktree: Worktree<'a>,
+    pub HEAD: Option<&'a str>,
+    pub branch: Option<Branch<'a>>,
+    pub detached: bool,
+    pub bare: bool,
 }
 
 impl<'a> Bundle<'a> {
