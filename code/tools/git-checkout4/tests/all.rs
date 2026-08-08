@@ -11,7 +11,6 @@ use std::process::Stdio;
 use regex::Regex;
 
 const CHECKOUT: &str = "checkout4";
-const MAIN: &str = "main";
 
 macro_rules! function {
     () => {{
@@ -190,20 +189,13 @@ fn lift_lobby() {
     let t = Test::new(function!());
     t.sh("", || {
         git!("init", "--bare", ".git").snw();
-        git!("worktree", "add", MAIN, "--orphan").snw();
+        git!("worktree", "add", "main", "--orphan").snw();
     });
 
     let app = t.sh("", || App::init(CONFIG)).unwrap();
     let outcome = t.sh("", || app.execute("main"));
-    assert_eq!(outcome, Outcome::Bypass("main"));
-
-    // let output = t.sh("", || git!(CHECKOUT, MAIN).get());
-    // assert_eq!(output.stdout, t.join(MAIN), "Mismatch: {output:?}");
-    // assert_eq!(output.status.code(), Some(64));
-    //
-    // let output = at(t.join(".git"), || git!(CHECKOUT, MAIN).get());
-    // assert_eq!(output.stdout, t.join(MAIN), "Mismatch: {output:?}");
-    // assert_eq!(output.status.code(), Some(64));
+    let worktree = app.get_worktree(Branch::new("main")).unwrap();
+    assert_eq!(outcome, Outcome::Jump { worktree, relpath: Path::new("") });
 }
 
 /// Can handle bare repos.
@@ -211,9 +203,9 @@ fn lift_lobby() {
 fn bare_repos() {
     let t = Test::new(function!());
     t.sh("", || {
-        git!("init", "-b", MAIN, "--bare", ".git").snw();
-        git!("worktree", "add", "--orphan", MAIN).snw();
-        some_commit(MAIN);
+        git!("init", "-b", "main", "--bare", ".git").snw();
+        git!("worktree", "add", "--orphan", "main").snw();
+        some_commit("main");
         git!("worktree", "add", "dev").snw();
     });
 
@@ -230,151 +222,90 @@ fn bare_repos() {
     );
 }
 
-// /// Jump from to worktree using branch name.
-// #[test]
-// #[ignore]
-// fn jump_with_branch() {
-//     let t = Test::new(function!());
-//     t.sh("", || {
-//         git!("init", "-b", MAIN, "--bare", ".git").snw();
-//         git!("worktree", "add", "--orphan", MAIN).snw();
-//         some_commit(MAIN);
-//         git!("worktree", "add", "dev").snw();
-//         git!("worktree", "add", "-b", "benjamin", "diana").snw();
-//     });
-//
-//     let output = at(t.join(MAIN), || git!(CHECKOUT, "benjamin").get());
-//     assert_eq!(output.stdout, t.join("diana"), "Mismatch: {output:?}");
-//     assert_eq!(output.status.code(), Some(64));
-// }
-//
-// /// Jump from to worktree using directory name.
-// #[test]
-// #[ignore]
-// fn jump_with_directory() {
-//     let t = Test::new(function!());
-//     t.sh("", || {
-//         git!("init", "-b", MAIN, "--bare", ".git").snw();
-//         git!("worktree", "add", "--orphan", MAIN).snw();
-//         some_commit(MAIN);
-//         git!("worktree", "add", "dev").snw();
-//         git!("worktree", "add", "-b", "benjamin", "diana").snw();
-//         git!("worktree", "add", "-b", "benjamin", "diana").snw();
-//     });
-//
-//     let output = at(t.join(MAIN), || git!(CHECKOUT, "diana").get());
-//     assert_eq!(output.stdout, t.join("diana"), "Mismatch: {}", output.stdout);
-//     assert_eq!(output.status.code(), Some(64));
-// }
-//
-// /// Checkout a branch.
-// #[test]
-// #[ignore]
-// fn checkout_branch() {
-//     let t = Test::new(function!());
-//     t.sh("", || {
-//         git!("init", "-b", MAIN, "--bare", ".git").snw();
-//         git!("worktree", "add", "--orphan", MAIN).snw();
-//         some_commit(MAIN);
-//         git!("worktree", "add", "-b", "benjamin", "diana").snw();
-//         git!("-C", "diana", "checkout", "-b", "briana").snw();
-//     });
-//
-//     let output = at(t.join(MAIN), || git!(CHECKOUT, "benjamin").get());
-//
-//     assert_eq!(output.stdout, "", "Mismatch: {output:?}");
-//     assert!(output.status.success());
-//     assert_eq!(git_branch(t.join(MAIN)), "benjamin");
-// }
-//
-// /// Checkout a branch that matches the current directory.
-// /// On a directory that is called "main", but is on branch "dev". Then when we
-// /// checkout "main" again, the git branch should now be "main".
-// #[test]
-// #[ignore]
-// fn checkout_branch_matches_directory() {
-//     let t = Test::new(function!());
-//     t.sh("", || {
-//         git!("init", "-b", MAIN, "--bare", ".git").snw();
-//         git!("worktree", "add", "--orphan", MAIN).snw();
-//         some_commit(MAIN);
-//         git!("-C", MAIN, "checkout", "-b", "dev").snw();
-//     });
-//
-//     let output = at(t.join(MAIN), || git!(CHECKOUT, MAIN).get());
-//
-//     assert_eq!(output.stdout, "", "Mismatch: {output:?}");
-//     assert!(output.status.success());
-//     assert_eq!(git_branch(t.join(MAIN)), "main");
-// }
-//
-// /// Checkout a sticky branch. This should result in full bypass behaviour.
-// #[test]
-// #[ignore]
-// fn checkout_sticky() {
-//     let t = Test::new(function!());
-//     t.sh("", || {
-//         println!("---");
-//         sh!("pwd").snw();
-//         git!("init", "-b", MAIN, "--bare", ".git").snw();
-//         println!("---");
-//         sh!("pwd").snw();
-//         // git!("config", STICKY_CONFIG_KEY, "hello,world,dev,hello,world").snw();
-//         println!("---");
-//         sh!("pwd").snw();
-//         git!("worktree", "add", "--orphan", MAIN).snw();
-//         println!("---");
-//         some_commit(MAIN);
-//         git!("-C", MAIN, "checkout", "-b", "dev").snw();
-//         git!("-C", MAIN, "checkout", "-b", "feature").snw();
-//     });
-//     assert_eq!(git_branch(t.join(MAIN)), "feature");
-//
-//     at(t.join(MAIN), || git!(CHECKOUT, "dev").get());
-//     assert_eq!(git_branch(t.join(MAIN)), "dev");
-// }
-//
-// #[test]
-// #[ignore]
-// fn git_config_sticky() {
-//     let t = Test::new(function!());
-//     const CONFIG_VALUE: &str = "hello,world";
-//     t.sh("", || {
-//         git!("init", "-b", MAIN, "--bare", ".git").snw();
-//         // git!("config", STICKY_CONFIG_KEY, CONFIG_VALUE).snw();
-//     });
-//     // let output = t.sh("", || git!("config", "--get", STICKY_CONFIG_KEY).get());
-//     // assert_eq!(output.stdout, CONFIG_VALUE);
-//     // assert_eq!(output.stderr, "");
-//     // assert!(output.status.success());
-// }
-//
-// /// When trying to checkout another branch but currently on a sticky branch, do
-// /// not jump, and print the help message.
-// #[test]
-// #[ignore]
-// fn t7() {
-//     let t = Test::new(function!());
-//     t.sh("", || {
-//         git!("init", "-b", MAIN, "--bare", ".git").snw();
-//         // git!("config", STICKY_CONFIG_KEY, "hello,world,dev,hello,world").snw();
-//         git!("worktree", "add", "--orphan", MAIN).snw();
-//         some_commit(MAIN);
-//         git!("worktree", "add", "dev").snw();
-//     });
-//     assert_eq!(git_branch(t.join("dev")), "dev");
-//
-//     // Use this way of getting output to be able to compare even the trailing
-//     // newline.
-//     let output = at(t.join("dev"), || git!(CHECKOUT, MAIN).output().unwrap());
-//     let stdout = core::str::from_utf8(&output.stdout).unwrap();
-//     let stderr = core::str::from_utf8(&output.stderr).unwrap();
-//
-//     assert_eq!(stdout, "");
-//     // assert_eq!(stderr, STICKY_NO_JUMP);
-//     assert!(output.status.success());
-// }
-//
+/// Jump from to worktree using branch name.
+#[test]
+fn jump_with_branch() {
+    let t = Test::new(function!());
+    t.sh("", || {
+        git!("init", "-b", "main", "--bare", ".git").snw();
+        git!("worktree", "add", "--orphan", "main").snw();
+        some_commit("main");
+        git!("worktree", "add", "dev").snw();
+        git!("worktree", "add", "-b", "benjamin", "diana").snw();
+    });
+
+    // Register the "benjamin" branch.
+    let app = t.sh("main", || App::init(CONFIG)).unwrap();
+    let b_benjamin = Branch::new("benjamin");
+    let w_diana = app.get_worktree(b_benjamin).unwrap();
+    t.sh("main", || app.git_config().set(b_benjamin, w_diana));
+
+    // Re-read the updated config from filesystem.
+    let app = t.sh("main", || App::init(CONFIG)).unwrap();
+
+    let outcome = t.sh("main", || app.execute("benjamin"));
+    assert_eq!(
+        outcome,
+        Outcome::JumpAndCheckout {
+            worktree: w_diana,
+            branch: b_benjamin,
+            relpath: Path::new("")
+        }
+    );
+}
+
+/// Jump from to worktree using directory name.
+#[test]
+fn jump_with_directory() {
+    let t = Test::new(function!());
+    t.sh("", || {
+        git!("init", "-b", "main", "--bare", ".git").snw();
+        git!("worktree", "add", "--orphan", "main").snw();
+        some_commit("main");
+        git!("worktree", "add", "dev").snw();
+        git!("worktree", "add", "-b", "benjamin", "diana").snw();
+    });
+
+    // Register the "benjamin" branch.
+    let app = t.sh("main", || App::init(CONFIG)).unwrap();
+    let b_benjamin = Branch::new("benjamin");
+    let w_diana = app.get_worktree(b_benjamin).unwrap();
+    t.sh("main", || app.git_config().set(b_benjamin, w_diana));
+
+    // Re-read the updated config from filesystem.
+    let app = t.sh("main", || App::init(CONFIG)).unwrap();
+
+    let outcome = t.sh("main", || app.execute("diana"));
+    assert_eq!(outcome, Outcome::Jump { worktree: w_diana, relpath: Path::new("") });
+}
+
+/// Checkout a branch that matches the current directory.
+/// On a directory that is called "main", but is on branch "dev". Then when we
+/// checkout "main" again, the git branch should now be "main".
+#[test]
+fn checkout_branch_matches_directory() {
+    let t = Test::new(function!());
+    t.sh("", || {
+        git!("init", "-b", "main", "--bare", ".git").snw();
+        git!("worktree", "add", "--orphan", "main").snw();
+        some_commit("main");
+    });
+
+    // Register the "main" branch.
+    let app = t.sh("main", || App::init(CONFIG)).unwrap();
+    t.sh("main", || app.execute(""));
+
+    // Re-read the updated config from filesystem.
+    let app = t.sh("main", || App::init(CONFIG)).unwrap();
+
+    // Set branch to "dev".
+    t.sh("main", || git!("checkout", "-b", "dev").snw());
+    assert_eq!(t.branch_at("main"), "dev");
+
+    let outcome = t.sh("main", || app.execute("main"));
+    assert_eq!(outcome, Outcome::Bypass("main"));
+}
+
 // /// `git-checkout3` should return the same exit code as `git checkout` in an
 // /// empty repository.
 // #[test]
@@ -397,12 +328,12 @@ fn bare_repos() {
 // fn branch_not_exists() {
 //     let t = Test::new(function!());
 //     t.sh("", || {
-//         git!("init", "-b", MAIN, "--bare", ".git").snw();
+//         git!("init", "-b", "main", "--bare", ".git").snw();
 //         // git!("config", STICKY_CONFIG_KEY, "hello,world,dev,hello,world").snw();
-//         git!("worktree", "add", "--orphan", MAIN).snw();
-//         some_commit(MAIN);
+//         git!("worktree", "add", "--orphan", "main").snw();
+//         some_commit("main");
 //     });
-//     let (lhs, rhs) = at(t.join(MAIN), || {
+//     let (lhs, rhs) = at(t.join("main"), || {
 //         let lhs = git!(CHECKOUT, "zeno").get();
 //         let rhs = git!("checkout", "zeno").get();
 //         (lhs, rhs)

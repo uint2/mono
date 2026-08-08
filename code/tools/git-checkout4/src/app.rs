@@ -49,7 +49,10 @@ pub struct AppConfig {
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Outcome<'a> {
     // Jump to a directory.
-    Jump(&'a Path),
+    Jump {
+        worktree: Worktree<'a>,
+        relpath: &'a Path,
+    },
     /// Checkout a branch.
     Checkout(Branch<'a>),
     /// Jump first, then checkout.
@@ -146,15 +149,20 @@ impl App {
         self.bundles().into_iter().find(|v| v.branch == Some(branch)).map(|v| v.worktree)
     }
 
-    /// Auto-register branches that match their worktree.
+    /// Auto-register branches that match their worktree. So note that if a
+    /// branch "dev" is checked out at a worktree whose last path component is
+    /// "feature", then it won't be auto-registered.
     fn auto_register<'a>(
         git_branches: &[Branch<'a>],
         bundles: &[Bundle<'a>],
         git_config: &mut GitConfig<'a, 'a>,
     ) {
         for &branch in git_branches {
+            log::warn!("Auto: {branch}");
+            log::warn!("{bundles:?}");
             if let Some(bundle) = bundles.iter().find(|v| v.branch == Some(branch)) {
                 if bundle.worktree.as_path().ends_with(branch.as_str()) {
+                    log::warn!("HIT");
                     git_config.set(branch, bundle.worktree);
                 }
             }
@@ -184,11 +192,11 @@ impl App {
     }
 
     fn resolve_relpath<'a>(
-        cwd: &'a Path,
+        &'a self,
         current_bundle: &Bundle,
         mapped_worktree: &Worktree,
     ) -> &'a Path {
-        let mut subdir_in_repo = cwd.strip_prefix(&current_bundle.worktree).unwrap();
+        let mut subdir_in_repo = self.cwd.strip_prefix(&current_bundle.worktree).unwrap();
         let base = mapped_worktree.as_path();
         let mut final_dest = base.join(subdir_in_repo);
         loop {
@@ -209,6 +217,10 @@ impl App {
         let git_branches = self.branches();
         let mut git_config = self.git_config();
         let bundles = self.bundles();
+
+        for b in &bundles {
+            log::info!("{b:?}");
+        }
 
         // Retain only the valid worktrees.
         git_config.retain(|_, worktree| bundles.iter().any(|b| b.worktree == *worktree));
@@ -241,13 +253,33 @@ impl App {
             .max_by(|a, b| a.worktree.len().cmp(&b.worktree.len()))
             .expect("This operation should be run in a worktree");
 
+        log::info!("Current: {current_bundle:?}");
+
         // Make sure that the goal is a branch that exists. Otherwise, default
         // to `git checkout` behavior.
         //
         // This execution branchs should handle the cases where the user is
         // trying to checkout a particular file in the worktree.
         let Some(goal) = git_branches.iter().find(|v| v.as_str() == goal) else {
-            log::info!("Goal \"{goal}\" is not a git branch, might be a file.");
+            // At this point, `goal` is not a branch.
+
+            // First, try to see if there is a worktree whose directory name
+            // matches `goal`'s value. If so, jump there.
+            let dir_match = bundles.iter().find(|b| b.worktree.as_path().ends_with(goal));
+            if let Some(bundle) = dir_match {
+                // Discussion: do we want this behavior? This has its
+                // conveniences but it does come at a trade-off of possible
+                // collisions of worktree directory names with git's files.
+                //
+                // Reasons for: we can have a "pr" worktree were we keep all the
+                // branches related to PRs, and then just run `gco pr` to keep
+                // going back there. That's pretty neat.
+                log::info!(
+                    "Goal \"{goal}\" is not a git branch, but found a worktree with a matching name."
+                );
+                return self.jump(&bundle.worktree, current_bundle);
+            }
+            log::info!("Goal \"{goal}\" is not a git branch, might be a file. Bypass.");
             return Outcome::Bypass(goal);
         };
 
@@ -270,9 +302,21 @@ impl App {
         // Here, we shall help the shell assistant a bit by first checking out
         // the `goal` branch in the mapped worktree, and then figuring out the
         // best directory to cd to.
-        _ = git!("-C", mapped_worktree.as_str(), "checkout", goal.as_str()).output();
+        self.jump_and_checkout(mapped_worktree, current_bundle, goal)
+    }
 
-        let relpath = Self::resolve_relpath(&self.cwd, current_bundle, mapped_worktree);
+    fn jump_and_checkout<'a>(
+        &'a self,
+        mapped_worktree: &Worktree<'a>,
+        current_bundle: &Bundle,
+        goal: &Branch<'a>,
+    ) -> Outcome<'a> {
+        // Here, we shall help the shell assistant a bit by first checking out
+        // the `goal` branch in the mapped worktree, and then figuring out the
+        // best directory to cd to.
+        // _ = git!("-C", mapped_worktree.as_str(), "checkout", goal.as_str()).output();
+
+        let relpath = self.resolve_relpath(current_bundle, mapped_worktree);
 
         log::info!("Jump worktree then jump branch -> {relpath:?}");
         return Outcome::JumpAndCheckout {
@@ -280,6 +324,17 @@ impl App {
             branch: *goal,
             relpath,
         };
+    }
+
+    fn jump<'a>(
+        &'a self,
+        mapped_worktree: &Worktree<'a>,
+        current_bundle: &Bundle,
+    ) -> Outcome<'a> {
+        let relpath = self.resolve_relpath(current_bundle, mapped_worktree);
+
+        log::info!("Jump worktree then cd -> {relpath:?}");
+        return Outcome::Jump { worktree: *mapped_worktree, relpath };
     }
 }
 

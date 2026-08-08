@@ -70,7 +70,7 @@ impl Test {
     }
 
     /// Get the git branch.
-    pub fn branch<P: AsRef<Path>>(&self, relpath: P, args: &[&str]) -> String {
+    pub fn branch_at<P: AsRef<Path>>(&self, relpath: P) -> String {
         std::process::Command::new("git")
             .args(["rev-parse", "--abbrev-ref", "--symbolic-full-name", "HEAD"])
             .current_dir(self.join(relpath))
