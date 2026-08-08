@@ -2,7 +2,7 @@
 mod common;
 
 use common::*;
-use git_checkout4::{App, Outcome};
+use git_checkout4::{App, AppConfig, Branch, Outcome, Worktree};
 
 use std::fs;
 use std::path::Path;
@@ -33,6 +33,12 @@ fn type_name_of<T>(_: T) -> &'static str {
 fn git_branch<P: AsRef<Path>>(dir: P) -> String {
     at(dir, || git!("branch", "--show-current").get_stdout())
 }
+
+const CONFIG: AppConfig = AppConfig {
+    enable_logging: true,
+    log_level: log::LevelFilter::Trace,
+    interactive: false,
+};
 
 macro_rules! assert_regex {
     ($text:expr, $regex:expr $(,)?) => {{
@@ -97,7 +103,7 @@ fn checkout_an_owned_branch() {
     t.sh2("", &["git", "config", "set", "checkout4.dev.worktree", dir]);
     t.sh2("", &["git", "config", "set", "checkout4.main.worktree", dir]);
 
-    let app = t.sh("", App::init).unwrap();
+    let app = t.sh("", || App::init(CONFIG)).unwrap();
 
     assert_eq!(git_branch(&t), "dev");
     let outcome = t.sh("", || app.execute("main"));
@@ -105,27 +111,31 @@ fn checkout_an_owned_branch() {
 }
 
 #[test]
-#[ignore]
 fn checkout_an_unowned_branch() {
     let t = Test::new(function!());
-    t.sh2("", &["git", "init", "-b", "main"]);
-    t.sh2("", &["git", "commit", "--allow-empty", "-m", "Initial commit"]);
-    t.sh2("", &["git", "checkout", "-b", "dev"]);
+    t.sh2("", &["git", "init", "-b", "main", "--bare", ".git"]);
+    t.sh2("", &["git", "worktree", "add", "--orphan", "main"]);
+    t.sh2("main", &["git", "commit", "--allow-empty", "-m", "Initial commit"]);
+    t.sh2("", &["git", "worktree", "add", "dev"]);
 
-    let dir = t.dir().to_str().unwrap();
-    t.sh2("", &["git", "config", "set", "checkout4.dev.worktree", dir]);
-    t.sh2("", &["git", "config", "set", "checkout4.main.worktree", "somewhere"]);
+    let app = t.sh("", || App::init(CONFIG)).unwrap();
 
-    assert_eq!(git_branch(&t), "dev");
-    let output = t.sh("", || git!(CHECKOUT, "main").get());
-    assert_eq!(output.stdout, "main|||somewhere");
-    assert_eq!(output.stderr, "");
-    assert_eq!(git_branch(&t), "dev");
+    assert_eq!(git_branch(&t.join("dev")), "dev");
+
+    let outcome = t.sh("", || app.execute("main"));
+    let b_main = Branch::new("main");
+    assert_eq!(
+        outcome,
+        Outcome::JumpAndCheckout {
+            worktree: app.get_worktree(b_main).unwrap(),
+            branch: b_main,
+            relpath: Path::new("")
+        }
+    );
 }
 
 /// When the current relative path in the repo is availble, jump to that.
 #[test]
-#[ignore]
 fn successful_dir_match_jump() {
     let t = Test::new(function!());
     t.sh("", || {
@@ -135,77 +145,91 @@ fn successful_dir_match_jump() {
         git!("worktree", "add", "dev").snw();
     });
 
-    let dev_dir = t.join("dev");
-    let main_dir = t.join("main");
-    let dev_dir = dev_dir.to_str().unwrap();
-    let main_dir = main_dir.to_str().unwrap();
-    t.sh2("", &["git", "config", "set", "checkout4.dev.worktree", dev_dir]);
-    t.sh2("", &["git", "config", "set", "checkout4.main.worktree", main_dir]);
-
-    let output = t.sh("dev/src/main/java", || git!(CHECKOUT, "main").get());
-    assert_regex!(output.stdout, r"^main\|\|\|.*");
-    let suggested_dir = output.stdout.split_once("|||").unwrap().1;
-    assert_eq!(suggested_dir, main_dir);
+    let app = t.sh("dev/src/main/java", || App::init(CONFIG)).unwrap();
+    let outcome = t.sh("dev/src/main/java", || app.execute("main"));
+    let b_main = Branch::new("main");
+    assert_eq!(
+        outcome,
+        Outcome::JumpAndCheckout {
+            worktree: app.get_worktree(b_main).unwrap(),
+            branch: b_main,
+            relpath: Path::new("src/main/java")
+        }
+    );
 }
 
-// /// If the relative path from the worktree root is not available, retreat back
-// /// until it exists.
-// #[test]
-// #[ignore]
-// fn nearest_dir_match_jump() {
-//     let t = Test::new(function!());
-//     t.sh("", || {
-//         git!("init", "-b", "main", "--bare", ".git").snw();
-//         git!("worktree", "add", "--orphan", "main").snw();
-//         some_commit("main/src/main/java");
-//         git!("worktree", "add", "dev").snw();
-//         some_commit("dev/src/main/java/com/example");
-//     });
-//
-//     let output = t.sh("dev/src/main/java/com/example", || git!(CHECKOUT, "main").get());
-//     assert_eq!(output.stderr, "", "Mismatch: {output:?}");
-//     assert_eq!(output.status.code(), Some(64));
-//     let suggest = Path::new(output.stdout.as_str()).strip_prefix(t.dir()).unwrap();
-//     assert_eq!(suggest, "main/src/main/java");
-// }
-//
+/// If the relative path from the worktree root is not available, retreat back
+/// until it exists.
+#[test]
+fn nearest_dir_match_jump() {
+    let t = Test::new(function!());
+    t.sh("", || {
+        git!("init", "-b", "main", "--bare", ".git").snw();
+        git!("worktree", "add", "--orphan", "main").snw();
+        some_commit("main/src/main/java");
+        git!("worktree", "add", "dev").snw();
+        some_commit("dev/src/main/java/com/example");
+    });
 
-// /// Jump from the lift lobby.
-// #[test]
-// #[ignore]
-// fn lift_lobby() {
-//     let t = Test::new(function!());
-//     t.sh("", || {
-//         git!("init", "--bare", ".git").snw();
-//         git!("worktree", "add", MAIN, "--orphan").snw();
-//     });
-//
-//     let output = t.sh("", || git!(CHECKOUT, MAIN).get());
-//     assert_eq!(output.stdout, t.join(MAIN), "Mismatch: {output:?}");
-//     assert_eq!(output.status.code(), Some(64));
-//
-//     let output = at(t.join(".git"), || git!(CHECKOUT, MAIN).get());
-//     assert_eq!(output.stdout, t.join(MAIN), "Mismatch: {output:?}");
-//     assert_eq!(output.status.code(), Some(64));
-// }
-//
-// /// Can handle bare repos.
-// #[test]
-// #[ignore]
-// fn bare_repos() {
-//     let t = Test::new(function!());
-//     t.sh("", || {
-//         git!("init", "-b", MAIN, "--bare", ".git").snw();
-//         git!("worktree", "add", "--orphan", MAIN).snw();
-//         some_commit(MAIN);
-//         git!("worktree", "add", "dev").snw();
-//     });
-//
-//     let output = at(t.join(MAIN), || git!(CHECKOUT, "dev").get());
-//     assert_eq!(output.stdout, t.join("dev"), "Mismatch: {output:?}");
-//     assert_eq!(output.status.code(), Some(64));
-// }
-//
+    let app = t.sh("dev/src/main/java/com/example", || App::init(CONFIG)).unwrap();
+    let outcome = t.sh("dev/src/main/java/com/example", || app.execute("main"));
+    let b_main = Branch::new("main");
+    assert_eq!(
+        outcome,
+        Outcome::JumpAndCheckout {
+            worktree: app.get_worktree(b_main).unwrap(),
+            branch: b_main,
+            relpath: Path::new("src/main/java")
+        }
+    );
+}
+
+/// Jump from the lift lobby.
+#[test]
+fn lift_lobby() {
+    let t = Test::new(function!());
+    t.sh("", || {
+        git!("init", "--bare", ".git").snw();
+        git!("worktree", "add", MAIN, "--orphan").snw();
+    });
+
+    let app = t.sh("", || App::init(CONFIG)).unwrap();
+    let outcome = t.sh("", || app.execute("main"));
+    assert_eq!(outcome, Outcome::Bypass("main"));
+
+    // let output = t.sh("", || git!(CHECKOUT, MAIN).get());
+    // assert_eq!(output.stdout, t.join(MAIN), "Mismatch: {output:?}");
+    // assert_eq!(output.status.code(), Some(64));
+    //
+    // let output = at(t.join(".git"), || git!(CHECKOUT, MAIN).get());
+    // assert_eq!(output.stdout, t.join(MAIN), "Mismatch: {output:?}");
+    // assert_eq!(output.status.code(), Some(64));
+}
+
+/// Can handle bare repos.
+#[test]
+fn bare_repos() {
+    let t = Test::new(function!());
+    t.sh("", || {
+        git!("init", "-b", MAIN, "--bare", ".git").snw();
+        git!("worktree", "add", "--orphan", MAIN).snw();
+        some_commit(MAIN);
+        git!("worktree", "add", "dev").snw();
+    });
+
+    let app = t.sh("", || App::init(CONFIG)).unwrap();
+    let outcome = t.sh("", || app.execute("dev"));
+    let b_dev = Branch::new("dev");
+    assert_eq!(
+        outcome,
+        Outcome::JumpAndCheckout {
+            worktree: app.get_worktree(b_dev).unwrap(),
+            branch: b_dev,
+            relpath: Path::new("")
+        }
+    );
+}
+
 // /// Jump from to worktree using branch name.
 // #[test]
 // #[ignore]

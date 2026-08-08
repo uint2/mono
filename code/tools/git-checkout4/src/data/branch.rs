@@ -14,7 +14,7 @@ impl<'a> Branch<'a> {
         Self(branch)
     }
 
-    pub fn as_str(&self) -> &'a str {
+    pub const fn as_str(&self) -> &'a str {
         self.0
     }
 }

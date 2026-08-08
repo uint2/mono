@@ -8,7 +8,10 @@ if binary_exists git-checkout4; then
     elif [ $EC -eq 62 ]; then
       # Get a string before first model ${VARNAME%%model*}
       # Get a string after first model  ${VARNAME#*model}
-      cd ${TARGET#*|||} && git checkout ${TARGET%%|||*}
+      #
+      # https://git-scm.com/docs/git-check-ref-format
+      # ╰── ':' character not allowed in branch, so we use it as the delimiter.
+      cd ${TARGET#*:} && git checkout ${TARGET%%:*}
       return 0
     fi
     return $EC

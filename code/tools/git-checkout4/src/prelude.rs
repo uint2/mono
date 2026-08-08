@@ -1,7 +1,7 @@
-pub(crate) use crate::app::App;
-pub(crate) use crate::config::Config;
+pub(crate) use crate::app::{App, AppConfig};
 pub(crate) use crate::data::{Branch, Worktree, WorktreeState};
 pub(crate) use crate::git::Bundle;
+pub(crate) use crate::git_config::GitConfig;
 pub(crate) use crate::shell::ExitCode;
 
 pub(crate) use core::cmp::Ordering;

@@ -11,6 +11,9 @@ use crate::prelude::*;
 pub struct Bundle<'a> {
     pub worktree: Worktree<'a>,
     pub HEAD: Option<&'a str>,
+    /// Note that by default this contains the full ref of the branch: The "dev"
+    /// branch as we know it would appear as "refs/heads/dev". However, we shall
+    /// strip off the "refs/heads/" prefix upon parsing.
     pub branch: Option<Branch<'a>>,
     pub detached: bool,
     pub bare: bool,
@@ -76,7 +79,10 @@ impl<'a> Bundle<'a> {
             }
             match line.split_once(' ') {
                 Some(("HEAD", value)) => bundle.HEAD = Some(value),
-                Some(("branch", value)) => bundle.branch = Some(Branch::new(value)),
+                Some(("branch", value)) => {
+                    let value = value.strip_prefix("refs/heads/").unwrap_or(value);
+                    bundle.branch = Some(Branch::new(value));
+                }
                 Some((key, value)) => {
                     log::info!("ignored attribute: key: {key}, value: {value}")
                 }

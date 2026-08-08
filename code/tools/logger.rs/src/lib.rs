@@ -8,6 +8,8 @@ print to stderr. We therefore avoid bringing in extra dependencies just for
 this functionality.
 */
 
+use core::sync::atomic::{AtomicBool, Ordering};
+
 use ext_log as log;
 
 pub use log::{Level, LevelFilter};
@@ -140,5 +142,8 @@ pub fn init(level_filter: Option<LevelFilter>) {
     if let Some(level_filter) = level_filter {
         log::set_max_level(level_filter);
     }
-    Logger::init().expect("Unable to initialize logger");
+    static INITIALIZED: AtomicBool = AtomicBool::new(false);
+    if !INITIALIZED.fetch_or(true, Ordering::Relaxed) {
+        Logger::init().unwrap();
+    }
 }

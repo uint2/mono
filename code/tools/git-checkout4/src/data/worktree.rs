@@ -1,6 +1,6 @@
 use crate::prelude::*;
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct Worktree<'a>(&'a str);
 
 impl fmt::Display for Worktree<'_> {
@@ -22,7 +22,13 @@ impl<'a> Worktree<'a> {
         Path::new(self.0)
     }
 
-    pub fn as_str(&self) -> &'a str {
+    pub const fn as_str(&self) -> &'a str {
         self.0
+    }
+}
+
+impl AsRef<Path> for Worktree<'_> {
+    fn as_ref(&self) -> &Path {
+        Path::new(self.0)
     }
 }
