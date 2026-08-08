@@ -58,12 +58,18 @@ impl<'b, 'w> Config<'b, 'w> {
     }
 
     pub fn save(&self) {
+        static MUTEX: Mutex<()> = Mutex::new(());
         rayon::scope(|scope| {
             for (branch, worktree) in &self.data {
                 let key = [key!(), branch.as_str(), "worktree"].join(".");
                 let val = worktree.as_str();
                 scope.spawn(move |_| {
-                    git!("config", "set", key, val).output().unwrap();
+                    let _lock = MUTEX.lock().unwrap();
+                    git!("config", "set", key.as_str(), val)
+                        .spawn()
+                        .unwrap()
+                        .wait()
+                        .unwrap();
                 });
             }
         });

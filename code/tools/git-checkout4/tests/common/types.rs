@@ -3,6 +3,8 @@ use std::path::{Path, PathBuf};
 use std::sync::{LazyLock, Mutex};
 use std::{env, fs};
 
+use super::CommandExt;
+
 const BIN: &str = env!("CARGO_BIN_EXE_git-checkout4");
 const TMPDIR: &str = env!("CARGO_TARGET_TMPDIR");
 
@@ -54,11 +56,25 @@ impl Test {
     pub fn sh<T, P: AsRef<Path>, F: FnOnce() -> T>(&self, relpath: P, f: F) -> T {
         let _lock = CWD_MUTEX.lock();
         let cwd = self.join(relpath);
-        println!("using cwd: {cwd:?}");
         env::set_current_dir(&cwd).unwrap();
         let result = f();
         drop(_lock);
         result
+    }
+
+    pub fn sh2<P: AsRef<Path>>(&self, relpath: P, args: &[&str]) {
+        std::process::Command::new(args[0])
+            .args(&args[1..])
+            .current_dir(self.join(relpath))
+            .snw();
+    }
+
+    /// Get the git branch.
+    pub fn branch<P: AsRef<Path>>(&self, relpath: P, args: &[&str]) -> String {
+        std::process::Command::new("git")
+            .args(["rev-parse", "--abbrev-ref", "--symbolic-full-name", "HEAD"])
+            .current_dir(self.join(relpath))
+            .get_stdout()
     }
 
     pub fn dir(&self) -> &Path {

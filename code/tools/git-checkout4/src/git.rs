@@ -1,7 +1,5 @@
 use crate::prelude::*;
 
-const IGNORED_ATTRS: [&str; 2] = ["locked", "prunable"];
-
 /// This is the worktree representation on the CLI. To separate the concept of
 /// the worktree being a directory that can check out git branches, with the
 /// whole bundle of state that `git worktree` prints out, we shall call this

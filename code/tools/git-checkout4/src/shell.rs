@@ -5,7 +5,8 @@ pub struct ExitCode(i32);
 impl ExitCode {
     pub const SUCCESS: Self = Self(0);
     pub const FAILURE: Self = Self(1);
-    pub const ACCEPT: Self = Self(64);
+    pub const ACCEPT: Self = Self(61);
+    pub const JUMP_2: Self = Self(62);
 
     pub fn exit(&self) -> ! {
         std::process::exit(self.0);

@@ -1,4 +1,4 @@
-current: run
+current: test
 
 run:
 	cargo run -- hello
