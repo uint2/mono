@@ -2,4 +2,4 @@
 
 cargo build
 PATH=./target/debug:$PATH git checkout3 hello
-echo $?
+echo "returned code $?"

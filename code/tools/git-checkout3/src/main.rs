@@ -42,6 +42,15 @@
 //! can be and only be checked out at the "pr" directory. That is, the "dev"
 //! worktree directory will not be allowed to check out branches with the "pr"
 //! prefix.
+//!
+//! Or, to simplify, let W be the set of all worktrees. Let B be the set of all
+//! branches. At all times we would like there to establish a mapping f : B → W
+//! such that all checkouts operate as the inverse of this function. Every
+//! branch should only be allowed to be checked out by exactly one worktree.
+//!
+//! [idea] to implement this, git-checkout3 can track which branch was created
+//! under, and when the worktree is deleted, delete all the branches that came
+//! with that worktree. Store this information in local git config.
 
 macro_rules! git {
     ($($arg:expr),*) => {{
@@ -51,138 +60,22 @@ macro_rules! git {
     }};
 }
 
-mod consts;
-mod shell;
-
-use consts::*;
-use shell::ExitCode;
-
-use core::str;
-use std::io::Write;
-use std::path::{Path, PathBuf};
-use std::process::{Command, Output, Stdio};
-use std::time::Duration;
-use std::{env, io};
-
-#[derive(Debug)]
-struct GitWorktree<'a> {
-    /// Absolute path to the worktree. Canonicalized.
-    abs_path: PathBuf,
-    /// Absolute path to the worktree. Raw `git worktree` output.
-    abs_path_str: &'a str,
-    /// The branch. Parsed from one of
-    /// * "HEAD <SHA-1>",
-    /// * "bare".
-    head: Option<&'a str>,
-    /// The branch. Parsed from one of
-    /// * "branch refs/heads/main",
-    /// * "detached".
-    ///
-    /// The other cases are just not considered. We really only care when the
-    /// branch ref actually exists.
-    branch: Option<&'a str>,
-}
-
 macro_rules! err {
     ($($arg:tt)*) => {{
         Err(eprintln!($($arg)*))
     }};
 }
 
-impl<'a> GitWorktree<'a> {
-    pub fn directory(&self) -> &str {
-        self.abs_path.as_path().to_str().unwrap()
-    }
+mod app;
+mod branch;
+mod canonical_path;
+mod config;
+mod consts;
+mod prelude;
+mod shell;
+mod worktree;
 
-    pub fn parse(text: &'a str) -> Result<Vec<Self>, ()> {
-        let mut worktrees = vec![];
-        enum State {
-            /// Looking for "worktree".
-            LFWorktree,
-            /// Looking for "HEAD". Might see "bare".
-            LFHead,
-            /// Looking for "branch", followed by an absolute path.
-            /// Might see "detached".
-            LFDirectory,
-        }
-        let mut state = State::LFWorktree;
-        for line in text.lines() {
-            match state {
-                State::LFWorktree => {
-                    let Some(line) = line.strip_prefix("worktree") else {
-                        eprintln!(
-                            "The first line of each worktree must start with \"worktree\"."
-                        );
-                        return Err(());
-                    };
-                    let abs_path_str = line.trim_start();
-                    let Ok(abs_path) = Path::new(abs_path_str).canonicalize() else {
-                        return err!("Unable to canonicalize path: {abs_path_str}");
-                    };
-                    worktrees.push(GitWorktree {
-                        abs_path,
-                        abs_path_str,
-                        head: None,
-                        branch: None,
-                    });
-                    state = State::LFHead;
-                }
-                State::LFHead => {
-                    if line.trim() == "bare" {
-                        state = State::LFDirectory;
-                        continue;
-                    }
-                    let Some(line) = line.strip_prefix("HEAD") else {
-                        eprintln!(
-                            "The second line of each worktree must start with \"HEAD\"."
-                        );
-                        return Err(());
-                    };
-                    worktrees.last_mut().unwrap().head = Some(line.trim_start());
-                    state = State::LFDirectory;
-                }
-                State::LFDirectory if line.is_empty() => state = State::LFWorktree,
-                State::LFDirectory => {
-                    if let Some(line) = line.strip_prefix("branch") {
-                        // example: refs/heads/main
-                        let full_ref_name = line.trim_start();
-                        let branch = full_ref_name.strip_prefix("refs/heads/");
-                        worktrees.last_mut().unwrap().branch = branch
-                    }
-                }
-            }
-        }
-        Ok(worktrees)
-    }
-
-    fn find_closest_parent<'t>(abs_cwd: &Path, trees: &'t [Self]) -> Option<&'t Self> {
-        trees
-            .iter()
-            .filter(|t| t.branch.is_some())
-            .filter(|t| abs_cwd.starts_with(&t.abs_path))
-            .max_by(|a, b| {
-                a.abs_path.as_os_str().len().cmp(&b.abs_path.as_os_str().len())
-            })
-    }
-
-    pub fn accept_and_resolve(&self, cwd: &Path, trees: &[Self]) -> Result<ExitCode, ()> {
-        let parent_tree = match Self::find_closest_parent(&cwd, trees) {
-            Some(v) => v,
-            None => {
-                io::stdout().write(self.abs_path_str.as_bytes()).unwrap();
-                return Ok(ExitCode::ACCEPT);
-            }
-        };
-        let relpath = cwd.strip_prefix(parent_tree.abs_path_str).unwrap();
-        let mut target = self.abs_path.join(relpath);
-        while !target.exists() {
-            target.pop();
-        }
-        let target = target.to_str().unwrap();
-        io::stdout().write(target.as_bytes()).unwrap();
-        Ok(ExitCode::ACCEPT)
-    }
-}
+use prelude::*;
 
 #[inline]
 fn getcwd() -> Result<PathBuf, ()> {
@@ -196,39 +89,50 @@ fn canonical_eq(a: &Path, b: &Path) -> bool {
     }
 }
 
+fn get_git_config_const_prefix() -> Result<Output, ()> {
+    git!("config", "--get", CONST_PREFIX_CONFIG_KEY)
+        .output()
+        .map_err(|_| eprintln!("Failed to execute shell command to get git config."))
+}
+
+/// Gets the git branch, and if we're currently in detached HEAD state, it will
+/// print HEAD.
+fn get_git_branch() -> Result<Output, ()> {
+    git!("rev-parse", "--abbrev-ref", "--symbolic-full-name", "HEAD")
+        .output()
+        .map_err(|_| eprintln!("Failed to execute shell command to get git branch."))
+}
+
+fn get_git_worktrees() -> Result<Output, ()> {
+    git!("worktree", "list", "--porcelain")
+        .output()
+        .map_err(|_| eprintln!("Failed to execute shell command to get git worktrees."))
+}
+
 fn try_main(goal: &str) -> Result<ExitCode, ()> {
     let mut sticky_output: Result<Output, ()> = Err(());
     let mut git_branch_output: Result<Output, ()> = Err(());
     let mut git_worktree_output: Result<Output, ()> = Err(());
-    let mut cwd: Result<PathBuf, ()> = Err(());
+    let mut cwd: Result<CanonicalPath, ()> = Err(());
 
     rayon::scope(|scope| {
-        scope.spawn(|_| {
-            sticky_output =
-                git!("config", "--get", CONST_PREFIX_CONFIG_KEY).output().map_err(|_| {
-                    eprintln!("Failed to execute shell command to get git config.")
-                });
-        });
-        scope.spawn(|_| {
-            git_branch_output = git!("branch", "--show-current").output().map_err(|_| {
-                eprintln!("Failed to execute shell command to get git branch.")
-            });
-        });
-        scope.spawn(|_| {
-            git_worktree_output =
-                git!("worktree", "list", "--porcelain").output().map_err(|_| {
-                    eprintln!("Failed to execute shell command to get git worktrees.")
-                });
-        });
-        scope.spawn(|_| {
-            cwd = std::env::current_dir()
-                .map_err(|_| eprintln!("Unable to get current directory."))
-        });
+        scope.spawn(|_| sticky_output = get_git_config_const_prefix());
+        scope.spawn(|_| git_branch_output = get_git_branch());
+        scope.spawn(|_| git_worktree_output = get_git_worktrees());
+        scope.spawn(|_| cwd = CanonicalPath::current_dir());
     });
     let sticky_output = sticky_output?;
     let git_branch_output = git_branch_output?;
     let git_worktree_output = git_worktree_output?;
-    let cwd = cwd?.as_path();
+    let cwd = cwd?;
+
+    let x = Config::load()?;
+    x.save();
+    println!("{x:?}");
+
+    if true {
+        return Err(());
+    }
 
     {
         // Firstly, make sure that we're in a git-enabled directory.
@@ -260,14 +164,14 @@ fn try_main(goal: &str) -> Result<ExitCode, ()> {
 
     let is_branch_sticky = sticky_branches.iter().any(|&v| current_branch == v);
 
-    let worktrees = GitWorktree::parse(worktrees)?;
-    let parent_worktree = GitWorktree::find_closest_parent(cwd, &worktrees);
+    let worktrees = WorktreeState::parse(worktrees)?;
+    let parent_worktree = WorktreeState::find_closest_parent(&cwd, &worktrees);
 
     // 1. Prioritize the directory match. Look through the worktrees and match
     // the directory of each worktree checked out against `goal`.
     for worktree in &worktrees {
         if worktree.directory() == goal {
-            if canonical_eq(worktree.abs_path.as_path(), cwd) {
+            if &worktree.abs_path == &cwd {
                 // The goal is the same as the worktree's dir, i.e. cwd == goal,
                 // and also we're checking out `goal`.
                 shell::run(git!("checkout", goal));
@@ -282,7 +186,7 @@ fn try_main(goal: &str) -> Result<ExitCode, ()> {
     for worktree in &worktrees {
         let Some(branch) = worktree.branch else { continue };
         if branch == goal {
-            return worktree.accept_and_resolve(&getcwd()?, &worktrees);
+            return worktree.accept_and_resolve(&cwd, &worktrees);
         }
     }
 

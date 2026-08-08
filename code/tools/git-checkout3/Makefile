@@ -1,7 +1,7 @@
 MAKEFILE_PATH := $(realpath $(lastword $(MAKEFILE_LIST)))
 MAKEFILE_DIR  := $(realpath $(dir $(MAKEFILE_PATH)))
 
-current: run
+current: test
 
 run:
 	sh run.sh
