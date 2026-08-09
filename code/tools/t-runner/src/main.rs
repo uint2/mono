@@ -35,7 +35,7 @@ impl Trigger {
             Self::Pred(f) => f(cwd, files),
             Self::GitRemote(remote) => {
                 let output = Command::new("git")
-                    .args(["config", "--get", "remote.origin.url"])
+                    .args(["config", "get", "remote.origin.url"])
                     .output();
                 let Ok(output) = output else { return false };
                 let Ok(output) = str::from_utf8(&output.stdout) else { return false };
