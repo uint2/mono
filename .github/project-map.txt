@@ -7,6 +7,7 @@ code/tools/canvas-sync-cli                     :canvas-sync-cli
 code/tools/diff-rs                             :diff-rs
 code/tools/draw-rs                             :draw-rs
 code/tools/git-checkout2                       :git-checkout2
+code/tools/git-checkout4                       :git-checkout4
 code/tools/gitlab-api                          :gitlab-api
 code/tools/gitnu/c                             :gitnu-c
 code/tools/gitnu/rust                          :gitnu-rs

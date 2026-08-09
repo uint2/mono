@@ -233,6 +233,24 @@ jobs:
       - uses: mlugg/setup-zig@v2
       - run: zig build run
   # }}}
+  git-checkout4: # {{{
+    needs: delta
+    if: fromJson(needs.delta.outputs.all).git-checkout4 == 'true'
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+          - macos-latest
+      fail-fast: false
+    timeout-minutes: 5
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v6
+      - run: cargo build
+        working-directory: code/tools/git-checkout4
+      - run: cargo test
+        working-directory: code/tools/git-checkout4
+  # }}}
   git-ln-build-c: # {{{
     needs: delta
     if: fromJson(needs.delta.outputs.all).git-ln == 'true'
