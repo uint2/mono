@@ -8,9 +8,9 @@ macro_rules! git {
 
 mod app;
 mod cli;
-mod git_config;
 mod data;
 mod git;
+mod git_config;
 mod prelude;
 mod shell;
 

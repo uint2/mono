@@ -3,7 +3,7 @@ pub(crate) use crate::canonical_path::CanonicalPath;
 pub(crate) use crate::config::Config;
 pub(crate) use crate::consts::*;
 pub(crate) use crate::shell::ExitCode;
-pub(crate) use crate::worktree::{WorktreeState, Worktree};
+pub(crate) use crate::worktree::{Worktree, WorktreeState};
 
 pub(crate) use core::cmp::Ordering;
 pub(crate) use core::{fmt, str};
