@@ -106,7 +106,7 @@ fn checkout_an_owned_branch() {
 
     assert_eq!(git_branch(&t), "dev");
     let outcome = t.sh("", || app.execute("main"));
-    assert_eq!(outcome, Outcome::Bypass("main"));
+    assert_eq!(outcome, Outcome::Bypass);
 }
 
 #[test]
@@ -303,7 +303,7 @@ fn checkout_branch_matches_directory() {
     assert_eq!(t.branch_at("main"), "dev");
 
     let outcome = t.sh("main", || app.execute("main"));
-    assert_eq!(outcome, Outcome::Bypass("main"));
+    assert_eq!(outcome, Outcome::Bypass);
 }
 
 /// Checkout a branch from a detached head state.
@@ -324,7 +324,7 @@ fn checkout_from_detached() {
 
     let app = t.sh("", || App::init(CONFIG)).unwrap();
     let outcome = t.sh("", || app.execute("main"));
-    assert_eq!(outcome, Outcome::Bypass("main"));
+    assert_eq!(outcome, Outcome::Bypass);
 }
 
 // /// `git-checkout3` should return the same exit code as `git checkout` in an

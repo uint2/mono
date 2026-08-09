@@ -7,7 +7,6 @@ macro_rules! git {
 }
 
 mod app;
-mod cli;
 mod data;
 mod git;
 mod git_config;
@@ -21,53 +20,13 @@ pub use {
     data::{Branch, Worktree},
 };
 
-/// Gets the git branch, and if we're currently in detached HEAD state, it will
-/// print HEAD.
-fn get_git_branch() -> Result<String, ()> {
-    let output = git!("rev-parse", "--abbrev-ref", "--symbolic-full-name", "HEAD")
-        .output()
-        .map_err(|_| eprintln!("Failed to execute shell command to get git branch."))?;
-    let mut output = String::from_utf8(output.stdout)
-        .map_err(|_| eprintln!("Failed to parsed git branch"))?;
-    output.truncate(output.as_str().trim_end().len());
-    Ok(output)
-}
-
-fn get_git_branches() -> Result<String, ()> {
-    let output = git!("branch", "--format=%(refname:short)")
-        .output()
-        .map_err(|_| eprintln!("Failed to execute shell command to get git branches."))?;
-    let mut output = String::from_utf8(output.stdout)
-        .map_err(|_| eprintln!("Failed to parsed git branches"))?;
-    output.truncate(output.as_str().trim_end().len());
-    Ok(output)
-}
-
-fn get_git_worktrees() -> Result<String, ()> {
-    let output = git!("worktree", "list", "--porcelain").output().map_err(|_| {
-        eprintln!("Failed to execute shell command to get git worktrees.")
-    })?;
-    String::from_utf8(output.stdout)
-        .map_err(|_| eprintln!("Failed to parsed git worktrees"))
-}
-
-fn current_bundle<'r, 'a>(
-    cwd: &Path,
-    bundles: &'r [Bundle<'a>],
-) -> Option<&'r Bundle<'a>> {
-    bundles
-        .iter()
-        .filter(|b| cwd.starts_with(b.worktree.as_path()))
-        .max_by(|a, b| a.worktree.len().cmp(&b.worktree.len()))
-}
-
 const RUNTIME_CONFIG: AppConfig = AppConfig {
     enable_logging: false,
-    log_level: log::LevelFilter::Error,
+    log_level: log::LevelFilter::Trace,
     interactive: true,
 };
 
-fn main() -> std::process::ExitCode {
+pub fn main() -> std::process::ExitCode {
     // To keep things simple, we only run the complicated logic when there is
     // exactly 1 CLI argument (that is not the binary itself).
     let args: Vec<_> = env::args_os().skip(1).collect();
@@ -82,12 +41,28 @@ fn main() -> std::process::ExitCode {
         return std::process::ExitCode::FAILURE;
     };
     let pool = rayon::ThreadPoolBuilder::new().num_threads(8).build().unwrap();
-    pool.install(|| {
+    enum Action {
+        Bypass,
+        ExitCode(u8),
+    }
+    let action = pool.install(|| {
         let app = App::init(RUNTIME_CONFIG).unwrap();
-        app.execute(goal.trim());
+        match app.execute(goal.trim()) {
+            Outcome::Jump { worktree, relpath } => {
+                let path = worktree.as_path().join(relpath);
+                println!("{}", path.display());
+                Action::ExitCode(61)
+            }
+            Outcome::JumpAndCheckout { worktree, branch, relpath } => {
+                let path = worktree.as_path().join(relpath);
+                println!("{}:{}", path.display(), branch.as_str());
+                Action::ExitCode(62)
+            }
+            Outcome::Bypass => Action::Bypass,
+        }
     });
-    std::process::ExitCode::SUCCESS
-    // Ok(v) => v.exit(),
-    // Err(()) => return std::process::ExitCode::FAILURE,
-    // }
+    match action {
+        Action::Bypass => shell::run(git!("checkout", goal)),
+        Action::ExitCode(code) => std::process::ExitCode::from(code),
+    }
 }

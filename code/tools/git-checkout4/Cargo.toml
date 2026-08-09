@@ -4,7 +4,6 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-clap = { version = "4.6.6", features = ["derive"] }
 log = { version = "0.1.0" , path = "../logger.rs" }
 rayon = "1.12.0"
 

@@ -8,3 +8,6 @@ test:
 
 1:
 	cargo test checkout_from_detached
+
+install:
+		cargo install --locked --force --path .

@@ -180,15 +180,22 @@ gp() {
   [ $1 ] && $EDITOR $($GIT ls-files --deduplicate $@)
 }
 
-if binary_exists git-checkout3; then
+if binary_exists git-checkout4; then
   gco() {
-    TARGET=$($GIT checkout3 $@)
+    local TARGET=$($GIT checkout4 $@)
     local EC=$?
-    if [ $EC -eq 64 ]; then
+    if [ $EC -eq 61 ]; then
       cd $TARGET
       return 0
+    elif [ $EC -eq 62 ]; then
+      # | Get a string before last model  | `${VARNAME%model*}`  |
+      # | Get a string after last model   | `${VARNAME##*model}` |
+      #
+      # https://git-scm.com/docs/git-check-ref-format
+      # ╰── ':' character not allowed in branch, so we use it as the delimiter.
+      cd ${TARGET%:*} && git checkout ${TARGET##*:}
+      return 0
     fi
-    unset TARGET
     return $EC
   }
 else

@@ -53,8 +53,6 @@ pub enum Outcome<'a> {
         worktree: Worktree<'a>,
         relpath: &'a Path,
     },
-    /// Checkout a branch.
-    Checkout(Branch<'a>),
     /// Jump first, then checkout.
     JumpAndCheckout {
         worktree: Worktree<'a>,
@@ -62,7 +60,7 @@ pub enum Outcome<'a> {
         relpath: &'a Path,
     },
     /// Complete bypass.
-    Bypass(&'a str),
+    Bypass,
 }
 
 pub struct App {
@@ -194,14 +192,14 @@ impl App {
         bundles: &[Bundle<'a>],
         git_config: &mut GitConfig<'a, 'a>,
     ) {
-        let mut stdout = io::stdout().lock();
-        writeln!(stdout, "Branch {branch} is not mapped to any worktree.").unwrap();
+        let mut f = io::stderr().lock();
+        writeln!(f, "Branch {branch} is not mapped to any worktree.").unwrap();
         for (idx, bundle) in bundles.iter().enumerate() {
-            writeln!(stdout, "[{idx}] {}", bundle.worktree.as_str()).unwrap();
+            writeln!(f, "[{idx}] {}", bundle.worktree.as_str()).unwrap();
         }
-        write!(stdout, "Pick one > ").unwrap();
-        _ = stdout.flush();
-        drop(stdout);
+        write!(f, "Pick one > ").unwrap();
+        _ = f.flush();
+        drop(f);
 
         input_buf.clear();
         io::stdin().read_line(input_buf).unwrap();
@@ -230,9 +228,6 @@ impl App {
     }
 
     pub fn execute<'a>(&'a self, goal: &'a str) -> Outcome<'a> {
-        // #[cfg(test)]
-        // env::set_current_dir(&self.cwd).unwrap();
-
         log::info!("BRANCHES: {}", self.r_git_branches);
 
         let git_branches = self.branches();
@@ -262,11 +257,6 @@ impl App {
                 assert!(git_config.get(branch).is_some())
             }
         }
-
-        // if Path::new(goal).exists() {
-        //     log::info!("Goal \"{goal}\" exists as a file.");
-        //     return Outcome::Bypass(goal);
-        // }
 
         let current_bundle = bundles
             .iter()
@@ -301,7 +291,7 @@ impl App {
                 return self.jump(&bundle.worktree, current_bundle);
             }
             log::info!("Goal \"{goal}\" is not a git branch, might be a file. Bypass.");
-            return Outcome::Bypass(goal);
+            return Outcome::Bypass;
         };
 
         // Get the worktree that the `goal` branch belongs to.
@@ -313,7 +303,7 @@ impl App {
             // We permit the user to checkout the `goal` branch, since it
             // belongs to this worktree.
             log::info!("Goal \"{goal}\" belongs to worktree. Allow checkout.");
-            return Outcome::Bypass(goal.as_str());
+            return Outcome::Bypass;
         }
 
         // We do not permit the user to checkout the `goal` branch on this
