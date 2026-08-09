@@ -119,7 +119,17 @@ impl App {
     }
 
     pub fn branches<'a>(&'a self) -> Vec<Branch<'a>> {
-        self.r_git_branches.trim().lines().map(Branch::new).collect()
+        self.r_git_branches
+            .trim()
+            .lines()
+            .filter(|&v| {
+                // Filter out things like "(HEAD detached at <SHA>)".
+                let v = v.strip_prefix('(').unwrap_or(v);
+                let v = v.strip_suffix(')').unwrap_or(v);
+                !v.starts_with("HEAD")
+            })
+            .map(Branch::new)
+            .collect()
     }
 
     pub fn git_config<'a>(&'a self) -> GitConfig<'a, 'a> {
@@ -158,10 +168,19 @@ impl App {
         git_config: &mut GitConfig<'a, 'a>,
     ) {
         for &branch in git_branches {
-            log::warn!("Auto: {branch}");
-            log::warn!("{bundles:?}");
+            log::warn!("auto-registering branch: \"{branch}\"");
+            log::warn!(
+                "options: {:?}",
+                bundles.iter().map(|b| (b.worktree, b.branch)).collect::<Vec<_>>()
+            );
             if let Some(bundle) = bundles.iter().find(|v| v.branch == Some(branch)) {
-                if bundle.worktree.as_path().ends_with(branch.as_str()) {
+                let branch_name_matches_worktree_dir_name =
+                    bundle.worktree.as_path().ends_with(branch.as_str());
+                // In the docs at [https://git-scm.com/docs/git-worktree], they
+                // differentiate between "main worktree" and "linked worktree".
+                let is_main_worktree = bundle.worktree.as_path().join(".git").is_dir();
+
+                if branch_name_matches_worktree_dir_name || is_main_worktree {
                     log::warn!("HIT");
                     git_config.set(branch, bundle.worktree);
                 }
@@ -213,6 +232,8 @@ impl App {
     pub fn execute<'a>(&'a self, goal: &'a str) -> Outcome<'a> {
         // #[cfg(test)]
         // env::set_current_dir(&self.cwd).unwrap();
+
+        log::info!("BRANCHES: {}", self.r_git_branches);
 
         let git_branches = self.branches();
         let mut git_config = self.git_config();
@@ -336,46 +357,4 @@ impl App {
         log::info!("Jump worktree then cd -> {relpath:?}");
         return Outcome::Jump { worktree: *mapped_worktree, relpath };
     }
-}
-
-// impl<'app> App<'app> {
-//     /*
-//     Keep a cache of which worktree has checked out which branch before.
-//          */
-//     pub fn checkout<'r>(&'r self, goal: &'r str) -> Option<&'r Path> {
-//         let x = self.cwd.as_path();
-//         Some(Path::new(goal))
-//     }
-// }
-
-/// Single worktree. `git checkout` should behave completely normally.
-mod single_worktree {
-    use super::*;
-
-    #[cfg(test)]
-    const SOME_HEAD: &str = "cd90ec7cdcdc55b617dfae5317b2c24b76b4148a";
-
-    // #[cfg(test)]
-    // fn init_single_worktree_app() -> App<'static> {
-    //     App {
-    //         cwd: Path::new("/home/khang/repos/neovim"),
-    //         bundles: vec![Bundle::new(Worktree::new("main")).detached(true)],
-    //         current_branch: None,
-    //     }
-    // }
-
-    // #[test]
-    // fn t01() {
-    //     let app = init_single_worktree_app();
-    //     assert_eq!(app.checkout("dev"), Some(Path::new("dev")))
-    // }
-    //
-    // #[test]
-    // fn t02() {
-    //     let app = init_single_worktree_app();
-    //     assert_eq!(
-    //         app.checkout("src/main/java/Main.java"),
-    //         Some(Path::new("src/main/java/Main.java"))
-    //     )
-    // }
 }

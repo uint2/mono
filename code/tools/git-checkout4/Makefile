@@ -7,4 +7,4 @@ test:
 	cargo test
 
 1:
-	cargo test checkout_branch_matches_directory
+	cargo test checkout_from_detached

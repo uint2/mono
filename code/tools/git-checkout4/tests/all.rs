@@ -306,6 +306,27 @@ fn checkout_branch_matches_directory() {
     assert_eq!(outcome, Outcome::Bypass("main"));
 }
 
+/// Checkout a branch from a detached head state.
+#[test]
+fn checkout_from_detached() {
+    let t = Test::new(function!());
+    t.sh("", || {
+        git!("init", "-b", "main").snw();
+        some_commit(".");
+    });
+
+    // Register the "main" branch.
+    let app = t.sh("", || App::init(CONFIG)).unwrap();
+    t.sh("", || app.execute(""));
+
+    let sha = t.sh("", || git!("rev-parse", "HEAD").get_stdout());
+    t.sh2("", &["git", "checkout", sha.as_str().trim()]);
+
+    let app = t.sh("", || App::init(CONFIG)).unwrap();
+    let outcome = t.sh("", || app.execute("main"));
+    assert_eq!(outcome, Outcome::Bypass("main"));
+}
+
 // /// `git-checkout3` should return the same exit code as `git checkout` in an
 // /// empty repository.
 // #[test]
