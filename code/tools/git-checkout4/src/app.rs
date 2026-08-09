@@ -1,51 +1,5 @@
 use crate::prelude::*;
 
-/// Gets the git branch, and if we're currently in detached HEAD state, it will
-/// print HEAD.
-fn get_git_branch() -> Result<String, ()> {
-    let output = git!("rev-parse", "--abbrev-ref", "--symbolic-full-name", "HEAD")
-        .output()
-        .map_err(|_| eprintln!("Failed to execute shell command to get git branch."))?;
-    let mut output = String::from_utf8(output.stdout)
-        .map_err(|_| eprintln!("Failed to parsed git branch"))?;
-    output.truncate(output.as_str().trim_end().len());
-    Ok(output)
-}
-
-fn get_git_branches() -> Result<String, ()> {
-    let output = git!("branch", "--format=%(refname:short)")
-        .output()
-        .map_err(|_| eprintln!("Failed to execute shell command to get git branches."))?;
-    let mut output = String::from_utf8(output.stdout)
-        .map_err(|_| eprintln!("Failed to parsed git branches"))?;
-    output.truncate(output.as_str().trim_end().len());
-    Ok(output)
-}
-
-fn get_git_worktrees() -> Result<String, ()> {
-    let output = git!("worktree", "list", "--porcelain").output().map_err(|_| {
-        eprintln!("Failed to execute shell command to get git worktrees.")
-    })?;
-    String::from_utf8(output.stdout)
-        .map_err(|_| eprintln!("Failed to parsed git worktrees"))
-}
-
-fn current_bundle<'r, 'a>(
-    cwd: &Path,
-    bundles: &'r [Bundle<'a>],
-) -> Option<&'r Bundle<'a>> {
-    bundles
-        .iter()
-        .filter(|b| cwd.starts_with(b.worktree.as_path()))
-        .max_by(|a, b| a.worktree.len().cmp(&b.worktree.len()))
-}
-
-pub struct AppConfig {
-    pub enable_logging: bool,
-    pub log_level: log::LevelFilter,
-    pub interactive: bool,
-}
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Outcome<'a> {
     // Jump to a directory.
@@ -63,139 +17,68 @@ pub enum Outcome<'a> {
     Bypass,
 }
 
-pub struct App {
-    /// Current working directory.
-    cwd: PathBuf,
-    /// Raw output of `git rev-parse --abbrev-ref --symbolic-full-name HEAD`.
-    /// Shows the current branch, or "HEAD" if HEAD is detached.
-    r_git_branch: String,
-    /// Raw output of `git branch --format=%(refname:short)`.
-    /// Shows the all the local branches, separated by newlines.
-    r_git_branches: String,
-    /// Raw output of `git worktree list --porcelain`.
-    /// https://git-scm.com/docs/git-worktree
-    r_git_worktree_list: String,
-
-    r_git_config: String,
-
+pub struct App<'a> {
+    cwd: &'a Path,
+    git_branches: Vec<Branch<'a>>,
+    git_config: GitConfig<'a>,
+    bundles: Vec<Bundle<'a>>,
     config: AppConfig,
 }
 
-impl App {
-    pub fn init(config: AppConfig) -> Result<Self, ()> {
-        if config.enable_logging {
-            log::init(Some(config.log_level));
+impl<'a> App<'a> {
+    pub fn new(ctx: &'a AppCtx) -> Self {
+        Self {
+            cwd: ctx.cwd(),
+            git_branches: ctx.branches(),
+            git_config: ctx.git_config(),
+            bundles: ctx.bundles(),
+            config: ctx.config,
         }
-        let mut r_git_branch = Err(());
-        let mut r_git_branches = Err(());
-        let mut r_git_worktree_list = Err(());
-        let mut cwd = Err(());
-        let mut r_git_config = String::new();
-
-        rayon::scope(|scope| {
-            scope.spawn(|_| r_git_branch = get_git_branch());
-            scope.spawn(|_| r_git_branches = get_git_branches());
-            scope.spawn(|_| r_git_worktree_list = get_git_worktrees());
-            scope.spawn(|_| {
-                cwd = std::env::current_dir()
-                    .map_err(|_| eprintln!("Unable to get current dir"))
-            });
-            scope.spawn(|_| r_git_config = GitConfig::read());
-        });
-        let cwd = cwd?;
-        let r_git_branch = r_git_branch?;
-        let r_git_branches = r_git_branches?;
-        let r_git_worktree_list = r_git_worktree_list?;
-        Ok(Self {
-            cwd,
-            r_git_branches,
-            r_git_branch,
-            r_git_worktree_list,
-            r_git_config,
-            config,
-        })
-    }
-
-    pub fn branches<'a>(&'a self) -> Vec<Branch<'a>> {
-        self.r_git_branches
-            .trim()
-            .lines()
-            .filter(|&v| {
-                // Filter out things like "(HEAD detached at <SHA>)".
-                let v = v.strip_prefix('(').unwrap_or(v);
-                let v = v.strip_suffix(')').unwrap_or(v);
-                !v.starts_with("HEAD")
-            })
-            .map(Branch::new)
-            .collect()
-    }
-
-    pub fn git_config<'a>(&'a self) -> GitConfig<'a, 'a> {
-        GitConfig::parse(self.r_git_config.as_str()).unwrap()
-    }
-
-    pub fn bundles<'a>(&'a self) -> Vec<Bundle<'a>> {
-        Bundle::parse_all(self.r_git_worktree_list.as_str())
-    }
-
-    pub fn cwd(&self) -> &Path {
-        self.cwd.as_path()
-    }
-
-    pub fn find_bundle_by_branch<'a>(&'a self, branch: Branch) -> Option<Bundle<'a>> {
-        self.bundles().into_iter().find(|v| v.branch == Some(branch))
-    }
-
-    pub fn get_worktree_dir<'a>(&'a self, branch: Branch) -> Option<&'a Path> {
-        self.bundles()
-            .into_iter()
-            .find(|v| v.branch == Some(branch))
-            .map(|v| v.worktree.as_path())
-    }
-
-    pub fn get_worktree<'a>(&'a self, branch: Branch) -> Option<Worktree<'a>> {
-        self.bundles().into_iter().find(|v| v.branch == Some(branch)).map(|v| v.worktree)
     }
 
     /// Auto-register branches that match their worktree. So note that if a
     /// branch "dev" is checked out at a worktree whose last path component is
     /// "feature", then it won't be auto-registered.
-    fn auto_register<'a>(
-        git_branches: &[Branch<'a>],
-        bundles: &[Bundle<'a>],
-        git_config: &mut GitConfig<'a, 'a>,
-    ) {
-        for &branch in git_branches {
-            log::warn!("auto-registering branch: \"{branch}\"");
-            log::warn!(
-                "options: {:?}",
-                bundles.iter().map(|b| (b.worktree, b.branch)).collect::<Vec<_>>()
-            );
-            if let Some(bundle) = bundles.iter().find(|v| v.branch == Some(branch)) {
-                let branch_name_matches_worktree_dir_name =
-                    bundle.worktree.as_path().ends_with(branch.as_str());
-                // In the docs at [https://git-scm.com/docs/git-worktree], they
-                // differentiate between "main worktree" and "linked worktree".
-                let is_main_worktree = bundle.worktree.as_path().join(".git").is_dir();
+    pub fn try_auto_register_branch(&mut self, branch: Branch<'a>) {
+        log::trace!("auto-registering branch: \"{branch}\"");
+        log::trace!(
+            "options: {:?}",
+            self.bundles.iter().map(|b| (b.worktree, b.branch)).collect::<Vec<_>>()
+        );
 
-                if branch_name_matches_worktree_dir_name || is_main_worktree {
-                    log::warn!("HIT");
-                    git_config.set(branch, bundle.worktree);
-                }
-            }
+        let Some(bundle) = self.bundles.iter().find(|b| b.branch == Some(branch)) else {
+            return;
+        };
+
+        let branch_name_matches_worktree_dir_name =
+            bundle.worktree.as_path().ends_with(branch.as_str());
+        // In the docs at [https://git-scm.com/docs/git-worktree], they
+        // differentiate between "main worktree" and "linked worktree".
+        let is_main_worktree = bundle.worktree.as_path().join(".git").is_dir();
+
+        if branch_name_matches_worktree_dir_name || is_main_worktree {
+            log::trace!("auto-registering branch: \"{branch}\" -> {}", bundle.worktree);
+            self.git_config.set(branch, bundle.worktree);
         }
     }
 
-    fn prompt_user_for_worktree<'a>(
-        input_buf: &mut String,
-        branch: Branch<'a>,
-        bundles: &[Bundle<'a>],
-        git_config: &mut GitConfig<'a, 'a>,
-    ) {
+    /// Auto-register branches that match their worktree. So note that if a
+    /// branch "dev" is checked out at a worktree whose last path component is
+    /// "feature", then it won't be auto-registered.
+    pub fn auto_register(&mut self) {
+        for i in 0..self.git_branches.len() {
+            let branch = self.git_branches[i];
+            self.try_auto_register_branch(branch);
+        }
+    }
+
+    fn prompt_user_for_worktree(&mut self, input_buf: &mut String, branch: Branch<'a>) {
         let mut f = io::stderr().lock();
-        writeln!(f, "Branch {branch} is not mapped to any worktree.").unwrap();
-        for (idx, bundle) in bundles.iter().enumerate() {
-            writeln!(f, "[{idx}] {}", bundle.worktree.as_str()).unwrap();
+        writeln!(f, "Branch \x1b[36m{branch}\x1b[m is not mapped to any worktree.")
+            .unwrap();
+        for (idx, bundle) in self.bundles.iter().enumerate() {
+            let (left, right) = bundle.worktree.pretty_split();
+            writeln!(f, "[\x1b[32m{idx}\x1b[m] {left}\x1b[32m{right}\x1b[m").unwrap();
         }
         write!(f, "Pick one > ").unwrap();
         _ = f.flush();
@@ -204,79 +87,67 @@ impl App {
         input_buf.clear();
         io::stdin().read_line(input_buf).unwrap();
         let choice = input_buf.trim().parse::<usize>().unwrap();
-        let choice = &bundles[choice];
-        git_config.set(branch, choice.worktree);
+        let choice = &self.bundles[choice];
+        self.git_config.set(branch, choice.worktree);
     }
 
-    fn resolve_relpath<'a>(
-        &'a self,
-        current_bundle: &Bundle,
-        mapped_worktree: &Worktree,
-    ) -> &'a Path {
-        let mut subdir_in_repo = self.cwd.strip_prefix(&current_bundle.worktree).unwrap();
-        let base = mapped_worktree.as_path();
-        let mut final_dest = base.join(subdir_in_repo);
-        loop {
-            if final_dest == base {
-                return Path::new("");
-            } else if final_dest.is_dir() {
-                return subdir_in_repo;
+    /// Gets the current bundle/worktree that we invoked the program from.
+    fn get_current_bundle(&self) -> &Bundle<'a> {
+        self.bundles
+            .iter()
+            // CWD must be a descendant directory of the worktree root.
+            .filter(|b| self.cwd.starts_with(b.worktree.as_path()))
+            // Favour the longest match because there is a chance that worktrees
+            // are nested. For instance, when there is a bare repo.
+            .max_by(|a, b| a.worktree.len().cmp(&b.worktree.len()))
+            // There should be at least one match if ran in a git worktree.
+            .expect("This operation should be run in a worktree")
+    }
+
+    fn find_branch(&self, goal: &str) -> Option<&Branch<'a>> {
+        self.git_branches.iter().find(|v| v.as_str() == goal)
+    }
+
+    fn deregister_invalid_worktrees(&mut self) {
+        self.git_config.retain(|_, worktree| {
+            let valid = self.bundles.iter().any(|b| b.worktree == *worktree);
+            if !valid {
+                log::error!("Deregister worktree: \x1b[33m{worktree}\x1b[m")
             }
-            final_dest.pop(); // Move upwards together.
-            subdir_in_repo = subdir_in_repo.parent().unwrap();
-        }
+            valid
+        })
     }
 
-    pub fn execute<'a>(&'a self, goal: &'a str) -> Outcome<'a> {
-        log::info!("BRANCHES: {}", self.r_git_branches);
-
-        let git_branches = self.branches();
-        let mut git_config = self.git_config();
-        let bundles = self.bundles();
-
-        for b in &bundles {
-            log::info!("{b:?}");
-        }
-
-        // Retain only the valid worktrees.
-        git_config.retain(|_, worktree| bundles.iter().any(|b| b.worktree == *worktree));
-
-        Self::auto_register(&git_branches, &bundles, &mut git_config);
+    pub fn execute(&mut self, goal: &str) -> Outcome<'a> {
+        self.deregister_invalid_worktrees();
+        self.auto_register();
 
         let mut input_buf = String::new();
-        for branch in &git_branches {
-            if git_config.get(branch).is_none() && self.config.interactive {
-                Self::prompt_user_for_worktree(
-                    &mut input_buf,
-                    *branch,
-                    &bundles,
-                    &mut git_config,
-                );
+        for i in 0..self.git_branches.len() {
+            let branch = self.git_branches[i];
+            if self.git_config.get(&branch).is_none() && self.config.interactive {
+                self.prompt_user_for_worktree(&mut input_buf, branch);
             }
             if self.config.interactive {
-                assert!(git_config.get(branch).is_some())
+                assert!(self.git_config.get(&branch).is_some())
             }
         }
 
-        let current_bundle = bundles
-            .iter()
-            .filter(|b| self.cwd().starts_with(b.worktree.as_path()))
-            .max_by(|a, b| a.worktree.len().cmp(&b.worktree.len()))
-            .expect("This operation should be run in a worktree");
-
-        log::info!("Current: {current_bundle:?}");
+        let current_bundle = self.get_current_bundle();
+        log::info!("Current worktree: {current_bundle:?}");
 
         // Make sure that the goal is a branch that exists. Otherwise, default
         // to `git checkout` behavior.
         //
         // This execution branchs should handle the cases where the user is
         // trying to checkout a particular file in the worktree.
-        let Some(goal) = git_branches.iter().find(|v| v.as_str() == goal) else {
+        let Some(goal) = self.find_branch(goal) else {
             // At this point, `goal` is not a branch.
 
             // First, try to see if there is a worktree whose directory name
             // matches `goal`'s value. If so, jump there.
-            let dir_match = bundles.iter().find(|b| b.worktree.as_path().ends_with(goal));
+            let dir_match =
+                self.bundles.iter().find(|b| b.worktree.as_path().ends_with(goal));
             if let Some(bundle) = dir_match {
                 // Discussion: do we want this behavior? This has its
                 // conveniences but it does come at a trade-off of possible
@@ -295,7 +166,8 @@ impl App {
         };
 
         // Get the worktree that the `goal` branch belongs to.
-        let Some(mapped_worktree) = git_config.get(goal) else {
+        let Some(mapped_worktree) = self.git_config.get(goal) else {
+            // panic!("Goal \"{goal}\" is not configred in git config.")
             panic!("Goal \"{goal}\" is not configred in git config.")
         };
 
@@ -316,8 +188,27 @@ impl App {
         self.jump_and_checkout(mapped_worktree, current_bundle, goal)
     }
 
-    fn jump_and_checkout<'a>(
-        &'a self,
+    fn resolve_relpath(
+        &self,
+        current_bundle: &Bundle,
+        mapped_worktree: &Worktree,
+    ) -> &'a Path {
+        let mut subdir_in_repo = self.cwd.strip_prefix(&current_bundle.worktree).unwrap();
+        let base = mapped_worktree.as_path();
+        let mut final_dest = base.join(subdir_in_repo);
+        loop {
+            if final_dest == base {
+                return Path::new("");
+            } else if final_dest.is_dir() {
+                return subdir_in_repo;
+            }
+            final_dest.pop(); // Move upwards together.
+            subdir_in_repo = subdir_in_repo.parent().unwrap();
+        }
+    }
+
+    fn jump_and_checkout(
+        &self,
         mapped_worktree: &Worktree<'a>,
         current_bundle: &Bundle,
         goal: &Branch<'a>,
@@ -337,8 +228,8 @@ impl App {
         };
     }
 
-    fn jump<'a>(
-        &'a self,
+    fn jump(
+        &self,
         mapped_worktree: &Worktree<'a>,
         current_bundle: &Bundle,
     ) -> Outcome<'a> {
@@ -346,5 +237,22 @@ impl App {
 
         log::info!("Jump worktree then cd -> {relpath:?}");
         return Outcome::Jump { worktree: *mapped_worktree, relpath };
+    }
+
+    pub fn get_worktree(&self, branch: Branch) -> Option<Worktree<'a>> {
+        self.bundles.iter().find(|v| v.branch == Some(branch)).map(|v| v.worktree)
+    }
+
+    pub fn map_branch(&mut self, branch: Branch<'a>, worktree: Worktree<'a>) {
+        self.git_config.set(branch, worktree);
+        self.git_config.save();
+    }
+
+    pub fn save_git_config(&self) {
+        self.git_config.save();
+    }
+
+    pub fn git_config(&self) -> &GitConfig<'a> {
+        &self.git_config
     }
 }

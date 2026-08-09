@@ -1,10 +1,7 @@
 mod branch;
+mod bundle;
 mod worktree;
 
 pub use branch::Branch;
+pub use bundle::Bundle;
 pub use worktree::Worktree;
-
-pub struct WorktreeState<'a> {
-    worktree: Worktree<'a>,
-    branch: Branch<'a>,
-}

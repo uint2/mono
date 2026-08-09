@@ -25,6 +25,11 @@ impl<'a> Worktree<'a> {
     pub const fn as_str(&self) -> &'a str {
         self.0
     }
+
+    pub fn pretty_split(&self) -> (&'a str, &'a str) {
+        let j = self.0.rfind(std::path::MAIN_SEPARATOR).unwrap();
+        self.0.split_at(j + 1)
+    }
 }
 
 impl AsRef<Path> for Worktree<'_> {

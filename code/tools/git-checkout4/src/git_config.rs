@@ -11,52 +11,17 @@ macro_rules! key {
     };
 }
 
-#[derive(Debug)]
-pub struct GitConfig<'b, 'w> {
-    data: HashMap<Branch<'b>, Worktree<'w>>,
+#[derive(Debug, Clone)]
+pub struct GitConfig<'a> {
+    data: HashMap<Branch<'a>, Worktree<'a>>,
     /// To help with the unsetting.
-    original_keys: Vec<&'b str>,
+    original_keys: Vec<&'a str>,
+    /// To help with saving the git config reliably to the right repository
+    /// each time.
+    cwd: &'a Path,
 }
 
-mod git_config {
-    use crate::prelude::*;
-
-    pub fn get() -> String {
-        const ARGS: [&str; 7] =
-            ["config", "get", "--all", "-z", "--show-names", "--regexp", key!(regex)];
-        let output = Command::new("git").args(ARGS).output().unwrap();
-        String::from_utf8(output.stdout).unwrap()
-    }
-
-    // `raw` is guaranteed to be a list of key-value pairs, where each pair is
-    // separated by the '\0' character, and the key and values have a '\n'
-    // character between them.
-    // pub fn parse(raw: &str) -> Result<HashMap<CanonicalPath, Vec<Branch>>, ()> {
-    //     let raw = raw.trim().trim_end_matches('\0').trim();
-    //     let mut hashmap = HashMap::new();
-    //
-    //     for line in raw.split('\0') {
-    //         let (key, value) = line.split_once('\n').unwrap();
-    //         let parsed = key
-    //             .strip_prefix(concat!(key!(), "."))
-    //             .and_then(|v| v.strip_suffix(".branches"));
-    //         let Some(key) = parsed else {
-    //             return Err(());
-    //             // return err!(concat!(
-    //             //     "Invalid git config key. Should be \"",
-    //             //     key!(),
-    //             //     ".<directory>.branches\"."
-    //             // ));
-    //         };
-    //         // let branches = value.split(',').map(|v| Branch::new(v.to_string())).collect();
-    //         // let worktree = CanonicalPath::new(Path::new(key)).unwrap();
-    //         // hashmap.insert(worktree, branches);
-    //     }
-    //     Ok(hashmap)
-    // }
-}
-
-impl<'b, 'w> GitConfig<'b, 'w> {
+impl<'a> GitConfig<'a> {
     pub fn save(&self) {
         static MUTEX: Mutex<()> = Mutex::new(());
         // Unset all original keys.
@@ -64,7 +29,12 @@ impl<'b, 'w> GitConfig<'b, 'w> {
             for key in &self.original_keys {
                 scope.spawn(move |_| {
                     let _lock = MUTEX.lock().unwrap();
-                    git!("config", "unset", key).spawn().unwrap().wait().unwrap();
+                    git!("config", "unset", key)
+                        .current_dir(self.cwd)
+                        .spawn()
+                        .unwrap()
+                        .wait()
+                        .unwrap();
                 });
             }
         });
@@ -75,6 +45,7 @@ impl<'b, 'w> GitConfig<'b, 'w> {
                 scope.spawn(move |_| {
                     let _lock = MUTEX.lock().unwrap();
                     git!("config", "set", key.as_str(), worktree.as_str())
+                        .current_dir(self.cwd)
                         .spawn()
                         .unwrap()
                         .wait()
@@ -84,15 +55,15 @@ impl<'b, 'w> GitConfig<'b, 'w> {
         });
     }
 
-    pub fn set(&mut self, branch: Branch<'b>, worktree: Worktree<'w>) {
+    pub fn set(&mut self, branch: Branch<'a>, worktree: Worktree<'a>) {
         self.data.insert(branch, worktree);
     }
 
-    pub fn get(&self, branch: &Branch<'b>) -> Option<&Worktree<'w>> {
+    pub fn get(&self, branch: &Branch<'a>) -> Option<&Worktree<'a>> {
         self.data.get(branch)
     }
 
-    pub fn remove(&mut self, branch: &Branch<'b>) {
+    pub fn remove(&mut self, branch: &Branch<'a>) {
         self.data.remove(branch);
     }
 
@@ -100,7 +71,7 @@ impl<'b, 'w> GitConfig<'b, 'w> {
         self.data.retain(f);
     }
 
-    pub fn iter<'r>(&'r self) -> Iter<'r, Branch<'b>, Worktree<'w>> {
+    pub fn iter<'r>(&'r self) -> Iter<'r, Branch<'a>, Worktree<'a>> {
         self.data.iter()
     }
 
@@ -112,13 +83,13 @@ impl<'b, 'w> GitConfig<'b, 'w> {
         String::from_utf8(output.stdout).expect("Unable to decode git config as utf-8")
     }
 
-    pub fn parse<'a: 'b + 'w>(raw: &'a str) -> Result<Self, ()> {
+    pub fn parse(raw: &'a str, cwd: &'a Path) -> Result<Self, ()> {
         let mut ht = HashMap::new();
         let mut original_keys = vec![];
 
         let raw = raw.trim().trim_end_matches('\0').trim();
         if raw.is_empty() {
-            return Ok(Self { data: ht, original_keys: Vec::new() });
+            return Ok(Self { data: ht, original_keys: Vec::new(), cwd });
         }
 
         for line in raw.split('\0') {
@@ -138,11 +109,11 @@ impl<'b, 'w> GitConfig<'b, 'w> {
             let worktree = Worktree::new(value);
             ht.insert(branch, worktree);
         }
-        Ok(Self { data: ht, original_keys })
+        Ok(Self { data: ht, original_keys, cwd })
     }
 }
 
-impl Drop for GitConfig<'_, '_> {
+impl Drop for GitConfig<'_> {
     fn drop(&mut self) {
         self.save();
     }

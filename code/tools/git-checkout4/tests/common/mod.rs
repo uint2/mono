@@ -2,21 +2,39 @@ macro_rules! git {
     ($($arg:expr),* $(,)?) => { std::process::Command::new("git")$(.arg($arg))* };
 }
 
+#[allow(unused)]
 macro_rules! sh {
     ($first:expr) => { std::process::Command::new($first) };
     ($first:expr, $($arg:expr),* $(,)?) => { std::process::Command::new($first)$(.arg($arg))* };
 }
 
+macro_rules! assert_regex {
+    ($text:expr, $regex:expr $(,)?) => {{
+        let text: &str = &$text;
+        let r = regex::Regex::new($regex).unwrap();
+        match r.find(text) {
+            Some(m) if m.len() == ($text).len() => {}
+            _ => panic!(
+                "Regex mismatch:\nregex: \x1b[36m[\x1b[m{}\x1b[36m]\x1b[m\ntext:  \x1b[36m[\x1b[m{}\x1b[36m]\x1b[m",
+                $regex, $text
+            ),
+        }
+    }};
+}
+
 mod shell;
 mod types;
 
+#[allow(unused)]
 pub use {
     shell::{CommandExt, OutputExt},
     types::{Test, at},
 };
 
 use std::fs;
-use std::path::Path;
+pub use std::path::Path;
+
+pub use git_checkout4::{App, AppConfig, AppCtx, Branch, Outcome};
 
 /// Creates a random commit by making some file at `dir`.
 pub fn some_commit<P: AsRef<Path>>(dir: P) {
@@ -28,4 +46,25 @@ pub fn some_commit<P: AsRef<Path>>(dir: P) {
     fs::write(&file, "hello").unwrap();
     git!("-C", dir, "add", fingerprint).snw();
     git!("-C", dir, "commit", "-m", "boopus gloopus").snw();
+}
+
+pub const CONFIG: AppConfig = AppConfig {
+    enable_logging: true,
+    log_level: log::LevelFilter::Info,
+    interactive: false,
+};
+
+pub fn git_branch<P: AsRef<Path>>(dir: P) -> String {
+    at(dir, || git!("branch", "--show-current").get_stdout())
+}
+
+macro_rules! function {
+    () => {{
+        fn f() {}
+        type_name_of(f).strip_suffix("::f").unwrap()
+    }};
+}
+
+pub fn type_name_of<T>(_: T) -> &'static str {
+    core::any::type_name::<T>()
 }

@@ -1,3 +1,5 @@
+#![allow(unused)]
+
 use std::process::{Command, ExitStatus, Output, Stdio};
 
 #[derive(Debug)]
@@ -7,7 +9,6 @@ pub struct Output2 {
     pub status: ExitStatus,
 }
 
-#[allow(unused)]
 pub trait CommandExt {
     fn run(&mut self) -> Output;
     fn get_stdout(&mut self) -> String;

@@ -7,8 +7,8 @@ macro_rules! git {
 }
 
 mod app;
+mod context;
 mod data;
-mod git;
 mod git_config;
 mod prelude;
 mod shell;
@@ -16,8 +16,10 @@ mod shell;
 use prelude::*;
 
 pub use {
-    app::{App, AppConfig, Outcome},
+    app::{App, Outcome},
+    context::AppCtx,
     data::{Branch, Worktree},
+    prelude::AppConfig,
 };
 
 const RUNTIME_CONFIG: AppConfig = AppConfig {
@@ -26,43 +28,52 @@ const RUNTIME_CONFIG: AppConfig = AppConfig {
     interactive: true,
 };
 
-pub fn main() -> std::process::ExitCode {
+fn full_bypass(args: &[std::ffi::OsString]) -> ! {
+    let mut cmd = Command::new("git");
+    cmd.arg("checkout");
+    cmd.args(args);
+    shell::run(cmd)
+}
+
+pub fn main() -> ExitCode {
     // To keep things simple, we only run the complicated logic when there is
     // exactly 1 CLI argument (that is not the binary itself).
     let args: Vec<_> = env::args_os().skip(1).collect();
-    let 1 = args.len() else {
-        let mut cmd = Command::new("git");
-        cmd.arg("checkout");
-        cmd.args(args);
-        shell::run(cmd);
-    };
+    let 1 = args.len() else { full_bypass(&args) };
+
     let Some(goal) = args[0].to_str() else {
         eprintln!("Failed to decode target.");
-        return std::process::ExitCode::FAILURE;
+        return ExitCode::FAILURE;
     };
+
     let pool = rayon::ThreadPoolBuilder::new().num_threads(8).build().unwrap();
     enum Action {
         Bypass,
-        ExitCode(u8),
+        ExitCode(i32),
     }
     let action = pool.install(|| {
-        let app = App::init(RUNTIME_CONFIG).unwrap();
-        match app.execute(goal.trim()) {
+        let ctx = AppCtx::init(RUNTIME_CONFIG).unwrap();
+        match App::new(&ctx).execute(goal.trim()) {
             Outcome::Jump { worktree, relpath } => {
                 let path = worktree.as_path().join(relpath);
+                eprintln!("[\x1b[36mgco\x1b[m] jump to worktree");
                 println!("{}", path.display());
                 Action::ExitCode(61)
             }
             Outcome::JumpAndCheckout { worktree, branch, relpath } => {
                 let path = worktree.as_path().join(relpath);
+                eprintln!("[\x1b[36mgco\x1b[m] jump to worktree, and checkout \x1b[33m{branch}\x1b[m.");
                 println!("{}:{}", path.display(), branch.as_str());
                 Action::ExitCode(62)
             }
-            Outcome::Bypass => Action::Bypass,
+            Outcome::Bypass => {
+                eprintln!("[\x1b[36mgco\x1b[m] bypass.");
+                Action::Bypass
+            }
         }
     });
     match action {
         Action::Bypass => shell::run(git!("checkout", goal)),
-        Action::ExitCode(code) => std::process::ExitCode::from(code),
+        Action::ExitCode(code) => std::process::exit(code),
     }
 }
