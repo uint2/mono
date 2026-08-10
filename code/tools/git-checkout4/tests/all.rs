@@ -41,22 +41,29 @@ branch refs/heads/main"
     );
 }
 
-#[test]
-fn checkout_an_owned_branch() {
-    let t = Test::new(function!());
-    t.sh2("", &["git", "init", "-b", "main"]);
-    t.sh2("", &["git", "commit", "--allow-empty", "-m", "Initial commit"]);
-    t.sh2("", &["git", "checkout", "-b", "dev"]);
+/// Tests done with only the main worktree, and no linked worktrees.
+mod primary {
+    use super::*;
 
-    let dir = t.dir().to_str().unwrap();
-    t.sh2("", &["git", "config", "set", "checkout4.dev.worktree", dir]);
-    t.sh2("", &["git", "config", "set", "checkout4.main.worktree", dir]);
+    #[test]
+    fn checkout_an_owned_branch() {
+        let t = Test::new(function!());
+        t.sh2("", &["git", "init", "-b", "main"]);
+        t.sh2("", &["git", "commit", "--allow-empty", "-m", "Initial commit"]);
+        t.sh2("", &["git", "checkout", "-b", "dev"]);
 
-    let ctx = t.sh("", || AppCtx::init(CONFIG)).unwrap();
+        // Register the "main" branch.
+        let ctx = t.sh("", || AppCtx::init(CONFIG)).unwrap();
+        let mut app = App::new(&ctx);
+        app.map_branch(Branch::new("main"), app.get_worktrees()[0]);
 
-    assert_eq!(git_branch(&t), "dev");
-    let outcome = t.sh("", || App::new(&ctx).execute("main"));
-    assert_eq!(outcome, Outcome::Bypass);
+        // Re-read the updated config from filesystem.
+        let ctx = t.sh("", || AppCtx::init(CONFIG)).unwrap();
+
+        assert_eq!(git_branch(&t), "dev");
+        let outcome = t.sh("", || App::new(&ctx).execute("main"));
+        assert_eq!(outcome, Outcome::Bypass);
+    }
 }
 
 #[test]
@@ -290,5 +297,33 @@ fn checkout_from_detached() {
 
     let ctx = t.sh("", || AppCtx::init(CONFIG)).unwrap();
     let outcome = t.sh("", || App::new(&ctx).execute("main"));
+    assert_eq!(outcome, Outcome::Bypass);
+}
+
+#[test]
+fn do_not_handle_git_submodule() {
+    let t = Test::new(function!());
+    std::fs::create_dir(t.join("plenary")).unwrap();
+    std::fs::create_dir(t.join("neovim")).unwrap();
+    t.sh("plenary", || {
+        git!("init", "-b", "main").snw();
+        some_commit(".");
+    });
+    t.sh("neovim", || {
+        git!("init", "-b", "main").snw();
+        some_commit(".");
+        git!(
+            "-c",
+            "protocol.file.allow=always",
+            "submodule",
+            "add",
+            "../plenary/.git", // repository.
+            "deps/plenary"     // directory.
+        )
+        .snw();
+    });
+    let ctx = t.sh("neovim/deps/plenary", || AppCtx::init(CONFIG)).unwrap();
+    let mut app = App::new(&ctx);
+    let outcome = t.sh("neovim/deps/plenary", || app.execute("main"));
     assert_eq!(outcome, Outcome::Bypass);
 }

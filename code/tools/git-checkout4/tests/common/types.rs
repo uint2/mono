@@ -77,10 +77,6 @@ impl Test {
             .get_stdout()
     }
 
-    pub fn dir(&self) -> &Path {
-        self.root_dir.as_path()
-    }
-
     pub fn join<P: AsRef<Path>>(&self, p: P) -> PathBuf {
         self.root_dir.join(p)
     }

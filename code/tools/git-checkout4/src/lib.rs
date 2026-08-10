@@ -41,25 +41,21 @@ pub fn main() -> ExitCode {
     let args: Vec<_> = env::args_os().skip(1).collect();
     let 1 = args.len() else { full_bypass(&args) };
 
-    let Some(goal) = args[0].to_str() else {
+    let Some(goal) = args[0].to_str().map(str::trim) else {
         eprintln!("Failed to decode target.");
         return ExitCode::FAILURE;
     };
 
     let pool = rayon::ThreadPoolBuilder::new().num_threads(8).build().unwrap();
-    enum Action {
-        Bypass,
-        ExitCode(i32),
-    }
     let ctx = pool.install(|| AppCtx::init(RUNTIME_CONFIG)).unwrap();
-    let action = match App::new(&ctx).execute(goal.trim()) {
+    match App::new(&ctx).execute(goal) {
         Outcome::Jump { worktree, relpath } => {
             let path = worktree.as_path().join(relpath);
             eprintln!("[\x1b[36mgco\x1b[m] jump to worktree");
             let mut stdout = io::stdout().lock();
             stdout.write(path.as_os_str().as_encoded_bytes()).unwrap();
             stdout.write(b"\n").unwrap();
-            Action::ExitCode(61)
+            std::process::exit(61)
         }
         Outcome::JumpAndCheckout { worktree, branch, relpath } => {
             let path = worktree.as_path().join(relpath);
@@ -71,15 +67,11 @@ pub fn main() -> ExitCode {
             stdout.write(b":").unwrap();
             stdout.write(branch.as_str().as_bytes()).unwrap();
             stdout.write(b"\n").unwrap();
-            Action::ExitCode(62)
+            std::process::exit(62)
         }
         Outcome::Bypass => {
             eprintln!("[\x1b[36mgco\x1b[m] bypass.");
-            Action::Bypass
+            shell::run(git!("checkout", goal))
         }
-    };
-    match action {
-        Action::Bypass => shell::run(git!("checkout", goal)),
-        Action::ExitCode(code) => std::process::exit(code),
     }
 }

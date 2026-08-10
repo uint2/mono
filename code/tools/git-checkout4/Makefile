@@ -7,7 +7,7 @@ test:
 	cargo test
 
 1:
-	cargo test checkout_from_detached
+	cargo test git_submodule_has_no_current_bundle
 
 install:
 		cargo install --locked --force --path .

@@ -50,7 +50,7 @@ pub fn some_commit<P: AsRef<Path>>(dir: P) {
 
 pub const CONFIG: AppConfig = AppConfig {
     enable_logging: true,
-    log_level: log::LevelFilter::Info,
+    log_level: log::LevelFilter::Trace,
     interactive: false,
 };
 

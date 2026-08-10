@@ -19,6 +19,9 @@ pub enum Outcome<'a> {
 
 pub struct App<'a> {
     cwd: &'a Path,
+    /// The absolute path to the root of the git workspace.
+    toplevel: Option<&'a Path>,
+    is_in_submodule: bool,
     git_branches: Vec<Branch<'a>>,
     git_config: GitConfig<'a>,
     bundles: Vec<Bundle<'a>>,
@@ -29,6 +32,8 @@ impl<'a> App<'a> {
     pub fn new(ctx: &'a AppCtx) -> Self {
         Self {
             cwd: ctx.cwd(),
+            toplevel: ctx.toplevel(),
+            is_in_submodule: ctx.is_in_submodule(),
             git_branches: ctx.branches(),
             git_config: ctx.git_config(),
             bundles: ctx.bundles(),
@@ -91,17 +96,30 @@ impl<'a> App<'a> {
         self.git_config.set(branch, choice.worktree);
     }
 
+    fn contained_in(&self, worktree: &Worktree) -> bool {
+        log::info!(
+            "toplevel: {:?}, cwd: {:?}, worktree: {:?}",
+            self.toplevel,
+            self.cwd,
+            worktree
+        );
+        self.toplevel.map_or(false, |root| root == worktree.as_path())
+            || self.cwd.starts_with(worktree)
+    }
+
     /// Gets the current bundle/worktree that we invoked the program from.
-    fn get_current_bundle(&self) -> &Bundle<'a> {
+    ///
+    /// This may return None, for instance when we're in a submodule.
+    pub fn get_current_bundle(&self) -> &Bundle<'a> {
         self.bundles
             .iter()
             // CWD must be a descendant directory of the worktree root.
-            .filter(|b| self.cwd.starts_with(b.worktree.as_path()))
+            .filter(|b| self.contained_in(&b.worktree))
             // Favour the longest match because there is a chance that worktrees
             // are nested. For instance, when there is a bare repo.
             .max_by(|a, b| a.worktree.len().cmp(&b.worktree.len()))
             // There should be at least one match if ran in a git worktree.
-            .expect("This operation should be run in a worktree")
+            .expect("This operation should be run in a worktree that's not a submodule")
     }
 
     fn find_branch(&self, goal: &str) -> Option<&Branch<'a>> {
@@ -119,6 +137,9 @@ impl<'a> App<'a> {
     }
 
     pub fn execute(&mut self, goal: &str) -> Outcome<'a> {
+        if self.is_in_submodule {
+            return Outcome::Bypass;
+        }
         self.deregister_invalid_worktrees();
         self.auto_register();
 
@@ -134,6 +155,7 @@ impl<'a> App<'a> {
         }
 
         let current_bundle = self.get_current_bundle();
+
         log::info!("Current worktree: {current_bundle:?}");
 
         // Make sure that the goal is a branch that exists. Otherwise, default
@@ -254,5 +276,13 @@ impl<'a> App<'a> {
 
     pub fn git_config(&self) -> &GitConfig<'a> {
         &self.git_config
+    }
+
+    pub fn toplevel(&self) -> Option<&'a Path> {
+        self.toplevel
+    }
+
+    pub fn get_worktrees(&self) -> Vec<Worktree<'a>> {
+        self.bundles.iter().map(|v| v.worktree).collect()
     }
 }
