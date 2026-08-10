@@ -51,27 +51,33 @@ pub fn main() -> ExitCode {
         Bypass,
         ExitCode(i32),
     }
-    let action = pool.install(|| {
-        let ctx = AppCtx::init(RUNTIME_CONFIG).unwrap();
-        match App::new(&ctx).execute(goal.trim()) {
-            Outcome::Jump { worktree, relpath } => {
-                let path = worktree.as_path().join(relpath);
-                eprintln!("[\x1b[36mgco\x1b[m] jump to worktree");
-                println!("{}", path.display());
-                Action::ExitCode(61)
-            }
-            Outcome::JumpAndCheckout { worktree, branch, relpath } => {
-                let path = worktree.as_path().join(relpath);
-                eprintln!("[\x1b[36mgco\x1b[m] jump to worktree, and checkout \x1b[33m{branch}\x1b[m.");
-                println!("{}:{}", path.display(), branch.as_str());
-                Action::ExitCode(62)
-            }
-            Outcome::Bypass => {
-                eprintln!("[\x1b[36mgco\x1b[m] bypass.");
-                Action::Bypass
-            }
+    let ctx = pool.install(|| AppCtx::init(RUNTIME_CONFIG)).unwrap();
+    let action = match App::new(&ctx).execute(goal.trim()) {
+        Outcome::Jump { worktree, relpath } => {
+            let path = worktree.as_path().join(relpath);
+            eprintln!("[\x1b[36mgco\x1b[m] jump to worktree");
+            let mut stdout = io::stdout().lock();
+            stdout.write(path.as_os_str().as_encoded_bytes()).unwrap();
+            stdout.write(b"\n").unwrap();
+            Action::ExitCode(61)
         }
-    });
+        Outcome::JumpAndCheckout { worktree, branch, relpath } => {
+            let path = worktree.as_path().join(relpath);
+            eprintln!(
+                "[\x1b[36mgco\x1b[m] jump to worktree, and checkout \x1b[33m{branch}\x1b[m."
+            );
+            let mut stdout = io::stdout().lock();
+            stdout.write(path.as_os_str().as_encoded_bytes()).unwrap();
+            stdout.write(b":").unwrap();
+            stdout.write(branch.as_str().as_bytes()).unwrap();
+            stdout.write(b"\n").unwrap();
+            Action::ExitCode(62)
+        }
+        Outcome::Bypass => {
+            eprintln!("[\x1b[36mgco\x1b[m] bypass.");
+            Action::Bypass
+        }
+    };
     match action {
         Action::Bypass => shell::run(git!("checkout", goal)),
         Action::ExitCode(code) => std::process::exit(code),
