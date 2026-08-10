@@ -2,8 +2,12 @@ use crate::prelude::*;
 
 /// git-checkout4 app context. An owned buffer all all data to be fetched.
 pub struct AppCtx {
+    pub config: AppConfig,
     /// Current working directory.
     pub cwd: PathBuf,
+    /// The raw output of `git rev-parse --show-toplevel`, which is the root
+    /// directory of the current worktree.
+    pub r_git_toplevel: String,
     /// Raw output of `git rev-parse --abbrev-ref --symbolic-full-name HEAD`.
     /// Shows the current branch, or "HEAD" if HEAD is detached.
     pub r_git_branch: String,
@@ -13,10 +17,8 @@ pub struct AppCtx {
     /// Raw output of `git worktree list --porcelain`.
     /// https://git-scm.com/docs/git-worktree
     pub r_git_worktree_list: String,
-
+    /// Raw output of the custom `git config get` call.
     pub r_git_config: String,
-
-    pub config: AppConfig,
 }
 
 /// Gets the git branch, and if we're currently in detached HEAD state, it will
@@ -25,8 +27,7 @@ fn get_git_branch() -> Result<String, ()> {
     let output = git!("rev-parse", "--abbrev-ref", "--symbolic-full-name", "HEAD")
         .output()
         .map_err(|_| eprintln!("Failed to execute shell command to get git branch."))?;
-    let mut output = String::from_utf8(output.stdout)
-        .map_err(|_| eprintln!("Failed to parsed git branch"))?;
+    let mut output = String::from_utf8(output.stdout).unwrap();
     output.truncate(output.as_str().trim_end().len());
     Ok(output)
 }
@@ -35,8 +36,7 @@ fn get_git_branches() -> Result<String, ()> {
     let output = git!("branch", "--format=%(refname:short)")
         .output()
         .map_err(|_| eprintln!("Failed to execute shell command to get git branches."))?;
-    let mut output = String::from_utf8(output.stdout)
-        .map_err(|_| eprintln!("Failed to parsed git branches"))?;
+    let mut output = String::from_utf8(output.stdout).unwrap();
     output.truncate(output.as_str().trim_end().len());
     Ok(output)
 }
@@ -46,7 +46,16 @@ fn get_git_worktrees() -> Result<String, ()> {
         eprintln!("Failed to execute shell command to get git worktrees.")
     })?;
     String::from_utf8(output.stdout)
-        .map_err(|_| eprintln!("Failed to parsed git worktrees"))
+        .map_err(|_| eprintln!("Failed to decode git worktrees"))
+}
+
+fn get_git_toplevel() -> Result<String, ()> {
+    let output = git!("rev-parse", "--show-toplevel")
+        .output()
+        .map_err(|_| eprintln!("Failed to execute shell command to get git root."))?;
+    let mut output = String::from_utf8(output.stdout).unwrap();
+    output.truncate(output.as_str().trim_end().len());
+    Ok(output)
 }
 
 impl AppCtx {
@@ -58,29 +67,28 @@ impl AppCtx {
         let mut r_git_branches = Err(());
         let mut r_git_worktree_list = Err(());
         let mut cwd = Err(());
-        let mut r_git_config = String::new();
+        let mut r_git_config = Err(());
+        let mut r_git_toplevel = Err(());
 
         rayon::scope(|scope| {
-            scope.spawn(|_| r_git_branch = get_git_branch());
-            scope.spawn(|_| r_git_branches = get_git_branches());
-            scope.spawn(|_| r_git_worktree_list = get_git_worktrees());
             scope.spawn(|_| {
                 cwd = std::env::current_dir()
                     .map_err(|_| eprintln!("Unable to get current dir"))
             });
+            scope.spawn(|_| r_git_toplevel = get_git_toplevel());
+            scope.spawn(|_| r_git_branch = get_git_branch());
+            scope.spawn(|_| r_git_branches = get_git_branches());
+            scope.spawn(|_| r_git_worktree_list = get_git_worktrees());
             scope.spawn(|_| r_git_config = GitConfig::read());
         });
-        let cwd = cwd?;
-        let r_git_branch = r_git_branch?;
-        let r_git_branches = r_git_branches?;
-        let r_git_worktree_list = r_git_worktree_list?;
         Ok(Self {
-            cwd,
-            r_git_branches,
-            r_git_branch,
-            r_git_worktree_list,
-            r_git_config,
             config,
+            cwd: cwd?,
+            r_git_toplevel: r_git_toplevel?,
+            r_git_branch: r_git_branch?,
+            r_git_branches: r_git_branches?,
+            r_git_worktree_list: r_git_worktree_list?,
+            r_git_config: r_git_config?,
         })
     }
 

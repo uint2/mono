@@ -75,12 +75,15 @@ impl<'a> GitConfig<'a> {
         self.data.iter()
     }
 
-    pub fn read() -> String {
+    pub fn read() -> Result<String, ()> {
         const ARGS: [&str; 7] =
             ["config", "get", "--all", "-z", "--show-names", "--regexp", key!(regex)];
-        let output =
-            Command::new("git").args(ARGS).output().expect("Unable to get git config");
-        String::from_utf8(output.stdout).expect("Unable to decode git config as utf-8")
+        let output = Command::new("git")
+            .args(ARGS)
+            .output()
+            .map_err(|_| eprintln!("Unable to get git config"))?;
+        String::from_utf8(output.stdout)
+            .map_err(|_| eprintln!("Unable to decode git config as utf-8"))
     }
 
     pub fn parse(raw: &'a str, cwd: &'a Path) -> Result<Self, ()> {
