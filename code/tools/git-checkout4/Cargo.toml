@@ -13,6 +13,8 @@ regex = "1.13.1"
 [[bin]]
 path = "bin/gco.rs"
 name = "git-checkout4"
+test = false
 
 [lib]
 doctest = false
+test = false
