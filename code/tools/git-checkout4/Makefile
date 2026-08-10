@@ -4,7 +4,7 @@ run:
 	cargo run -- hello
 
 test:
-	cargo test
+	cargo test --release
 
 1:
 	cargo test git_submodule_has_no_current_bundle

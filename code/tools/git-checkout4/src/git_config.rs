@@ -118,6 +118,7 @@ impl<'a> GitConfig<'a> {
 
 impl Drop for GitConfig<'_> {
     fn drop(&mut self) {
+        log::info!("Saved git config!");
         self.save();
     }
 }

@@ -49,8 +49,9 @@ mod primary {
     fn checkout_an_owned_branch() {
         let t = Test::new(function!());
         t.sh2("", &["git", "init", "-b", "main"]);
-        t.sh2("", &["git", "commit", "--allow-empty", "-m", "Initial commit"]);
+        t.sh("", || some_commit("."));
         t.sh2("", &["git", "checkout", "-b", "dev"]);
+        assert_eq!(git_branch(&t), "dev");
 
         // Register the "main" branch.
         let ctx = t.sh("", || AppCtx::init(CONFIG)).unwrap();
@@ -60,35 +61,57 @@ mod primary {
         // Re-read the updated config from filesystem.
         let ctx = t.sh("", || AppCtx::init(CONFIG)).unwrap();
 
+        let outcome = t.sh("", || App::new(&ctx).execute("main"));
+        assert_eq!(outcome, Outcome::Bypass);
+    }
+
+    #[test]
+    fn checkout_an_owned_branch_2() {
+        let t = Test::new(function!());
+        t.sh2("", &["git", "init", "-b", "main"]);
+        t.sh("", || some_commit("."));
+
+        let ctx = t.sh("", || AppCtx::init(CONFIG)).unwrap();
+        App::new(&ctx).auto_register(); // Register the "main" branch.
+
+        t.sh2("", &["git", "checkout", "-b", "dev"]);
         assert_eq!(git_branch(&t), "dev");
+
+        // Re-read the updated config from filesystem.
+        let ctx = t.sh("", || AppCtx::init(CONFIG)).unwrap();
+
         let outcome = t.sh("", || App::new(&ctx).execute("main"));
         assert_eq!(outcome, Outcome::Bypass);
     }
 }
 
-#[test]
-fn checkout_an_unowned_branch() {
-    let t = Test::new(function!());
-    t.sh2("", &["git", "init", "-b", "main", "--bare", ".git"]);
-    t.sh2("", &["git", "worktree", "add", "--orphan", "main"]);
-    t.sh2("main", &["git", "commit", "--allow-empty", "-m", "Initial commit"]);
-    t.sh2("", &["git", "worktree", "add", "dev"]);
+mod linked {
+    use super::*;
 
-    let ctx = t.sh("", || AppCtx::init(CONFIG)).unwrap();
-    let mut app = App::new(&ctx);
+    #[test]
+    fn checkout_an_unowned_branch() {
+        let t = Test::new(function!());
+        t.sh2("", &["git", "init", "-b", "main", "--bare", ".git"]);
+        t.sh2("", &["git", "worktree", "add", "--orphan", "main"]);
+        t.sh("main", || some_commit("."));
+        t.sh2("", &["git", "worktree", "add", "dev"]);
 
-    assert_eq!(git_branch(&t.join("dev")), "dev");
+        let ctx = t.sh("", || AppCtx::init(CONFIG)).unwrap();
+        let mut app = App::new(&ctx);
 
-    let outcome = t.sh("", || app.execute("main"));
-    let b_main = Branch::new("main");
-    assert_eq!(
-        outcome,
-        Outcome::JumpAndCheckout {
-            worktree: app.get_worktree(b_main).unwrap(),
-            branch: b_main,
-            relpath: Path::new("")
-        }
-    );
+        assert_eq!(git_branch(&t.join("dev")), "dev");
+
+        let outcome = t.sh("", || app.execute("main"));
+        let b_main = Branch::new("main");
+        assert_eq!(
+            outcome,
+            Outcome::JumpAndCheckout {
+                worktree: app.get_worktree(b_main).unwrap(),
+                branch: b_main,
+                relpath: Path::new("")
+            }
+        );
+    }
 }
 
 /// When the current relative path in the repo is availble, jump to that.

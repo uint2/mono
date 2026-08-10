@@ -1,3 +1,14 @@
+pub use git_checkout4::{App, AppConfig, AppCtx, Branch, Outcome};
+
+#[allow(unused)]
+pub use {
+    shell::{CommandExt, OutputExt},
+    types::{Test, at},
+};
+
+use std::fs;
+pub use std::path::Path;
+
 macro_rules! git {
     ($($arg:expr),* $(,)?) => { std::process::Command::new("git")$(.arg($arg))* };
 }
@@ -25,16 +36,11 @@ macro_rules! assert_regex {
 mod shell;
 mod types;
 
-#[allow(unused)]
-pub use {
-    shell::{CommandExt, OutputExt},
-    types::{Test, at},
+pub const CONFIG: AppConfig = AppConfig {
+    enable_logging: false,
+    log_level: log::LevelFilter::Trace,
+    interactive: false,
 };
-
-use std::fs;
-pub use std::path::Path;
-
-pub use git_checkout4::{App, AppConfig, AppCtx, Branch, Outcome};
 
 /// Creates a random commit by making some file at `dir`.
 pub fn some_commit<P: AsRef<Path>>(dir: P) {
@@ -47,12 +53,6 @@ pub fn some_commit<P: AsRef<Path>>(dir: P) {
     git!("-C", dir, "add", fingerprint).snw();
     git!("-C", dir, "commit", "-m", "boopus gloopus").snw();
 }
-
-pub const CONFIG: AppConfig = AppConfig {
-    enable_logging: true,
-    log_level: log::LevelFilter::Trace,
-    interactive: false,
-};
 
 pub fn git_branch<P: AsRef<Path>>(dir: P) -> String {
     at(dir, || git!("branch", "--show-current").get_stdout())
