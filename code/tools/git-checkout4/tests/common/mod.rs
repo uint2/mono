@@ -13,6 +13,12 @@ macro_rules! git {
     ($($arg:expr),* $(,)?) => { std::process::Command::new("git")$(.arg($arg))* };
 }
 
+macro_rules! branch {
+    ($value:expr) => {
+        Branch::new($value)
+    };
+}
+
 #[allow(unused)]
 macro_rules! sh {
     ($first:expr) => { std::process::Command::new($first) };

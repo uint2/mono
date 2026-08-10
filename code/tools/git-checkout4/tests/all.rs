@@ -56,7 +56,7 @@ mod primary {
         // Register the "main" branch.
         let ctx = t.sh("", || AppCtx::init(CONFIG)).unwrap();
         let mut app = App::new(&ctx);
-        app.map_branch(Branch::new("main"), app.get_worktrees()[0]);
+        app.map_branch(branch!("main"), app.get_worktrees()[0]);
 
         // Re-read the updated config from filesystem.
         let ctx = t.sh("", || AppCtx::init(CONFIG)).unwrap();
@@ -88,123 +88,147 @@ mod primary {
 mod linked {
     use super::*;
 
-    #[test]
-    fn checkout_an_unowned_branch() {
-        let t = Test::new(function!());
+    /// Sets up a bare repo, and then links two worktrees: "main" and "dev".
+    /// Also makes sure that the branches are registered to their respective
+    /// worktrees.
+    #[cfg(test)]
+    fn setup_main_dev(t: &Test) {
         t.sh2("", &["git", "init", "-b", "main", "--bare", ".git"]);
         t.sh2("", &["git", "worktree", "add", "--orphan", "main"]);
         t.sh("main", || some_commit("."));
         t.sh2("", &["git", "worktree", "add", "dev"]);
+        t.sh("dev", || some_commit("."));
 
-        let ctx = t.sh("", || AppCtx::init(CONFIG)).unwrap();
-        let mut app = App::new(&ctx);
-
+        // Validate current branch of worktrees.
+        assert_eq!(git_branch(&t.join("main")), "main");
         assert_eq!(git_branch(&t.join("dev")), "dev");
 
-        let outcome = t.sh("", || app.execute("main"));
-        let b_main = Branch::new("main");
+        let ctx = t.sh("", || AppCtx::init(CONFIG)).unwrap();
+        let app = App::new(&ctx);
+        // Check for correct registration.
+        assert_eq!(app[branch!("main")].last_component(), "main");
+        assert_eq!(app[branch!("dev")].last_component(), "dev");
+    }
+
+    #[test]
+    fn checkout_an_unowned_branch() {
+        let t = Test::new(function!());
+        setup_main_dev(&t);
+
+        let ctx = t.sh("dev", || AppCtx::init(CONFIG)).unwrap();
+        let mut app = App::new(&ctx);
+        let outcome = t.sh("dev", || app.execute("main"));
         assert_eq!(
             outcome,
             Outcome::JumpAndCheckout {
-                worktree: app.get_worktree(b_main).unwrap(),
-                branch: b_main,
+                worktree: app[branch!("main")],
+                branch: branch!("main"),
                 relpath: Path::new("")
             }
         );
     }
-}
 
-/// When the current relative path in the repo is availble, jump to that.
-#[test]
-fn successful_dir_match_jump() {
-    let t = Test::new(function!());
-    t.sh("", || {
-        git!("init", "-b", "main", "--bare", ".git").snw();
-        git!("worktree", "add", "--orphan", "main").snw();
-        some_commit("main/src/main/java/com/example");
-        git!("worktree", "add", "dev").snw();
-    });
+    #[test]
+    fn checkout_current_branch() {
+        let t = Test::new(function!());
+        setup_main_dev(&t);
 
-    let ctx = t.sh("dev/src/main/java", || AppCtx::init(CONFIG)).unwrap();
-    let mut app = App::new(&ctx);
-    let outcome = t.sh("dev/src/main/java", || app.execute("main"));
-    let b_main = Branch::new("main");
-    assert_eq!(
-        outcome,
-        Outcome::JumpAndCheckout {
-            worktree: app.get_worktree(b_main).unwrap(),
-            branch: b_main,
-            relpath: Path::new("src/main/java")
-        }
-    );
-}
+        let ctx = t.sh("dev", || AppCtx::init(CONFIG)).unwrap();
+        let mut app = App::new(&ctx);
+        let outcome = t.sh("dev", || app.execute("dev"));
+        assert_eq!(outcome, Outcome::Bypass);
+    }
 
-/// If the relative path from the worktree root is not available, retreat back
-/// until it exists.
-#[test]
-fn nearest_dir_match_jump() {
-    let t = Test::new(function!());
-    t.sh("", || {
-        git!("init", "-b", "main", "--bare", ".git").snw();
-        git!("worktree", "add", "--orphan", "main").snw();
-        some_commit("main/src/main/java");
-        git!("worktree", "add", "dev").snw();
-        some_commit("dev/src/main/java/com/example");
-    });
+    #[test]
+    fn checkout_a_non_branch() {
+        let t = Test::new(function!());
+        setup_main_dev(&t);
 
-    let ctx = t.sh("dev/src/main/java/com/example", || AppCtx::init(CONFIG)).unwrap();
-    let mut app = App::new(&ctx);
-    let outcome = t.sh("dev/src/main/java/com/example", || app.execute("main"));
-    let b_main = Branch::new("main");
-    assert_eq!(
-        outcome,
-        Outcome::JumpAndCheckout {
-            worktree: app.get_worktree(b_main).unwrap(),
-            branch: b_main,
-            relpath: Path::new("src/main/java")
-        }
-    );
-}
+        let ctx = t.sh("dev", || AppCtx::init(CONFIG)).unwrap();
+        let mut app = App::new(&ctx);
+        let outcome = t.sh("dev", || app.execute("zero"));
+        assert_eq!(outcome, Outcome::Bypass);
+    }
 
-/// Jump from the lift lobby.
-#[test]
-fn lift_lobby() {
-    let t = Test::new(function!());
-    t.sh("", || {
-        git!("init", "--bare", ".git").snw();
-        git!("worktree", "add", "main", "--orphan").snw();
-    });
+    /// When the current relative path in the repo is availble, jump to that.
+    #[test]
+    fn successful_dir_match_jump() {
+        let t = Test::new(function!());
+        setup_main_dev(&t);
 
-    let ctx = t.sh("", || AppCtx::init(CONFIG)).unwrap();
-    let mut app = App::new(&ctx);
-    let outcome = t.sh("", || app.execute("main"));
-    let worktree = app.get_worktree(Branch::new("main")).unwrap();
-    assert_eq!(outcome, Outcome::Jump { worktree, relpath: Path::new("") });
-}
+        t.sh("", || some_commit("main/src/main/java"));
+        t.sh("", || some_commit("dev/src/main/java/com/example"));
 
-/// Can handle bare repos.
-#[test]
-fn bare_repos() {
-    let t = Test::new(function!());
-    t.sh("", || {
-        git!("init", "-b", "main", "--bare", ".git").snw();
-        git!("worktree", "add", "--orphan", "main").snw();
-        some_commit("main");
-        git!("worktree", "add", "dev").snw();
-    });
+        let ctx = t.sh("main/src/main/java", || AppCtx::init(CONFIG)).unwrap();
+        let mut app = App::new(&ctx);
+        let outcome = t.sh("main/src/main/java", || app.execute("dev"));
+        assert_eq!(
+            outcome,
+            Outcome::JumpAndCheckout {
+                worktree: app[branch!("dev")],
+                branch: branch!("dev"),
+                relpath: Path::new("src/main/java")
+            }
+        );
+    }
 
-    let ctx = t.sh("", || AppCtx::init(CONFIG)).unwrap();
-    let mut app = App::new(&ctx);
-    let outcome = t.sh("", || app.execute("dev"));
-    let b_dev = Branch::new("dev");
-    assert_eq!(
-        outcome,
-        Outcome::JumpAndCheckout {
-            worktree: app.get_worktree(b_dev).unwrap(),
-            branch: b_dev,
-            relpath: Path::new("")
-        }
-    );
+    /// If the relative path from the worktree root is not available, retreat back
+    /// until it exists.
+    #[test]
+    fn nearest_dir_match_jump() {
+        let t = Test::new(function!());
+        setup_main_dev(&t);
+
+        t.sh("", || some_commit("main/src/main/java"));
+        t.sh("", || some_commit("dev/src/main/java/com/example"));
+
+        let ctx = t.sh("dev/src/main/java/com/example", || AppCtx::init(CONFIG)).unwrap();
+        let mut app = App::new(&ctx);
+        let outcome = t.sh("dev/src/main/java/com/example", || app.execute("main"));
+        assert_eq!(
+            outcome,
+            Outcome::JumpAndCheckout {
+                worktree: app[branch!("main")],
+                branch: branch!("main"),
+                relpath: Path::new("src/main/java")
+            }
+        );
+    }
+
+    /// Jump from the lift lobby, with everything already registered.
+    #[test]
+    fn lift_lobby_registered() {
+        let t = Test::new(function!());
+        setup_main_dev(&t);
+
+        let ctx = t.sh("", || AppCtx::init(CONFIG)).unwrap();
+        let mut app = App::new(&ctx);
+        let outcome = t.sh("", || app.execute("main"));
+        assert_eq!(
+            outcome,
+            Outcome::JumpAndCheckout {
+                worktree: app[branch!("main")],
+                branch: branch!("main"),
+                relpath: Path::new("")
+            }
+        );
+    }
+
+    /// Jump from the lift lobby, with nothing registered yet.
+    #[test]
+    fn lift_lobby_unregistered() {
+        let t = Test::new(function!());
+        t.sh("", || {
+            git!("init", "--bare", ".git").snw();
+            git!("worktree", "add", "main", "--orphan").snw();
+        });
+
+        let ctx = t.sh("", || AppCtx::init(CONFIG)).unwrap();
+        let mut app = App::new(&ctx);
+        let outcome = t.sh("", || app.execute("main"));
+        let worktree = app[branch!("main")];
+        assert_eq!(outcome, Outcome::Jump { worktree, relpath: Path::new("") });
+    }
 }
 
 /// Jump from to worktree using branch name.
@@ -222,8 +246,8 @@ fn jump_with_branch() {
     // Register the "benjamin" branch.
     let ctx = t.sh("main", || AppCtx::init(CONFIG)).unwrap();
     let mut app = App::new(&ctx);
-    let b_benjamin = Branch::new("benjamin");
-    let w_diana = app.get_worktree(b_benjamin).unwrap();
+    let b_benjamin = branch!("benjamin");
+    let w_diana = app[b_benjamin];
     t.sh("main", || app.map_branch(b_benjamin, w_diana));
 
     // Re-read the updated config from filesystem.
@@ -256,8 +280,8 @@ fn jump_with_directory() {
     // Register the "benjamin" branch.
     let ctx = t.sh("main", || AppCtx::init(CONFIG)).unwrap();
     let mut app = App::new(&ctx);
-    let b_benjamin = Branch::new("benjamin");
-    let w_diana = app.get_worktree(b_benjamin).unwrap();
+    let b_benjamin = branch!("benjamin");
+    let w_diana = app[b_benjamin];
     t.sh("main", || app.map_branch(b_benjamin, w_diana));
 
     // Re-read the updated config from filesystem.

@@ -26,6 +26,11 @@ impl<'a> Worktree<'a> {
         self.0
     }
 
+    pub fn last_component(&self) -> &'a str {
+        let Some(j) = self.0.rfind(std::path::MAIN_SEPARATOR) else { return self.0 };
+        &self.0[j + 1..]
+    }
+
     pub fn pretty_split(&self) -> (&'a str, &'a str) {
         let j = self.0.rfind(std::path::MAIN_SEPARATOR).unwrap();
         self.0.split_at(j + 1)

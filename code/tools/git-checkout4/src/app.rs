@@ -286,3 +286,13 @@ impl<'a> App<'a> {
         self.bundles.iter().map(|v| v.worktree).collect()
     }
 }
+
+impl<'a, 'b> core::ops::Index<Branch<'b>> for App<'a> {
+    type Output = Worktree<'a>;
+    fn index(&self, branch: Branch<'b>) -> &Self::Output {
+        let Some(bundle) = self.bundles.iter().find(|v| v.branch == Some(branch)) else {
+            panic!("App has no bundle that has branch \"{branch}\"");
+        };
+        &bundle.worktree
+    }
+}
