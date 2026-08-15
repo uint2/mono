@@ -23,7 +23,7 @@ pub struct Monitor<'monitor> {
     /// the status bar's Rect.
     pub w: Rect,
     /// The bitmask of visible tags. Initialize with the first tag visible.
-    tags: u32,
+    pub tags: u32,
     /// false means hide bar.
     show_bar: bool,
     bar_pos: BarPosition,

@@ -17,7 +17,6 @@ impl<'monitor> Client<'monitor> {
     }
 
     pub fn is_visible(&self) -> bool {
-        // ((C->tags & C->mon->tagset[C->mon->seltags]))
-        true
+        self.tags & self.mon2.tags != 0
     }
 }
