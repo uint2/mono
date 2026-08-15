@@ -21,10 +21,10 @@ impl ClientSizes {
     }
 }
 
-pub struct Client<'monitor> {
+pub struct Client {
     id: ClientId,
     /// The parent monitor to this client.
-    pub mon: &'monitor Monitor<'monitor>,
+    pub mon: MonitorId,
     win: Window,
     /// Bitmask of active tags.
     pub tags: u32,
@@ -41,21 +41,17 @@ pub struct Client<'monitor> {
     neverfocus: bool,
     isfullscreen: bool,
     /// Next client in the linked list of clients.
-    next: Option<Rc<Self>>,
+    next: Option<ClientId>,
     /// Next client in the stacking order. That is, the order in which windows
     /// appear visually. If window A covers window B, or is laid on top of it,
     /// then A is before B in the stacking order.
-    snext: Option<Rc<Self>>,
+    snext: Option<ClientId>,
 }
 
-impl<'monitor> Client<'monitor> {
+impl Client {
     getter!(id, ClientId);
 
-    pub fn new(
-        mon: &'monitor Monitor<'monitor>,
-        window: Window,
-        wa: &C::XWindowAttributes,
-    ) -> Self {
+    pub fn new(mon: &Monitor, window: Window, wa: &C::XWindowAttributes) -> Self {
         // TODO: verify that this matches `manange` from dwm in C.
         let rect = Rect {
             x: wa.x,
@@ -65,17 +61,16 @@ impl<'monitor> Client<'monitor> {
         };
         let mut pos = Toggle::new(rect);
         pos.set(rect);
-        let border_width = Toggle::new(wa.border_width as Distance);
         Self {
             id: ClientId::new(),
-            mon,
+            mon: mon.id,
             win: window,
             tags: 0,
             name: String::new(),
             pos,
             sz: ClientSizes::new(),
             hints_valid: false,
-            border_width,
+            border_width: Toggle::new(wa.border_width as Distance),
             is_fixed: false,
             is_floating: Toggle::new(false),
             isurgent: false,
@@ -90,9 +85,21 @@ impl<'monitor> Client<'monitor> {
         &self.win
     }
 
+    pub const fn mon<'a>(&self, monitors: &'a [Monitor]) -> &'a Monitor {
+        let mut j = 0;
+        while j < monitors.len() {
+            let m = &monitors[j];
+            if m.id.const_eq(&self.mon) {
+                return m;
+            }
+            j += 1;
+        }
+        panic!("Monitor not found. Dangling client.");
+    }
+
     /// A client is visible if and only if there exists a bit that matches
     /// between its own bitmask, and that of its owning monitor.
-    pub fn is_visible(&self) -> bool {
-        self.tags & self.mon.tags != 0
+    pub const fn is_visible(&self, monitors: &[Monitor]) -> bool {
+        self.tags & self.mon(monitors).tags != 0
     }
 }

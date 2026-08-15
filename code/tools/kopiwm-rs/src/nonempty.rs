@@ -100,6 +100,14 @@ impl<T> NonEmpty<T> {
         }
         None
     }
+
+    pub const fn as_slice(&self) -> &[T] {
+        self.inner.as_slice()
+    }
+
+    pub const fn as_mut_slice(&mut self) -> &mut [T] {
+        self.inner.as_mut_slice()
+    }
 }
 
 impl<T, I: SliceIndex<[T]>> Index<I> for NonEmpty<T> {

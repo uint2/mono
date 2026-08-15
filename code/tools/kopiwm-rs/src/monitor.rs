@@ -8,15 +8,15 @@ pub enum BarPosition {
     Bottom,
 }
 
-pub struct Monitor<'a> {
+pub struct Monitor {
     dpy: Display,
-    id: MonitorId,
+    pub id: MonitorId,
     /// Master window factor.
-    mfact: f32,
+    pub mfact: f32,
     /// Number of master windows.
-    nmaster: u8,
+    pub nmaster: u8,
     /// Status bar's y-coordinate.
-    by: Coordinate,
+    pub by: Coordinate,
     /// The Rect that every pixel on the monitor lives in.
     pub m: Rect,
     /// The Rect that windows live in. This is simply the monitor's Rect minus
@@ -25,26 +25,26 @@ pub struct Monitor<'a> {
     /// The bitmask of visible tags. Initialize with the first tag visible.
     pub tags: u32,
     /// false means hide bar.
-    show_bar: bool,
-    bar_pos: BarPosition,
+    pub show_bar: bool,
+    pub bar_pos: BarPosition,
     /// List of clients.
-    clients: Vec<&'a Client<'a>>,
+    pub clients: Vec<Client>,
     /// Selected client, as an index of our own set of clients.
-    sel: Option<&'a Client<'a>>,
+    pub sel: Option<ClientId>,
     /// Clients ordered by stacking order. That is, the order in which windows
     /// appear visually. If window A covers window B, or is laid on top of it,
     /// then A is before B in the stacking order.
-    stack: Vec<&'a Client<'a>>,
+    pub stack: Vec<ClientId>,
 
     /// The X window that manages the status bar. The only time when this is
     /// none should be when the monitor is freshly created, and we just haven't
     /// initialized the bar window.
-    bar_window: Option<Window>,
+    pub bar_window: Option<Window>,
 
-    lt: Toggle<&'static Layout>,
+    pub lt: Toggle<&'static Layout>,
 }
 
-impl<'a> Monitor<'a> {
+impl Monitor {
     pub fn new(dpy: Display) -> Self {
         Self {
             dpy,
@@ -65,18 +65,12 @@ impl<'a> Monitor<'a> {
         }
     }
 
-    getter!(id, MonitorId);
-
     pub const fn bar_window(&self) -> Option<&Window> {
         self.bar_window.as_ref()
     }
-
-    pub const fn clients(&self) -> &[&'a Client<'a>] {
-        self.clients.as_slice()
-    }
 }
 
-impl Drop for Monitor<'_> {
+impl Drop for Monitor {
     fn drop(&mut self) {
         use crate::C as X;
 
@@ -87,7 +81,7 @@ impl Drop for Monitor<'_> {
     }
 }
 
-impl<'a> Monitor<'a> {
+impl Monitor {
     pub fn update_bar_pos(&mut self, bar_height: Distance) {
         if !self.show_bar {
             // If the bar is not shown, then the dimensions of the windows

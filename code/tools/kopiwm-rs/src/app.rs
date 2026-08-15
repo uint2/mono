@@ -6,7 +6,7 @@ use config::{Coordinate, Distance};
 
 /// C: type for Coordinates.
 /// D: type for Distance.
-pub struct App<'app> {
+pub struct App {
     dpy: Display,
     root: Window,
     screen: Screen,
@@ -26,20 +26,16 @@ pub struct App<'app> {
     net_atoms: NetArray<C::Atom>,
     wm_atoms: WMArray<C::Atom>,
 
-    /// The only owned list of clients there are. Ever. TODO: Remove ownership
-    /// of clients in monitors.
-    clients: Vec<Client<'app>>,
-
     /// Owned list of moitors. It is guaranteed that for the lifetime of `Self`,
     /// this list is non-empty.
-    monitors: NonEmpty<Monitor<'app>>,
+    monitors: NonEmpty<Monitor>,
 }
 
-pub struct AppInitParams<'app> {
+pub struct AppInitParams {
     pub screen: Screen,
     pub s: Size,
     pub lrpad: Distance,
-    pub monitors: NonEmpty<Monitor<'app>>,
+    pub monitors: NonEmpty<Monitor>,
     pub cursors: CursorStateArray<Cursor>,
     pub colors: WindowColorStateArray<WindowColors<XftColor>>,
     pub numlockmask: NumLockMask,
@@ -48,8 +44,8 @@ pub struct AppInitParams<'app> {
     pub wm_atoms: WMArray<C::Atom>,
 }
 
-impl<'app> App<'app> {
-    pub fn new(dpy: Display, root: Window, params: AppInitParams<'app>) -> Self {
+impl App {
+    pub fn new(dpy: Display, root: Window, params: AppInitParams) -> Self {
         Self {
             dpy,
             root,
@@ -66,14 +62,13 @@ impl<'app> App<'app> {
             running: true,
             net_atoms: params.net_atoms,
             wm_atoms: params.wm_atoms,
-            clients: vec![],
         }
     }
 }
 
 /// Getters.
-impl<'app> App<'app> {
-    pub const fn selmon(&self) -> &Monitor<'app> {
+impl App {
+    pub const fn selmon(&self) -> &Monitor {
         self.monitors.sel()
     }
 
@@ -89,7 +84,7 @@ impl<'app> App<'app> {
 }
 
 /// Core Logic.
-impl<'app> App<'app> {
+impl App {
     pub fn updategeom(&mut self) -> bool {
         let mut dirty = false;
         let m = self.monitors.first_mut();
@@ -101,7 +96,7 @@ impl<'app> App<'app> {
         }
         if dirty {
             let id = self.window_to_monitor(&self.root);
-            let idx = self.monitors.position(|v| v.id() == id).unwrap();
+            let idx = self.monitors.position(|v| v.id == id).unwrap();
             self.monitors.set_sel(idx);
         }
         dirty
@@ -122,20 +117,20 @@ impl<'app> App<'app> {
         if let Some(m) =
             self.monitors.find(|m| m.bar_window().map_or(false, |w| w == window))
         {
-            return m.id();
+            return m.id;
         }
 
         if let Some(client) = self.window_to_client(window) {
-            if let Some(m) = self.monitors.find(|m| m.id() == client.mon.id()) {
-                return m.id();
+            if let Some(m) = self.monitors.find(|m| m.id == client.mon) {
+                return m.id;
             }
         }
 
-        self.selmon().id()
+        self.selmon().id
     }
 
-    pub fn window_to_client(&self, window: &Window) -> Option<&Client<'app>> {
-        self.clients.iter().find(|c| c.win() == window)
+    pub fn window_to_client(&self, window: &Window) -> Option<&Client> {
+        self.monitors.iter().flat_map(|m| &m.clients).find(|c| c.win() == window)
     }
 
     /// Searches the list of monitors for the one with the biggest intersection
@@ -143,13 +138,13 @@ impl<'app> App<'app> {
     ///
     /// If nothing is found, return the currently selected monitor.
     pub fn rect_to_monitor(&self, rect: &Rect) -> MonitorId {
-        let mut id = self.selmon().id();
+        let mut id = self.selmon().id;
         let mut max_area = 0;
         for mon in &self.monitors {
             let area = rect.intersect(&mon.w);
             if max_area < area {
                 max_area = area;
-                id = mon.id();
+                id = mon.id;
             }
         }
         id
@@ -254,9 +249,9 @@ impl<'app> App<'app> {
         // drawbars();
     }
 
-    pub fn applyrules(&mut self, c: &mut Client<'app>) {}
+    pub fn applyrules(&mut self, c: &mut Client) {}
 
-    pub fn manage(&'app mut self, window: Window, wa: &C::XWindowAttributes) {
+    pub fn manage(&mut self, window: Window, wa: &C::XWindowAttributes) {
         let mut c = Client::new(self.selmon(), window.clone(), wa);
 
         let dpy = &self.dpy;
@@ -268,7 +263,7 @@ impl<'app> App<'app> {
                 c.tags = t.tags;
             }
             _ => {
-                c.mon = self.selmon();
+                c.mon = self.selmon().id;
                 // self.applyrules(&mut c); // uncommenting causes a "immutable borrow later used by call ".
             }
         };
