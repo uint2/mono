@@ -8,7 +8,7 @@ pub enum BarPosition {
     Bottom,
 }
 
-pub struct Monitor {
+pub struct Monitor<'monitor> {
     dpy: Display,
     id: MonitorId,
     /// Master window factor.
@@ -28,7 +28,7 @@ pub struct Monitor {
     show_bar: bool,
     bar_pos: BarPosition,
     /// Owned list of clients.
-    clients: Vec<Client>,
+    clients: Vec<Client<'monitor>>,
     /// Selected client, as an index of our own set of clients.
     /// TODO: Figure out this exact architecture later.
     sel: Option<usize>,
@@ -46,7 +46,7 @@ pub struct Monitor {
     lt: Toggle<&'static Layout>,
 }
 
-impl Monitor {
+impl<'monitor> Monitor<'monitor> {
     pub fn new(dpy: Display) -> Self {
         Self {
             dpy,
@@ -78,7 +78,7 @@ impl Monitor {
     }
 }
 
-impl Drop for Monitor {
+impl Drop for Monitor<'_> {
     fn drop(&mut self) {
         use crate::C as X;
 
@@ -89,7 +89,7 @@ impl Drop for Monitor {
     }
 }
 
-impl Monitor {
+impl<'monitor> Monitor<'monitor> {
     pub fn update_bar_pos(&mut self, bar_height: Distance) {
         if !self.show_bar {
             // If the bar is not shown, then the dimensions of the windows

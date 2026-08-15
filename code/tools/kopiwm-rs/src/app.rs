@@ -6,7 +6,7 @@ use config::{Coordinate, Distance};
 
 /// C: type for Coordinates.
 /// D: type for Distance.
-pub struct App {
+pub struct App<'app> {
     dpy: Display,
     root: Window,
     screen: Screen,
@@ -18,7 +18,7 @@ pub struct App {
     bar_height: Distance,
     /// Owned list of moitors. It is guaranteed that for the lifetime of `Self`,
     /// this list is non-empty.
-    mons: NonEmpty<Monitor>,
+    mons: NonEmpty<Monitor<'app>>,
     cursors: CursorStateArray<Cursor>,
     colors: WindowColorStateArray<WindowColors<XftColor>>,
     status_text: String,
@@ -30,11 +30,11 @@ pub struct App {
     wm_atoms: WMArray<C::Atom>,
 }
 
-pub struct AppInitParams {
+pub struct AppInitParams<'app> {
     pub screen: Screen,
     pub s: Size,
     pub lrpad: Distance,
-    pub mons: NonEmpty<Monitor>,
+    pub mons: NonEmpty<Monitor<'app>>,
     pub cursors: CursorStateArray<Cursor>,
     pub colors: WindowColorStateArray<WindowColors<XftColor>>,
     pub numlockmask: NumLockMask,
@@ -43,8 +43,8 @@ pub struct AppInitParams {
     pub wm_atoms: WMArray<C::Atom>,
 }
 
-impl App {
-    pub fn new(dpy: Display, root: Window, params: AppInitParams) -> Self {
+impl<'app> App<'app> {
+    pub fn new(dpy: Display, root: Window, params: AppInitParams<'app>) -> Self {
         Self {
             dpy,
             root,
@@ -66,7 +66,7 @@ impl App {
 }
 
 /// Getters.
-impl App {
+impl<'app> App<'app> {
     pub fn selmon(&self) -> &Monitor {
         self.mons.sel()
     }
@@ -83,7 +83,7 @@ impl App {
 }
 
 /// Core Logic.
-impl App {
+impl<'app> App<'app> {
     pub fn updategeom(&mut self) -> bool {
         let mut dirty = false;
         let m = self.mons.first_mut();
@@ -221,5 +221,29 @@ impl App {
             }
         }
         unsafe { C::XFree(syms as *mut c_void) };
+    }
+
+    pub fn focus(&mut self, client: Option<&Client>) {
+
+        // if (!c || !ISVISIBLE(c))
+        // 	for (c = selmon->stack; c && !ISVISIBLE(c); c = c->snext);
+        // if (selmon->sel && selmon->sel != c)
+        // 	unfocus(selmon->sel, 0);
+        // if (c) {
+        // 	if (c->mon != selmon)
+        // 		selmon = c->mon;
+        // 	if (c->isurgent)
+        // 		seturgent(c, 0);
+        // 	detachstack(c);
+        // 	attachstack(c);
+        // 	grabbuttons(c, 1);
+        // 	XSetWindowBorder(dpy, c->win, scheme[SchemeSel][ColBorder].pixel);
+        // 	setfocus(c);
+        // } else {
+        // 	XSetInputFocus(dpy, root, RevertToPointerRoot, CurrentTime);
+        // 	XDeleteProperty(dpy, root, netatom[NetActiveWindow]);
+        // }
+        // selmon->sel = c;
+        // drawbars();
     }
 }
