@@ -121,20 +121,61 @@ fn try_run(cwd: &Path) -> Option<ExitCode> {
     Some(m.run())
 }
 
-fn main() -> ExitCode {
-    let Ok(mut cwd) = std::env::current_dir() else {
-        println!("Unable to get current working directory");
-        return ExitCode::FAILURE;
-    };
+struct App<'app> {
+    cwd: &'app Path,
+    /// Only check to see which command gets triggered, but don't run it.
+    check_only: bool,
+}
 
-    if let Some(exit_code) = try_run(&cwd) {
+impl App<'_> {
+    pub fn try_run(&self) -> Option<ExitCode> {
+        let Ok(files) = self.cwd.read_dir() else {
+            println!("Unable to list files at {:?}", self.cwd);
+            return Some(ExitCode::FAILURE);
+        };
+        let files: Vec<_> = files.filter_map(|v| v.ok()).collect();
+
+        let mut matchers = MATCHERS.iter().chain(WORK_MATCHES);
+
+        let Some(m) = matchers.find(|v| v.trigger.hit(self.cwd, &files)) else {
+            return None;
+        };
+        if let Some(message) = m.message {
+            println!("{} \x1b[37m{message}\x1b[m", banner!());
+        }
+        if self.check_only {
+            return Some(ExitCode::SUCCESS);
+        }
+        Some(m.run())
+    }
+
+    pub fn next(mut self) -> Option<Self> {
+        self.cwd = self.cwd.parent()?;
+
+        // Still ensure that there is a parent, as we don't want to run this in
+        // the root directory.
+        self.cwd.parent()?;
+
+        std::env::set_current_dir(self.cwd).ok()?;
+
+        Some(self)
+    }
+}
+
+fn main() -> ExitCode {
+    let cwd = std::env::current_dir().expect("Unable to get current working directory");
+    let args = std::env::args().collect::<Vec<_>>();
+    let mut app =
+        App { cwd: cwd.as_path(), check_only: args.iter().any(|arg| arg == "--check") };
+
+    if let Some(exit_code) = app.try_run() {
         return exit_code;
     }
     std::io::stdout().write(banner!("traversing upwards...").as_bytes()).unwrap();
-    while cwd.pop() && cwd.parent().is_some() {
-        let Ok(()) = std::env::set_current_dir(&cwd) else {
-            println!("Unable to set current working directory");
-            return ExitCode::FAILURE;
+    loop {
+        app = match app.next() {
+            Some(v) => v,
+            None => break,
         };
         println!("{} \x1b[37m{}\x1b[m", banner!(), cwd.display());
         if let Some(exit_code) = try_run(&cwd) {
