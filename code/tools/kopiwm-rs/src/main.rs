@@ -104,16 +104,39 @@ pub fn init_check_win(
     let dpy = dpy.c();
     let atom_wmcheck = *netatoms.get(Net::WMCheck).unwrap();
     let atom_wmname = *netatoms.get(Net::WMName).unwrap();
-    let pmp = C::PropModeReplace as c_int;
-    const XA_WINDOW: c_ulong = 33; // Hard-coded after referencing X documentation.
-    use C::XChangeProperty as CP;
+    let atom_netsupported = *netatoms.get(Net::Supported).unwrap();
+    let atom_netclientlist = *netatoms.get(Net::ClientList).unwrap();
+    let pmr = C::PropModeReplace as c_int;
+
+    // Hard-coded after referencing X documentation.
+    const XA_ATOM: C::Atom = 4;
+    const XA_WINDOW: C::Atom = 33;
+    #[allow(non_upper_case_globals)]
+    const NetLast: c_int = 9;
+
     let app_name = NAME.c_str();
     let app_name = app_name.as_ptr() as *const u8;
     let app_len = NAME.len() as c_int;
+
     unsafe {
-        CP(dpy, check_win, atom_wmcheck, XA_WINDOW, 32, pmp, cw_ptr, 1);
-        CP(dpy, check_win, atom_wmname, utf8string, 8, pmp, app_name, app_len);
-        CP(dpy, root.c(), atom_wmcheck, XA_WINDOW, 32, pmp, cw_ptr, 1);
+        use C::{XChangeProperty as CP, XDeleteProperty as DP};
+        // supporting window for NetWMCheck
+        CP(dpy, check_win, atom_wmcheck, XA_WINDOW, 32, pmr, cw_ptr, 1);
+        CP(dpy, check_win, atom_wmname, utf8string, 8, pmr, app_name, app_len);
+        CP(dpy, root.c(), atom_wmcheck, XA_WINDOW, 32, pmr, cw_ptr, 1);
+
+        // EWMH support per view
+        CP(
+            dpy,
+            root.c(),
+            atom_netsupported,
+            XA_ATOM,
+            32,
+            pmr,
+            netatoms.as_ptr() as *const u8,
+            NetLast,
+        );
+        DP(dpy, root.c(), atom_netclientlist);
     }
 }
 

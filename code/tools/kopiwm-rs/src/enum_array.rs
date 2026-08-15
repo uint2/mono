@@ -66,6 +66,10 @@ macro_rules! enum_array {
                 let i = key as usize;
                 if i < self.data.len() { self.data[i].as_mut() } else { None }
             }
+
+            pub const fn as_ptr(&self) -> *const Option<T> {
+                self.data.as_ptr()
+            }
         }
     };
 }
