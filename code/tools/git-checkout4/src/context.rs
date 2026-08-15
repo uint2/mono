@@ -73,6 +73,7 @@ impl AppCtx {
         if config.enable_logging {
             log::init(Some(config.log_level));
         }
+        log::trace!("Create new AppCtx");
         let mut cwd = Err(());
         let mut r_git_toplevel = Err(());
         let mut is_in_submodule = Err(());

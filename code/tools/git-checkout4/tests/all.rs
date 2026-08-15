@@ -83,6 +83,30 @@ mod primary {
         let outcome = t.sh("", || App::new(&ctx).execute("main"));
         assert_eq!(outcome, Outcome::Bypass);
     }
+
+    /// Checkout a branch from a detached head state.
+    #[test]
+    fn checkout_from_detached() {
+        let t = Test::new(function!());
+        t.sh2("", &["git", "init", "-b", "main"]);
+        t.sh("", || some_commit("."));
+
+        let ctx = t.sh("", || AppCtx::init(CONFIG)).unwrap();
+        App::new(&ctx).auto_register(); // Register the "main" branch.
+
+        let sha = t.sh("", || git!("rev-parse", "--verify", "HEAD").get_stdout());
+        t.sh2("", &["git", "checkout", sha.as_str().trim()]);
+
+        // Verify that the HEAD is detached.
+        let output = t.sh("", || {
+            git!("rev-parse", "--abbrev-ref", "--symbolic-full-name", "HEAD").get_stdout()
+        });
+        assert_eq!(output, "HEAD", "HEAD is, in fact, not detached.");
+
+        let ctx = t.sh("", || AppCtx::init(CONFIG)).unwrap();
+        let outcome = t.sh("", || App::new(&ctx).execute("main"));
+        assert_eq!(outcome, Outcome::Bypass);
+    }
 }
 
 mod linked {
@@ -92,7 +116,7 @@ mod linked {
     /// Also makes sure that the branches are registered to their respective
     /// worktrees.
     #[cfg(test)]
-    fn setup_main_dev(t: &Test) {
+    pub(super) fn setup_main_dev(t: &Test) {
         t.sh2("", &["git", "init", "-b", "main", "--bare", ".git"]);
         t.sh2("", &["git", "worktree", "add", "--orphan", "main"]);
         t.sh("main", || some_commit("."));
@@ -104,12 +128,26 @@ mod linked {
         assert_eq!(git_branch(&t.join("dev")), "dev");
 
         let ctx = t.sh("", || AppCtx::init(CONFIG)).unwrap();
-        let app = App::new(&ctx);
+        let mut app = App::new(&ctx);
+        app.auto_register();
+
         // Check for correct registration.
-        assert_eq!(app[branch!("main")].last_component(), "main");
-        assert_eq!(app[branch!("dev")].last_component(), "dev");
+        assert_eq!(
+            app.mapped_worktree(branch!("main")).map(Worktree::last_component),
+            Some("main")
+        );
+        assert_eq!(
+            app.mapped_worktree(branch!("dev")).map(Worktree::last_component),
+            Some("dev")
+        );
+
+        log::info!("Completed setup: setup_main_dev");
     }
 
+    /// Run checkout on "main", when currently on the "dev" bundle. Critically,
+    /// "main" is not mapped to the current worktree, and so we need to first
+    /// jump to the worktree that "main" is mapped to, and then run
+    /// `git checkout main`.
     #[test]
     fn checkout_an_unowned_branch() {
         let t = Test::new(function!());
@@ -121,13 +159,14 @@ mod linked {
         assert_eq!(
             outcome,
             Outcome::JumpAndCheckout {
-                worktree: app[branch!("main")],
+                worktree: app.bundle(branch!("main")).worktree,
                 branch: branch!("main"),
                 relpath: Path::new("")
             }
         );
     }
 
+    /// Run checkout on "dev", when currently on the "dev" bundle.
     #[test]
     fn checkout_current_branch() {
         let t = Test::new(function!());
@@ -139,6 +178,8 @@ mod linked {
         assert_eq!(outcome, Outcome::Bypass);
     }
 
+    /// Run checkout on "zero", something that is not currently a valid branch
+    /// name.
     #[test]
     fn checkout_a_non_branch() {
         let t = Test::new(function!());
@@ -165,7 +206,7 @@ mod linked {
         assert_eq!(
             outcome,
             Outcome::JumpAndCheckout {
-                worktree: app[branch!("dev")],
+                worktree: app.bundle(branch!("dev")).worktree,
                 branch: branch!("dev"),
                 relpath: Path::new("src/main/java")
             }
@@ -188,18 +229,65 @@ mod linked {
         assert_eq!(
             outcome,
             Outcome::JumpAndCheckout {
-                worktree: app[branch!("main")],
+                worktree: app.bundle(branch!("main")).worktree,
                 branch: branch!("main"),
                 relpath: Path::new("src/main/java")
             }
         );
     }
 
+    /// Checkout a branch that matches the current directory.
+    /// On a directory that is called "main", but is on branch "feature". Then
+    /// when we checkout "main" again, the git branch should now be "main".
+    #[test]
+    fn checkout_branch_matches_directory() {
+        let t = Test::new(function!());
+        setup_main_dev(&t);
+
+        t.sh("main", || git!("checkout", "-b", "feature").snw());
+        assert_eq!(git_branch(t.join("main")), "feature");
+
+        let ctx = t.sh("main", || AppCtx::init(CONFIG)).unwrap();
+        let mut app = App::new(&ctx);
+
+        let outcome = t.sh("main", || app.execute("main"));
+        assert_eq!(outcome, Outcome::Bypass);
+    }
+
+    /// Checkout a branch from a detached head state.
+    #[test]
+    fn checkout_from_detached() {
+        let t = Test::new(function!());
+        setup_main_dev(&t);
+
+        let sha = t.sh("main", || git!("rev-parse", "--verify", "HEAD").get_stdout());
+        t.sh2("main", &["git", "checkout", sha.as_str().trim()]);
+
+        // Verify that the HEAD is detached.
+        let output = t.sh("main", || {
+            git!("rev-parse", "--abbrev-ref", "--symbolic-full-name", "HEAD").get_stdout()
+        });
+        assert_eq!(output, "HEAD", "HEAD is, in fact, not detached.");
+
+        let ctx = t.sh("main", || AppCtx::init(CONFIG)).unwrap();
+        let outcome = t.sh("main", || App::new(&ctx).execute("main"));
+        assert_eq!(outcome, Outcome::Bypass);
+    }
+}
+
+/// These are operations done in a directory where git is aware that it's
+/// active, but nothing is checked out. An example can be achived by running
+/// `git init --bare .git`.
+///
+/// Just for fun, we shall refer to this directory as the "lift lobby".
+mod lobby {
+    use super::*;
+
     /// Jump from the lift lobby, with everything already registered.
     #[test]
     fn lift_lobby_registered() {
         let t = Test::new(function!());
-        setup_main_dev(&t);
+        linked::setup_main_dev(&t);
 
         let ctx = t.sh("", || AppCtx::init(CONFIG)).unwrap();
         let mut app = App::new(&ctx);
@@ -207,7 +295,7 @@ mod linked {
         assert_eq!(
             outcome,
             Outcome::JumpAndCheckout {
-                worktree: app[branch!("main")],
+                worktree: app.bundle(branch!("main")).worktree,
                 branch: branch!("main"),
                 relpath: Path::new("")
             }
@@ -226,125 +314,89 @@ mod linked {
         let ctx = t.sh("", || AppCtx::init(CONFIG)).unwrap();
         let mut app = App::new(&ctx);
         let outcome = t.sh("", || app.execute("main"));
-        let worktree = app[branch!("main")];
+        let worktree = app.bundle(branch!("main")).worktree;
         assert_eq!(outcome, Outcome::Jump { worktree, relpath: Path::new("") });
     }
 }
 
-/// Jump from to worktree using branch name.
-#[test]
-fn jump_with_branch() {
-    let t = Test::new(function!());
-    t.sh("", || {
-        git!("init", "-b", "main", "--bare", ".git").snw();
-        git!("worktree", "add", "--orphan", "main").snw();
-        some_commit("main");
-        git!("worktree", "add", "dev").snw();
-        git!("worktree", "add", "-b", "benjamin", "diana").snw();
-    });
+/// Jumps when the target's worktree and branch name do not match.
+mod smart_jumps {
+    use super::*;
 
-    // Register the "benjamin" branch.
-    let ctx = t.sh("main", || AppCtx::init(CONFIG)).unwrap();
-    let mut app = App::new(&ctx);
-    let b_benjamin = branch!("benjamin");
-    let w_diana = app[b_benjamin];
-    t.sh("main", || app.map_branch(b_benjamin, w_diana));
+    /// We create a linked worktree situation, where there is a "main" worktree
+    /// checked out at the "main" branch (standard stuff), but then there will
+    /// be a "dino" worktree checked out at the "book" branch (D for directory
+    /// and B for branch).
+    pub(super) fn setup_dino_book(t: &Test) {
+        t.sh("", || {
+            git!("init", "-b", "main", "--bare", ".git").snw();
+            git!("worktree", "add", "--orphan", "main").snw();
+            some_commit("main");
+            git!("worktree", "add", "-b", "book", "dino").snw();
+            some_commit("dino");
+        });
 
-    // Re-read the updated config from filesystem.
-    let ctx = t.sh("main", || AppCtx::init(CONFIG)).unwrap();
-    let mut app = App::new(&ctx);
+        // Register the "book" branch.
+        let ctx = t.sh("main", || AppCtx::init(CONFIG)).unwrap();
+        let mut app = App::new(&ctx);
+        let w_dino = app.bundle(branch!("book")).worktree;
+        t.sh("main", || app.map_branch(branch!("book"), w_dino));
 
-    let outcome = t.sh("main", || app.execute("benjamin"));
-    assert_eq!(
-        outcome,
-        Outcome::JumpAndCheckout {
-            worktree: w_diana,
-            branch: b_benjamin,
-            relpath: Path::new("")
-        }
-    );
-}
+        // Validate current branch of worktrees.
+        assert_eq!(git_branch(&t.join("main")), "main");
+        assert_eq!(git_branch(&t.join("dino")), "book");
 
-/// Jump from to worktree using directory name.
-#[test]
-fn jump_with_directory() {
-    let t = Test::new(function!());
-    t.sh("", || {
-        git!("init", "-b", "main", "--bare", ".git").snw();
-        git!("worktree", "add", "--orphan", "main").snw();
-        some_commit("main");
-        git!("worktree", "add", "dev").snw();
-        git!("worktree", "add", "-b", "benjamin", "diana").snw();
-    });
-
-    // Register the "benjamin" branch.
-    let ctx = t.sh("main", || AppCtx::init(CONFIG)).unwrap();
-    let mut app = App::new(&ctx);
-    let b_benjamin = branch!("benjamin");
-    let w_diana = app[b_benjamin];
-    t.sh("main", || app.map_branch(b_benjamin, w_diana));
-
-    // Re-read the updated config from filesystem.
-    let ctx = t.sh("main", || AppCtx::init(CONFIG)).unwrap();
-    let mut app = App::new(&ctx);
-
-    let outcome = t.sh("main", || app.execute("diana"));
-    assert_eq!(outcome, Outcome::Jump { worktree: w_diana, relpath: Path::new("") });
-}
-
-/// Checkout a branch that matches the current directory.
-/// On a directory that is called "main", but is on branch "dev". Then when we
-/// checkout "main" again, the git branch should now be "main".
-#[test]
-fn checkout_branch_matches_directory() {
-    let t = Test::new(function!());
-    t.sh("", || {
-        git!("init", "-b", "main", "--bare", ".git").snw();
-        git!("worktree", "add", "--orphan", "main").snw();
-        some_commit("main");
-    });
-
-    // Register the "main" branch.
-    let ctx = t.sh("main", || AppCtx::init(CONFIG)).unwrap();
-    let mut app = App::new(&ctx);
-    t.sh("main", || app.execute(""));
-
-    // Re-read the updated config from filesystem.
-    let ctx = t.sh("main", || AppCtx::init(CONFIG)).unwrap();
-    let mut app = App::new(&ctx);
-
-    // Set branch to "dev".
-    t.sh("main", || git!("checkout", "-b", "dev").snw());
-    assert_eq!(t.branch_at("main"), "dev");
-
-    let outcome = t.sh("main", || app.execute("main"));
-    assert_eq!(outcome, Outcome::Bypass);
-}
-
-/// Checkout a branch from a detached head state.
-#[test]
-fn checkout_from_detached() {
-    let t = Test::new(function!());
-    t.sh("", || {
-        git!("init", "-b", "main").snw();
-        some_commit(".");
-    });
-
-    // Register the "main" branch.
-    let ctx = t.sh("", || AppCtx::init(CONFIG)).unwrap();
-    let mut app = App::new(&ctx);
-    t.sh("", || {
+        let ctx = t.sh("", || AppCtx::init(CONFIG)).unwrap();
+        let mut app = App::new(&ctx);
         app.auto_register();
-        app.save_git_config();
-        println!("SAVED {:?}", app.git_config());
-    });
 
-    let sha = t.sh("", || git!("rev-parse", "HEAD").get_stdout());
-    t.sh2("", &["git", "checkout", sha.as_str().trim()]);
+        // Check for correct registration.
+        assert_eq!(
+            app.mapped_worktree(branch!("main")).map(Worktree::last_component),
+            Some("main")
+        );
+        assert_eq!(
+            app.mapped_worktree(branch!("book")).map(Worktree::last_component),
+            Some("dino")
+        );
+    }
 
-    let ctx = t.sh("", || AppCtx::init(CONFIG)).unwrap();
-    let outcome = t.sh("", || App::new(&ctx).execute("main"));
-    assert_eq!(outcome, Outcome::Bypass);
+    /// Jump from to worktree using branch name.
+    #[test]
+    fn jump_with_branch() {
+        let t = Test::new(function!());
+        setup_dino_book(&t);
+
+        let ctx = t.sh("main", || AppCtx::init(CONFIG)).unwrap();
+        let mut app = App::new(&ctx);
+        let outcome = t.sh("main", || app.execute("book"));
+        assert_eq!(
+            outcome,
+            Outcome::JumpAndCheckout {
+                worktree: app.bundle(branch!("book")).worktree,
+                branch: branch!("book"),
+                relpath: Path::new("")
+            }
+        );
+    }
+
+    /// Jump from to worktree using directory name.
+    #[test]
+    fn jump_with_directory() {
+        let t = Test::new(function!());
+        setup_dino_book(&t);
+
+        let ctx = t.sh("main", || AppCtx::init(CONFIG)).unwrap();
+        let mut app = App::new(&ctx);
+        let outcome = t.sh("main", || app.execute("dino"));
+        assert_eq!(
+            outcome,
+            Outcome::Jump {
+                worktree: app.bundle(branch!("book")).worktree,
+                relpath: Path::new("")
+            }
+        );
+    }
 }
 
 #[test]

@@ -41,25 +41,36 @@ impl<'a> App<'a> {
         }
     }
 
-    /// Auto-register branches that match their worktree. So note that if a
-    /// branch "dev" is checked out at a worktree whose last path component is
-    /// "feature", then it won't be auto-registered.
-    pub fn try_auto_register_branch(&mut self, branch: Branch<'a>) {
-        log::trace!("auto-registering branch: \"{branch}\"");
-
-        let Some(bundle) = self.bundles.iter().find(|b| b.branch == Some(branch)) else {
-            return;
-        };
+    /// Tries to find a worktree that we can auto-register the branch to.
+    fn auto_find_worktree_for_branch(&self, branch: Branch<'a>) -> Option<Worktree<'a>> {
+        let bundle = self.bundles.iter().find(|b| b.branch == Some(branch))?;
 
         let branch_name_matches_worktree_dir_name =
             bundle.worktree.as_path().ends_with(branch.as_str());
+
         // In the docs at [https://git-scm.com/docs/git-worktree], they
         // differentiate between "main worktree" and "linked worktree".
         let is_main_worktree = bundle.worktree.as_path().join(".git").is_dir();
 
         if branch_name_matches_worktree_dir_name || is_main_worktree {
-            log::trace!("auto-registering branch: \"{branch}\" -> {}", bundle.worktree);
-            self.git_config.set(branch, bundle.worktree);
+            Some(bundle.worktree)
+        } else {
+            None
+        }
+    }
+
+    /// Auto-register branches that match their worktree. So note that if a
+    /// branch "dev" is checked out at a worktree whose last path component is
+    /// "feature", then it won't be auto-registered.
+    fn try_auto_register_branch(&mut self, branch: Branch<'a>) {
+        match self.auto_find_worktree_for_branch(branch) {
+            Some(worktree) => {
+                log::trace!("[auto-register {branch}] -> {}", worktree);
+                self.git_config.set(branch, worktree);
+            }
+            None => {
+                log::trace!("[auto-register {branch}]: no bundle found");
+            }
         }
     }
 
@@ -69,7 +80,9 @@ impl<'a> App<'a> {
     pub fn auto_register(&mut self) {
         for i in 0..self.git_branches.len() {
             let branch = self.git_branches[i];
-            self.try_auto_register_branch(branch);
+            if let None = self.git_config.get(&branch) {
+                self.try_auto_register_branch(branch);
+            }
         }
         self.git_config.save();
     }
@@ -140,6 +153,7 @@ impl<'a> App<'a> {
     }
 
     pub fn execute(&mut self, goal: &str) -> Outcome<'a> {
+        log::trace!("Called execute on \"{goal}\"");
         if self.is_in_submodule {
             log::info!("Bypass because in submodule");
             return Outcome::Bypass;
@@ -291,6 +305,17 @@ impl<'a> App<'a> {
 
     pub fn bundles(&self) -> &[Bundle<'a>] {
         &self.bundles
+    }
+
+    pub fn bundle(&self, branch: Branch<'a>) -> &Bundle<'a> {
+        let Some(bundle) = self.bundles.iter().find(|v| v.branch == Some(branch)) else {
+            panic!("App has no bundle that has branch \"{branch}\"");
+        };
+        bundle
+    }
+
+    pub fn mapped_worktree(&self, branch: Branch<'a>) -> Option<&Worktree<'a>> {
+        self.git_config.get(&branch)
     }
 }
 

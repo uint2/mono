@@ -1,4 +1,4 @@
-pub use git_checkout4::{App, AppConfig, AppCtx, Branch, Outcome};
+pub use git_checkout4::{App, AppConfig, AppCtx, Branch, Outcome, Worktree};
 
 #[allow(unused)]
 pub use {
