@@ -8,7 +8,8 @@ use config::{Coordinate, Distance};
 /// D: type for Distance.
 pub struct App {
     dpy: Display,
-    screen: c_int,
+    root: Window,
+    screen: Screen,
     /// Screen size.
     /// Apparently dwm updates this in `void configurenotify(XEvent *)`, and
     /// that's probably how multipe monitors are supported.
@@ -18,12 +19,11 @@ pub struct App {
     /// Owned list of moitors. It is guaranteed that for the lifetime of `Self`,
     /// this list is non-empty.
     mons: NonEmpty<Monitor>,
-    root: Window,
     cursors: CursorStateArray<Cursor>,
     colors: WindowColorStateArray<WindowColors<XftColor>>,
     status_text: String,
     numlockmask: NumLockMask,
-    fonts: NonEmpty<Font>,
+    fonts: Fonts,
     running: bool,
 
     net_atoms: NetArray<C::Atom>,
@@ -31,26 +31,36 @@ pub struct App {
 }
 
 pub struct AppInitParams {
+    pub screen: Screen,
+    pub s: Size,
+    pub lrpad: Distance,
+    pub mons: NonEmpty<Monitor>,
+    pub cursors: CursorStateArray<Cursor>,
+    pub colors: WindowColorStateArray<WindowColors<XftColor>>,
+    pub numlockmask: NumLockMask,
+    pub fonts: Fonts,
+    pub net_atoms: NetArray<C::Atom>,
+    pub wm_atoms: WMArray<C::Atom>,
 }
 
 impl App {
-    pub fn new(dpy: Display) -> Self {
+    pub fn new(dpy: Display, root: Window, params: AppInitParams) -> Self {
         Self {
             dpy,
-            screen: todo!(),
-            s: todo!(),
-            lrpad: todo!(),
-            bar_height: todo!(),
-            mons: todo!(),
-            root: todo!(),
-            cursors: todo!(),
-            colors: todo!(),
-            status_text: todo!(),
-            numlockmask: todo!(),
-            fonts: todo!(),
-            running: todo!(),
-            net_atoms: todo!(),
-            wm_atoms: todo!(),
+            root,
+            screen: params.screen,
+            s: params.s,
+            lrpad: params.lrpad,
+            bar_height: config::BAR_HEIGHT,
+            mons: params.mons,
+            cursors: params.cursors,
+            colors: params.colors,
+            status_text: String::new(),
+            numlockmask: params.numlockmask,
+            fonts: params.fonts,
+            running: true,
+            net_atoms: params.net_atoms,
+            wm_atoms: params.wm_atoms,
         }
     }
 }

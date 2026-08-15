@@ -29,6 +29,8 @@ pub const NMASTER: u8 = 1;
 /// False means hide bar.
 pub const SHOW_BAR: bool = true;
 
+pub const BAR_HEIGHT: Distance = 20;
+
 pub const BAR_POSITION: BarPosition = BarPosition::Top;
 
 fn placeholder(arg: &Arg) {}

@@ -1,9 +1,10 @@
 #![allow(unused)]
 
 // crate::*
-pub(crate) use crate::app::App;
+pub(crate) use crate::app::{App, AppInitParams};
 pub(crate) use crate::client::Client;
 pub(crate) use crate::config;
+pub(crate) use crate::config::{Coordinate, Distance};
 pub(crate) use crate::drw::{Drw, DrwParams};
 pub(crate) use crate::enums::{
     Clk, CursorState, Net, NetArray, WM, WMArray, WindowColorState, WindowColors,

@@ -53,19 +53,27 @@ impl Font {
 }
 
 pub struct Fonts {
-    fonts: Vec<Font>,
+    fonts: NonEmpty<Font>,
 }
 
 impl Fonts {
     pub fn new(dpy: Display, screen: Screen, fonts: &[&str]) -> Self {
         let mut vec = Vec::with_capacity(fonts.len());
         for font in fonts {
-            vec.push(Font::from_name(dpy, screen, font).unwrap());
+            if let Some(font) = Font::from_name(dpy, screen, font) {
+                vec.push(font)
+            } else {
+                log::warn!("Failed to init font: {font}");
+            }
         }
-        Self { fonts: vec }
+        Self { fonts: NonEmpty::from_vec(vec).unwrap() }
     }
 
     pub fn find_font_that_has_char(&self, utf8codepoint: char) -> Option<&Font> {
         self.fonts.iter().find(|f| f.supports_char(utf8codepoint))
+    }
+
+    pub fn lrpad(&self) -> c_int {
+        self.fonts.first().height
     }
 }

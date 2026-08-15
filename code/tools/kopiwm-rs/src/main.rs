@@ -186,7 +186,20 @@ fn try_main() -> Result<()> {
         C::XSelectInput(dpy.c(), root.c(), wa.event_mask);
     };
 
-    // TODO: call `grabkeys()`.
+    let init = AppInitParams {
+        screen,
+        s: screen_size.convert(),
+        lrpad: fonts.lrpad() as Distance,
+        mons: monitors,
+        cursors,
+        colors,
+        wm_atoms: wmatoms,
+        net_atoms: netatoms,
+        numlockmask: NumLockMask::new(),
+        fonts,
+    };
+    let mut app = App::new(dpy, root, init);
+    app.grabkeys();
     // TODO: call `focus(NULL)`.
 
     log::info!("Ran to the end of try_main()");
