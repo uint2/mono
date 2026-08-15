@@ -8,7 +8,7 @@ pub enum BarPosition {
     Bottom,
 }
 
-pub struct Monitor<'monitor> {
+pub struct Monitor<'a> {
     dpy: Display,
     id: MonitorId,
     /// Master window factor.
@@ -27,15 +27,14 @@ pub struct Monitor<'monitor> {
     /// false means hide bar.
     show_bar: bool,
     bar_pos: BarPosition,
-    /// Owned list of clients.
-    clients: Vec<Client<'monitor>>,
+    /// List of clients.
+    clients: Vec<&'a Client<'a>>,
     /// Selected client, as an index of our own set of clients.
-    /// TODO: Figure out this exact architecture later.
-    sel: Option<usize>,
+    sel: Option<&'a Client<'a>>,
     /// Clients ordered by stacking order. That is, the order in which windows
     /// appear visually. If window A covers window B, or is laid on top of it,
     /// then A is before B in the stacking order.
-    stack: Vec<Rc<Client<'monitor>>>,
+    stack: Vec<&'a Client<'a>>,
 
     /// The X window that manages the status bar. The only time when this is
     /// none should be when the monitor is freshly created, and we just haven't
@@ -45,7 +44,7 @@ pub struct Monitor<'monitor> {
     lt: Toggle<&'static Layout>,
 }
 
-impl<'monitor> Monitor<'monitor> {
+impl<'a> Monitor<'a> {
     pub fn new(dpy: Display) -> Self {
         Self {
             dpy,
@@ -72,7 +71,7 @@ impl<'monitor> Monitor<'monitor> {
         self.bar_window.as_ref()
     }
 
-    pub const fn clients(&self) -> &[Client] {
+    pub const fn clients(&self) -> &[&'a Client<'a>] {
         self.clients.as_slice()
     }
 }
@@ -88,7 +87,7 @@ impl Drop for Monitor<'_> {
     }
 }
 
-impl<'monitor> Monitor<'monitor> {
+impl<'a> Monitor<'a> {
     pub fn update_bar_pos(&mut self, bar_height: Distance) {
         if !self.show_bar {
             // If the bar is not shown, then the dimensions of the windows

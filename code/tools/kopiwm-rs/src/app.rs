@@ -28,6 +28,7 @@ pub struct App<'app> {
 
     net_atoms: NetArray<C::Atom>,
     wm_atoms: WMArray<C::Atom>,
+
     /// The only owned list of clients there are. Ever. TODO: Remove ownership
     /// of clients in monitors.
     clients: Vec<Client<'app>>,
@@ -131,8 +132,8 @@ impl<'app> App<'app> {
         self.selmon().id()
     }
 
-    pub fn window_to_client(&self, window: &Window) -> Option<&Client> {
-        self.mons.iter().flat_map(Monitor::clients).find(|c| c.win() == window)
+    pub fn window_to_client(&self, window: &Window) -> Option<&Client<'app>> {
+        self.clients.iter().find(|c| c.win() == window)
     }
 
     /// Searches the list of monitors for the one with the biggest intersection

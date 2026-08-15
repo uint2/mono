@@ -38,37 +38,38 @@ impl<T> NonEmpty<T> {
     }
 
     /// Gets the first element. Guaranteed to exist due to non-empty property.
-    pub fn first(&self) -> &T {
-        self.inner.first().unwrap()
+    pub const fn first(&self) -> &T {
+        &self.inner.as_slice()[0]
     }
 
     /// Gets the last element. Guaranteed to exist due to non-empty property.
     pub fn last(&self) -> &T {
-        self.inner.last().unwrap()
+        &self.inner.as_slice()[self.len() - 1]
     }
 
     /// Gets the first element. Guaranteed to exist due to non-empty property.
-    pub fn first_mut(&mut self) -> &mut T {
-        self.inner.first_mut().unwrap()
+    pub const fn first_mut(&mut self) -> &mut T {
+        &mut self.inner.as_mut_slice()[0]
     }
 
     /// Gets the last element. Guaranteed to exist due to non-empty property.
-    pub fn last_mut(&mut self) -> &mut T {
-        self.inner.last_mut().unwrap()
+    pub const fn last_mut(&mut self) -> &mut T {
+        let n = self.len() - 1;
+        &mut self.inner.as_mut_slice()[n]
     }
 
     /// Gets the currently selected element.
-    pub fn sel(&self) -> &T {
-        &self.inner[self.selected_index]
+    pub const fn sel(&self) -> &T {
+        &self.inner.as_slice()[self.selected_index]
     }
 
     /// Gets the currently selected element.
-    pub fn sel_mut(&mut self) -> &mut T {
-        &mut self.inner[self.selected_index]
+    pub const fn sel_mut(&mut self) -> &mut T {
+        &mut self.inner.as_mut_slice()[self.selected_index]
     }
 
     /// Update the selected value
-    pub fn set_sel(&mut self, index: usize) -> Result<()> {
+    pub const fn set_sel(&mut self, index: usize) -> Result<()> {
         if index < self.inner.len() {
             Ok(self.selected_index = index)
         } else {
