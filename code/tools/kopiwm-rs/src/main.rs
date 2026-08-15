@@ -6,6 +6,7 @@ mod macros;
 
 mod C;
 mod app;
+mod atom;
 mod client;
 mod config;
 mod drw;
@@ -93,27 +94,18 @@ fn check_locale_support() {
     }
 }
 
-pub fn init_check_win(
-    dpy: &Display,
-    root: &Window,
-    check_win: &Window,
-    netatoms: &NetArray<C::Atom>,
-) {
+pub fn init_check_win(dpy: &Display, root: &Window, check_win: &Window) {
     let utf8string = x11::XInternAtom(dpy, "UTF8_STRING", false).unwrap();
     let check_win = check_win.c();
     let cw_ptr = &check_win as *const C::Window as *const u8;
     let dpy = dpy.c();
-    let atom_wmcheck = *netatoms.get(Net::WMCheck).unwrap();
-    let atom_wmname = *netatoms.get(Net::WMName).unwrap();
-    let atom_netsupported = *netatoms.get(Net::Supported).unwrap();
-    let atom_netclientlist = *netatoms.get(Net::ClientList).unwrap();
+    let atom_wmcheck = atom::net(Net::WMCheck);
+    let atom_wmname = atom::net(Net::WMName);
     let pmr = C::PropModeReplace as c_int;
 
     // Hard-coded after referencing X documentation.
     const XA_ATOM: C::Atom = 4;
     const XA_WINDOW: C::Atom = 33;
-    #[allow(non_upper_case_globals)]
-    const NetLast: c_int = 9;
 
     let app_name = NAME.c_str();
     let app_name = app_name.as_ptr() as *const u8;
@@ -130,14 +122,14 @@ pub fn init_check_win(
         CP(
             dpy,
             root.c(),
-            atom_netsupported,
+            atom::net(Net::Supported),
             XA_ATOM,
             32,
             pmr,
-            netatoms.as_ptr() as *const u8,
-            NetLast,
+            atom::net_atoms().as_ptr() as *const u8,
+            atom::net_atoms().len() as c_int,
         );
-        DP(dpy, root.c(), atom_netclientlist);
+        DP(dpy, root.c(), atom::net(Net::ClientList));
     }
 }
 
@@ -162,11 +154,10 @@ fn try_main() -> Result<()> {
     let cursors = setup::setup_cursors(dpy);
 
     let monitors = NonEmpty::new(Monitor::new(dpy));
-    let wmatoms = WM::init(&dpy);
-    let netatoms = Net::init(&dpy);
+    atom::init_all(dpy);
 
     let check_win = Window::check_win(dpy, &root);
-    init_check_win(&dpy, &root, &check_win, &netatoms);
+    init_check_win(&dpy, &root, &check_win);
 
     let mut wa: C::XSetWindowAttributes = unsafe { core::mem::zeroed() };
     wa.cursor = cursors.get(CursorState::Normal).unwrap().cursor();
@@ -193,8 +184,6 @@ fn try_main() -> Result<()> {
         monitors,
         cursors,
         colors,
-        wm_atoms: wmatoms,
-        net_atoms: netatoms,
         numlockmask: NumLockMask::new(),
         fonts,
     };

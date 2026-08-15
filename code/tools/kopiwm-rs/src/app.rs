@@ -23,9 +23,6 @@ pub struct App {
     fonts: Fonts,
     running: bool,
 
-    net_atoms: NetArray<C::Atom>,
-    wm_atoms: WMArray<C::Atom>,
-
     /// Owned list of moitors. It is guaranteed that for the lifetime of `Self`,
     /// this list is non-empty.
     monitors: NonEmpty<Monitor>,
@@ -40,8 +37,6 @@ pub struct AppInitParams {
     pub colors: WindowColorStateArray<WindowColors<XftColor>>,
     pub numlockmask: NumLockMask,
     pub fonts: Fonts,
-    pub net_atoms: NetArray<C::Atom>,
-    pub wm_atoms: WMArray<C::Atom>,
 }
 
 impl App {
@@ -60,8 +55,6 @@ impl App {
             numlockmask: params.numlockmask,
             fonts: params.fonts,
             running: true,
-            net_atoms: params.net_atoms,
-            wm_atoms: params.wm_atoms,
         }
     }
 }
@@ -70,16 +63,6 @@ impl App {
 impl App {
     pub const fn selmon(&self) -> &Monitor {
         self.monitors.sel()
-    }
-
-    /// Gets an Atom from the pre-computed array.
-    pub const fn wm(&self, atom: WM) -> C::Atom {
-        *self.wm_atoms.get(atom).unwrap()
-    }
-
-    /// Gets an Atom from the pre-computed array.
-    pub const fn net(&self, atom: Net) -> C::Atom {
-        *self.net_atoms.get(atom).unwrap()
     }
 }
 

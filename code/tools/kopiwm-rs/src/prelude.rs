@@ -2,6 +2,7 @@
 
 // crate::*
 pub(crate) use crate::app::{App, AppInitParams};
+pub(crate) use crate::atom;
 pub(crate) use crate::client::Client;
 pub(crate) use crate::config;
 pub(crate) use crate::config::{Coordinate, Distance};
@@ -29,6 +30,7 @@ pub(crate) use std::collections::LinkedList;
 pub(crate) use std::ffi::CString;
 pub(crate) use std::process::ExitCode;
 pub(crate) use std::rc::Rc;
+pub(crate) use std::sync::OnceLock;
 
 // core::*
 pub(crate) use core::cmp::Ordering;
@@ -37,6 +39,7 @@ pub(crate) use core::marker::{PhantomData, PhantomPinned};
 pub(crate) use core::mem::MaybeUninit;
 pub(crate) use core::pin::Pin;
 pub(crate) use core::ptr::{self, NonNull};
+pub(crate) use core::sync::atomic::{self, AtomicBool};
 
 // external.
 pub(crate) use static_assertions::const_assert_eq;
