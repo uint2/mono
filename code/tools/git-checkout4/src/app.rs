@@ -79,6 +79,7 @@ impl<'a> App<'a> {
         writeln!(f, "Branch \x1b[36m{branch}\x1b[m is not mapped to any worktree.")
             .unwrap();
         for (idx, bundle) in self.bundles.iter().enumerate() {
+            let idx = idx + 1;
             let (left, right) = bundle.worktree.pretty_split();
             writeln!(f, "[\x1b[32m{idx}\x1b[m] {left}\x1b[32m{right}\x1b[m").unwrap();
         }
@@ -88,7 +89,12 @@ impl<'a> App<'a> {
 
         input_buf.clear();
         io::stdin().read_line(input_buf).unwrap();
-        let choice = input_buf.trim().parse::<usize>().unwrap();
+        let choice = input_buf
+            .trim()
+            .parse::<usize>()
+            .ok()
+            .and_then(|v| v.checked_sub(1))
+            .unwrap();
         let choice = &self.bundles[choice];
         self.git_config.set(branch, choice.worktree);
     }
