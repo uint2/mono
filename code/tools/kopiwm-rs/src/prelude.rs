@@ -37,6 +37,7 @@ pub(crate) use core::pin::Pin;
 pub(crate) use core::ptr::{self, NonNull};
 
 // external.
+pub(crate) use static_assertions::const_assert_eq;
 pub(crate) use strum::EnumCount;
 
 // build-time consts.

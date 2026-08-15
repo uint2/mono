@@ -61,9 +61,8 @@ pub fn setup_color_scheme(
     dpy: Display,
     screen: Screen,
 ) -> WindowColorStateArray<WindowColors<XftColor>> {
-    use strum::IntoEnumIterator;
     let mut arr = WindowColorStateArray::<WindowColors<XftColor>>::new();
-    for state in WindowColorState::iter() {
+    for state in WindowColorState::ALL {
         let wc = config::COLOR_SCHEME.get(state).unwrap();
         let wc = WindowColors {
             fg: XftColor::from_name(dpy, screen, wc.fg).unwrap(),

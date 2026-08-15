@@ -73,3 +73,12 @@ macro_rules! enum_array {
         }
     };
 }
+
+macro_rules! all_array {
+    ($name:ident, $($key:ident),* $(,)?) => {
+        impl $name {
+            pub const ALL: [Self; 0$(+(1,Self::$key).0)*] = [ $(Self::$key),* ];
+        }
+        const_assert_eq!($name::COUNT, $name::ALL.len());
+    }
+}

@@ -1,8 +1,7 @@
 use crate::C;
 use crate::prelude::*;
 
-use strum::IntoEnumIterator;
-use strum_macros::{EnumCount, EnumIter};
+use strum_macros::EnumCount;
 
 /// (dwm) Cur* enums.
 /// The different possible states of the mouse cursor.
@@ -13,6 +12,7 @@ pub enum CursorState {
     Move,
 }
 enum_array!(CursorStateArray, CursorState);
+all_array!(CursorState, Normal, Resize, Move);
 
 /// (dwm) Clk* enums.
 #[derive(Clone, Copy, EnumCount)]
@@ -35,13 +35,14 @@ pub enum Clk {
 }
 
 /// Represents a possible which one might be in that warrants a unique color scheme.
-#[derive(Clone, Copy, EnumCount, EnumIter)]
+#[derive(Clone, Copy, EnumCount)]
 pub enum WindowColorState {
     Normal,
     Selected,
     Bar,
 }
 enum_array!(WindowColorStateArray, WindowColorState);
+all_array!(WindowColorState, Normal, Selected, Bar);
 
 #[derive(Debug, Clone, Copy)]
 pub struct WindowColors<T> {
@@ -54,7 +55,7 @@ pub struct WindowColors<T> {
 }
 
 /// (dwm) WM* atoms.
-#[derive(Clone, Copy, EnumCount, EnumIter)]
+#[derive(Clone, Copy, EnumCount)]
 pub enum WM {
     Delete,
     Protocols,
@@ -62,6 +63,7 @@ pub enum WM {
     TakeFocus,
 }
 enum_array!(WMArray, WM);
+all_array!(WM, Delete, Protocols, State, TakeFocus);
 
 impl WM {
     pub const fn as_str(&self) -> &'static str {
@@ -75,7 +77,7 @@ impl WM {
 
     pub fn init(dpy: &Display) -> WMArray<C::Atom> {
         let mut arr = WMArray::new();
-        for variant in WM::iter() {
+        for variant in WM::ALL {
             arr.set(variant, x11::XInternAtom(dpy, variant.as_str(), false).unwrap());
         }
         arr
@@ -85,7 +87,7 @@ impl WM {
 /// (dwm) Net* atoms.
 ///
 /// See  https://specifications.freedesktop.org/wm/1.5/  For more details.
-#[derive(Clone, Copy, EnumCount, EnumIter)]
+#[derive(Clone, Copy, EnumCount)]
 pub enum Net {
     ActiveWindow,
     ClientList,
@@ -121,6 +123,18 @@ pub enum Net {
     WMWindowTypeDialog,
 }
 enum_array!(NetArray, Net);
+all_array!(
+    Net,
+    ActiveWindow,
+    ClientList,
+    Supported,
+    WMCheck,
+    WMFullscreen,
+    WMName,
+    WMState,
+    WMWindowType,
+    WMWindowTypeDialog
+);
 
 impl Net {
     pub const fn as_str(&self) -> &'static str {
@@ -139,7 +153,7 @@ impl Net {
 
     pub fn init(dpy: &Display) -> NetArray<C::Atom> {
         let mut arr = NetArray::new();
-        for variant in Net::iter() {
+        for variant in Net::ALL {
             arr.set(variant, x11::XInternAtom(dpy, variant.as_str(), false).unwrap());
         }
         arr

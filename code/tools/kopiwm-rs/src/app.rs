@@ -30,6 +30,31 @@ pub struct App {
     wm_atoms: WMArray<C::Atom>,
 }
 
+pub struct AppInitParams {
+}
+
+impl App {
+    pub fn new(dpy: Display) -> Self {
+        Self {
+            dpy,
+            screen: todo!(),
+            s: todo!(),
+            lrpad: todo!(),
+            bar_height: todo!(),
+            mons: todo!(),
+            root: todo!(),
+            cursors: todo!(),
+            colors: todo!(),
+            status_text: todo!(),
+            numlockmask: todo!(),
+            fonts: todo!(),
+            running: todo!(),
+            net_atoms: todo!(),
+            wm_atoms: todo!(),
+        }
+    }
+}
+
 /// Getters.
 impl App {
     pub fn selmon(&self) -> &Monitor {
