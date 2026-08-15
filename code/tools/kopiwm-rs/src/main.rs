@@ -167,6 +167,24 @@ fn try_main() -> Result<()> {
     let check_win = Window::check_win(dpy, &root);
     init_check_win(&dpy, &root, &check_win, &netatoms);
 
+    let mut wa: C::XSetWindowAttributes = unsafe { core::mem::zeroed() };
+    wa.cursor = cursors.get(CursorState::Normal).unwrap().cursor();
+    wa.event_mask = C::SubstructureRedirectMask as c_long
+        | C::SubstructureNotifyMask as c_long
+        | C::ButtonPressMask as c_long
+        | C::PointerMotionMask as c_long
+        | C::EnterWindowMask as c_long
+        | C::LeaveWindowMask as c_long
+        | C::StructureNotifyMask as c_long
+        | C::PropertyChangeMask as c_long;
+
+    let cw_attr_mask = C::CWEventMask as c_ulong | C::CWCursor as c_ulong;
+
+    unsafe {
+        C::XChangeWindowAttributes(dpy.c(), root.c(), cw_attr_mask, &mut wa);
+        C::XSelectInput(dpy.c(), root.c(), wa.event_mask);
+    };
+
     log::info!("Ran to the end of try_main()");
     Ok(())
 }

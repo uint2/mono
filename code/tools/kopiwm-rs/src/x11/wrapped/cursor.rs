@@ -11,6 +11,10 @@ impl Cursor {
         let cursor = unsafe { C::XCreateFontCursor(dpy.c(), cursor) };
         Self { dpy, cursor }
     }
+
+    pub const fn cursor(&self) -> C::Cursor {
+        self.cursor
+    }
 }
 
 impl Drop for Cursor {
