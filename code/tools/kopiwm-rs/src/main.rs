@@ -190,7 +190,7 @@ fn try_main() -> Result<()> {
         screen,
         s: screen_size.convert(),
         lrpad: fonts.lrpad() as Distance,
-        mons: monitors,
+        monitors,
         cursors,
         colors,
         wm_atoms: wmatoms,

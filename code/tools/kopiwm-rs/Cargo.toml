@@ -11,6 +11,7 @@ nix = { version = "0.31"  , features = ["signal"] }
 strum = "0.28.0"
 strum_macros = "0.28.0"
 static_assertions = "1.1.0"
+slotmap = "1.1.1"
 
 [build-dependencies]
 bindgen = { git = "https://github.com/rust-lang/rust-bindgen", rev = "9d26c6eddeff9192ddedb563192abe3128fc5aae" }

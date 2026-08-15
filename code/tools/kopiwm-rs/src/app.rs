@@ -16,9 +16,6 @@ pub struct App<'app> {
     s: Size,
     lrpad: Distance,
     bar_height: Distance,
-    /// Owned list of moitors. It is guaranteed that for the lifetime of `Self`,
-    /// this list is non-empty.
-    mons: NonEmpty<Monitor<'app>>,
     cursors: CursorStateArray<Cursor>,
     colors: WindowColorStateArray<WindowColors<XftColor>>,
     status_text: String,
@@ -32,13 +29,17 @@ pub struct App<'app> {
     /// The only owned list of clients there are. Ever. TODO: Remove ownership
     /// of clients in monitors.
     clients: Vec<Client<'app>>,
+
+    /// Owned list of moitors. It is guaranteed that for the lifetime of `Self`,
+    /// this list is non-empty.
+    monitors: NonEmpty<Monitor<'app>>,
 }
 
 pub struct AppInitParams<'app> {
     pub screen: Screen,
     pub s: Size,
     pub lrpad: Distance,
-    pub mons: NonEmpty<Monitor<'app>>,
+    pub monitors: NonEmpty<Monitor<'app>>,
     pub cursors: CursorStateArray<Cursor>,
     pub colors: WindowColorStateArray<WindowColors<XftColor>>,
     pub numlockmask: NumLockMask,
@@ -56,7 +57,7 @@ impl<'app> App<'app> {
             s: params.s,
             lrpad: params.lrpad,
             bar_height: config::BAR_HEIGHT,
-            mons: params.mons,
+            monitors: params.monitors,
             cursors: params.cursors,
             colors: params.colors,
             status_text: String::new(),
@@ -73,7 +74,7 @@ impl<'app> App<'app> {
 /// Getters.
 impl<'app> App<'app> {
     pub const fn selmon(&self) -> &Monitor<'app> {
-        self.mons.sel()
+        self.monitors.sel()
     }
 
     /// Gets an Atom from the pre-computed array.
@@ -91,7 +92,7 @@ impl<'app> App<'app> {
 impl<'app> App<'app> {
     pub fn updategeom(&mut self) -> bool {
         let mut dirty = false;
-        let m = self.mons.first_mut();
+        let m = self.monitors.first_mut();
         if m.m.width != self.s.width || m.m.height != self.s.height {
             dirty = true;
             m.m.set_size(self.s);
@@ -100,8 +101,8 @@ impl<'app> App<'app> {
         }
         if dirty {
             let id = self.window_to_monitor(&self.root);
-            let idx = self.mons.position(|v| v.id() == id).unwrap();
-            self.mons.set_sel(idx);
+            let idx = self.monitors.position(|v| v.id() == id).unwrap();
+            self.monitors.set_sel(idx);
         }
         dirty
     }
@@ -118,13 +119,14 @@ impl<'app> App<'app> {
             }
         }
 
-        if let Some(m) = self.mons.find(|m| m.bar_window().map_or(false, |w| w == window))
+        if let Some(m) =
+            self.monitors.find(|m| m.bar_window().map_or(false, |w| w == window))
         {
             return m.id();
         }
 
         if let Some(client) = self.window_to_client(window) {
-            if let Some(m) = self.mons.find(|m| m.id() == client.mon.id()) {
+            if let Some(m) = self.monitors.find(|m| m.id() == client.mon.id()) {
                 return m.id();
             }
         }
@@ -143,7 +145,7 @@ impl<'app> App<'app> {
     pub fn rect_to_monitor(&self, rect: &Rect) -> MonitorId {
         let mut id = self.selmon().id();
         let mut max_area = 0;
-        for mon in &self.mons {
+        for mon in &self.monitors {
             let area = rect.intersect(&mon.w);
             if max_area < area {
                 max_area = area;
