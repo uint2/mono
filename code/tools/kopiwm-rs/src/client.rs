@@ -16,6 +16,8 @@ impl<'monitor> Client<'monitor> {
         &self.win
     }
 
+    /// A client is visible if and only if there exists a bit that matches
+    /// between its own bitmask, and that of its owning monitor.
     pub fn is_visible(&self) -> bool {
         self.tags & self.mon2.tags != 0
     }

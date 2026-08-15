@@ -200,8 +200,7 @@ fn try_main() -> Result<()> {
     };
     let mut app = App::new(dpy, root, init);
     app.grabkeys();
-    // TODO: call `focus(NULL)`.
-
+    app.focus(None);
     log::info!("Ran to the end of try_main()");
     Ok(())
 }

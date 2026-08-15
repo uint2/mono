@@ -67,7 +67,7 @@ impl<'app> App<'app> {
 
 /// Getters.
 impl<'app> App<'app> {
-    pub fn selmon(&self) -> &Monitor {
+    pub fn selmon(&self) -> &Monitor<'app> {
         self.mons.sel()
     }
 
@@ -224,6 +224,7 @@ impl<'app> App<'app> {
     }
 
     pub fn focus(&mut self, client: Option<&Client>) {
+        // TODO: implement from dwm's C impl.
 
         // if (!c || !ISVISIBLE(c))
         // 	for (c = selmon->stack; c && !ISVISIBLE(c); c = c->snext);

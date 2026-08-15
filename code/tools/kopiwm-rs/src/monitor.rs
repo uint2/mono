@@ -35,8 +35,7 @@ pub struct Monitor<'monitor> {
     /// Clients ordered by stacking order. That is, the order in which windows
     /// appear visually. If window A covers window B, or is laid on top of it,
     /// then A is before B in the stacking order.
-    /// TODO: figure out this architecture later too.
-    // stack: Vec<&'app Client>,
+    stack: Vec<Rc<Client<'monitor>>>,
 
     /// The X window that manages the status bar. The only time when this is
     /// none should be when the monitor is freshly created, and we just haven't
@@ -61,7 +60,7 @@ impl<'monitor> Monitor<'monitor> {
             bar_pos: config::BAR_POSITION,
             clients: vec![],
             sel: None,
-            // stack: vec![],
+            stack: vec![],
             bar_window: None,
             lt: Toggle::new(&EMPTY_LAYOUT),
         }
