@@ -56,6 +56,8 @@ pub fn some_commit<P: AsRef<Path>>(dir: P) {
     let _ = std::fs::create_dir_all(&dir);
     let file = dir.join(&fingerprint);
     fs::write(&file, "hello").unwrap();
+    git!("-C", dir, "config", "user.name", "git").snw();
+    git!("-C", dir, "config", "user.email", "git@git.git").snw();
     git!("-C", dir, "add", fingerprint).snw();
     git!("-C", dir, "commit", "-m", "boopus gloopus").snw();
 }
