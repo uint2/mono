@@ -13,6 +13,7 @@ mod enums;
 mod ffi2;
 mod font;
 mod id;
+mod key;
 mod layout;
 mod linked_list;
 mod monitor;

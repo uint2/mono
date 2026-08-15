@@ -24,6 +24,10 @@ impl Window {
         Self { dpy, window }
     }
 
+    pub const fn dpy(&self) -> *mut C::Display {
+        self.dpy.c()
+    }
+
     pub const fn c(&self) -> C::Window {
         self.window
     }

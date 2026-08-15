@@ -1,3 +1,4 @@
+use crate::C;
 use crate::prelude::*;
 
 pub type Coordinate = c_int;
@@ -29,3 +30,15 @@ pub const NMASTER: u8 = 1;
 pub const SHOW_BAR: bool = true;
 
 pub const BAR_POSITION: BarPosition = BarPosition::Top;
+
+fn placeholder(arg: &Arg) {}
+
+const MODKEY: c_uint = C::Mod4Mask;
+
+macro_rules! key {
+    ($mod:expr, $keysym:expr, $func:expr, $arg:expr) => {
+        Key { modifier: $mod, keysym: $keysym, func: $func, arg: $arg }
+    };
+}
+
+pub const KEYS: [Key; 1] = [key!(MODKEY, 0, placeholder, Arg::Int(0))];

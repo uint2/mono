@@ -149,4 +149,42 @@ impl App {
             _ => Some(Loc::new(win_x_return, win_y_return)),
         }
     }
+
+    pub fn grabkeys(&mut self) {
+        let dpy = &self.dpy;
+        let root = self.root.c();
+        self.numlockmask.update(dpy);
+
+        let mut start: c_int = 0;
+        let mut end: c_int = 0;
+        let mut skip: c_int = 0;
+
+        unsafe {
+            C::XUngrabKey(dpy.c(), C::AnyKey as c_int, C::AnyModifier as c_uint, root);
+            C::XDisplayKeycodes(dpy.c(), &mut start, &mut end);
+        };
+
+        let syms: *mut C::KeySym = unsafe {
+            C::XGetKeyboardMapping(
+                dpy.c(),
+                start as C::KeyCode,
+                end - start + 1,
+                &mut skip,
+            )
+        };
+        if syms.is_null() {
+            return;
+        }
+
+        for keycode in start..=end {
+            for key in &config::KEYS {
+                let offset = (keycode - start) * skip;
+                let keysym = unsafe { *syms.add(offset as usize) };
+                if key.keysym == keysym {
+                    self.numlockmask.grabkey(&self.root, key, keycode);
+                }
+            }
+        }
+        unsafe { C::XFree(syms as *mut c_void) };
+    }
 }

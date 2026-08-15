@@ -32,6 +32,10 @@ impl NumLockMask {
         self.modifiers[3] = self.modifiers[2] | C::LockMask;
     }
 
+    pub const fn modifiers(&self) -> &[c_uint; 4] {
+        &self.modifiers
+    }
+
     pub fn cleanmask(&self, mask: c_uint) -> c_uint {
         const ALL_MASK: c_uint = C::ShiftMask
             | C::ControlMask
@@ -41,5 +45,21 @@ impl NumLockMask {
             | C::Mod4Mask
             | C::Mod5Mask;
         return (mask & !self.modifiers[3]) & ALL_MASK;
+    }
+
+    pub fn grabkey(&self, root: &Window, key: &Key, keycode: c_int) {
+        for modifier in self.modifiers {
+            unsafe {
+                C::XGrabKey(
+                    root.dpy(),
+                    keycode,
+                    key.modifier | modifier,
+                    root.c(),
+                    C::True as c_int,
+                    C::GrabModeAsync as c_int,
+                    C::GrabModeAsync as c_int,
+                );
+            }
+        }
     }
 }

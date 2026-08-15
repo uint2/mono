@@ -5,6 +5,7 @@ macro_rules! repr_enum {
     (($name:ident, $int:ty), $(($enum:ident, $value:expr)),+ $(,)?) => {
         pub enum $name { $($enum,)* }
         impl $name {
+            #[allow(unused)]
             pub const fn c(&self) -> $int {
                 match self { $(Self::$enum => $value as $int,)* }
             }
@@ -59,4 +60,10 @@ repr_enum!(
     (None, C::None),
     (PointerRoot, C::PointerRoot),
     (Parent, C::RevertToParent),
+);
+
+repr_enum!(
+    (GrabMode, c_int), //
+    (Sync, C::GrabModeSync),
+    (Async, C::GrabModeAsync),
 );
