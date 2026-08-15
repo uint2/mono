@@ -28,6 +28,9 @@ pub struct App<'app> {
 
     net_atoms: NetArray<C::Atom>,
     wm_atoms: WMArray<C::Atom>,
+    /// The only owned list of clients there are. Ever. TODO: Remove ownership
+    /// of clients in monitors.
+    clients: Vec<Client<'app>>,
 }
 
 pub struct AppInitParams<'app> {
@@ -61,6 +64,7 @@ impl<'app> App<'app> {
             running: true,
             net_atoms: params.net_atoms,
             wm_atoms: params.wm_atoms,
+            clients: vec![],
         }
     }
 }
@@ -119,8 +123,7 @@ impl<'app> App<'app> {
         }
 
         if let Some(client) = self.window_to_client(window) {
-            let mon_id = client.mon();
-            if let Some(m) = self.mons.find(|m| m.id() == mon_id) {
+            if let Some(m) = self.mons.find(|m| m.id() == client.mon.id()) {
                 return m.id();
             }
         }
@@ -246,5 +249,64 @@ impl<'app> App<'app> {
         // }
         // selmon->sel = c;
         // drawbars();
+    }
+
+    pub fn manage(&mut self, window: Window, wa: &C::XWindowAttributes) {
+        let c = Client::new();
+        // Client *c, *t = NULL;
+        // Window trans = None;
+        // XWindowChanges wc;
+        //
+        // c = ecalloc(1, sizeof(Client));
+        // c->win = w;
+        // /* geometry */
+        // c->x = c->oldx = wa->x;
+        // c->y = c->oldy = wa->y;
+        // c->w = c->oldw = wa->width;
+        // c->h = c->oldh = wa->height;
+        // c->oldbw = wa->border_width;
+        //
+        // updatetitle(c);
+        // if (XGetTransientForHint(dpy, w, &trans) && (t = wintoclient(trans))) {
+        // 	c->mon = t->mon;
+        // 	c->tags = t->tags;
+        // } else {
+        // 	c->mon = selmon;
+        // 	applyrules(c);
+        // }
+        //
+        // if (c->x + WIDTH(c) > c->mon->wx + c->mon->ww)
+        // 	c->x = c->mon->wx + c->mon->ww - WIDTH(c);
+        // if (c->y + HEIGHT(c) > c->mon->wy + c->mon->wh)
+        // 	c->y = c->mon->wy + c->mon->wh - HEIGHT(c);
+        // c->x = MAX(c->x, c->mon->wx);
+        // c->y = MAX(c->y, c->mon->wy);
+        // c->bw = borderpx;
+        //
+        // wc.border_width = c->bw;
+        // XConfigureWindow(dpy, w, CWBorderWidth, &wc);
+        // XSetWindowBorder(dpy, w, scheme[SchemeNorm][ColBorder].pixel);
+        // configure(c); /* propagates border_width, if size doesn't change */
+        // updatewindowtype(c);
+        // updatesizehints(c);
+        // updatewmhints(c);
+        // XSelectInput(dpy, w, EnterWindowMask|FocusChangeMask|PropertyChangeMask|StructureNotifyMask);
+        // grabbuttons(c, 0);
+        // if (!c->isfloating)
+        // 	c->isfloating = c->oldstate = trans != None || c->isfixed;
+        // if (c->isfloating)
+        // 	XRaiseWindow(dpy, c->win);
+        // attach(c);
+        // attachstack(c);
+        // XChangeProperty(dpy, root, netatom[NetClientList], XA_WINDOW, 32, PropModeAppend,
+        // 	(unsigned char *) &(c->win), 1);
+        // XMoveResizeWindow(dpy, c->win, c->x + 2 * sw, c->y, c->w, c->h); /* some windows require this */
+        // setclientstate(c, NormalState);
+        // if (c->mon == selmon)
+        // 	unfocus(selmon->sel, 0);
+        // c->mon->sel = c;
+        // arrange(c->mon);
+        // XMapWindow(dpy, c->win);
+        // focus(NULL);
     }
 }
