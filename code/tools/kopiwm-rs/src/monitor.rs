@@ -9,7 +9,7 @@ pub enum BarPosition {
 }
 
 pub struct Monitor {
-    dpy: Display,
+    pub dpy: Display,
     pub id: MonitorId,
     /// Master window factor.
     pub mfact: f32,

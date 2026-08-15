@@ -145,21 +145,21 @@ impl Display {
 
     pub fn create_pixmap(
         &self,
-        window: &Window,
+        window: C::Window,
         dimensions: Size<c_uint>,
         depth: c_uint,
     ) -> C::Pixmap {
         let w = dimensions.width;
         let h = dimensions.height;
-        unsafe { C::XCreatePixmap(self.c(), window.c(), w, h, depth) }
+        unsafe { C::XCreatePixmap(self.c(), window, w, h, depth) }
     }
 
     pub fn free_pixmap(&self, pixmap: C::Pixmap) {
         unsafe { C::XFreePixmap(self.c(), pixmap) };
     }
 
-    pub fn create_graphics_ctx(&self, window: &Window) -> C::GC {
-        unsafe { C::XCreateGC(self.c(), window.c(), 0, ptr::null_mut()) }
+    pub fn create_graphics_ctx(&self, window: C::Window) -> C::GC {
+        unsafe { C::XCreateGC(self.c(), window, 0, ptr::null_mut()) }
     }
 
     pub fn free_graphics_ctx(&self, graphics_ctx: C::GC) {

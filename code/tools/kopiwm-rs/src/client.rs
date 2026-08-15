@@ -22,6 +22,7 @@ impl ClientSizes {
 }
 
 pub struct Client {
+    dpy: Display,
     id: ClientId,
     /// The parent monitor to this client.
     pub mon: MonitorId,
@@ -62,6 +63,7 @@ impl Client {
         let mut pos = Toggle::new(rect);
         pos.set(rect);
         Self {
+            dpy: mon.dpy,
             id: ClientId::new(),
             mon: mon.id,
             win: window,
@@ -101,5 +103,14 @@ impl Client {
     /// between its own bitmask, and that of its owning monitor.
     pub const fn is_visible(&self, monitors: &[Monitor]) -> bool {
         self.tags & self.mon(monitors).tags != 0
+    }
+
+    pub fn update_title(&mut self) {
+        let dpy = self.dpy;
+        let win = &self.win;
+        const XA_WM_NAME: C::Atom = 39;
+        if !x11::gettextprop(dpy, win, atom::net(Net::WMName), &mut self.name) {
+            x11::gettextprop(dpy, win, XA_WM_NAME, &mut self.name);
+        }
     }
 }

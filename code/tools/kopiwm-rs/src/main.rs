@@ -148,7 +148,7 @@ fn try_main() -> Result<()> {
     let screen = dpy.default_screen();
     let screen_size = dpy.display_size(screen);
     let root = dpy.default_root_window();
-    let drw = Drw::new(dpy, root.clone(), screen, screen_size.convert());
+    let drw = Drw::new(dpy, root.c(), screen, screen_size.convert());
     let fonts = Fonts::new(dpy, screen, config::FONTS);
     let colors = setup::setup_color_scheme(dpy, screen);
     let cursors = setup::setup_cursors(dpy);

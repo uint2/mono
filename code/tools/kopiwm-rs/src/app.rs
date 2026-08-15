@@ -8,7 +8,7 @@ use config::{Coordinate, Distance};
 /// D: type for Distance.
 pub struct App {
     dpy: Display,
-    root: Window,
+    pub root: Window,
     screen: Screen,
     /// Screen size.
     /// Apparently dwm updates this in `void configurenotify(XEvent *)`, and
@@ -114,6 +114,10 @@ impl App {
 
     pub fn window_to_client(&self, window: &Window) -> Option<&Client> {
         self.monitors.iter().flat_map(|m| &m.clients).find(|c| c.win() == window)
+    }
+
+    pub fn c_window_to_client(&self, window: C::Window) -> Option<&Client> {
+        self.monitors.iter().flat_map(|m| &m.clients).find(|c| c.win().c() == window)
     }
 
     /// Searches the list of monitors for the one with the biggest intersection
@@ -235,12 +239,14 @@ impl App {
     pub fn applyrules(&mut self, c: &mut Client) {}
 
     pub fn manage(&mut self, window: Window, wa: &C::XWindowAttributes) {
-        let mut c = Client::new(self.selmon(), window.clone(), wa);
+        let mut c = Client::new(self.selmon(), window, wa);
+
+        c.update_title();
 
         let dpy = &self.dpy;
         let mut trans: C::Window = C::None as C::Window;
-        let result = unsafe { C::XGetTransientForHint(dpy.c(), window.c(), &mut trans) };
-        match (result, self.window_to_client(&window)) {
+        let result = unsafe { C::XGetTransientForHint(dpy.c(), c.win().c(), &mut trans) };
+        match (result, self.c_window_to_client(trans)) {
             (result, Some(t)) if result != 0 => {
                 c.mon = t.mon;
                 c.tags = t.tags;

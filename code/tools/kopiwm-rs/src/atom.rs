@@ -47,3 +47,16 @@ pub fn wm(idx: WM) -> C::Atom {
 pub fn wm_atoms() -> &'static [C::Atom; WM::COUNT] {
     _wm_atoms(None)
 }
+
+// TODO: come try this again sometime
+// pub fn _dpy(init: Option<()>) -> *mut C::Display {
+//     static DISPLAY: OnceLock<Box<C::Display>> = OnceLock::new();
+//     if let Some(_) = init {
+//         let x = unsafe { C::XOpenDisplay(std::ptr::null()) };
+//         let x = unsafe { Box::from_raw(x) };
+//         DISPLAY.set(x).unwrap();
+//     }
+//     Box::clone(DISPLAY.get().unwrap());
+//     let x = DISPLAY.get().unwrap().clone();
+//     Box::into_raw(x)
+// }

@@ -1,7 +1,11 @@
 use crate::C;
 use crate::prelude::*;
 
-#[derive(Clone)]
+// TODO: rename this to OwnedWindow or something that clearly differentiates
+// that `XDestroyWindow` is called on this one upon `Drop`.
+//
+// NOTE: We do NOT implement `clone` for this struct because that would imply
+// that we call `XDestroyWindow` twice.
 pub struct Window {
     dpy: Display,
     window: C::Window,
@@ -12,10 +16,7 @@ impl Drop for Window {
         if self.window == 0 {
             return;
         }
-
-        unsafe {
-            C::XDestroyWindow(self.dpy.c(), self.window);
-        }
+        unsafe { C::XDestroyWindow(self.dpy.c(), self.window) };
     }
 }
 

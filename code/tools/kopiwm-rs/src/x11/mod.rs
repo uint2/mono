@@ -42,15 +42,19 @@ pub fn XInternAtom(
 
 pub fn gettextprop(
     dpy: Display,
-    window: Window,
+    window: &Window,
     atom: C::Atom,
     text: &mut String,
 ) -> bool {
+    text.clear();
+    text.push_str("<broken>");
+
     let mut name: C::XTextProperty = unsafe { core::mem::zeroed() };
     let result = unsafe { C::XGetTextProperty(dpy.c(), window.c(), &mut name, atom) };
     if result == 0 || name.nitems == 0 {
         return false;
     }
+
     const XA_STRING: c_ulong = 31; // Hard-coded, inspected from C source.
     if name.encoding == XA_STRING {
         let s = unsafe { core::slice::from_raw_parts(name.value, name.nitems as usize) };
