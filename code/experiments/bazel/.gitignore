@@ -8,3 +8,5 @@ bazel-*
 .bazelversion
 # User-specific .bazelrc
 user.bazelrc
+
+/.rules_rust_analyzer

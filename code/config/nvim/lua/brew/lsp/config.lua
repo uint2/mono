@@ -1,29 +1,75 @@
 local lsp = require('brew.lsp')
 
-lsp.add['rust_analyzer'] = {
-  filetypes = { 'rust' },
-  cmd = { 'rust-analyzer' },
-  root_markers = { 'Cargo.toml', 'rust-project.json' },
-  settings = {
-    ['rust-analyzer'] = {
-      cargo = {
-        allTargets = true,
-        features = 'all',
-      },
-      check = {
-        allTargets = true,
-      },
-      imports = { granularity = { group = 'item' } },
-      procMacro = {
-        ignored = {
-          -- Ignoring this fixed LSP go-to-definition within `#[tokio::test]`.
-          -- https://github.com/rust-lang/rust-analyzer/issues/12362
-          -- ['tokio-macros'] = { 'test' },
+local rust_with_bazel = false
+
+if not rust_with_bazel then
+  lsp.add['rust_analyzer'] = {
+    filetypes = { 'rust' },
+    cmd = { 'rust-analyzer' },
+    root_markers = { 'Cargo.toml', 'rust-project.json' },
+    settings = {
+      ['rust-analyzer'] = {
+        cargo = {
+          allTargets = true,
+          features = 'all',
+        },
+        check = {
+          allTargets = true,
+        },
+        imports = { granularity = { group = 'item' } },
+        procMacro = {
+          ignored = {
+            -- Ignoring this fixed LSP go-to-definition within `#[tokio::test]`.
+            -- https://github.com/rust-lang/rust-analyzer/issues/12362
+            -- ['tokio-macros'] = { 'test' },
+          },
         },
       },
     },
-  },
-}
+  }
+else
+  lsp.add['rust_analyzer'] = {
+    filetypes = { 'rust' },
+    root_dir = '/home/khang/mono/code/experiments/bazel',
+    -- root_markers = { 'MODULE.bazel', 'MODULE.bazel.lock' },
+    --------------------------------------------------
+
+    cmd = {
+      '/home/khang/.cache/bazel/_bazel_khang/cache/repos/v1/contents/148ea448c7b03c6257f3bb3eb7ed04b8b85b20fd7d460b1b3c136d34dd21c869/37007994-ea4e-48fa-b85f-232987625fac/bin/rust-analyzer',
+    },
+    settings = {
+      ['rust-analyzer'] = {
+        workspace = {
+          discoverConfig = {
+            command = {
+              '/home/khang/mono/code/experiments/bazel/.rules_rust_analyzer/discover_bazel_rust_project.exe',
+              '{arg}',
+            },
+            progressLabel = 'rules_rust',
+            filesToWatch = {
+              'BUILD',
+              'BUILD.bazel',
+              'MODULE.bazel',
+              'WORKSPACE',
+              'WORKSPACE.bazel',
+            },
+          },
+        },
+        procMacro = {
+          server = '/home/khang/.cache/bazel/_bazel_khang/cache/repos/v1/contents/148ea448c7b03c6257f3bb3eb7ed04b8b85b20fd7d460b1b3c136d34dd21c869/37007994-ea4e-48fa-b85f-232987625fac/libexec/rust-analyzer-proc-macro-srv',
+        },
+        rustfmt = {
+          overrideCommand = {
+            '/home/khang/.cache/bazel/_bazel_khang/cache/repos/v1/contents/3f5ffa689a3cb2162b1a62be1071223d13e89a5dbb1f1d418b0ace80edef155c/ac2a578c-f5d7-42bb-bdc2-a9f0a070396f/bin/rustfmt',
+          },
+        },
+        lens = { enable = true },
+      },
+    },
+
+    --------------------------------------------------
+  }
+end
 
 lsp.add['gopls'] = {
   filetypes = { 'go' },
