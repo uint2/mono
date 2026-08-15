@@ -33,6 +33,9 @@ pub const BAR_HEIGHT: Distance = 20;
 
 pub const BAR_POSITION: BarPosition = BarPosition::Top;
 
+/// border pixel of windows
+pub const BORDER_PX: Distance = 1;
+
 fn placeholder(arg: &Arg) {}
 
 const MODKEY: c_uint = C::Mod4Mask;

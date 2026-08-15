@@ -1,3 +1,4 @@
+use crate::C;
 use crate::prelude::*;
 
 pub struct ClientSizes {
@@ -26,32 +27,63 @@ pub struct Client<'monitor> {
     pub mon: &'monitor Monitor<'monitor>,
     win: Window,
     /// Bitmask of active tags.
-    tags: u32,
+    pub tags: u32,
     name: String,
     /// Position, current and previous.
     pos: Toggle<Rect>,
     sz: ClientSizes,
     hints_valid: bool,
     /// Border width.
-    border_width: Toggle<c_uint>,
+    border_width: Toggle<Distance>,
     is_fixed: bool,
     is_floating: Toggle<bool>,
     isurgent: bool,
     neverfocus: bool,
     isfullscreen: bool,
     /// Next client in the linked list of clients.
-    next: Rc<Self>,
+    next: Option<Rc<Self>>,
     /// Next client in the stacking order. That is, the order in which windows
     /// appear visually. If window A covers window B, or is laid on top of it,
     /// then A is before B in the stacking order.
-    snext: Rc<Self>,
+    snext: Option<Rc<Self>>,
 }
 
 impl<'monitor> Client<'monitor> {
     getter!(id, ClientId);
 
-    pub fn new() -> Self {
-        todo!()
+    pub fn new(
+        mon: &'monitor Monitor<'monitor>,
+        window: Window,
+        wa: &C::XWindowAttributes,
+    ) -> Self {
+        // TODO: verify that this matches `manange` from dwm in C.
+        let rect = Rect {
+            x: wa.x,
+            y: wa.y,
+            width: wa.width as Distance,
+            height: wa.height as Distance,
+        };
+        let mut pos = Toggle::new(rect);
+        pos.set(rect);
+        let border_width = Toggle::new(wa.border_width as Distance);
+        Self {
+            id: ClientId::new(),
+            mon,
+            win: window,
+            tags: 0,
+            name: String::new(),
+            pos,
+            sz: ClientSizes::new(),
+            hints_valid: false,
+            border_width,
+            is_fixed: false,
+            is_floating: Toggle::new(false),
+            isurgent: false,
+            neverfocus: false,
+            isfullscreen: false,
+            next: None,
+            snext: None,
+        }
     }
 
     pub const fn win(&self) -> &Window {

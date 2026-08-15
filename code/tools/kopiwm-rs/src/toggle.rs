@@ -8,6 +8,10 @@ impl<T> Toggle<T> {
         Self { now: value, prev: None }
     }
 
+    pub const fn get(&self) -> &T {
+        &self.now
+    }
+
     pub fn set(&mut self, mut value: T) {
         core::mem::swap(&mut self.now, &mut value);
         self.prev = Some(value);

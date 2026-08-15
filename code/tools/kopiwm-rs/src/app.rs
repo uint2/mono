@@ -72,7 +72,7 @@ impl<'app> App<'app> {
 
 /// Getters.
 impl<'app> App<'app> {
-    pub fn selmon(&self) -> &Monitor<'app> {
+    pub const fn selmon(&self) -> &Monitor<'app> {
         self.mons.sel()
     }
 
@@ -252,8 +252,26 @@ impl<'app> App<'app> {
         // drawbars();
     }
 
-    pub fn manage(&mut self, window: Window, wa: &C::XWindowAttributes) {
-        let c = Client::new();
+    pub fn applyrules(&mut self, c: &mut Client<'app>) {}
+
+    pub fn manage(&'app mut self, window: Window, wa: &C::XWindowAttributes) {
+        let mut c = Client::new(self.selmon(), window.clone(), wa);
+
+        let dpy = &self.dpy;
+        let mut trans: C::Window = C::None as C::Window;
+        let result = unsafe { C::XGetTransientForHint(dpy.c(), window.c(), &mut trans) };
+        match (result, self.window_to_client(&window)) {
+            (result, Some(t)) if result != 0 => {
+                c.mon = t.mon;
+                c.tags = t.tags;
+            }
+            _ => {
+                c.mon = self.selmon();
+                // self.applyrules(&mut c); // uncommenting causes a "immutable borrow later used by call ".
+            }
+        };
+
+        // let c = Client::new(window, wa);
         // Client *c, *t = NULL;
         // Window trans = None;
         // XWindowChanges wc;
