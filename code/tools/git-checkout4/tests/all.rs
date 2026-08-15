@@ -56,7 +56,7 @@ mod primary {
         // Register the "main" branch.
         let ctx = t.sh("", || AppCtx::init(CONFIG)).unwrap();
         let mut app = App::new(&ctx);
-        app.map_branch(branch!("main"), app.get_worktrees()[0]);
+        app.map_branch(branch!("main"), app.bundles()[0].worktree);
 
         // Re-read the updated config from filesystem.
         let ctx = t.sh("", || AppCtx::init(CONFIG)).unwrap();

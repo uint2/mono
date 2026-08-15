@@ -46,10 +46,6 @@ impl<'a> App<'a> {
     /// "feature", then it won't be auto-registered.
     pub fn try_auto_register_branch(&mut self, branch: Branch<'a>) {
         log::trace!("auto-registering branch: \"{branch}\"");
-        log::trace!(
-            "options: {:?}",
-            self.bundles.iter().map(|b| (b.worktree, b.branch)).collect::<Vec<_>>()
-        );
 
         let Some(bundle) = self.bundles.iter().find(|b| b.branch == Some(branch)) else {
             return;
@@ -75,6 +71,7 @@ impl<'a> App<'a> {
             let branch = self.git_branches[i];
             self.try_auto_register_branch(branch);
         }
+        self.git_config.save();
     }
 
     fn prompt_user_for_worktree(&mut self, input_buf: &mut String, branch: Branch<'a>) {
@@ -138,6 +135,7 @@ impl<'a> App<'a> {
 
     pub fn execute(&mut self, goal: &str) -> Outcome<'a> {
         if self.is_in_submodule {
+            log::info!("Bypass because in submodule");
             return Outcome::Bypass;
         }
         self.deregister_invalid_worktrees();
@@ -189,7 +187,6 @@ impl<'a> App<'a> {
 
         // Get the worktree that the `goal` branch belongs to.
         let Some(mapped_worktree) = self.git_config.get(goal) else {
-            // panic!("Goal \"{goal}\" is not configred in git config.")
             panic!("Goal \"{goal}\" is not configred in git config.")
         };
 
@@ -284,6 +281,10 @@ impl<'a> App<'a> {
 
     pub fn get_worktrees(&self) -> Vec<Worktree<'a>> {
         self.bundles.iter().map(|v| v.worktree).collect()
+    }
+
+    pub fn bundles(&self) -> &[Bundle<'a>] {
+        &self.bundles
     }
 }
 

@@ -115,10 +115,3 @@ impl<'a> GitConfig<'a> {
         Ok(Self { data: ht, original_keys, cwd })
     }
 }
-
-impl Drop for GitConfig<'_> {
-    fn drop(&mut self) {
-        log::info!("Saved git config!");
-        self.save();
-    }
-}
