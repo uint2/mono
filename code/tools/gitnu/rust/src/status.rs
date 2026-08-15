@@ -65,7 +65,7 @@ fn normal(state: &mut State, line: String) -> Option<String> {
 
     let pathspec = pathspec.trim_start();
 
-    let pathspec = match delta {
+    let mut pathspec = match delta {
         // Example:
         // ```
         // Changes to be committed:
@@ -78,6 +78,15 @@ fn normal(state: &mut State, line: String) -> Option<String> {
             .trim_start(),
         _ => pathspec,
     };
+
+    // Handle submodules.
+    if let Some(v) = pathspec.strip_suffix("(new commits)") {
+        pathspec = v.trim_end()
+    } else if let Some(v) = pathspec.strip_suffix("(modified content)") {
+        pathspec = v.trim_end()
+    } else if let Some(v) = pathspec.strip_suffix("(new commits, modified content)") {
+        pathspec = v.trim_end()
+    }
 
     Some(pathspec.to_string())
 }
