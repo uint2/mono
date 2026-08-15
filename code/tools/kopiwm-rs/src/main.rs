@@ -185,6 +185,9 @@ fn try_main() -> Result<()> {
         C::XSelectInput(dpy.c(), root.c(), wa.event_mask);
     };
 
+    // TODO: call `grabkeys()`.
+    // TODO: call `focus(NULL)`.
+
     log::info!("Ran to the end of try_main()");
     Ok(())
 }
