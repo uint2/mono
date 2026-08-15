@@ -39,3 +39,45 @@ pub fn XInternAtom(
         Some(atom)
     }
 }
+
+pub fn gettextprop(
+    dpy: Display,
+    window: Window,
+    atom: C::Atom,
+    text: &mut String,
+) -> bool {
+    let mut name: C::XTextProperty = unsafe { core::mem::zeroed() };
+    let result = unsafe { C::XGetTextProperty(dpy.c(), window.c(), &mut name, atom) };
+    if result == 0 || name.nitems == 0 {
+        return false;
+    }
+    const XA_STRING: c_ulong = 31; // Hard-coded, inspected from C source.
+    if name.encoding == XA_STRING {
+        let s = unsafe { core::slice::from_raw_parts(name.value, name.nitems as usize) };
+        let s = core::str::from_utf8(s).unwrap();
+        text.clear();
+        text.push_str(s);
+    } else {
+        let mut list: *mut *mut c_char = core::ptr::null_mut();
+        let mut n = 0;
+        let result =
+            unsafe { C::XmbTextPropertyToTextList(dpy.c(), &name, &mut list, &mut n) };
+        if result >= 0 && n > 0 && !list.is_null() {
+            let mut len = 0;
+            let first = unsafe { *list } as *const u8;
+            loop {
+                match unsafe { *first.add(len) } {
+                    0 => break,
+                    _ => len += 1,
+                }
+            }
+            let s = unsafe { core::slice::from_raw_parts(first, len) };
+            let s = core::str::from_utf8(s).unwrap();
+            text.clear();
+            text.push_str(s);
+        }
+        unsafe { C::XFreeStringList(list) };
+    }
+    unsafe { C::XFree(name.value as *mut c_void) };
+    true
+}
