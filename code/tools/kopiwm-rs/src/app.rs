@@ -7,7 +7,6 @@ use config::{Coordinate, Distance};
 /// C: type for Coordinates.
 /// D: type for Distance.
 pub struct App {
-    dpy: Display,
     pub root: Window,
     screen: Screen,
     /// Screen size.
@@ -40,9 +39,8 @@ pub struct AppInitParams {
 }
 
 impl App {
-    pub fn new(dpy: Display, root: Window, params: AppInitParams) -> Self {
+    pub fn new(root: Window, params: AppInitParams) -> Self {
         Self {
-            dpy,
             root,
             screen: params.screen,
             s: params.s,
@@ -148,7 +146,7 @@ impl App {
 
         let result = unsafe {
             C::XQueryPointer(
-                self.dpy.c(),
+                dpy.c(),
                 self.root.c(),
                 &mut root_return,
                 &mut child_return,
@@ -174,9 +172,8 @@ impl App {
     }
 
     pub fn grabkeys(&mut self) {
-        let dpy = &self.dpy;
         let root = self.root.c();
-        self.numlockmask.update(dpy);
+        self.numlockmask.update();
 
         let mut start: c_int = 0;
         let mut end: c_int = 0;
@@ -243,7 +240,6 @@ impl App {
 
         c.update_title();
 
-        let dpy = &self.dpy;
         let mut trans: C::Window = C::None as C::Window;
         let result = unsafe { C::XGetTransientForHint(dpy.c(), c.win().c(), &mut trans) };
         match (result, self.c_window_to_client(trans)) {

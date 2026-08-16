@@ -10,7 +10,7 @@ use crate::prelude::*;
 
 pub mod prelude {
     use super::*;
-    pub use display::Display;
+    pub use display::{Display, dpy};
     pub use enums::*;
     pub use screen::Screen;
     pub use window::Window;
@@ -19,7 +19,6 @@ pub mod prelude {
 
 #[allow(non_snake_case)]
 pub fn XInternAtom(
-    dpy: &Display,
     name: &str,
     // If only_if_exists is False, the atom is created if it does not exist.
     only_if_exists: bool,
@@ -40,12 +39,7 @@ pub fn XInternAtom(
     }
 }
 
-pub fn gettextprop(
-    dpy: Display,
-    window: &Window,
-    atom: C::Atom,
-    text: &mut String,
-) -> bool {
+pub fn gettextprop(window: &Window, atom: C::Atom, text: &mut String) -> bool {
     text.clear();
     text.push_str("<broken>");
 

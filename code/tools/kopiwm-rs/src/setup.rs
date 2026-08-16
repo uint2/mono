@@ -10,7 +10,7 @@ unsafe extern "C" fn xerrorstart(_: *mut C::Display, _: *mut C::XErrorEvent) -> 
     panic!("{NAME}: another window manager is already running");
 }
 
-pub fn check_other_wm(dpy: &Display) {
+pub fn check_other_wm() {
     let handler = unsafe { C::XSetErrorHandler(Some(xerrorstart)) };
     unsafe { XERRORXLIB = handler };
     // this causes an error if some other window manager is running.
@@ -58,26 +58,25 @@ pub fn clean_up_zombies() {
 }
 
 pub fn setup_color_scheme(
-    dpy: Display,
     screen: Screen,
 ) -> WindowColorStateArray<WindowColors<XftColor>> {
     let mut arr = WindowColorStateArray::<WindowColors<XftColor>>::new();
     for state in WindowColorState::ALL {
         let wc = config::COLOR_SCHEME.get(state).unwrap();
         let wc = WindowColors {
-            fg: XftColor::from_name(dpy, screen, wc.fg).unwrap(),
-            bg: XftColor::from_name(dpy, screen, wc.bg).unwrap(),
-            border: XftColor::from_name(dpy, screen, wc.border).unwrap(),
+            fg: XftColor::from_name(screen, wc.fg).unwrap(),
+            bg: XftColor::from_name(screen, wc.bg).unwrap(),
+            border: XftColor::from_name(screen, wc.border).unwrap(),
         };
         arr.set(state, wc);
     }
     arr
 }
 
-pub fn setup_cursors(dpy: Display) -> CursorStateArray<Cursor> {
+pub fn setup_cursors() -> CursorStateArray<Cursor> {
     let mut arr = CursorStateArray::new();
-    arr.set(CursorState::Normal, Cursor::new(dpy, C::XC_left_ptr));
-    arr.set(CursorState::Resize, Cursor::new(dpy, C::XC_sizing));
-    arr.set(CursorState::Move, Cursor::new(dpy, C::XC_fleur));
+    arr.set(CursorState::Normal, Cursor::new(C::XC_left_ptr));
+    arr.set(CursorState::Resize, Cursor::new(C::XC_sizing));
+    arr.set(CursorState::Move, Cursor::new(C::XC_fleur));
     arr
 }

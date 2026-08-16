@@ -49,7 +49,10 @@ static mut XERRORXLIB: Option<
     unsafe extern "C" fn(*mut C::Display, *mut C::XErrorEvent) -> c_int,
 > = None;
 
-unsafe extern "C" fn xerror(dpy: *mut C::Display, event: *mut C::XErrorEvent) -> c_int {
+unsafe extern "C" fn xerror(
+    display: *mut C::Display,
+    event: *mut C::XErrorEvent,
+) -> c_int {
     const BAD_WINDOW: u8 = C::BadWindow as u8;
     const BAD_MATCH: u8 = C::BadMatch as u8;
     const BAD_DRAWABLE: u8 = C::BadDrawable as u8;
@@ -82,7 +85,7 @@ unsafe extern "C" fn xerror(dpy: *mut C::Display, event: *mut C::XErrorEvent) ->
     let Some(xerrorlib) = (unsafe { XERRORXLIB }) else {
         panic!("{NAME}: xerrorlib handler missing")
     };
-    unsafe { xerrorlib(dpy, event) }
+    unsafe { xerrorlib(display, event) }
 }
 
 fn check_locale_support() {
@@ -94,11 +97,10 @@ fn check_locale_support() {
     }
 }
 
-pub fn init_check_win(dpy: &Display, root: &Window, check_win: &Window) {
-    let utf8string = x11::XInternAtom(dpy, "UTF8_STRING", false).unwrap();
+pub fn init_check_win(root: &Window, check_win: &Window) {
+    let utf8string = x11::XInternAtom("UTF8_STRING", false).unwrap();
     let check_win = check_win.c();
     let cw_ptr = &check_win as *const C::Window as *const u8;
-    let dpy = dpy.c();
     let atom_wmcheck = atom::net(Net::WMCheck);
     let atom_wmname = atom::net(Net::WMName);
     let pmr = C::PropModeReplace as c_int;
@@ -114,13 +116,13 @@ pub fn init_check_win(dpy: &Display, root: &Window, check_win: &Window) {
     unsafe {
         use C::{XChangeProperty as CP, XDeleteProperty as DP};
         // supporting window for NetWMCheck
-        CP(dpy, check_win, atom_wmcheck, XA_WINDOW, 32, pmr, cw_ptr, 1);
-        CP(dpy, check_win, atom_wmname, utf8string, 8, pmr, app_name, app_len);
-        CP(dpy, root.c(), atom_wmcheck, XA_WINDOW, 32, pmr, cw_ptr, 1);
+        CP(dpy.c(), check_win, atom_wmcheck, XA_WINDOW, 32, pmr, cw_ptr, 1);
+        CP(dpy.c(), check_win, atom_wmname, utf8string, 8, pmr, app_name, app_len);
+        CP(dpy.c(), root.c(), atom_wmcheck, XA_WINDOW, 32, pmr, cw_ptr, 1);
 
         // EWMH support per view
         CP(
-            dpy,
+            dpy.c(),
             root.c(),
             atom::net(Net::Supported),
             XA_ATOM,
@@ -129,7 +131,7 @@ pub fn init_check_win(dpy: &Display, root: &Window, check_win: &Window) {
             atom::net_atoms().as_ptr() as *const u8,
             atom::net_atoms().len() as c_int,
         );
-        DP(dpy, root.c(), atom::net(Net::ClientList));
+        DP(dpy.c(), root.c(), atom::net(Net::ClientList));
     }
 }
 
@@ -137,27 +139,25 @@ fn try_main() -> Result<()> {
     let false = handle_cli_args() else { return Ok(()) };
     check_locale_support();
 
-    let Some(dpy) = Display::open() else {
-        return Err(log::error!("{NAME}: cannot open display"));
-    };
+    dpy.c(); // First probe to `dpy` lazy static to initialize X Display struct.
     log::info!("Established connection to x-server");
 
-    setup::check_other_wm(&dpy);
+    setup::check_other_wm();
     setup::setup_sigaction()?;
     setup::clean_up_zombies();
     let screen = dpy.default_screen();
     let screen_size = dpy.display_size(screen);
     let root = dpy.default_root_window();
-    let drw = Drw::new(dpy, root.c(), screen, screen_size.convert());
-    let fonts = Fonts::new(dpy, screen, config::FONTS);
-    let colors = setup::setup_color_scheme(dpy, screen);
-    let cursors = setup::setup_cursors(dpy);
+    let drw = Drw::new(root.c(), screen, screen_size.convert());
+    let fonts = Fonts::new(screen, config::FONTS);
+    let colors = setup::setup_color_scheme(screen);
+    let cursors = setup::setup_cursors();
 
-    let monitors = NonEmpty::new(Monitor::new(dpy));
-    atom::init_all(dpy);
+    let monitors = NonEmpty::new(Monitor::new());
+    atom::init_all();
 
-    let check_win = Window::check_win(dpy, &root);
-    init_check_win(&dpy, &root, &check_win);
+    let check_win = Window::check_win(&root);
+    init_check_win(&root, &check_win);
 
     let mut wa: C::XSetWindowAttributes = unsafe { core::mem::zeroed() };
     wa.cursor = cursors.get(CursorState::Normal).unwrap().cursor();
@@ -187,7 +187,7 @@ fn try_main() -> Result<()> {
         numlockmask: NumLockMask::new(),
         fonts,
     };
-    let mut app = App::new(dpy, root, init);
+    let mut app = App::new(root, init);
     app.grabkeys();
     app.focus(None);
     log::info!("Ran to the end of try_main()");

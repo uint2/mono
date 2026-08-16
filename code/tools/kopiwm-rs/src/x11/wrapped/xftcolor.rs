@@ -5,7 +5,6 @@ use core::alloc::Layout;
 
 /// Thinnest wrapper around XftColor to manage drops.
 pub struct XftColor {
-    dpy: Display,
     screen: Screen,
     color: NonNull<C::XftColor>,
 }
@@ -16,17 +15,16 @@ const LAYOUT: Layout = Layout::new::<C::XftColor>();
 impl Drop for XftColor {
     fn drop(&mut self) {
         log::trace!("Deallocating color {:p}...", self.color);
-        let dpy = self.dpy.c();
-        let visual = self.dpy.default_visual(self.screen);
-        let cmap = self.dpy.default_colormap(self.screen);
-        unsafe { C::XftColorFree(dpy, visual, cmap, self.c()) };
+        let visual = dpy.default_visual(self.screen);
+        let cmap = dpy.default_colormap(self.screen);
+        unsafe { C::XftColorFree(dpy.c(), visual, cmap, self.c()) };
         unsafe { std::alloc::dealloc(self.c() as *mut u8, LAYOUT) };
     }
 }
 
 impl XftColor {
     /// Create a XftColor from a name (hex codes are allowed and encouraged).
-    pub fn from_name(dpy: Display, screen: Screen, name: &str) -> Option<Self> {
+    pub fn from_name(screen: Screen, name: &str) -> Option<Self> {
         let visual = dpy.default_visual(screen);
         let cmap = dpy.default_colormap(screen);
         let color = unsafe { std::alloc::alloc(LAYOUT) } as *mut C::XftColor;
@@ -44,7 +42,7 @@ impl XftColor {
         };
         // Force maximum opacity.
         unsafe { color.as_mut() }.pixel |= 0xff << 24;
-        let value = Self { dpy, screen, color };
+        let value = Self { screen, color };
         log::trace!("Allocated color {:p}...", value.color);
         Some(value)
     }

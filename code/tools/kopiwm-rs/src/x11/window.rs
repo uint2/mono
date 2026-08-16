@@ -7,7 +7,6 @@ use crate::prelude::*;
 // NOTE: We do NOT implement `clone` for this struct because that would imply
 // that we call `XDestroyWindow` twice.
 pub struct Window {
-    dpy: Display,
     window: C::Window,
 }
 
@@ -16,27 +15,23 @@ impl Drop for Window {
         if self.window == 0 {
             return;
         }
-        unsafe { C::XDestroyWindow(self.dpy.c(), self.window) };
+        unsafe { C::XDestroyWindow(dpy.c(), self.window) };
     }
 }
 
 impl Window {
-    pub const fn new(dpy: Display, window: C::Window) -> Self {
-        Self { dpy, window }
-    }
-
-    pub const fn dpy(&self) -> *mut C::Display {
-        self.dpy.c()
+    pub const fn new(window: C::Window) -> Self {
+        Self { window }
     }
 
     pub const fn c(&self) -> C::Window {
         self.window
     }
 
-    pub fn check_win(dpy: Display, root: &Window) -> Self {
+    pub fn check_win(root: &Window) -> Self {
         let check_win =
             unsafe { C::XCreateSimpleWindow(dpy.c(), root.c(), 0, 0, 1, 1, 0, 0, 0) };
-        Self::new(dpy, check_win)
+        Self::new(check_win)
     }
 }
 

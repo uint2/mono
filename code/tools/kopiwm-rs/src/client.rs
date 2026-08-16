@@ -22,7 +22,6 @@ impl ClientSizes {
 }
 
 pub struct Client {
-    dpy: Display,
     id: ClientId,
     /// The parent monitor to this client.
     pub mon: MonitorId,
@@ -63,7 +62,6 @@ impl Client {
         let mut pos = Toggle::new(rect);
         pos.set(rect);
         Self {
-            dpy: mon.dpy,
             id: ClientId::new(),
             mon: mon.id,
             win: window,
@@ -87,30 +85,24 @@ impl Client {
         &self.win
     }
 
-    pub const fn mon<'a>(&self, monitors: &'a [Monitor]) -> &'a Monitor {
-        let mut j = 0;
-        while j < monitors.len() {
-            let m = &monitors[j];
-            if m.id.const_eq(&self.mon) {
-                return m;
-            }
-            j += 1;
-        }
-        panic!("Monitor not found. Dangling client.");
+    pub fn mon<'a>(&self, monitors: &'a [Monitor]) -> &'a Monitor {
+        monitors
+            .iter()
+            .find(|m| m.id == self.mon)
+            .expect("Monitor not found. Dangling client.")
     }
 
     /// A client is visible if and only if there exists a bit that matches
     /// between its own bitmask, and that of its owning monitor.
-    pub const fn is_visible(&self, monitors: &[Monitor]) -> bool {
+    pub fn is_visible(&self, monitors: &[Monitor]) -> bool {
         self.tags & self.mon(monitors).tags != 0
     }
 
     pub fn update_title(&mut self) {
-        let dpy = self.dpy;
         let win = &self.win;
         const XA_WM_NAME: C::Atom = 39;
-        if !x11::gettextprop(dpy, win, atom::net(Net::WMName), &mut self.name) {
-            x11::gettextprop(dpy, win, XA_WM_NAME, &mut self.name);
+        if !x11::gettextprop(win, atom::net(Net::WMName), &mut self.name) {
+            x11::gettextprop(win, XA_WM_NAME, &mut self.name);
         }
     }
 }

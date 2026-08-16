@@ -11,7 +11,7 @@ impl NumLockMask {
     }
 
     /// Updates the numlockmask, which is located at `self.modifiers[2]`.
-    pub fn update(&mut self, dpy: &Display) {
+    pub fn update(&mut self) {
         // Reset numlockmask.
         self.modifiers[2] = 0;
 
@@ -51,7 +51,7 @@ impl NumLockMask {
         for modifier in self.modifiers {
             unsafe {
                 C::XGrabKey(
-                    root.dpy(),
+                    dpy.c(),
                     keycode,
                     key.modifier | modifier,
                     root.c(),

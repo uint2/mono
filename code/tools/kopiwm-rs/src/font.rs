@@ -2,7 +2,6 @@ use crate::C;
 use crate::prelude::*;
 
 pub struct Font {
-    dpy: Display,
     height: c_int,
     xfont: XftFont,
     /// Using the pattern found at xfont->pattern does not yield the same
@@ -14,7 +13,7 @@ pub struct Font {
 }
 
 impl Font {
-    pub fn from_name(dpy: Display, screen: Screen, name: &str) -> Option<Self> {
+    pub fn from_name(screen: Screen, name: &str) -> Option<Self> {
         if name.is_empty() {
             log::error!("Font name must not be empty");
             return None;
@@ -28,16 +27,16 @@ impl Font {
             return None;
         };
         let height = xfont.ascent() + xfont.descent();
-        Some(Self { dpy, height, xfont, pattern: Some(pattern) })
+        Some(Self { height, xfont, pattern: Some(pattern) })
     }
 
-    pub fn from_pattern(dpy: Display, pattern: FcPattern) -> Option<Self> {
+    pub fn from_pattern(pattern: FcPattern) -> Option<Self> {
         let Some(xfont) = dpy.xft_font_open_pattern(&pattern) else {
             log::error!("Cannot load font from pattern");
             return None;
         };
         let height = xfont.ascent() + xfont.descent();
-        Some(Self { dpy, height, xfont, pattern: Some(pattern) })
+        Some(Self { height, xfont, pattern: Some(pattern) })
     }
 
     getter!(&xfont, XftFont);
@@ -45,9 +44,8 @@ impl Font {
 
     /// Uses `XftCharExists` to check if the character is supported.
     pub fn supports_char(&self, utf8codepoint: char) -> bool {
-        let dpy = self.dpy.c();
         let font = self.xfont.c();
-        let result = unsafe { C::XftCharExists(dpy, font, utf8codepoint as c_uint) };
+        let result = unsafe { C::XftCharExists(dpy.c(), font, utf8codepoint as c_uint) };
         result != 0
     }
 }
@@ -57,10 +55,10 @@ pub struct Fonts {
 }
 
 impl Fonts {
-    pub fn new(dpy: Display, screen: Screen, fonts: &[&str]) -> Self {
+    pub fn new(screen: Screen, fonts: &[&str]) -> Self {
         let mut vec = Vec::with_capacity(fonts.len());
         for font in fonts {
-            if let Some(font) = Font::from_name(dpy, screen, font) {
+            if let Some(font) = Font::from_name(screen, font) {
                 vec.push(font)
             } else {
                 log::warn!("Failed to init font: {font}");

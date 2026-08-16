@@ -4,7 +4,11 @@ use crate::prelude::*;
 #[derive(Clone, Copy)]
 pub struct Display(NonNull<C::Display>);
 
+unsafe impl Sync for Display {}
+unsafe impl Send for Display {}
+
 impl Display {
+    #[inline]
     pub const fn c(&self) -> *mut C::Display {
         self.0.as_ptr()
     }
@@ -35,8 +39,18 @@ impl Display {
     ///
     /// source: https://x.org/releases/X11R7.7/doc/man/man3/XOpenDisplay.3.xhtml
     pub fn open() -> Option<Self> {
-        let dpy = unsafe { C::XOpenDisplay(std::ptr::null()) };
-        NonNull::new(dpy).map(Self)
+        let display = unsafe { C::XOpenDisplay(std::ptr::null()) };
+        NonNull::new(display).map(Self)
+    }
+
+    pub fn open_with_message() -> Self {
+        match Display::open() {
+            Some(v) => v,
+            None => {
+                log::error!("{NAME}: cannot open display");
+                std::process::exit(1);
+            }
+        }
     }
 
     /// The XCloseDisplay function closes the connection to the X server for
@@ -112,7 +126,7 @@ impl Display {
 
     pub fn default_root_window(&self) -> Window {
         let window = unsafe { C::XDefaultRootWindow(self.c()) };
-        Window::new(*self, window)
+        Window::new(window)
     }
 
     pub fn default_screen(&self) -> Screen {
@@ -190,12 +204,12 @@ impl Display {
         let font = unsafe {
             C::XftFontOpenName(self.c(), screen.c(), font_name.c_str().as_ptr())
         };
-        XftFont::new(*self, font)
+        XftFont::new(font)
     }
 
     pub fn xft_font_open_pattern(&self, pattern: &FcPattern) -> Option<XftFont> {
         let font = unsafe { C::XftFontOpenPattern(self.c(), pattern.c()) };
-        XftFont::new(*self, font)
+        XftFont::new(font)
     }
 
     pub fn xft_text_extents_utf8(&self, font: &Font, text: &str) -> Size<c_int> {
@@ -228,3 +242,6 @@ impl Display {
         unsafe { C::XkbKeycodeToKeysym(self.c(), keycode, GROUP, LEVEL) }
     }
 }
+
+#[allow(non_upper_case_globals)]
+pub static dpy: LazyLock<Display> = LazyLock::new(Display::open_with_message);

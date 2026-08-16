@@ -9,7 +9,6 @@ pub enum BarPosition {
 }
 
 pub struct Monitor {
-    pub dpy: Display,
     pub id: MonitorId,
     /// Master window factor.
     pub mfact: f32,
@@ -45,9 +44,8 @@ pub struct Monitor {
 }
 
 impl Monitor {
-    pub fn new(dpy: Display) -> Self {
+    pub fn new() -> Self {
         Self {
-            dpy,
             id: MonitorId::new(),
             mfact: config::MFACT,
             nmaster: config::NMASTER,
@@ -75,8 +73,8 @@ impl Drop for Monitor {
         use crate::C as X;
 
         if let Some(barwin) = self.bar_window.take() {
-            unsafe { X::XUnmapWindow(self.dpy.c(), barwin.c()) };
-            unsafe { X::XDestroyWindow(self.dpy.c(), barwin.c()) };
+            unsafe { X::XUnmapWindow(dpy.c(), barwin.c()) };
+            unsafe { X::XDestroyWindow(dpy.c(), barwin.c()) };
         }
     }
 }
