@@ -22,30 +22,30 @@ impl ClientSizes {
 }
 
 pub struct Client {
-    id: ClientId,
+    pub id: ClientId,
     /// The parent monitor to this client.
     pub mon: MonitorId,
     pub win: Window,
     /// Bitmask of active tags.
     pub tags: u32,
-    name: String,
+    pub name: String,
     /// Position, current and previous.
-    pos: Toggle<Rect>,
-    sz: ClientSizes,
-    hints_valid: bool,
+    pub pos: Toggle<Rect>,
+    pub sz: ClientSizes,
+    pub hints_valid: bool,
     /// Border width.
-    border_width: Toggle<Distance>,
-    is_fixed: bool,
-    is_floating: Toggle<bool>,
-    isurgent: bool,
-    neverfocus: bool,
-    isfullscreen: bool,
+    pub border_width: Toggle<Distance>,
+    pub is_fixed: bool,
+    pub is_floating: Toggle<bool>,
+    pub isurgent: bool,
+    pub neverfocus: bool,
+    pub isfullscreen: bool,
     /// Next client in the linked list of clients.
-    next: Option<ClientId>,
+    pub next: Option<ClientId>,
     /// Next client in the stacking order. That is, the order in which windows
     /// appear visually. If window A covers window B, or is laid on top of it,
     /// then A is before B in the stacking order.
-    snext: Option<ClientId>,
+    pub snext: Option<ClientId>,
 }
 
 impl Client {
@@ -124,5 +124,13 @@ impl Client {
         } else {
             self.tags = self.mon(mons).tags;
         }
+    }
+
+    pub fn width(&self) -> Distance {
+        self.pos.width + 2 * *self.border_width
+    }
+
+    pub fn height(&self) -> Distance {
+        self.pos.height + 2 * *self.border_width
     }
 }

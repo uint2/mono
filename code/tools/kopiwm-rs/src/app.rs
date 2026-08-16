@@ -237,10 +237,11 @@ impl App {
 
     pub fn manage(&mut self, window: Window, attrs: &C::XWindowAttributes) {
         let mut c = Client::new(self.selmon(), window, attrs);
+        let w = c.win.c();
         c.update_title();
 
         let mut trans = C::None as C::Window;
-        let result = unsafe { C::XGetTransientForHint(dpy.c(), c.win.c(), &mut trans) };
+        let result = unsafe { C::XGetTransientForHint(dpy.c(), w, &mut trans) };
         match (result, self.c_window_to_client(trans)) {
             (result, Some(t)) if result != 0 => {
                 c.mon = t.mon;
@@ -248,43 +249,33 @@ impl App {
             }
             _ => {
                 c.mon = self.selmon().id;
-                c.apply_rules(&self.monitors);
+                c.apply_rules(self.monitors.as_slice());
             }
         };
 
-        // let c = Client::new(window, wa);
-        // Client *c, *t = NULL;
-        // Window trans = None;
-        // XWindowChanges wc;
-        //
-        // c = ecalloc(1, sizeof(Client));
-        // c->win = w;
-        // /* geometry */
-        // c->x = c->oldx = wa->x;
-        // c->y = c->oldy = wa->y;
-        // c->w = c->oldw = wa->width;
-        // c->h = c->oldh = wa->height;
-        // c->oldbw = wa->border_width;
-        //
-        // updatetitle(c);
-        // if (XGetTransientForHint(dpy, w, &trans) && (t = wintoclient(trans))) {
-        // 	c->mon = t->mon;
-        // 	c->tags = t->tags;
-        // } else {
-        // 	c->mon = selmon;
-        // 	applyrules(c);
-        // }
-        //
-        // if (c->x + WIDTH(c) > c->mon->wx + c->mon->ww)
-        // 	c->x = c->mon->wx + c->mon->ww - WIDTH(c);
-        // if (c->y + HEIGHT(c) > c->mon->wy + c->mon->wh)
-        // 	c->y = c->mon->wy + c->mon->wh - HEIGHT(c);
-        // c->x = MAX(c->x, c->mon->wx);
-        // c->y = MAX(c->y, c->mon->wy);
-        // c->bw = borderpx;
-        //
-        // wc.border_width = c->bw;
-        // XConfigureWindow(dpy, w, CWBorderWidth, &wc);
+        let c_mon = c.mon(self.monitors.as_slice());
+        let c_width = c.width();
+        let c_height = c.height();
+        let mut r = c.pos.as_mut();
+
+        // If client is too far right, shift it left.
+        if (r.x + c_width as Coordinate > c_mon.w.r()) {
+            r.x = c_mon.w.r() - c_width as Coordinate;
+        }
+        // If client is too far down, shift it up.
+        if (r.y + c_height as Coordinate > c_mon.w.b()) {
+            r.y = c_mon.w.b() - c_height as Coordinate;
+        }
+        r.x = Coordinate::max(r.x, c_mon.w.x); // If client is too far left, truncate it.
+        r.y = Coordinate::max(r.y, c_mon.w.y); // If client is too far up, truncate it.
+        c.border_width.set(config::BORDER_PX);
+
+        let mut wc: C::XWindowChanges = unsafe { core::mem::zeroed() };
+        wc.border_width = *c.border_width as c_int;
+
+        unsafe { C::XConfigureWindow(dpy.c(), w, C::CWBorderWidth, &mut wc) };
+        // unsafe { C::XSetWindowBorder(dpy.c(), w, C::CWBorderWidth, &mut wc) };
+
         // XSetWindowBorder(dpy, w, scheme[SchemeNorm][ColBorder].pixel);
         // configure(c); /* propagates border_width, if size doesn't change */
         // updatewindowtype(c);

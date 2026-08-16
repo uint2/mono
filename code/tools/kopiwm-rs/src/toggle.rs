@@ -1,3 +1,5 @@
+use core::ops::Deref;
+
 pub struct Toggle<T> {
     now: T,
     prev: Option<T>,
@@ -8,8 +10,8 @@ impl<T> Toggle<T> {
         Self { now: value, prev: None }
     }
 
-    pub const fn get(&self) -> &T {
-        &self.now
+    pub const fn as_mut(&mut self) -> &mut T {
+        &mut self.now
     }
 
     pub fn set(&mut self, mut value: T) {
@@ -20,5 +22,12 @@ impl<T> Toggle<T> {
     pub fn revert(&mut self) {
         let Some(value) = self.prev.take() else { return };
         self.now = value;
+    }
+}
+
+impl<T> Deref for Toggle<T> {
+    type Target = T;
+    fn deref(&self) -> &Self::Target {
+        &self.now
     }
 }
