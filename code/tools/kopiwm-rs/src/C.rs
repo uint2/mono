@@ -10,3 +10,11 @@ impl Default for XSetWindowAttributes {
         unsafe { core::mem::zeroed() }
     }
 }
+
+mod hard_coded_missing_enums {
+    use super::Atom;
+
+    pub const XA_ATOM: Atom = 4;
+}
+
+pub use hard_coded_missing_enums::*;

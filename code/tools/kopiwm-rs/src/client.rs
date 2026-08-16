@@ -172,8 +172,6 @@ impl Client {
     }
 
     pub fn get_window_property(&self, prop: C::Atom) -> C::Atom {
-        const XA_ATOM: C::Atom = 4;
-
         let mut atom: C::Atom = 0;
         let mut da: C::Atom = 0; // dummy atom.
         let mut format: c_int = 0;
@@ -189,7 +187,7 @@ impl Client {
                 0,
                 core::mem::size_of::<C::Atom>() as c_long,
                 0,
-                XA_ATOM,
+                C::XA_ATOM,
                 &mut da,
                 &mut format,
                 &mut n_items,
@@ -209,7 +207,37 @@ impl Client {
 
     /// Update the fullscreen state to `is_fullscreen`.
     pub fn set_fullscreen(&mut self, is_fullscreen: bool) {
-        // TODO: implement
-        unimplemented!()
+        let wmstate = atom::net(Net::WMState);
+        let w = self.win.c();
+        let pmr = C::PropModeReplace as c_int;
+
+        if is_fullscreen && !self.isfullscreen {
+            let mut atom = atom::net(Net::WMFullscreen);
+            let atom = core::ptr::from_mut(&mut atom) as *const u8;
+            unsafe {
+                C::XChangeProperty(dpy.c(), w, wmstate, C::XA_ATOM, 32, pmr, atom, 1)
+            };
+            self.isfullscreen = true;
+            self.is_floating.set(true);
+            self.border_width.set(0);
+            // TODO: implement these
+            // 	resizeclient(c, c->mon->mx, c->mon->my, c->mon->mw, c->mon->mh);
+            // 	XRaiseWindow(dpy, c->win);
+        } else if !is_fullscreen && self.isfullscreen {
+            let mut atom = 0 as C::Atom;
+            let atom = core::ptr::from_mut(&mut atom) as *const u8;
+            unsafe {
+                C::XChangeProperty(dpy.c(), w, wmstate, C::XA_ATOM, 32, pmr, atom, 1)
+            };
+            self.isfullscreen = false;
+            self.is_floating.revert();
+            self.border_width.revert();
+            // TODO: come back here after all is said and done, and check that
+            // this revert in fact reverts back to pre-fullscreen state.
+            self.pos.revert();
+            // TODO: implement these
+            // 	resizeclient(c, c->x, c->y, c->w, c->h);
+            // 	arrange(c->mon);
+        }
     }
 }
