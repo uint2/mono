@@ -23,8 +23,8 @@ pub struct Client {
     pub border_width: Toggle<Distance>,
     pub is_fixed: bool,
     pub is_floating: Toggle<bool>,
-    pub isurgent: bool,
-    pub neverfocus: bool,
+    pub is_urgent: bool,
+    pub never_focus: bool,
     pub isfullscreen: bool,
     /// Next client in the linked list of clients.
     pub next: Option<ClientId>,

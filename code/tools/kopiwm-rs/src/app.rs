@@ -218,7 +218,7 @@ impl App {
         // if (c) {
         // 	if (c->mon != selmon)
         // 		selmon = c->mon;
-        // 	if (c->isurgent)
+        // 	if (c->is_urgent)
         // 		seturgent(c, 0);
         // 	detachstack(c);
         // 	attachstack(c);
@@ -280,6 +280,7 @@ impl App {
         c.configure(); // propagates border_width, if size doesn't change
         c.update_window_type();
         c.update_size_hints();
+        c.update_wm_hints(self.selmon());
         // updatewmhints(c);
         // XSelectInput(dpy, w, EnterWindowMask|FocusChangeMask|PropertyChangeMask|StructureNotifyMask);
         // grabbuttons(c, 0);
@@ -301,3 +302,4 @@ impl App {
         // focus(NULL);
     }
 }
+
