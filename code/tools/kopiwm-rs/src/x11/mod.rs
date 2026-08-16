@@ -4,6 +4,7 @@ mod screen;
 mod window;
 mod window_attributes;
 mod wrapped;
+mod xptr;
 
 use crate::C;
 use crate::prelude::*;
@@ -11,12 +12,12 @@ use crate::prelude::*;
 pub mod prelude {
     use super::*;
 
-    pub use super::XPtr;
     pub use display::{Display, dpy};
     pub use enums::*;
     pub use screen::Screen;
     pub use window::Window;
     pub use wrapped::*;
+    pub use xptr::XPtr;
 }
 
 #[allow(non_snake_case)]
@@ -80,36 +81,4 @@ pub fn gettextprop(window: &Window, atom: C::Atom, text: &mut String) -> bool {
     }
     unsafe { C::XFree(name.value as *mut c_void) };
     true
-}
-
-pub struct XPtr<T>(NonNull<T>);
-
-impl<T> XPtr<T> {
-    pub const fn new(value: *mut T) -> Option<Self> {
-        let Some(value) = NonNull::new(value) else { return None };
-        Some(Self(value))
-    }
-
-    pub const fn as_ptr(&self) -> *mut T {
-        self.0.as_ptr()
-    }
-}
-
-impl<T> Drop for XPtr<T> {
-    fn drop(&mut self) {
-        unsafe { C::XFree(self.0.as_ptr() as *mut c_void) };
-    }
-}
-
-impl<T> core::ops::Deref for XPtr<T> {
-    type Target = T;
-    fn deref(&self) -> &Self::Target {
-        unsafe { self.0.as_ref() }
-    }
-}
-
-impl<T> core::ops::DerefMut for XPtr<T> {
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        unsafe { self.0.as_mut() }
-    }
 }

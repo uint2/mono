@@ -46,20 +46,17 @@ impl Client {
             res_class: core::ptr::null_mut(),
         };
         unsafe { C::XGetClassHint(dpy.c(), self.win.c(), &mut ch) };
-        let class = ffi2::i8_to_str(ch.res_class).unwrap_or("broken");
-        let instance = ffi2::i8_to_str(ch.res_name).unwrap_or("broken");
+        let class = XPtr::new(ch.res_class);
+        let instance = XPtr::new(ch.res_name);
+
+        let class = class.and_then(|v| v.as_str()).unwrap_or("broken");
+        let instance = instance.and_then(|v| v.as_str()).unwrap_or("broken");
 
         for rule in config::RULES {
             if rule.is_match(class, instance, self.name.as_str()) {
                 self.is_floating.set(rule.is_floating);
                 self.tags = rule.tags;
             }
-        }
-        if !ch.res_name.is_null() {
-            unsafe { C::XFree(ch.res_name as *mut c_void) };
-        }
-        if !ch.res_class.is_null() {
-            unsafe { C::XFree(ch.res_class as *mut c_void) };
         }
         if self.tags & config::TAGMASK != 0 {
             self.tags = self.tags & config::TAGMASK;
