@@ -46,4 +46,8 @@ impl XftColor {
         log::trace!("Allocated color {:p}...", value.color);
         Some(value)
     }
+
+    pub fn pixel(&self) -> c_ulong {
+        unsafe { self.color.as_ref() }.pixel
+    }
 }

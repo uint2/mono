@@ -274,10 +274,10 @@ impl App {
         wc.border_width = *c.border_width as c_int;
 
         unsafe { C::XConfigureWindow(dpy.c(), w, C::CWBorderWidth, &mut wc) };
-        // unsafe { C::XSetWindowBorder(dpy.c(), w, C::CWBorderWidth, &mut wc) };
+        let color = self.colors[WindowColorState::Normal].border.pixel();
+        unsafe { C::XSetWindowBorder(dpy.c(), w, color) };
 
-        // XSetWindowBorder(dpy, w, scheme[SchemeNorm][ColBorder].pixel);
-        // configure(c); /* propagates border_width, if size doesn't change */
+        c.configure(); // propagates border_width, if size doesn't change 
         // updatewindowtype(c);
         // updatesizehints(c);
         // updatewmhints(c);

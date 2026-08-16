@@ -71,6 +71,13 @@ macro_rules! enum_array {
                 self.data.as_ptr()
             }
         }
+
+        impl<T> core::ops::Index<$key> for $name<T> {
+            type Output = T;
+            fn index(&self, index: $key) -> &Self::Output {
+                self.get(index).unwrap()
+            }
+        }
     };
 }
 

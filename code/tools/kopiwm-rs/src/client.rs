@@ -133,4 +133,28 @@ impl Client {
     pub fn height(&self) -> Distance {
         self.pos.height + 2 * *self.border_width
     }
+
+    pub fn configure(&mut self) {
+        let w = self.win.c();
+        let xconfigure = C::XConfigureEvent {
+            type_: C::ConfigureNotify as c_int,
+            display: dpy.c(),
+            event: w,
+            window: w,
+            x: self.pos.x,
+            y: self.pos.y,
+            width: self.pos.width as c_int,
+            height: self.pos.height as c_int,
+            border_width: *self.border_width as c_int,
+            above: 0,
+            override_redirect: 0,
+            serial: 0,
+            send_event: 0,
+        };
+        let mut event = C::XEvent { xconfigure };
+
+        unsafe {
+            C::XSendEvent(dpy.c(), w, 0, C::StructureNotifyMask as c_long, &mut event)
+        };
+    }
 }
