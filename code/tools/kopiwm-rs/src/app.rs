@@ -278,7 +278,7 @@ impl App {
         unsafe { C::XSetWindowBorder(dpy.c(), w, color) };
 
         c.configure(); // propagates border_width, if size doesn't change 
-        // updatewindowtype(c);
+        c.update_window_type();
         // updatesizehints(c);
         // updatewmhints(c);
         // XSelectInput(dpy, w, EnterWindowMask|FocusChangeMask|PropertyChangeMask|StructureNotifyMask);

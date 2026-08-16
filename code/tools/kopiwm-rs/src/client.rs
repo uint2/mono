@@ -134,7 +134,7 @@ impl Client {
         self.pos.height + 2 * *self.border_width
     }
 
-    pub fn configure(&mut self) {
+    pub fn configure(&self) {
         let w = self.win.c();
         let xconfigure = C::XConfigureEvent {
             type_: C::ConfigureNotify as c_int,
@@ -156,5 +156,60 @@ impl Client {
         unsafe {
             C::XSendEvent(dpy.c(), w, 0, C::StructureNotifyMask as c_long, &mut event)
         };
+    }
+
+    /// Update Rust state based on the X window's properties.
+    pub fn update_window_type(&mut self) {
+        let state = self.get_window_property(atom::net(Net::WMState));
+        let wtype = self.get_window_property(atom::net(Net::WMWindowType));
+
+        if state == atom::net(Net::WMFullscreen) {
+            self.set_fullscreen(true);
+        }
+        if wtype == atom::net(Net::WMWindowTypeDialog) {
+            self.is_floating.set(true);
+        }
+    }
+
+    pub fn get_window_property(&self, prop: C::Atom) -> C::Atom {
+        const XA_ATOM: C::Atom = 4;
+
+        let mut atom: C::Atom = 0;
+        let mut da: C::Atom = 0; // dummy atom.
+        let mut format: c_int = 0;
+        let mut n_items = 0;
+        let mut dl = 0;
+        let mut property = core::ptr::null_mut();
+
+        let result = unsafe {
+            C::XGetWindowProperty(
+                dpy.c(),
+                self.win.c(),
+                prop,
+                0,
+                core::mem::size_of::<C::Atom>() as c_long,
+                0,
+                XA_ATOM,
+                &mut da,
+                &mut format,
+                &mut n_items,
+                &mut dl,
+                &mut property,
+            )
+        };
+
+        if result == C::Success as c_int && !property.is_null() {
+            if n_items > 0 && format == 32 {
+                atom = unsafe { *(property as *mut c_long) } as C::Atom;
+            }
+            unsafe { C::XFree(property as *mut c_void) };
+        }
+        atom
+    }
+
+    /// Update the fullscreen state to `is_fullscreen`.
+    pub fn set_fullscreen(&mut self, is_fullscreen: bool) {
+        // TODO: implement
+        unimplemented!()
     }
 }
