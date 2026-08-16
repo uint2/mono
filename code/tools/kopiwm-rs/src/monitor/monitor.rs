@@ -2,12 +2,6 @@ use crate::C;
 use crate::prelude::*;
 use config::{Coordinate, Distance};
 
-#[derive(Clone, Copy)]
-pub enum BarPosition {
-    Top,
-    Bottom,
-}
-
 pub struct Monitor {
     pub id: MonitorId,
     /// Master window factor.

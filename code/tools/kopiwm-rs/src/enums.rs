@@ -159,3 +159,9 @@ impl Net {
         arr
     }
 }
+
+#[derive(Clone, Copy)]
+pub enum BarPosition {
+    Top,
+    Bottom,
+}

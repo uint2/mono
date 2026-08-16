@@ -7,7 +7,7 @@ fn _net_atoms(init: Option<()>) -> &'static [C::Atom; Net::COUNT] {
         let atoms = core::array::from_fn(|i| {
             x11::XInternAtom(Net::ALL[i].as_str(), false).unwrap()
         });
-        ATOMS.set(atoms);
+        ATOMS.set(atoms).unwrap();
     }
     ATOMS.get().unwrap()
 }
@@ -18,7 +18,7 @@ fn _wm_atoms(init: Option<()>) -> &'static [C::Atom; WM::COUNT] {
         let atoms = core::array::from_fn(|i| {
             x11::XInternAtom(WM::ALL[i].as_str(), false).unwrap()
         });
-        ATOMS.set(atoms);
+        ATOMS.set(atoms).unwrap();
     }
     ATOMS.get().unwrap()
 }

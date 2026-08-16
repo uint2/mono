@@ -33,6 +33,41 @@ impl Window {
             unsafe { C::XCreateSimpleWindow(dpy.c(), root.c(), 0, 0, 1, 1, 0, 0, 0) };
         Self::new(check_win)
     }
+
+    /// A wrapped call to `XGetWindowProperty`.
+    pub fn get_property(&self, prop: C::Atom) -> C::Atom {
+        let mut atom: C::Atom = 0;
+        let mut da: C::Atom = 0; // dummy atom.
+        let mut format: c_int = 0;
+        let mut n_items = 0;
+        let mut dl = 0;
+        let mut property = core::ptr::null_mut();
+
+        let result = unsafe {
+            C::XGetWindowProperty(
+                dpy.c(),
+                self.c(),
+                prop,
+                0,
+                core::mem::size_of::<C::Atom>() as c_long,
+                0,
+                C::XA_ATOM,
+                &mut da,
+                &mut format,
+                &mut n_items,
+                &mut dl,
+                &mut property,
+            )
+        };
+
+        if result == C::Success as c_int && !property.is_null() {
+            if n_items > 0 && format == 32 {
+                atom = unsafe { *(property as *mut c_long) } as C::Atom;
+            }
+            unsafe { C::XFree(property as *mut c_void) };
+        }
+        atom
+    }
 }
 
 impl PartialEq for Window {
