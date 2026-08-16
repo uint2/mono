@@ -1,6 +1,6 @@
 use std::fs::DirEntry;
 use std::io::Write;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use std::process::{Command, ExitCode};
 
 use core::str;
@@ -103,31 +103,13 @@ impl Matcher {
     }
 }
 
-fn try_run(cwd: &Path) -> Option<ExitCode> {
-    let Ok(files) = cwd.read_dir() else {
-        println!("Unable to list files at {:?}", cwd);
-        return Some(ExitCode::FAILURE);
-    };
-    let files: Vec<_> = files.filter_map(|v| v.ok()).collect();
-
-    let mut matchers = MATCHERS.iter().chain(WORK_MATCHES);
-
-    let Some(m) = matchers.find(|v| v.trigger.hit(cwd, &files)) else {
-        return None;
-    };
-    if let Some(message) = m.message {
-        println!("{} \x1b[37m{message}\x1b[m", banner!());
-    }
-    Some(m.run())
-}
-
-struct App<'app> {
-    cwd: &'app Path,
+struct App {
+    cwd: PathBuf,
     /// Only check to see which command gets triggered, but don't run it.
     check_only: bool,
 }
 
-impl App<'_> {
+impl App {
     pub fn try_run(&self) -> Option<ExitCode> {
         let Ok(files) = self.cwd.read_dir() else {
             println!("Unable to list files at {:?}", self.cwd);
@@ -137,7 +119,7 @@ impl App<'_> {
 
         let mut matchers = MATCHERS.iter().chain(WORK_MATCHES);
 
-        let Some(m) = matchers.find(|v| v.trigger.hit(self.cwd, &files)) else {
+        let Some(m) = matchers.find(|v| v.trigger.hit(&self.cwd, &files)) else {
             return None;
         };
         if let Some(message) = m.message {
@@ -150,13 +132,15 @@ impl App<'_> {
     }
 
     pub fn next(mut self) -> Option<Self> {
-        self.cwd = self.cwd.parent()?;
+        if !self.cwd.pop() {
+            return None;
+        }
 
         // Still ensure that there is a parent, as we don't want to run this in
         // the root directory.
         self.cwd.parent()?;
 
-        std::env::set_current_dir(self.cwd).ok()?;
+        std::env::set_current_dir(&self.cwd).ok()?;
 
         Some(self)
     }
@@ -165,8 +149,7 @@ impl App<'_> {
 fn main() -> ExitCode {
     let cwd = std::env::current_dir().expect("Unable to get current working directory");
     let args = std::env::args().collect::<Vec<_>>();
-    let mut app =
-        App { cwd: cwd.as_path(), check_only: args.iter().any(|arg| arg == "--check") };
+    let mut app = App { cwd, check_only: args.iter().any(|arg| arg == "--check") };
 
     if let Some(exit_code) = app.try_run() {
         return exit_code;
@@ -177,8 +160,8 @@ fn main() -> ExitCode {
             Some(v) => v,
             None => break,
         };
-        println!("{} \x1b[37m{}\x1b[m", banner!(), cwd.display());
-        if let Some(exit_code) = try_run(&cwd) {
+        println!("{} \x1b[37m{}\x1b[m", banner!(), app.cwd.display());
+        if let Some(exit_code) = app.try_run() {
             return exit_code;
         }
     }
