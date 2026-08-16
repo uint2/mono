@@ -25,7 +25,7 @@ pub struct Client {
     id: ClientId,
     /// The parent monitor to this client.
     pub mon: MonitorId,
-    win: Window,
+    pub win: Window,
     /// Bitmask of active tags.
     pub tags: u32,
     name: String,
@@ -51,14 +51,8 @@ pub struct Client {
 impl Client {
     getter!(id, ClientId);
 
-    pub fn new(mon: &Monitor, window: Window, wa: &C::XWindowAttributes) -> Self {
-        // TODO: verify that this matches `manange` from dwm in C.
-        let rect = Rect {
-            x: wa.x,
-            y: wa.y,
-            width: wa.width as Distance,
-            height: wa.height as Distance,
-        };
+    pub fn new(mon: &Monitor, window: Window, attrs: &C::XWindowAttributes) -> Self {
+        let rect = Rect::from(attrs);
         let mut pos = Toggle::new(rect);
         pos.set(rect);
         Self {
@@ -70,7 +64,7 @@ impl Client {
             pos,
             sz: ClientSizes::new(),
             hints_valid: false,
-            border_width: Toggle::new(wa.border_width as Distance),
+            border_width: Toggle::new(attrs.border_width as Distance),
             is_fixed: false,
             is_floating: Toggle::new(false),
             isurgent: false,
@@ -79,10 +73,6 @@ impl Client {
             next: None,
             snext: None,
         }
-    }
-
-    pub const fn win(&self) -> &Window {
-        &self.win
     }
 
     pub fn mon<'a>(&self, monitors: &'a [Monitor]) -> &'a Monitor {
@@ -103,6 +93,36 @@ impl Client {
         const XA_WM_NAME: C::Atom = 39;
         if !x11::gettextprop(win, atom::net(Net::WMName), &mut self.name) {
             x11::gettextprop(win, XA_WM_NAME, &mut self.name);
+        }
+    }
+
+    pub fn apply_rules(&mut self, mons: &[Monitor]) {
+        self.is_floating.set(false);
+        self.tags = 0;
+        let mut ch = C::XClassHint {
+            res_name: core::ptr::null_mut(),
+            res_class: core::ptr::null_mut(),
+        };
+        unsafe { C::XGetClassHint(dpy.c(), self.win.c(), &mut ch) };
+        let class = ffi2::i8_to_str(ch.res_class).unwrap_or("broken");
+        let instance = ffi2::i8_to_str(ch.res_name).unwrap_or("broken");
+
+        for rule in config::RULES {
+            if rule.is_match(class, instance, self.name.as_str()) {
+                self.is_floating.set(rule.is_floating);
+                self.tags = rule.tags;
+            }
+        }
+        if !ch.res_name.is_null() {
+            unsafe { C::XFree(ch.res_name as *mut c_void) };
+        }
+        if !ch.res_class.is_null() {
+            unsafe { C::XFree(ch.res_class as *mut c_void) };
+        }
+        if self.tags & config::TAGMASK != 0 {
+            self.tags = self.tags & config::TAGMASK;
+        } else {
+            self.tags = self.mon(mons).tags;
         }
     }
 }

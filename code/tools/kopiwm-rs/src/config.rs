@@ -45,5 +45,28 @@ macro_rules! key {
         Key { modifier: $mod, keysym: $keysym, func: $func, arg: $arg }
     };
 }
+macro_rules! tag {
+    ($name:expr, $keysym:expr) => {
+        Tag { name: $name, key: $keysym as C::KeySym }
+    };
+}
 
 pub const KEYS: [Key; 1] = [key!(MODKEY, 0, placeholder, Arg::Int(0))];
+
+pub const RULES: [Rule; 1] = [Rule {
+    class: Some(""),
+    instance: Some(""),
+    title: Some(""),
+    is_floating: true,
+    tags: 1,
+}];
+
+pub const TAGS: [Tag; 5] = [
+    tag!("1", C::XK_1),
+    tag!("2", C::XK_2),
+    tag!("3", C::XK_3),
+    tag!("4", C::XK_4),
+    tag!("T", C::XK_0),
+];
+
+pub const TAGMASK: u32 = (1 << TAGS.len()) - 1;

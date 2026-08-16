@@ -111,11 +111,11 @@ impl App {
     }
 
     pub fn window_to_client(&self, window: &Window) -> Option<&Client> {
-        self.monitors.iter().flat_map(|m| &m.clients).find(|c| c.win() == window)
+        self.monitors.iter().flat_map(|m| &m.clients).find(|c| c.win.eq(window))
     }
 
     pub fn c_window_to_client(&self, window: C::Window) -> Option<&Client> {
-        self.monitors.iter().flat_map(|m| &m.clients).find(|c| c.win().c() == window)
+        self.monitors.iter().flat_map(|m| &m.clients).find(|c| c.win.c() == window)
     }
 
     /// Searches the list of monitors for the one with the biggest intersection
@@ -235,13 +235,12 @@ impl App {
 
     pub fn applyrules(&mut self, c: &mut Client) {}
 
-    pub fn manage(&mut self, window: Window, wa: &C::XWindowAttributes) {
-        let mut c = Client::new(self.selmon(), window, wa);
-
+    pub fn manage(&mut self, window: Window, attrs: &C::XWindowAttributes) {
+        let mut c = Client::new(self.selmon(), window, attrs);
         c.update_title();
 
-        let mut trans: C::Window = C::None as C::Window;
-        let result = unsafe { C::XGetTransientForHint(dpy.c(), c.win().c(), &mut trans) };
+        let mut trans = C::None as C::Window;
+        let result = unsafe { C::XGetTransientForHint(dpy.c(), c.win.c(), &mut trans) };
         match (result, self.c_window_to_client(trans)) {
             (result, Some(t)) if result != 0 => {
                 c.mon = t.mon;
@@ -249,7 +248,7 @@ impl App {
             }
             _ => {
                 c.mon = self.selmon().id;
-                // self.applyrules(&mut c); // uncommenting causes a "immutable borrow later used by call ".
+                c.apply_rules(&self.monitors);
             }
         };
 

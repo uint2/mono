@@ -1,3 +1,4 @@
+use crate::C;
 use crate::prelude::*;
 use config::{Coordinate, Distance};
 
@@ -106,5 +107,16 @@ impl Rect {
         let width = self.r().min(rhs.r()) - self.l().max(rhs.l());
         let height = self.b().min(rhs.b()) - self.t().max(rhs.t());
         width.max(0) as Distance * height.max(0) as Distance
+    }
+}
+
+impl From<&C::XWindowAttributes> for Rect {
+    fn from(attrs: &C::XWindowAttributes) -> Self {
+        Self {
+            x: attrs.x as Coordinate,
+            y: attrs.y as Coordinate,
+            width: attrs.width as Distance,
+            height: attrs.height as Distance,
+        }
     }
 }

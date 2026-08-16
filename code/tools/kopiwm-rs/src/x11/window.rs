@@ -1,11 +1,11 @@
 use crate::C;
 use crate::prelude::*;
 
-// TODO: rename this to OwnedWindow or something that clearly differentiates
-// that `XDestroyWindow` is called on this one upon `Drop`.
-//
-// NOTE: We do NOT implement `clone` for this struct because that would imply
-// that we call `XDestroyWindow` twice.
+/// TODO: rename this to OwnedWindow or something that clearly differentiates
+/// that `XDestroyWindow` is called on this one upon `Drop`.
+///
+/// NOTE: We do NOT implement `clone` for this struct because that would imply
+/// that we call `XDestroyWindow` twice.
 pub struct Window {
     window: C::Window,
 }

@@ -11,10 +11,10 @@ pub(crate) use crate::enums::{
     Clk, CursorState, Net, NetArray, WM, WMArray, WindowColorState, WindowColors,
 };
 pub(crate) use crate::enums::{CursorStateArray, WindowColorStateArray};
-pub(crate) use crate::ffi2::ConvertToC;
+pub(crate) use crate::ffi2::{self, ConvertToC};
 pub(crate) use crate::font::{Font, Fonts};
 pub(crate) use crate::id::{ClientId, MonitorId};
-pub(crate) use crate::key::{Arg, Button, Key};
+pub(crate) use crate::key::{Arg, Button, Key, Rule, Tag};
 pub(crate) use crate::layout::{EMPTY_LAYOUT, Layout};
 pub(crate) use crate::linked_list::LinkedListNode;
 pub(crate) use crate::monitor::{BarPosition, Monitor};
