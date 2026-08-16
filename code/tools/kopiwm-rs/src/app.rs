@@ -277,9 +277,9 @@ impl App {
         let color = self.colors[WindowColorState::Normal].border.pixel();
         unsafe { C::XSetWindowBorder(dpy.c(), w, color) };
 
-        c.configure(); // propagates border_width, if size doesn't change 
+        c.configure(); // propagates border_width, if size doesn't change
         c.update_window_type();
-        // updatesizehints(c);
+        c.update_size_hints();
         // updatewmhints(c);
         // XSelectInput(dpy, w, EnterWindowMask|FocusChangeMask|PropertyChangeMask|StructureNotifyMask);
         // grabbuttons(c, 0);

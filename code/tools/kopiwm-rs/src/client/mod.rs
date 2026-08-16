@@ -2,27 +2,10 @@ use crate::C;
 use crate::prelude::*;
 
 mod client;
+mod size;
 mod x;
 
-pub struct ClientSizes {
-    base: Option<Size>,
-    /// Incremental size when resizing.
-    inc: Option<Size>,
-    max: Option<Size>,
-    min: Option<Size>,
-    /// Maximum aspect ratio (width / height).
-    max_ar: Option<Size>,
-    /// Minimum aspect ratio (height / width).
-    /// Note that this is the reciprocal of the conventional notion of the
-    /// aspect ratio because of how we'll be using it.
-    min_ar: Option<Size>,
-}
-
-impl ClientSizes {
-    pub const fn new() -> Self {
-        Self { base: None, inc: None, max: None, min: None, max_ar: None, min_ar: None }
-    }
-}
+use size::ClientSizes;
 
 pub struct Client {
     pub id: ClientId,

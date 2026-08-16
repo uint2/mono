@@ -45,4 +45,30 @@ impl Client {
             self.is_floating.set(true);
         }
     }
+
+    pub fn update_size_hints(&mut self) {
+        let mut msize = 0;
+        let mut size: C::XSizeHints = unsafe { core::mem::zeroed() };
+        let result =
+            unsafe { C::XGetWMNormalHints(dpy.c(), self.win.c(), &mut size, &mut msize) };
+        if result == 0 {
+            // size is uninitialized, ensure that size.flags aren't used.
+            size.flags = C::PSize as c_long;
+        }
+
+        self.sz.update_base(&size);
+        self.sz.update_inc(&size);
+        self.sz.update_max(&size);
+        self.sz.update_min(&size);
+
+        if size.flags as c_uint & C::PAspect != 0 {
+            self.sz.min_ar = size.min_aspect.y as f64 / size.min_aspect.x as f64;
+            self.sz.max_ar = size.max_aspect.x as f64 / size.max_aspect.y as f64;
+        } else {
+            self.sz.min_ar = 0.;
+            self.sz.max_ar = 0.;
+        }
+        self.is_fixed = self.sz.is_fixed();
+        self.hints_valid = true;
+    }
 }
