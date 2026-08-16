@@ -60,12 +60,14 @@ impl Window {
             )
         };
 
-        if result == C::Success as c_int && !property.is_null() {
+        if result == C::Success as c_int
+            && let Some(property) = XPtr::new(property)
+        {
             if n_items > 0 && format == 32 {
-                atom = unsafe { *(property as *mut c_long) } as C::Atom;
+                atom = unsafe { *(property.as_ptr() as *mut c_long) } as C::Atom;
             }
-            unsafe { C::XFree(property as *mut c_void) };
         }
+
         atom
     }
 }

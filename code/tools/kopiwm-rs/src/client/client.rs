@@ -49,8 +49,8 @@ impl Client {
         let class = XPtr::new(ch.res_class);
         let instance = XPtr::new(ch.res_name);
 
-        let class = class.and_then(|v| v.as_str()).unwrap_or("broken");
-        let instance = instance.and_then(|v| v.as_str()).unwrap_or("broken");
+        let class = class.and_then(|v| v.to_str()).unwrap_or("broken");
+        let instance = instance.and_then(|v| v.to_str()).unwrap_or("broken");
 
         for rule in config::RULES {
             if rule.is_match(class, instance, self.name.as_str()) {

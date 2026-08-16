@@ -52,12 +52,16 @@ pub fn gettextprop(window: &Window, atom: C::Atom, text: &mut String) -> bool {
         return false;
     }
 
+    let name_value = XPtr::new(name.value);
+
     const XA_STRING: c_ulong = 31; // Hard-coded, inspected from C source.
     if name.encoding == XA_STRING {
-        let s = unsafe { core::slice::from_raw_parts(name.value, name.nitems as usize) };
-        let s = core::str::from_utf8(s).unwrap();
-        text.clear();
-        text.push_str(s);
+        if let Some(name_value) = name_value {
+            if let Some(value) = name_value.to_str() {
+                text.clear();
+                text.push_str(value);
+            }
+        }
     } else {
         let mut list: *mut *mut c_char = core::ptr::null_mut();
         let mut n = 0;
@@ -79,6 +83,5 @@ pub fn gettextprop(window: &Window, atom: C::Atom, text: &mut String) -> bool {
         }
         unsafe { C::XFreeStringList(list) };
     }
-    unsafe { C::XFree(name.value as *mut c_void) };
     true
 }

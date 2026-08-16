@@ -192,20 +192,17 @@ impl App {
                 &mut skip,
             )
         };
-        if syms.is_null() {
-            return;
-        }
+        let Some(syms) = XPtr::new(syms) else { return };
 
         for keycode in start..=end {
             for key in &config::KEYS {
                 let offset = (keycode - start) * skip;
-                let keysym = unsafe { *syms.add(offset as usize) };
+                let keysym = unsafe { *syms.get(offset as usize) };
                 if key.keysym == keysym {
                     self.numlockmask.grabkey(&self.root, key, keycode);
                 }
             }
         }
-        unsafe { C::XFree(syms as *mut c_void) };
     }
 
     pub fn focus(&mut self, client: Option<&Client>) {
@@ -302,4 +299,3 @@ impl App {
         // focus(NULL);
     }
 }
-

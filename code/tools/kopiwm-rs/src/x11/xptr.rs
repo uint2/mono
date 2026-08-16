@@ -1,6 +1,8 @@
 use crate::C;
 use crate::prelude::*;
 
+use core::ops::{Deref, DerefMut};
+
 pub struct XPtr<T>(NonNull<T>);
 
 impl<T> XPtr<T> {
@@ -12,6 +14,10 @@ impl<T> XPtr<T> {
     pub const fn as_ptr(&self) -> *mut T {
         self.0.as_ptr()
     }
+
+    pub unsafe fn get(&self, offset: usize) -> &T {
+        unsafe { self.0.add(offset).as_ref() }
+    }
 }
 
 impl<T> Drop for XPtr<T> {
@@ -21,7 +27,7 @@ impl<T> Drop for XPtr<T> {
 }
 
 impl XPtr<i8> {
-    pub fn as_str<'a>(&self) -> Option<&'a str> {
+    pub fn to_str<'a>(&self) -> Option<&'a str> {
         let data = self.as_ptr();
         let n = unsafe { libc::strlen(data) };
         let slice = unsafe { core::slice::from_raw_parts(data as *const u8, n) };
@@ -30,7 +36,7 @@ impl XPtr<i8> {
 }
 
 impl XPtr<u8> {
-    pub fn as_str<'a>(&self) -> Option<&'a str> {
+    pub fn to_str<'a>(&self) -> Option<&'a str> {
         let data = self.as_ptr();
         let n = unsafe { libc::strlen(data as *const i8) };
         let slice = unsafe { core::slice::from_raw_parts(data, n) };
@@ -38,14 +44,14 @@ impl XPtr<u8> {
     }
 }
 
-impl<T> core::ops::Deref for XPtr<T> {
+impl<T> Deref for XPtr<T> {
     type Target = T;
     fn deref(&self) -> &Self::Target {
         unsafe { self.0.as_ref() }
     }
 }
 
-impl<T> core::ops::DerefMut for XPtr<T> {
+impl<T> DerefMut for XPtr<T> {
     fn deref_mut(&mut self) -> &mut Self::Target {
         unsafe { self.0.as_mut() }
     }
