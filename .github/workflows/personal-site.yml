@@ -33,6 +33,27 @@ jobs:
           mkdir -p           code/web/site/public
           cp .git/blog/*.sig code/web/site/public || exit 0
 
+      # Pull in the photos.
+      - name: Checkout photos repo (public)
+        uses: actions/checkout@v6
+        with:
+          path: .git/photos
+          repository: uint2/photos
+      - name: Copy over photos
+        run: |
+          rm -f    code/web/site/public/photos
+          mkdir -p code/web/site/public/photos
+          P='.git/photos'
+          cp \
+            $P/17e4bc091f2dee60aaf7e1e4134a7e085d403b71.png \
+            $P/359f32a45b3441f2fd6393eba4ce066fd162da4b.png \
+            $P/42ac53ca51b4e8b8e284c9ad9d9cf206ba44b6c8.png \
+            $P/596d811785bb23a22b6f93d61bb35d476952c950.png \
+            $P/614dbcf9eaaa4ad17fffee189e126d46ff73416a.png \
+            $P/8dc664092ad1980fba732d9c898f11657ef0677b.png \
+            $P/cd08941a1346e3f1c7d6f6662a4f9451e6bb8df7.png \
+            code/web/site/public/photos
+
       # Compress fonts with Woff2.
       - name: Checkout google/woff2
         uses: actions/checkout@v6

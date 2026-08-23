@@ -12,7 +12,12 @@ pub fn main() {
 
     for entry in walk {
         let Ok(entry) = entry else { continue };
-        let mut f = fs::File::open(entry.path()).unwrap();
+        if entry.path_is_symlink() {
+            continue;
+        }
+        let Ok(mut f) = fs::File::open(entry.path()) else {
+            panic!("Failed to open {}", entry.path().display());
+        };
 
         buffer.clear();
         let Ok(_n) = f.read_to_string(&mut buffer) else { continue };

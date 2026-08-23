@@ -134,9 +134,9 @@ const BLOG_POSTS = await blogPosts
   <Section class="prose">
     <div><hr id="blog" /></div>
     <h1>Blog</h1>
-    {
-      BLOG_POSTS.map(({ pubDate, title, description, slug, draft }) => (
-        <div style="margin-bottom:2px">
+    <div style="display:flex;flex-direction:column;row-gap:2px">
+      {
+        BLOG_POSTS.map(({ pubDate, title, description, slug, draft }) => (
           <ArticleCard
             title={title}
             pubDate={pubDate}
@@ -144,9 +144,23 @@ const BLOG_POSTS = await blogPosts
             draft={draft}
             href={`/${slug}/`}
           />
-        </div>
-      ))
-    }
+        ))
+      }
+    </div>
+  </Section>
+
+  <!-- Photos -->
+  <Section class="prose">
+    <div><hr id="photos" /></div>
+    <h1>Photos</h1>
+    <div style="display:flex;flex-direction:column;row-gap:2px">
+      <ArticleCard
+        title="France"
+        pubDate="2026-08-23"
+        description="Photos of France in summer of 2026"
+        href="/france-2026"
+      />
+    </div>
   </Section>
 
   <!-- Cool websites -->
