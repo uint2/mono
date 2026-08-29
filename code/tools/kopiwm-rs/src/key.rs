@@ -18,7 +18,7 @@ pub struct Key {
 }
 
 pub struct Button {
-    pub click: c_uint,
+    pub click: Clk,
     pub mask: c_uint,
     pub button: c_uint,
     pub func: fn(&Arg) -> (),

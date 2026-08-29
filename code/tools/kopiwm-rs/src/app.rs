@@ -205,6 +205,58 @@ impl App {
         }
     }
 
+    pub fn grabbuttons(&mut self, client: &Client, focused: bool) {
+        let root = self.root.c();
+        self.numlockmask.update();
+
+        const BUTTONMASK: c_uint =
+            C::ButtonPressMask as c_uint | C::ButtonReleaseMask as c_uint;
+
+        unsafe {
+            C::XUngrabButton(
+                dpy.c(),
+                C::AnyButton as c_uint,
+                C::AnyModifier as c_uint,
+                root,
+            );
+        };
+        if (!focused) {
+            unsafe {
+                C::XGrabButton(
+                    dpy.c(),
+                    C::AnyButton as c_uint,
+                    C::AnyModifier as c_uint,
+                    root,
+                    C::False as c_int,
+                    BUTTONMASK,
+                    C::GrabModeSync as c_int,
+                    C::GrabModeSync as c_int,
+                    C::None as C::Window,
+                    C::None as C::Cursor,
+                );
+            }
+        }
+        for button in config::BUTTONS {
+            let Clk::ClientWin = button.click else { continue };
+            for modifier in self.numlockmask.modifiers() {
+                unsafe {
+                    C::XGrabButton(
+                        dpy.c(),
+                        button.button,
+                        button.mask | modifier,
+                        client.win.c(),
+                        C::False as c_int,
+                        BUTTONMASK,
+                        C::GrabModeAsync as c_int,
+                        C::GrabModeSync as c_int,
+                        C::None as C::Window,
+                        C::None as C::Cursor,
+                    );
+                }
+            }
+        }
+    }
+
     pub fn focus(&mut self, client: Option<&Client>) {
         // TODO: implement from dwm's C impl.
 
@@ -237,7 +289,7 @@ impl App {
         let w = c.win.c();
         c.update_title();
 
-        let mut trans = C::None as C::Window;
+        let mut trans: C::Window = C::None as C::Window;
         let result = unsafe { C::XGetTransientForHint(dpy.c(), w, &mut trans) };
         match (result, self.c_window_to_client(trans)) {
             (result, Some(t)) if result != 0 => {
@@ -278,9 +330,25 @@ impl App {
         c.update_window_type();
         c.update_size_hints();
         c.update_wm_hints(self.selmon());
-        // updatewmhints(c);
-        // XSelectInput(dpy, w, EnterWindowMask|FocusChangeMask|PropertyChangeMask|StructureNotifyMask);
-        // grabbuttons(c, 0);
+        unsafe {
+            C::XSelectInput(
+                dpy.c(),
+                w,
+                C::EnterWindowMask as c_long
+                    | C::FocusChangeMask as c_long
+                    | C::PropertyChangeMask as c_long
+                    | C::StructureNotifyMask as c_long,
+            );
+        };
+        self.grabbuttons(&c, false);
+        if !*c.is_floating {
+            c.is_floating.set((trans != C::None as C::Window) || c.is_fixed);
+        }
+        if *c.is_floating {
+            unsafe {
+                C::XRaiseWindow(dpy.c(), c.win.c());
+            }
+        }
         // if (!c->isfloating)
         // 	c->isfloating = c->oldstate = trans != None || c->isfixed;
         // if (c->isfloating)

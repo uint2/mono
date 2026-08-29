@@ -70,3 +70,11 @@ pub const TAGS: [Tag; 5] = [
 ];
 
 pub const TAGMASK: u32 = (1 << TAGS.len()) - 1;
+
+pub const BUTTONS: [Button; 1] = [Button {
+    click: Clk::LtSymbol,
+    mask: 0,
+    button: C::Button1,
+    func: placeholder,
+    arg: Arg::Int(0),
+}];
