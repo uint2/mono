@@ -171,6 +171,7 @@ impl<'a> App<'a> {
                 assert!(self.git_config.get(&branch).is_some())
             }
         }
+        self.git_config.save();
 
         let current_bundle = self.get_current_bundle();
 
