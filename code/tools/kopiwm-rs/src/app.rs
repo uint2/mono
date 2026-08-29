@@ -345,9 +345,7 @@ impl App {
             c.is_floating.set((trans != C::None as C::Window) || c.is_fixed);
         }
         if *c.is_floating {
-            unsafe {
-                C::XRaiseWindow(dpy.c(), c.win.c());
-            }
+            unsafe { C::XRaiseWindow(dpy.c(), c.win.c()) };
         }
         // if (!c->isfloating)
         // 	c->isfloating = c->oldstate = trans != None || c->isfixed;
