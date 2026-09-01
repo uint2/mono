@@ -28,6 +28,8 @@ impl Not for TagMask {
 }
 
 impl TagMask {
+    pub const EMPTY: Self = Self(0);
+
     pub const fn non_zero(&self) -> bool {
         self.0 != 0
     }

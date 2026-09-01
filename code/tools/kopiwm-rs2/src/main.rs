@@ -1,23 +1,28 @@
+mod C;
 mod config;
 mod nonempty;
 mod prelude;
 mod rect;
 mod tag;
+mod window;
+mod x11;
 
-use tag::TagMask;
+use prelude::*;
 
-use nonempty::NonEmpty;
-
+#[allow(unused)]
 struct Layout {
     arrange: Option<fn() -> ()>,
 }
 
-struct Window {}
+struct OwnedWindow {}
 
+#[allow(unused)]
 struct Client {
+    window: OwnedWindow,
     tags: TagMask,
 }
 
+#[allow(unused)]
 struct Monitor {
     stack: Vec<Client>,
     sel: Option<usize>,
@@ -29,11 +34,21 @@ struct Monitor {
     seltags: usize,
 }
 
+#[allow(unused)]
 struct App {
     monitors: Vec<Monitor>,
 }
 
+#[allow(unused)]
 impl Client {
+    pub fn new(window: OwnedWindow) -> Self {
+        Self { window, tags: TagMask::EMPTY }
+    }
+
+    pub fn window(&self) -> &OwnedWindow {
+        &self.window
+    }
+
     /// (dwm) static void resize(Client *c, int x, int y, int w, int h, int interact);
     pub fn resize(&mut self) {}
 
@@ -47,6 +62,7 @@ impl Client {
     pub fn update_size_hints(&mut self) {}
 }
 
+#[allow(unused)]
 impl Monitor {
     /// (dwm) static void showhide(Client *c);
     pub fn showhide(&self, client: &Client) {
@@ -70,16 +86,21 @@ impl Monitor {
     }
 }
 
+#[allow(unused)]
 impl App {
     /// (dwm) static void applyrules(Client *c);
     fn apply_rules(&self, client: &mut Client) {}
 
+    /// (dwm) static Client *wintoclient(Window w);
+    fn win_to_client(&self) {}
+
     /// (dwm) static void manage(Window w, XWindowAttributes *wa);
-    fn manage(&mut self, window: Window) {
-        let mon = self.monitors.first_mut().unwrap();
-        let client = mon.stack.first_mut().unwrap();
-        mon.stack.push(unsafe { core::mem::zeroed() });
-        client.resize();
+    fn manage(&mut self, window: OwnedWindow) {
+        let mut c = Client::new(window);
+        // let mon = self.monitors.first_mut().unwrap();
+        // let client = mon.stack.first_mut().unwrap();
+        // mon.stack.push(unsafe { core::mem::zeroed() });
+        // client.resize();
         // mon.apply_size_hints(client);
     }
 }
@@ -161,7 +182,6 @@ impl App {
 /// (dwm) static void updatewindowtype(Client *c);
 /// (dwm) static void updatewmhints(Client *c);
 /// (dwm) static void view(const Arg *arg);
-/// (dwm) static Client *wintoclient(Window w);
 /// (dwm) static Monitor *wintomon(Window w);
 /// (dwm) static int xerror(Display *dpy, XErrorEvent *ee);
 /// (dwm) static int xerrordummy(Display *dpy, XErrorEvent *ee);
