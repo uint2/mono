@@ -87,4 +87,49 @@ impl Window {
 
         atom
     }
+
+    /// (dwm) static int getrootptr(int *x, int *y);
+    pub fn get_ptr(&self) -> Option<Loc> {
+        let mut root_return: C::Window = 0;
+        let mut child_return: C::Window = 0;
+        let mut root_x_return: Coordinate = 0;
+        let mut root_y_return: Coordinate = 0;
+        let mut win_x_return: Coordinate = 0;
+        let mut win_y_return: Coordinate = 0;
+        let mut mask_return: c_uint = 0;
+
+        let result = unsafe {
+            C::XQueryPointer(
+                dpy.c(),
+                self.c(),
+                &mut root_return,
+                &mut child_return,
+                &mut root_x_return,
+                &mut root_y_return,
+                &mut win_x_return,
+                &mut win_y_return,
+                &mut mask_return,
+            )
+        };
+        match result {
+            // If XQueryPointer returns False, the pointer is not on the same
+            // screen as the specified window, and XQueryPointer returns None to
+            // child_return and zero to win_x_return and win_y_return.
+            0 => None,
+            // If XQueryPointer returns True, the pointer coordinates returned
+            // to win_x_return and win_y_return are relative to the origin of
+            // the specified window. In this case, XQueryPointer returns the
+            // child that contains the pointer, if any, or else None to
+            // child_return.
+            _ => Some(Loc::new(win_x_return, win_y_return)),
+        }
+    }
+
+    pub fn get_transient_for_hint(&self) -> Option<Self> {
+        let mut t: C::Window = C::None as C::Window;
+        match unsafe { C::XGetTransientForHint(dpy.c(), self.c(), &mut t) } {
+            0 => None,
+            _ => Some(Self(t)),
+        }
+    }
 }

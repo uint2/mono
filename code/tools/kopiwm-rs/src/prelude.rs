@@ -1,6 +1,7 @@
 #![allow(unused)]
 
 // crate::*
+pub(crate) use crate::C;
 pub(crate) use crate::app::{App, AppInitParams};
 pub(crate) use crate::atom;
 pub(crate) use crate::client::Client;
@@ -22,6 +23,7 @@ pub(crate) use crate::monitor::Monitor;
 pub(crate) use crate::nonempty::NonEmpty;
 pub(crate) use crate::numlockmask::NumLockMask;
 pub(crate) use crate::rect::{Loc, Rect, Size};
+pub(crate) use crate::stack;
 pub(crate) use crate::toggle::Toggle;
 pub(crate) use crate::x11;
 pub(crate) use crate::x11::prelude::*;
@@ -38,6 +40,7 @@ pub(crate) use core::cmp::Ordering;
 pub(crate) use core::ffi::{c_char, c_int, c_long, c_uint, c_ulong, c_void};
 pub(crate) use core::marker::{PhantomData, PhantomPinned};
 pub(crate) use core::mem::MaybeUninit;
+pub(crate) use core::ops::{Index, IndexMut};
 pub(crate) use core::pin::Pin;
 pub(crate) use core::ptr::{self, NonNull};
 pub(crate) use core::sync::atomic::{self, AtomicBool};

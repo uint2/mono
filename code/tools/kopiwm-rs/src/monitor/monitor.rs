@@ -1,46 +1,9 @@
-use crate::C;
 use crate::prelude::*;
 use config::{Coordinate, Distance};
-
-pub struct Monitor {
-    pub id: MonitorId,
-    /// Master window factor.
-    pub mfact: f32,
-    /// Number of master windows.
-    pub nmaster: u8,
-    /// Status bar's y-coordinate.
-    pub by: Coordinate,
-    /// The Rect that every pixel on the monitor lives in.
-    pub m: Rect,
-    /// The Rect that windows live in. This is simply the monitor's Rect minus
-    /// the status bar's Rect.
-    pub w: Rect,
-    /// The bitmask of visible tags. Initialize with the first tag visible.
-    pub tags: u32,
-    /// false means hide bar.
-    pub show_bar: bool,
-    pub bar_pos: BarPosition,
-    /// List of clients.
-    pub clients: Vec<Client>,
-    /// Selected client, as an index of our own set of clients.
-    pub sel: Option<ClientId>,
-    /// Clients ordered by stacking order. That is, the order in which windows
-    /// appear visually. If window A covers window B, or is laid on top of it,
-    /// then A is before B in the stacking order.
-    pub stack: Vec<ClientId>,
-
-    /// The X window that manages the status bar. The only time when this is
-    /// none should be when the monitor is freshly created, and we just haven't
-    /// initialized the bar window.
-    pub bar_window: Option<Window>,
-
-    pub lt: Toggle<&'static Layout>,
-}
 
 impl Monitor {
     pub fn new() -> Self {
         Self {
-            id: MonitorId::new(),
             mfact: config::MFACT,
             nmaster: config::NMASTER,
             by: 0,
@@ -51,14 +14,14 @@ impl Monitor {
             bar_pos: config::BAR_POSITION,
             clients: vec![],
             sel: None,
-            stack: vec![],
             bar_window: None,
             lt: Toggle::new(&EMPTY_LAYOUT),
         }
     }
 
-    pub const fn bar_window(&self) -> Option<&Window> {
-        self.bar_window.as_ref()
+    pub const fn bar_window(&self) -> Option<Window> {
+        let Some(ref window) = self.bar_window else { return None };
+        Some(window.as_ref())
     }
 }
 

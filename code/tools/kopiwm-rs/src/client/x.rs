@@ -60,25 +60,4 @@ impl Client {
         self.is_fixed = self.sz.is_fixed();
         self.hints_valid = true;
     }
-
-    pub fn update_wm_hints(&mut self, selmon: &Monitor) {
-        let win = self.win.c();
-        let hints = unsafe { C::XGetWMHints(dpy.c(), win) };
-        let Some(mut hints) = XPtr::new(hints) else { return };
-
-        let urgency_hint = hints.flags & C::XUrgencyHint as c_long != 0;
-
-        if Some(self.id) == selmon.sel && urgency_hint {
-            hints.flags &= !C::XUrgencyHint as c_long;
-            unsafe { C::XSetWMHints(dpy.c(), win, hints.as_ptr()) };
-        } else {
-            self.is_urgent = urgency_hint;
-        }
-
-        if hints.flags & C::InputHint as c_long != 0 {
-            self.never_focus = hints.input == 0;
-        } else {
-            self.never_focus = false;
-        }
-    }
 }

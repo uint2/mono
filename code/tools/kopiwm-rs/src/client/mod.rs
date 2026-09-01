@@ -8,9 +8,6 @@ mod x;
 use size::ClientSizes;
 
 pub struct Client {
-    pub id: ClientId,
-    /// The parent monitor to this client.
-    pub mon: MonitorId,
     pub win: Window,
     /// Bitmask of active tags.
     pub tags: u32,

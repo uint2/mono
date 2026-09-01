@@ -1,13 +1,11 @@
 use super::*;
 
 impl Client {
-    pub fn new(mon: &Monitor, window: Window, attrs: &C::XWindowAttributes) -> Self {
+    pub fn new(window: Window, attrs: &C::XWindowAttributes) -> Self {
         let rect = Rect::from(attrs);
         let mut pos = Toggle::new(rect);
         pos.set(rect);
         Self {
-            id: ClientId::new(),
-            mon: mon.id,
             win: window,
             tags: 0,
             name: String::new(),
@@ -22,46 +20,6 @@ impl Client {
             isfullscreen: false,
             next: None,
             snext: None,
-        }
-    }
-
-    pub fn mon<'a>(&self, monitors: &'a [Monitor]) -> &'a Monitor {
-        monitors
-            .iter()
-            .find(|m| m.id == self.mon)
-            .expect("Monitor not found. Dangling client.")
-    }
-
-    /// A client is visible if and only if there exists a bit that matches
-    /// between its own bitmask, and that of its owning monitor.
-    pub fn is_visible(&self, monitors: &[Monitor]) -> bool {
-        self.tags & self.mon(monitors).tags != 0
-    }
-
-    pub fn apply_rules(&mut self, mons: &[Monitor]) {
-        self.is_floating.set(false);
-        self.tags = 0;
-        let mut ch = C::XClassHint {
-            res_name: core::ptr::null_mut(),
-            res_class: core::ptr::null_mut(),
-        };
-        unsafe { C::XGetClassHint(dpy.c(), self.win.c(), &mut ch) };
-        let class = XPtr::new(ch.res_class);
-        let instance = XPtr::new(ch.res_name);
-
-        let class = class.and_then(|v| v.to_str()).unwrap_or("broken");
-        let instance = instance.and_then(|v| v.to_str()).unwrap_or("broken");
-
-        for rule in config::RULES {
-            if rule.is_match(class, instance, self.name.as_str()) {
-                self.is_floating.set(rule.is_floating);
-                self.tags = rule.tags;
-            }
-        }
-        if self.tags & config::TAGMASK != 0 {
-            self.tags = self.tags & config::TAGMASK;
-        } else {
-            self.tags = self.mon(mons).tags;
         }
     }
 

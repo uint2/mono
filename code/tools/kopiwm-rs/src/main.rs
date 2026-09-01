@@ -23,6 +23,7 @@ mod numlockmask;
 mod prelude;
 mod rect;
 mod setup;
+mod stack;
 mod toggle;
 mod x11;
 
@@ -189,7 +190,7 @@ fn try_main() -> Result<()> {
     };
     let mut app = App::new(root.to_owned_window(), init);
     app.grabkeys();
-    app.focus(None);
+    // app.focus(None); // TODO: reinstate
     log::info!("Ran to the end of try_main()");
     Ok(())
 }

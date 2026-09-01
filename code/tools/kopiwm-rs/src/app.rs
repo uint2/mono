@@ -4,6 +4,15 @@ use crate::C;
 use crate::prelude::*;
 use config::{Coordinate, Distance};
 
+/// The address of a client.
+#[derive(Clone, Copy)]
+struct Addr {
+    // Monitor index.
+    pub m: usize,
+    // Client index.
+    pub c: usize,
+}
+
 /// C: type for Coordinates.
 /// D: type for Distance.
 pub struct App {
@@ -76,18 +85,17 @@ impl App {
             m.update_bar_pos(self.bar_height);
         }
         if dirty {
-            let id = self.window_to_monitor(self.root.as_ref());
-            let idx = self.monitors.position(|v| v.id == id).unwrap();
+            let idx = self.window_to_monitor(self.root.as_ref());
             self.monitors.set_sel(idx);
         }
         dirty
     }
 
-    /// Finds the monitor that contains `window`.
+    /// Gets the index of the monitor that contains the window.
     /// Fallback: currently selected monitor.
-    pub fn window_to_monitor(&self, window: Window) -> MonitorId {
+    pub fn window_to_monitor(&self, window: Window) -> usize {
         if self.root.eq(&window) {
-            if let Some(loc) = self.get_root_ptr() {
+            if let Some(loc) = self.root.as_ref().get_ptr() {
                 let r = Rect { x: loc.x, y: loc.y, width: 1, height: 1 };
                 // To guarantee a return value, we deviate a tad from dwm's
                 // behaviour and return `selmon` if nothing is found.
@@ -96,81 +104,66 @@ impl App {
         }
 
         if let Some(m) =
-            self.monitors.find(|m| m.bar_window().map_or(false, |w| *w == window))
+            self.monitors.position(|m| m.bar_window().map_or(false, |w| w == window))
         {
-            return m.id;
+            return m;
         }
 
-        if let Some(client) = self.window_to_client(window) {
-            if let Some(m) = self.monitors.find(|m| m.id == client.mon) {
-                return m.id;
+        for (idx, mon) in self.monitors.iter().enumerate() {
+            if mon.clients.iter().any(|c| c.win == window) {
+                return idx;
             }
         }
 
-        self.selmon().id
+        self.monitors.sel_idx()
     }
 
-    pub fn window_to_client(&self, window: Window) -> Option<&Client> {
-        self.monitors.iter().flat_map(|m| &m.clients).find(|c| c.win == window)
+    fn window_to_client(&self, window: Window) -> Option<Addr> {
+        for (m_idx, m) in self.monitors.iter().enumerate() {
+            for (c_idx, c) in m.clients.iter().enumerate() {
+                if c.win == window {
+                    return Some(Addr { m: m_idx, c: c_idx });
+                }
+            }
+        }
+        None
     }
 
-    pub fn c_window_to_client(&self, window: C::Window) -> Option<&Client> {
-        self.monitors.iter().flat_map(|m| &m.clients).find(|c| c.win.c() == window)
+    fn c_window_to_client(&self, window: C::Window) -> Option<Addr> {
+        for (m_idx, m) in self.monitors.iter().enumerate() {
+            for (c_idx, c) in m.clients.iter().enumerate() {
+                if c.win.c() == window {
+                    return Some(Addr { m: m_idx, c: c_idx });
+                }
+            }
+        }
+        None
+        // self.monitors.iter().flat_map(|m| &m.clients).find(|c| c.win.c() == window)
+    }
+
+    pub fn get_client(&self, addr: Addr) -> &Client {
+        &self.monitors[addr.m].clients[addr.c]
     }
 
     /// Searches the list of monitors for the one with the biggest intersection
-    /// with `self` (using Monitor.w), and returns that one.
+    /// with `self` (using Monitor.w), and returns the index of that one.
     ///
     /// If nothing is found, return the currently selected monitor.
-    pub fn rect_to_monitor(&self, rect: &Rect) -> MonitorId {
-        let mut id = self.selmon().id;
+    pub fn rect_to_monitor(&self, rect: &Rect) -> usize {
+        let mut idx = self.monitors.sel_idx();
         let mut max_area = 0;
-        for mon in &self.monitors {
-            let area = rect.intersect(&mon.w);
+        for j in 0..self.monitors.len() {
+            let m = &self.monitors[j];
+            let area = rect.intersect(&m.w);
             if max_area < area {
                 max_area = area;
-                id = mon.id;
+                idx = j;
             }
         }
-        id
+        idx
     }
 
-    pub fn get_root_ptr(&self) -> Option<Loc> {
-        let mut root_return: C::Window = 0;
-        let mut child_return: C::Window = 0;
-        let mut root_x_return: Coordinate = 0;
-        let mut root_y_return: Coordinate = 0;
-        let mut win_x_return: Coordinate = 0;
-        let mut win_y_return: Coordinate = 0;
-        let mut mask_return: c_uint = 0;
-
-        let result = unsafe {
-            C::XQueryPointer(
-                dpy.c(),
-                self.root.c(),
-                &mut root_return,
-                &mut child_return,
-                &mut root_x_return,
-                &mut root_y_return,
-                &mut win_x_return,
-                &mut win_y_return,
-                &mut mask_return,
-            )
-        };
-        match result {
-            // If XQueryPointer returns False, the pointer is not on the same
-            // screen as the specified window, and XQueryPointer returns None to
-            // child_return and zero to win_x_return and win_y_return.
-            0 => None,
-            // If XQueryPointer returns True, the pointer coordinates returned
-            // to win_x_return and win_y_return are relative to the origin of
-            // the specified window. In this case, XQueryPointer returns the
-            // child that contains the pointer, if any, or else None to
-            // child_return.
-            _ => Some(Loc::new(win_x_return, win_y_return)),
-        }
-    }
-
+    /// (dwm) static void grabkeys(void);
     pub fn grabkeys(&mut self) {
         let root = self.root.c();
         self.numlockmask.update();
@@ -205,7 +198,8 @@ impl App {
         }
     }
 
-    pub fn grabbuttons(&mut self, client: &Client, focused: bool) {
+    /// (dwm) static void grabbuttons(Client *c, int focused);
+    pub fn grabbuttons(&mut self, window: Window, focused: bool) {
         let root = self.root.c();
         self.numlockmask.update();
 
@@ -244,7 +238,7 @@ impl App {
                         dpy.c(),
                         button.button,
                         button.mask | modifier,
-                        client.win.c(),
+                        window.c(),
                         C::False as c_int,
                         BUTTONMASK,
                         C::GrabModeAsync as c_int,
@@ -257,79 +251,124 @@ impl App {
         }
     }
 
-    pub fn focus(&mut self, client: Option<&Client>) {
-        // TODO: implement from dwm's C impl.
+    /// (dwm) static void applyrules(Client *c);
+    pub fn apply_rules(&mut self, addr: Addr) {
+        let mut c = &mut self[addr];
+        c.is_floating.set(false);
+        c.tags = 0;
+        let mut ch = C::XClassHint {
+            res_name: core::ptr::null_mut(),
+            res_class: core::ptr::null_mut(),
+        };
+        unsafe { C::XGetClassHint(dpy.c(), c.win.c(), &mut ch) };
+        let class = XPtr::new(ch.res_class);
+        let instance = XPtr::new(ch.res_name);
 
-        // if (!c || !ISVISIBLE(c))
-        // 	for (c = selmon->stack; c && !ISVISIBLE(c); c = c->snext);
-        // if (selmon->sel && selmon->sel != c)
-        // 	unfocus(selmon->sel, 0);
-        // if (c) {
-        // 	if (c->mon != selmon)
-        // 		selmon = c->mon;
-        // 	if (c->is_urgent)
-        // 		seturgent(c, 0);
-        // 	detachstack(c);
-        // 	attachstack(c);
-        // 	grabbuttons(c, 1);
-        // 	XSetWindowBorder(dpy, c->win, scheme[SchemeSel][ColBorder].pixel);
-        // 	setfocus(c);
-        // } else {
-        // 	XSetInputFocus(dpy, root, RevertToPointerRoot, CurrentTime);
-        // 	XDeleteProperty(dpy, root, netatom[NetActiveWindow]);
-        // }
-        // selmon->sel = c;
-        // drawbars();
+        let class = class.and_then(|v| v.to_str()).unwrap_or("broken");
+        let instance = instance.and_then(|v| v.to_str()).unwrap_or("broken");
+
+        for rule in config::RULES {
+            if rule.is_match(class, instance, c.name.as_str()) {
+                c.is_floating.set(rule.is_floating);
+                c.tags = rule.tags;
+            }
+        }
+        if c.tags & config::TAGMASK != 0 {
+            c.tags = c.tags & config::TAGMASK;
+        } else {
+            self[addr].tags = self.monitors[addr.m].tags;
+        }
     }
 
-    pub fn applyrules(&mut self, c: &mut Client) {}
+    pub fn push_client(&mut self, client: Client) -> Addr {
+        let m = self.monitors.sel_idx();
+        let addr = Addr { m, c: self.monitors[m].clients.len() };
+        self.monitors[m].clients.push(client);
+        addr
+    }
 
-    pub fn manage(&mut self, window: Window, attrs: &C::XWindowAttributes) {
-        let mut c = Client::new(self.selmon(), window, attrs);
-        let w = c.win.c();
-        c.update_title();
+    pub fn fit_in_screen(&mut self, addr: Addr) {
+        let mon_w = self.monitors[addr.m].w;
 
-        let mut trans: C::Window = C::None as C::Window;
-        let result = unsafe { C::XGetTransientForHint(dpy.c(), w, &mut trans) };
-        match (result, self.c_window_to_client(trans)) {
-            (result, Some(t)) if result != 0 => {
-                c.mon = t.mon;
-                c.tags = t.tags;
-            }
-            _ => {
-                c.mon = self.selmon().id;
-                c.apply_rules(self.monitors.as_slice());
-            }
-        };
-
-        let c_mon = c.mon(self.monitors.as_slice());
+        let c = &mut self[addr];
         let c_width = c.width();
         let c_height = c.height();
         let mut r = c.pos.as_mut();
 
         // If client is too far right, shift it left.
-        if (r.x + c_width as Coordinate > c_mon.w.r()) {
-            r.x = c_mon.w.r() - c_width as Coordinate;
+        if (r.x + c_width as Coordinate > mon_w.r()) {
+            r.x = mon_w.r() - c_width as Coordinate;
         }
         // If client is too far down, shift it up.
-        if (r.y + c_height as Coordinate > c_mon.w.b()) {
-            r.y = c_mon.w.b() - c_height as Coordinate;
+        if (r.y + c_height as Coordinate > mon_w.b()) {
+            r.y = mon_w.b() - c_height as Coordinate;
         }
-        r.x = Coordinate::max(r.x, c_mon.w.x); // If client is too far left, truncate it.
-        r.y = Coordinate::max(r.y, c_mon.w.y); // If client is too far up, truncate it.
-        c.border_width.set(config::BORDER_PX);
+        r.x = Coordinate::max(r.x, mon_w.x); // If client is too far left, truncate it.
+        r.y = Coordinate::max(r.y, mon_w.y); // If client is too far up, truncate it.
+    }
+
+    /// A client is visible if and only if there exists a bit that matches
+    /// between its own bitmask, and that of its owning monitor.
+    fn is_visible(&self, addr: Addr) -> bool {
+        let m = &self.monitors[addr.m];
+        m.clients[addr.c].tags & m.tags != 0
+    }
+
+    /// (dwm) static void updatewmhints(Client *c);
+    fn update_wm_hints(&mut self, addr: Addr) {
+        let win = self[addr].win.c();
+        let hints = unsafe { C::XGetWMHints(dpy.c(), win) };
+        let Some(mut hints) = XPtr::new(hints) else { return };
+
+        let urgency_hint = hints.flags & C::XUrgencyHint as c_long != 0;
+
+        if Some(addr.c) == self.selmon().sel && urgency_hint {
+            hints.flags &= !C::XUrgencyHint as c_long;
+            unsafe { C::XSetWMHints(dpy.c(), win, hints.as_ptr()) };
+        } else {
+            self[addr].is_urgent = urgency_hint;
+        }
+
+        if hints.flags & C::InputHint as c_long != 0 {
+            self[addr].never_focus = hints.input == 0;
+        } else {
+            self[addr].never_focus = false;
+        }
+    }
+
+    /// (dwm) static void manage(Window w, XWindowAttributes *wa);
+    pub fn manage(&mut self, window: Window, attrs: &C::XWindowAttributes) {
+        let mut c = Client::new(window, attrs);
+        let w = c.win.c();
+        c.update_title();
+
+        let mut trans = c.win.get_transient_for_hint();
+        let addr = match trans.and_then(|t| self.window_to_client(t)) {
+            Some(t) => {
+                c.tags = self[t].tags;
+                self.push_client(c)
+            }
+            None => {
+                let addr = self.push_client(c);
+                self.apply_rules(addr);
+                addr
+            }
+        };
+
+        self.fit_in_screen(addr);
+        self[addr].border_width.set(config::BORDER_PX);
 
         let mut wc: C::XWindowChanges = unsafe { core::mem::zeroed() };
-        wc.border_width = *c.border_width as c_int;
+        wc.border_width = *self[addr].border_width as c_int;
 
         unsafe { C::XConfigureWindow(dpy.c(), w, C::CWBorderWidth, &mut wc) };
         let color = self.colors[WindowColorState::Normal].border.pixel();
         unsafe { C::XSetWindowBorder(dpy.c(), w, color) };
 
-        c.configure(); // propagates border_width, if size doesn't change
-        c.update_window_type();
-        c.update_size_hints();
-        c.update_wm_hints(self.selmon());
+        self[addr].configure(); // propagates border_width, if size doesn't change
+        self[addr].update_window_type();
+        self[addr].update_size_hints();
+        self.update_wm_hints(addr);
         unsafe {
             C::XSelectInput(
                 dpy.c(),
@@ -340,19 +379,20 @@ impl App {
                     | C::StructureNotifyMask as c_long,
             );
         };
-        self.grabbuttons(&c, false);
-        if !*c.is_floating {
-            c.is_floating.set((trans != C::None as C::Window) || c.is_fixed);
+        self.grabbuttons(self[addr].win, false);
+        if !*self[addr].is_floating {
+            let is_fixed = self[addr].is_fixed;
+            self[addr].is_floating.set(trans.is_some() || is_fixed);
         }
-        if *c.is_floating {
-            unsafe { C::XRaiseWindow(dpy.c(), c.win.c()) };
+        if *self[addr].is_floating {
+            unsafe { C::XRaiseWindow(dpy.c(), self[addr].win.c()) };
         }
-        // if (!c->isfloating)
-        // 	c->isfloating = c->oldstate = trans != None || c->isfixed;
-        // if (c->isfloating)
-        // 	XRaiseWindow(dpy, c->win);
-        // attach(c);
-        // attachstack(c);
+
+        // Skip these calls because the client happens to be in the right
+        // position already.
+        // attach(c); attachstack(c);
+
+        // TODO: continue off from here
         // XChangeProperty(dpy, root, netatom[NetClientList], XA_WINDOW, 32, PropModeAppend,
         // 	(unsigned char *) &(c->win), 1);
         // XMoveResizeWindow(dpy, c->win, c->x + 2 * sw, c->y, c->w, c->h); /* some windows require this */
@@ -363,5 +403,18 @@ impl App {
         // arrange(c->mon);
         // XMapWindow(dpy, c->win);
         // focus(NULL);
+    }
+}
+
+impl Index<Addr> for App {
+    type Output = Client;
+    fn index(&self, a: Addr) -> &Self::Output {
+        &self.monitors[a.m].clients[a.c]
+    }
+}
+
+impl IndexMut<Addr> for App {
+    fn index_mut(&mut self, a: Addr) -> &mut Self::Output {
+        &mut self.monitors[a.m].clients[a.c]
     }
 }
