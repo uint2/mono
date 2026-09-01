@@ -15,7 +15,7 @@ pub mod prelude {
     pub use display::{Display, dpy};
     pub use enums::*;
     pub use screen::Screen;
-    pub use window::Window;
+    pub use window::{OwnedWindow, Window};
     pub use wrapped::*;
     pub use xptr::XPtr;
 }

@@ -7,7 +7,7 @@ use config::{Coordinate, Distance};
 /// C: type for Coordinates.
 /// D: type for Distance.
 pub struct App {
-    pub root: Window,
+    pub root: OwnedWindow,
     screen: Screen,
     /// Screen size.
     /// Apparently dwm updates this in `void configurenotify(XEvent *)`, and
@@ -39,7 +39,7 @@ pub struct AppInitParams {
 }
 
 impl App {
-    pub fn new(root: Window, params: AppInitParams) -> Self {
+    pub fn new(root: OwnedWindow, params: AppInitParams) -> Self {
         Self {
             root,
             screen: params.screen,
@@ -76,7 +76,7 @@ impl App {
             m.update_bar_pos(self.bar_height);
         }
         if dirty {
-            let id = self.window_to_monitor(&self.root);
+            let id = self.window_to_monitor(self.root.as_ref());
             let idx = self.monitors.position(|v| v.id == id).unwrap();
             self.monitors.set_sel(idx);
         }
@@ -85,8 +85,8 @@ impl App {
 
     /// Finds the monitor that contains `window`.
     /// Fallback: currently selected monitor.
-    pub fn window_to_monitor(&self, window: &Window) -> MonitorId {
-        if window == &self.root {
+    pub fn window_to_monitor(&self, window: Window) -> MonitorId {
+        if self.root.eq(&window) {
             if let Some(loc) = self.get_root_ptr() {
                 let r = Rect { x: loc.x, y: loc.y, width: 1, height: 1 };
                 // To guarantee a return value, we deviate a tad from dwm's
@@ -96,7 +96,7 @@ impl App {
         }
 
         if let Some(m) =
-            self.monitors.find(|m| m.bar_window().map_or(false, |w| w == window))
+            self.monitors.find(|m| m.bar_window().map_or(false, |w| *w == window))
         {
             return m.id;
         }
@@ -110,8 +110,8 @@ impl App {
         self.selmon().id
     }
 
-    pub fn window_to_client(&self, window: &Window) -> Option<&Client> {
-        self.monitors.iter().flat_map(|m| &m.clients).find(|c| c.win.eq(window))
+    pub fn window_to_client(&self, window: Window) -> Option<&Client> {
+        self.monitors.iter().flat_map(|m| &m.clients).find(|c| c.win == window)
     }
 
     pub fn c_window_to_client(&self, window: C::Window) -> Option<&Client> {
@@ -199,7 +199,7 @@ impl App {
                 let offset = (keycode - start) * skip;
                 let keysym = unsafe { *syms.get(offset as usize) };
                 if key.keysym == keysym {
-                    self.numlockmask.grabkey(&self.root, key, keycode);
+                    self.numlockmask.grabkey(self.root.as_ref(), key, keycode);
                 }
             }
         }

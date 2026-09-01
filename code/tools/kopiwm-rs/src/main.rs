@@ -187,7 +187,7 @@ fn try_main() -> Result<()> {
         numlockmask: NumLockMask::new(),
         fonts,
     };
-    let mut app = App::new(root, init);
+    let mut app = App::new(root.to_owned_window(), init);
     app.grabkeys();
     app.focus(None);
     log::info!("Ran to the end of try_main()");

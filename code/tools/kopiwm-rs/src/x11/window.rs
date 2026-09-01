@@ -1,31 +1,48 @@
 use crate::C;
 use crate::prelude::*;
 
-/// TODO: rename this to OwnedWindow or something that clearly differentiates
-/// that `XDestroyWindow` is called on this one upon `Drop`.
-///
 /// NOTE: We do NOT implement `clone` for this struct because that would imply
 /// that we call `XDestroyWindow` twice.
-pub struct Window {
-    window: C::Window,
-}
+pub struct OwnedWindow(Window);
 
-impl Drop for Window {
+impl Drop for OwnedWindow {
     fn drop(&mut self) {
-        if self.window == 0 {
+        if self.0.0 == 0 {
             return;
         }
-        unsafe { C::XDestroyWindow(dpy.c(), self.window) };
+        unsafe { C::XDestroyWindow(dpy.c(), self.0.0) };
     }
 }
 
-impl Window {
-    pub const fn new(window: C::Window) -> Self {
-        Self { window }
+impl OwnedWindow {
+    pub const fn as_ref(&self) -> Window {
+        self.0
     }
 
     pub const fn c(&self) -> C::Window {
-        self.window
+        self.0.0
+    }
+}
+
+#[rustfmt::skip]
+impl PartialEq<Window> for OwnedWindow { fn eq(&self, other: &Window) -> bool { self.0.0 == other.0 } }
+#[rustfmt::skip]
+impl PartialEq<OwnedWindow> for Window { fn eq(&self, other: &OwnedWindow) -> bool { self.0 == other.0.0 } }
+
+#[derive(Clone, Copy, PartialEq, Eq)]
+pub struct Window(C::Window);
+
+impl Window {
+    pub const fn new(window: C::Window) -> Self {
+        Self(window)
+    }
+
+    pub const fn to_owned_window(self) -> OwnedWindow {
+        OwnedWindow(self)
+    }
+
+    pub const fn c(&self) -> C::Window {
+        self.0
     }
 
     pub fn check_win(root: &Window) -> Self {
@@ -69,11 +86,5 @@ impl Window {
         }
 
         atom
-    }
-}
-
-impl PartialEq for Window {
-    fn eq(&self, other: &Self) -> bool {
-        self.window == other.window
     }
 }

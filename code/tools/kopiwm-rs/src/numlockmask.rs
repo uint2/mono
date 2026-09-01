@@ -47,7 +47,7 @@ impl NumLockMask {
         return (mask & !self.modifiers[3]) & ALL_MASK;
     }
 
-    pub fn grabkey(&self, root: &Window, key: &Key, keycode: c_int) {
+    pub fn grabkey(&self, root: Window, key: &Key, keycode: c_int) {
         for modifier in self.modifiers {
             unsafe {
                 C::XGrabKey(
