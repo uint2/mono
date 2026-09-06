@@ -1,12 +1,17 @@
 use super::*;
 
 impl Client {
-    pub fn new(window: Window, attrs: &C::XWindowAttributes) -> Self {
+    pub fn new(
+        window: Window,
+        attrs: &C::XWindowAttributes,
+        mon: Weak<RwLock<Monitor>>,
+    ) -> Self {
         let rect = Rect::from(attrs);
         let mut pos = Toggle::new(rect);
         pos.set(rect);
         Self {
             win: window,
+            mon,
             tags: 0,
             name: String::new(),
             pos,
@@ -29,6 +34,14 @@ impl Client {
 
     pub fn height(&self) -> Distance {
         self.pos.height + 2 * *self.border_width
+    }
+
+    /// A client is visible if and only if there exists a bit that matches
+    /// between its own bitmask, and that of its owning monitor.
+    pub fn is_visible(&self) -> bool {
+        let m = self.mon.upgrade().unwrap();
+        let m = m.read().unwrap();
+        self.tags & m.tags != 0
     }
 
     /// Update the fullscreen state to `is_fullscreen`.

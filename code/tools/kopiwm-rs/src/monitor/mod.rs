@@ -24,9 +24,9 @@ pub struct Monitor {
     /// That is, the order in which windows appear visually. If window A covers
     /// window B, or is laid on top of it, then A is before B in the stacking
     /// order.
-    pub clients: Vec<Client>,
+    pub clients: Vec<Arc<RwLock<Client>>>,
     /// Selected client, as an index of our own set of clients.
-    pub sel: Option<usize>,
+    pub sel: Option<Arc<RwLock<Client>>>,
 
     /// The X window that manages the status bar. The only time when this is
     /// none should be when the monitor is freshly created, and we just haven't

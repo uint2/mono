@@ -154,7 +154,7 @@ fn try_main() -> Result<()> {
     let colors = setup::setup_color_scheme(screen);
     let cursors = setup::setup_cursors();
 
-    let monitors = NonEmpty::new(Monitor::new());
+    let monitors = NonEmpty::new(Arc::new(RwLock::new(Monitor::new())));
     atom::init_all();
 
     let check_win = Window::check_win(&root);

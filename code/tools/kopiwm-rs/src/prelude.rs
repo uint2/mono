@@ -33,7 +33,7 @@ pub(crate) use std::collections::LinkedList;
 pub(crate) use std::ffi::CString;
 pub(crate) use std::process::ExitCode;
 pub(crate) use std::rc::Rc;
-pub(crate) use std::sync::{LazyLock, OnceLock};
+pub(crate) use std::sync::{Arc, LazyLock, OnceLock, RwLock, Weak};
 
 // core::*
 pub(crate) use core::cmp::Ordering;

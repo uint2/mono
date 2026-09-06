@@ -29,6 +29,7 @@ impl PartialEq<Window> for OwnedWindow { fn eq(&self, other: &Window) -> bool { 
 #[rustfmt::skip]
 impl PartialEq<OwnedWindow> for Window { fn eq(&self, other: &OwnedWindow) -> bool { self.0 == other.0.0 } }
 
+/// An un-owned window.
 #[derive(Clone, Copy, PartialEq, Eq)]
 pub struct Window(C::Window);
 

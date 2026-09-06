@@ -6,7 +6,7 @@ use core::slice::{self, SliceIndex};
 #[derive(Debug, Clone)]
 pub struct NonEmpty<T> {
     inner: Vec<T>,
-    selected_index: usize,
+    // selected_index: usize,
 }
 
 #[derive(Debug)]
@@ -18,19 +18,15 @@ type Result<T, E = NonEmptyError> = core::result::Result<T, E>;
 #[allow(unused)]
 impl<T> NonEmpty<T> {
     pub fn new(initial_value: T) -> Self {
-        Self { inner: vec![initial_value], selected_index: 0 }
+        Self { inner: vec![initial_value] }
     }
 
     pub const fn len(&self) -> usize {
         self.inner.len()
     }
 
-    pub const fn sel_idx(&self) -> usize {
-        self.selected_index
-    }
-
     pub fn from_vec(vec: Vec<T>) -> Option<Self> {
-        if vec.is_empty() { None } else { Some(Self { inner: vec, selected_index: 0 }) }
+        if vec.is_empty() { None } else { Some(Self { inner: vec }) }
     }
 
     pub fn push(&mut self, value: T) {
@@ -58,6 +54,11 @@ impl<T> NonEmpty<T> {
         &mut self.inner.as_mut_slice()[n]
     }
 
+    /*
+    pub const fn sel_idx(&self) -> usize {
+        self.selected_index
+    }
+
     /// Gets the currently selected element.
     pub const fn sel(&self) -> &T {
         &self.inner.as_slice()[self.selected_index]
@@ -76,6 +77,7 @@ impl<T> NonEmpty<T> {
             Err(NonEmptyError::IndexOutOfBounds)
         }
     }
+    */
 
     pub fn iter<'a>(&'a self) -> slice::Iter<'a, T> {
         self.inner.iter()

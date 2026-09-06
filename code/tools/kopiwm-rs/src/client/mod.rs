@@ -29,4 +29,11 @@ pub struct Client {
     /// appear visually. If window A covers window B, or is laid on top of it,
     /// then A is before B in the stacking order.
     pub snext: Option<ClientId>,
+    pub mon: Weak<RwLock<Monitor>>,
+}
+
+impl PartialEq for Client {
+    fn eq(&self, other: &Self) -> bool {
+        self.win == other.win
+    }
 }
