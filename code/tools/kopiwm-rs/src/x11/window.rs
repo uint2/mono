@@ -133,4 +133,9 @@ impl Window {
             _ => Some(Self(t)),
         }
     }
+
+    /// Calls XRaiseWindow.
+    pub fn raise(&self) {
+        unsafe { C::XRaiseWindow(dpy.c(), self.c()) };
+    }
 }

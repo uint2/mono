@@ -357,7 +357,7 @@ impl App {
             c.write().unwrap().is_floating.set(trans.is_some() || is_fixed);
         }
         if *c.read().unwrap().is_floating {
-            unsafe { C::XRaiseWindow(dpy.c(), c.read().unwrap().win.c()) };
+            c.read().unwrap().win.raise();
         }
 
         // Skip these calls because the client happens to be in the right
