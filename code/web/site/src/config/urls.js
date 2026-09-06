@@ -128,6 +128,13 @@ const RAW = `
 2026-07-28 https://programmingfonts.org
 2026-07-28 https://sot.dev/everything-should-be-typed.html
 2026-07-28 https://wikipedia.org/wiki/Multimeter
+2027-09-06 https://blog.cloudflare.com/dns-cache-memory-optimization-1111/
+2027-09-06 https://drewdevault.com/blog/Stop-externalizing-your-costs-on-me/
+2027-09-06 https://github.com/aitjcize/cppman
+2027-09-06 https://orlp.net/blog/taming-float-sums/
+2027-09-06 https://terribleminds.com/ramble/2025/05/21/repeat-after-me-ai-doesnt-know-anything/
+2027-09-06 https://www.greyblake.com/blog/branchless-rust/
+2027-09-06 https://www.schneier.com/blog/archives/2011/04/schneiers_law.html
 __stable__ https://docker.com/
 __stable__ https://katex.org
 __stable__ https://lean-lang.org/
