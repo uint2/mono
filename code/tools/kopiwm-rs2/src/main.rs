@@ -20,6 +20,7 @@ struct OwnedWindow {}
 struct Client {
     window: OwnedWindow,
     tags: TagMask,
+    mon: Weak<RwLock<Monitor>>,
 }
 
 #[allow(unused)]
@@ -36,13 +37,13 @@ struct Monitor {
 
 #[allow(unused)]
 struct App {
-    monitors: Vec<Monitor>,
+    monitors: NonEmpty<Arc<RwLock<Monitor>>>,
 }
 
 #[allow(unused)]
 impl Client {
-    pub fn new(window: OwnedWindow) -> Self {
-        Self { window, tags: TagMask::EMPTY }
+    pub fn new(window: OwnedWindow, mon: Weak<RwLock<Monitor>>) -> Self {
+        Self { window, tags: TagMask::EMPTY, mon }
     }
 
     pub fn window(&self) -> &OwnedWindow {
@@ -94,9 +95,14 @@ impl App {
     /// (dwm) static Client *wintoclient(Window w);
     fn win_to_client(&self) {}
 
+    const fn selmon(&self) -> &Arc<RwLock<Monitor>> {
+        self.monitors.sel()
+    }
+
     /// (dwm) static void manage(Window w, XWindowAttributes *wa);
     fn manage(&mut self, window: OwnedWindow) {
-        let mut c = Client::new(window);
+        let mon = Arc::downgrade(self.selmon());
+        let mut c = Client::new(window, mon);
         // let mon = self.monitors.first_mut().unwrap();
         // let client = mon.stack.first_mut().unwrap();
         // mon.stack.push(unsafe { core::mem::zeroed() });
