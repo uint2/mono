@@ -1,0 +1,13 @@
+.{
+    .name = .dwmz,
+    .version = "0.0.1",
+    .fingerprint = 0xa43d4c55842d280d,
+    .minimum_zig_version = "0.15.2",
+    .paths = .{
+        "build.zig",
+        "build.zig.zon",
+        "src",
+        "README",
+        "LICENSE",
+    },
+}
