@@ -135,6 +135,7 @@ const RAW = `
 2027-09-06 https://terribleminds.com/ramble/2025/05/21/repeat-after-me-ai-doesnt-know-anything/
 2027-09-06 https://www.greyblake.com/blog/branchless-rust/
 2027-09-06 https://www.schneier.com/blog/archives/2011/04/schneiers_law.html
+2027-09-06 https://tanmaymanojgandhi.github.io/circadia/
 __stable__ https://docker.com/
 __stable__ https://katex.org
 __stable__ https://lean-lang.org/
