@@ -75,8 +75,17 @@ fn attach(c: Ptr<Client>) {
     c.r().mon.w().clients = c.clone();
 }
 
-/*
 /// (dwm) static void attachstack(Client *c);
+///
+/// Attaches the client `c` to the head of the linked list of its monitor's
+/// `stack` list.
+fn attachstack(c: Ptr<Client>) {
+    let m = c.r().mon.clone();
+    c.w().snext = m.r().clients.clone();
+    c.r().mon.w().stack = c.clone();
+}
+
+/*
 /// (dwm) static void buttonpress(XEvent *e);
 /// (dwm) static void checkotherwm(void);
 /// (dwm) static void cleanup(void);
