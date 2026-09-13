@@ -22,7 +22,7 @@ pub fn main() {
         if entry.path().extension().map_or(false, |v| v == "rs") {
             continue; // Skip rust files.
         }
-        let mut f = fs::File::open(entry.path()).unwrap();
+        let Ok(mut f) = fs::File::open(entry.path()) else { continue };
 
         buffer.clear();
         let Ok(_n) = f.read_to_string(&mut buffer) else { continue };
