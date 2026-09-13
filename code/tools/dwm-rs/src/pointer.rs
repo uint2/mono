@@ -9,6 +9,16 @@ impl<T> Clone for Ptr<T> {
     }
 }
 
+impl<T> PartialEq for Ptr<T> {
+    fn eq(&self, other: &Self) -> bool {
+        match (&self.0, &other.0) {
+            (Some(lhs), Some(rhs)) => Arc::ptr_eq(lhs, rhs),
+            _ => false,
+        }
+    }
+}
+impl<T> Eq for Ptr<T> {}
+
 #[allow(unused)]
 impl<T> Ptr<T> {
     pub fn new(value: T) -> Self {
@@ -17,22 +27,26 @@ impl<T> Ptr<T> {
 
     pub const NULL: Self = Self(None);
 
-    pub fn r<'a>(&'a self) -> RwLockReadGuard<'a, T> {
+    pub fn r(&self) -> RwLockReadGuard<'_, T> {
         self.read().unwrap()
     }
 
-    pub fn w<'a>(&'a self) -> RwLockWriteGuard<'a, T> {
+    pub fn w(&self) -> RwLockWriteGuard<'_, T> {
         self.write().unwrap()
     }
 
-    pub fn read<'a>(&'a self) -> Option<RwLockReadGuard<'a, T>> {
+    pub fn read(&self) -> Option<RwLockReadGuard<'_, T>> {
         let Some(value) = self.0.as_ref() else { return None };
         Some(value.read().unwrap())
     }
 
-    pub fn write<'a>(&'a self) -> Option<RwLockWriteGuard<'a, T>> {
+    pub fn write(&self) -> Option<RwLockWriteGuard<'_, T>> {
         let Some(value) = self.0.as_ref() else { return None };
         Some(value.write().unwrap())
+    }
+
+    pub fn update(&mut self, value: Arc<RwLock<T>>) {
+        self.0 = Some(value);
     }
 
     pub const fn is_null(&self) -> bool {

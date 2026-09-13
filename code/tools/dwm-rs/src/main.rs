@@ -10,8 +10,8 @@ mod prelude;
 
 use prelude::*;
 
-fn is_visible(client: Ptr<Client>) -> bool {
-    let c = client.r();
+fn is_visible(c: Ptr<Client>) -> bool {
+    let c = c.r();
     let m = c.mon.r();
     c.tags & m.tagset[m.seltags as usize] != 0
 }
@@ -75,7 +75,29 @@ fn applyrules(c: Ptr<Client>) {
 /// (dwm) static void configurerequest(XEvent *e);
 /// (dwm) static Monitor *createmon(void);
 /// (dwm) static void destroynotify(XEvent *e);
+*/
+
 /// (dwm) static void detach(Client *c);
+fn detach(c: Ptr<Client>) {
+    let client = c.r();
+    let tc = &mut client.mon.w().clients;
+    if tc.is_null() || tc == &c {
+        *tc = c.r().next.clone();
+        return;
+    }
+
+    let mut tc = client.mon.r().clients.clone();
+    loop {
+        let next = tc.r().next.clone();
+        if next == c {
+            tc.w().next = c.r().next.clone();
+            break;
+        }
+        next!(tc = tc.next);
+    }
+}
+
+/*
 /// (dwm) static void detachstack(Client *c);
 /// (dwm) static Monitor *dirtomon(int dir);
 /// (dwm) static void drawbar(Monitor *m);
