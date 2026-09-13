@@ -18,3 +18,18 @@ mod hard_coded_missing_enums {
 }
 
 pub use hard_coded_missing_enums::*;
+
+pub fn undefined<T>() -> T {
+    unsafe { core::mem::zeroed() }
+}
+
+pub fn to_str<'a>(ptr: *const i8) -> Option<&'a str> {
+    if ptr.is_null() {
+        return Option::None;
+    }
+    (unsafe { std::ffi::CStr::from_ptr(ptr) }).to_str().ok()
+}
+
+pub fn xfree<T>(value: *mut T) {
+    unsafe { XFree(value as *mut std::os::raw::c_void) };
+}

@@ -1,10 +1,60 @@
+#[macro_use]
+mod macros;
+
 mod c;
+mod config;
 mod dtypes;
+mod globals;
+mod pointer;
 mod prelude;
-mod ptr;
+
+use prelude::*;
+
+/// (dwm) static void applyrules(Client *c);
+fn applyrules(c: Ptr<Client>) {
+    let mut ch: c::XClassHint = c::undefined();
+
+    /* rule matching */
+    c.write().unwrap().isfloating = 0;
+    c.write().unwrap().tags = 0;
+    x!(XGetClassHint(dpy, c.read().unwrap().win, &mut ch));
+    let class = c::to_str(ch.res_class).unwrap_or("broken");
+    let instance = c::to_str(ch.res_name).unwrap_or("broken");
+
+    for i in 0..rules.len() {
+        let r = &rules[i];
+        if r.title.map_or(true, |v| c.read().unwrap().name.contains(v))
+            && r.class.map_or(true, |v| class.contains(v))
+            && r.instance.map_or(true, |v| instance.contains(v))
+        {
+            c.write().unwrap().isfloating = r.isfloating;
+            c.write().unwrap().tags |= r.tags;
+            let mut m = Ptr::clone(&mons);
+            while !m.is_null() && m.read().unwrap().num != r.monitor {
+                let next = m.read().unwrap().next.clone();
+                m = next;
+            }
+            if !m.is_null() {
+                c.write().unwrap().mon = m;
+            }
+        }
+    }
+    if !ch.res_class.is_null() {
+        c::xfree(ch.res_class);
+    }
+    if !ch.res_name.is_null() {
+        c::xfree(ch.res_name);
+    }
+    c.write().unwrap().tags = if c.r().tags & TAGMASK != 0 {
+        c.r().tags & TAGMASK
+    } else {
+        let c = c.r();
+        let m = c.mon.r();
+        m.tagset[m.seltags as usize]
+    };
+}
 
 /*
-/// (dwm) static void applyrules(Client *c);
 /// (dwm) static int applysizehints(Client *c, int *x, int *y, int *w, int *h, int interact);
 /// (dwm) static void arrange(Monitor *m);
 /// (dwm) static void arrangemon(Monitor *m);
@@ -98,5 +148,6 @@ mod ptr;
 */
 
 fn main() {
-    println!("Hello, world!");
+    let display = x!(XOpenDisplay(ptr::null()));
+    unsafe { dpy = display };
 }

@@ -48,107 +48,107 @@ pub enum Arg {
 }
 
 pub struct Client {
-    name: String,
-    mina: c_float,
-    mixa: c_float,
-    x: c_int,
-    y: c_int,
-    w: c_int,
-    h: c_int,
-    oldx: c_int,
-    oldy: c_int,
-    oldw: c_int,
-    oldh: c_int,
-    basew: c_int,
-    baseh: c_int,
-    incw: c_int,
-    inch: c_int,
-    maxw: c_int,
-    maxh: c_int,
-    minw: c_int,
-    minh: c_int,
-    hintsvalid: c_int,
+    pub name: String,
+    pub mina: c_float,
+    pub mixa: c_float,
+    pub x: c_int,
+    pub y: c_int,
+    pub w: c_int,
+    pub h: c_int,
+    pub oldx: c_int,
+    pub oldy: c_int,
+    pub oldw: c_int,
+    pub oldh: c_int,
+    pub basew: c_int,
+    pub baseh: c_int,
+    pub incw: c_int,
+    pub inch: c_int,
+    pub maxw: c_int,
+    pub maxh: c_int,
+    pub minw: c_int,
+    pub minh: c_int,
+    pub hintsvalid: c_int,
     /* Border width. */
-    bw: c_int,
+    pub bw: c_int,
     /* Old border width. */
-    oldbw: c_int,
+    pub oldbw: c_int,
     /* Bitmask of active tags. */
-    tags: c_uint,
-    isfixed: c_int,
-    isfloating: c_int,
-    isurgent: c_int,
-    neverfocus: c_int,
+    pub tags: c_uint,
+    pub isfixed: c_int,
+    pub isfloating: c_int,
+    pub isurgent: c_int,
+    pub neverfocus: c_int,
     /* Old floating state (previous value for `isfloating`). */
-    oldstate: c_int,
-    isfullscreen: c_int,
+    pub oldstate: c_int,
+    pub isfullscreen: c_int,
     /* Next client in the linked list of clients. */
-    next: Ptr<Self>,
+    pub next: Ptr<Self>,
     /* Next client in the display stack. */
-    snext: Ptr<Self>,
-    mon: Ptr<Monitor>,
-    win: c::Window,
+    pub snext: Ptr<Self>,
+    pub mon: Ptr<Monitor>,
+    pub win: c::Window,
 }
 
 pub struct Key {
-    r#mod: c_uint,
-    keysym: c::KeySym,
-    func: fn(Arg),
-    arg: Arg,
+    pub r#mod: c_uint,
+    pub keysym: c::KeySym,
+    pub func: fn(Arg),
+    pub arg: Arg,
 }
 
 pub struct Monitor {
-    ltsymbol: String,
-    mfact: c_float,
-    nmaster: c_int,
-    num: c_int,
+    pub ltsymbol: String,
+    pub mfact: c_float,
+    pub nmaster: c_int,
+    pub num: c_int,
     /* Bar geometry. */
-    by: c_int,
+    pub by: c_int,
     /* Screen size: x-coordinate. */
-    mx: c_int,
+    pub mx: c_int,
     /* Screen size: y-coordinate. */
-    my: c_int,
+    pub my: c_int,
     /* Screen size: width. */
-    mw: c_int,
+    pub mw: c_int,
     /* Screen size: height. */
-    mh: c_int,
+    pub mh: c_int,
     /* Window area: x-coordinate. */
-    wx: c_int,
+    pub wx: c_int,
     /* Window area: y-coordinate. */
-    wy: c_int,
+    pub wy: c_int,
     /* Window area: width. */
-    ww: c_int,
+    pub ww: c_int,
     /* Window area: height. */
-    wh: c_int,
+    pub wh: c_int,
     /* Index of selected tags. */
-    seltags: c_uint,
+    pub seltags: c_uint,
     /* Index of selected layout. */
-    sellt: c_uint,
-    tagset: [c_uint; 2],
+    pub sellt: c_uint,
+    pub tagset: [c_uint; 2],
     /* 0 means no bar. */
-    showbar: c_int,
+    pub showbar: c_int,
     /* 0 means bottom bar. */
-    topbar: c_int,
+    pub topbar: c_int,
     /* Linked list of clients. */
-    clients: Ptr<Client>,
+    pub clients: Ptr<Client>,
     /* Selected client. */
-    sel: Ptr<Client>,
+    pub sel: Ptr<Client>,
     /* Clients ordered by stack. */
-    stack: Ptr<Client>,
-    next: Ptr<Monitor>,
-    barwin: c::Window,
-    layout: [Layout; 2],
+    pub stack: Ptr<Client>,
+    pub next: Ptr<Monitor>,
+    pub barwin: c::Window,
+    pub layout: [Layout; 2],
 }
 
 pub struct Layout {
-    symbol: &'static str,
-    arrange: fn(Ptr<Monitor>),
+    pub symbol: &'static str,
+    pub arrange: fn(Ptr<Monitor>),
 }
 
 pub struct Rule {
-    class: &'static str,
-    instance: &'static str,
-    title: &'static str,
-    tags: c_uint,
-    isfloating: c_int,
-    ismonitor: c_int,
+    pub class: Option<&'static str>,
+    pub instance: Option<&'static str>,
+    pub title: Option<&'static str>,
+    pub tags: c_uint,
+    pub isfloating: c_int,
+    pub monitor: c_int,
 }
