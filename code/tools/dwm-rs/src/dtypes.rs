@@ -75,7 +75,7 @@ pub struct Client {
     /* Bitmask of active tags. */
     pub tags: c_uint,
     pub isfixed: c_int,
-    pub isfloating: c_int,
+    pub isfloating: bool,
     pub isurgent: c_int,
     pub neverfocus: c_int,
     /* Old floating state (previous value for `isfloating`). */
@@ -149,6 +149,6 @@ pub struct Rule {
     pub instance: Option<&'static str>,
     pub title: Option<&'static str>,
     pub tags: c_uint,
-    pub isfloating: c_int,
+    pub isfloating: bool,
     pub monitor: c_int,
 }

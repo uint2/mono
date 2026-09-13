@@ -10,12 +10,18 @@ mod prelude;
 
 use prelude::*;
 
+fn is_visible(client: Ptr<Client>) -> bool {
+    let c = client.r();
+    let m = c.mon.r();
+    c.tags & m.tagset[m.seltags as usize] != 0
+}
+
 /// (dwm) static void applyrules(Client *c);
 fn applyrules(c: Ptr<Client>) {
     let mut ch: c::XClassHint = c::undefined();
 
     /* rule matching */
-    c.write().unwrap().isfloating = 0;
+    c.write().unwrap().isfloating = false;
     c.write().unwrap().tags = 0;
     x!(XGetClassHint(dpy, c.read().unwrap().win, &mut ch));
     let class = c::to_str(ch.res_class).unwrap_or("broken");
@@ -31,8 +37,7 @@ fn applyrules(c: Ptr<Client>) {
             c.write().unwrap().tags |= r.tags;
             let mut m = Ptr::clone(&mons);
             while !m.is_null() && m.read().unwrap().num != r.monitor {
-                let next = m.read().unwrap().next.clone();
-                m = next;
+                next!(m = m.next);
             }
             if !m.is_null() {
                 c.write().unwrap().mon = m;
@@ -96,7 +101,17 @@ fn applyrules(c: Ptr<Client>) {
 /// (dwm) static void monocle(Monitor *m);
 /// (dwm) static void motionnotify(XEvent *e);
 /// (dwm) static void movemouse(const Arg *arg);
+*/
+
 /// (dwm) static Client *nexttiled(Client *c);
+fn nexttiled(mut c: Ptr<Client>) -> Ptr<Client> {
+    while c.r().isfloating || is_visible(c.clone()) {
+        next!(c = c.next);
+    }
+    return c;
+}
+
+/*
 /// (dwm) static void pop(Client *c);
 /// (dwm) static void propertynotify(XEvent *e);
 /// (dwm) static void quit(const Arg *arg);
