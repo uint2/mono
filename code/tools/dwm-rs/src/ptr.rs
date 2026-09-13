@@ -1,19 +1,23 @@
 use crate::prelude::*;
 
 /// Models after a C pointer.
-pub struct Ptr<T>(Arc<RwLock<T>>);
+pub struct Ptr<T>(Option<Arc<RwLock<T>>>);
 
 #[allow(unused)]
 impl<T> Ptr<T> {
     pub fn new(value: T) -> Self {
-        Self(Arc::new(RwLock::new(value)))
+        Self(Some(Arc::new(RwLock::new(value))))
     }
 
-    pub fn read<'a>(&'a self) -> RwLockReadGuard<'a, T> {
-        self.0.read().unwrap()
+    pub const NULL: Self = Self(None);
+
+    pub fn read<'a>(&'a self) -> Option<RwLockReadGuard<'a, T>> {
+        let Some(value) = self.0.as_ref() else { return None };
+        Some(value.read().unwrap())
     }
 
-    pub fn write<'a>(&'a self) -> RwLockWriteGuard<'a, T> {
-        self.0.write().unwrap()
+    pub fn write<'a>(&'a self) -> Option<RwLockWriteGuard<'a, T>> {
+        let Some(value) = self.0.as_ref() else { return None };
+        Some(value.write().unwrap())
     }
 }
