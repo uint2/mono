@@ -63,7 +63,15 @@ fn applyrules(c: Ptr<Client>) {
 /// (dwm) static int applysizehints(Client *c, int *x, int *y, int *w, int *h, int interact);
 /// (dwm) static void arrange(Monitor *m);
 /// (dwm) static void arrangemon(Monitor *m);
+*/
+
 /// (dwm) static void attach(Client *c);
+fn attach(c: Ptr<Client>) {
+    c.w().next = c.r().mon.r().clients.clone();
+    c.r().mon.w().clients = c.clone();
+}
+
+/*
 /// (dwm) static void attachstack(Client *c);
 /// (dwm) static void buttonpress(XEvent *e);
 /// (dwm) static void checkotherwm(void);
@@ -95,6 +103,14 @@ fn detach(c: Ptr<Client>) {
         }
         next!(tc = tc.next);
     }
+}
+
+#[test]
+fn detach_test() {
+    // TODO: Add test cases when we completed attach and detach.
+    let m = Ptr::new(Monitor::mock());
+    let c = Client::mock(m.clone(), 1);
+    // c.mon.write().cli
 }
 
 /*

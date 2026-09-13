@@ -89,6 +89,15 @@ pub struct Client {
     pub win: c::Window,
 }
 
+impl Client {
+    #[cfg(test)]
+    pub fn mock(monitor: Ptr<Monitor>, window: c::Window) -> Self {
+        let mut client: Self = c::undefined();
+        client.win = window;
+        client
+    }
+}
+
 pub struct Key {
     pub r#mod: c_uint,
     pub keysym: c::KeySym,
@@ -137,6 +146,13 @@ pub struct Monitor {
     pub next: Ptr<Monitor>,
     pub barwin: c::Window,
     pub layout: [Layout; 2],
+}
+
+impl Monitor {
+    #[cfg(test)]
+    pub fn mock() -> Self {
+        c::undefined()
+    }
 }
 
 pub struct Layout {
