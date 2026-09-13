@@ -66,8 +66,12 @@ fn applyrules(c: Ptr<Client>) {
 */
 
 /// (dwm) static void attach(Client *c);
+///
+/// Attaches the client `c` to the head of the linked list of its monitor's
+/// `clients` list.
 fn attach(c: Ptr<Client>) {
-    c.w().next = c.r().mon.r().clients.clone();
+    let m = c.r().mon.clone();
+    c.w().next = m.r().clients.clone();
     c.r().mon.w().clients = c.clone();
 }
 
@@ -88,9 +92,9 @@ fn attach(c: Ptr<Client>) {
 /// (dwm) static void detach(Client *c);
 fn detach(c: Ptr<Client>) {
     let client = c.r();
-    let tc = &mut client.mon.w().clients;
-    if tc.is_null() || tc == &c {
-        *tc = c.r().next.clone();
+    let tc = client.mon.r().clients.clone();
+    if tc.is_null() || tc == c {
+        client.mon.w().clients = c.r().next.clone();
         return;
     }
 
@@ -106,11 +110,50 @@ fn detach(c: Ptr<Client>) {
 }
 
 #[test]
-fn detach_test() {
-    // TODO: Add test cases when we completed attach and detach.
+fn attach_test() {
     let m = Ptr::new(Monitor::mock());
-    let c = Client::mock(m.clone(), 1);
-    // c.mon.write().cli
+    attach(Ptr::new(Client::mock(m.clone(), 2905)));
+    assert_eq!(m.r().clients.r().win, 2905);
+}
+
+#[test]
+fn attach_two_test() {
+    let m = Ptr::new(Monitor::mock());
+    attach(Ptr::new(Client::mock(m.clone(), 2905)));
+    attach(Ptr::new(Client::mock(m.clone(), 1506)));
+    assert_eq!(m.r().clients.r().win, 1506);
+    assert_eq!(m.r().clients.r().next.r().win, 2905);
+}
+
+#[test]
+fn detach_test() {
+    let m = Ptr::new(Monitor::mock());
+    let c0 = Ptr::new(Client::mock(m.clone(), 2905));
+    attach(c0.clone());
+    detach(c0.clone());
+    assert!(m.r().clients.is_null());
+}
+
+#[test]
+fn detach_two_test_a() {
+    let m = Ptr::new(Monitor::mock());
+    let c0 = Ptr::new(Client::mock(m.clone(), 2905));
+    let c1 = Ptr::new(Client::mock(m.clone(), 1506));
+    attach(c0.clone());
+    attach(c1.clone());
+    detach(c0.clone());
+    assert_eq!(m.r().clients.r().win, 1506);
+}
+
+#[test]
+fn detach_two_test_b() {
+    let m = Ptr::new(Monitor::mock());
+    let c0 = Ptr::new(Client::mock(m.clone(), 2905));
+    let c1 = Ptr::new(Client::mock(m.clone(), 1506));
+    attach(c0.clone());
+    attach(c1.clone());
+    detach(c1.clone());
+    assert_eq!(m.r().clients.r().win, 2905);
 }
 
 /*

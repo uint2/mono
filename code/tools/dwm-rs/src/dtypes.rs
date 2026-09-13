@@ -92,9 +92,41 @@ pub struct Client {
 impl Client {
     #[cfg(test)]
     pub fn mock(monitor: Ptr<Monitor>, window: c::Window) -> Self {
-        let mut client: Self = c::undefined();
-        client.win = window;
-        client
+        Self {
+            name: String::from("mock"),
+            mina: 0.,
+            mixa: 0.,
+            x: 0,
+            y: 0,
+            w: 0,
+            h: 0,
+            oldx: 0,
+            oldy: 0,
+            oldw: 0,
+            oldh: 0,
+            basew: 0,
+            baseh: 0,
+            incw: 0,
+            inch: 0,
+            maxw: 0,
+            maxh: 0,
+            minw: 0,
+            minh: 0,
+            hintsvalid: 0,
+            bw: 0,
+            oldbw: 0,
+            tags: 0,
+            isfixed: 0,
+            isfloating: false,
+            isurgent: 0,
+            neverfocus: 0,
+            oldstate: 0,
+            isfullscreen: 0,
+            next: Ptr::NULL,
+            snext: Ptr::NULL,
+            mon: monitor,
+            win: window,
+        }
     }
 }
 
@@ -106,7 +138,7 @@ pub struct Key {
 }
 
 pub struct Monitor {
-    pub ltsymbol: String,
+    pub ltsymbol: &'static str,
     pub mfact: c_float,
     pub nmaster: c_int,
     pub num: c_int,
@@ -151,13 +183,48 @@ pub struct Monitor {
 impl Monitor {
     #[cfg(test)]
     pub fn mock() -> Self {
-        c::undefined()
+        Self {
+            ltsymbol: "mock",
+            mfact: 0.,
+            nmaster: 0,
+            num: 0,
+            by: 0,
+            mx: 0,
+            my: 0,
+            mw: 0,
+            mh: 0,
+            wx: 0,
+            wy: 0,
+            ww: 0,
+            wh: 0,
+            seltags: 0,
+            sellt: 0,
+            tagset: [0, 0],
+            showbar: 0,
+            topbar: 0,
+            clients: Ptr::NULL,
+            sel: Ptr::NULL,
+            stack: Ptr::NULL,
+            next: Ptr::NULL,
+            barwin: 0,
+            layout: [Layout::mock(), Layout::mock()],
+        }
     }
 }
 
 pub struct Layout {
     pub symbol: &'static str,
     pub arrange: fn(Ptr<Monitor>),
+}
+
+#[cfg(test)]
+fn arrange_mock(_: Ptr<Monitor>) {}
+
+impl Layout {
+    #[cfg(test)]
+    pub fn mock() -> Self {
+        Self { symbol: "nothing", arrange: arrange_mock }
+    }
 }
 
 pub struct Rule {

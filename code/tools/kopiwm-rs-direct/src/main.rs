@@ -1,12 +1,8 @@
 mod C;
 
-struct Client {
+struct Client {}
 
-}
-
-struct Monitor {
-
-}
+struct Monitor {}
 
 pub fn main() {}
 
