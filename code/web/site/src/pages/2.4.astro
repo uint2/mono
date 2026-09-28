@@ -1,0 +1,86 @@
+---
+import * as c from "../consts"
+import ArticleCard from "../components/ArticleCard.astro"
+import Main from "../layouts/Main.astro"
+import Project from "../components/Project.astro"
+import Header from "../components/Header.astro"
+import Section from "../layouts/Section.astro"
+import { rangeInclusive, range, m, s, PACES, timing } from "../ippt"
+const lap = (n) => 0.4 * n
+const t = (m, s) => 60 * m + s
+
+const RANGES = [
+  range(t(3, 0), t(4, 0), 5),
+  range(t(4, 0), t(5, 0), 5),
+  range(t(5, 0), t(6, 0), 5),
+  range(t(6, 0), t(7, 0), 5),
+]
+---
+
+<Main>
+  <Section>
+    <Header />
+    {
+      RANGES.map((range) => (
+        <>
+          <table class="ippt-tbl">
+            <tr class="ippt-tbl">
+              <th class="ippt-tbl ippt-tbl-header">pace</th>
+              <th class="ippt-tbl ippt-tbl-header">L1</th>
+              <th class="ippt-tbl ippt-tbl-header">L2</th>
+              <th class="ippt-tbl ippt-tbl-header">L3</th>
+              <th class="ippt-tbl ippt-tbl-header">L4</th>
+              <th class="ippt-tbl ippt-tbl-header">L5</th>
+              <th class="ippt-tbl ippt-tbl-header">L6</th>
+            </tr>
+            {range.map((pace, i) => (
+              <tr class="ippt-tbl" key={i}>
+                <td class="ippt-tbl ippt-tbl-right">{timing(pace)}</td>
+                <td class="ippt-tbl ippt-tbl-right">{timing(pace * lap(1))}</td>
+                <td class="ippt-tbl ippt-tbl-right">{timing(pace * lap(2))}</td>
+                <td class="ippt-tbl ippt-tbl-right">{timing(pace * lap(3))}</td>
+                <td class="ippt-tbl ippt-tbl-right">{timing(pace * lap(4))}</td>
+                <td class="ippt-tbl ippt-tbl-right">{timing(pace * lap(5))}</td>
+                <td class="ippt-tbl ippt-tbl-right">{timing(pace * lap(6))}</td>
+              </tr>
+            ))}
+          </table>
+          <div style={{ color: "transparent" }}>
+            train like you've never won, race like you've never lost.
+          </div>
+        </>
+      ))
+    }
+  </Section>
+</Main>
+
+<style>
+  .ippt-tbl {
+    border: 1px solid black;
+    border-collapse: collapse;
+    padding: 1px 3px;
+    font-size: 15px;
+  }
+  .ippt-tbl-header {
+    padding: 1px 6px;
+  }
+  .ippt-tbl-right {
+    text-align: end;
+  }
+  .ippt-tbl-header {
+    /* smallest screen */
+    width: 34px;
+    /* tailwindcss(sm) */
+    @media (width >= 40rem) {
+      width: 45px;
+    }
+    /* tailwindcss(md) */
+    @media (width >= 48rem) {
+      width: 64px;
+    }
+    /* tailwindcss(lg) */
+    @media (width >= 64rem) {
+      width: 108px;
+    }
+  }
+</style>
