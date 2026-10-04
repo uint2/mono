@@ -41,6 +41,9 @@ bufenter['*.lean'] = function()
   snip('<>', '⟨⟩')
 end
 
+-- Gherkin
+bufenter['*.feature'] = function() set_tab(2) end
+
 -- C/C++
 bufenter[{ '*.cpp', '*.hpp', '*.h', '*.c', '*.cc' }] = function()
   vim.opt_local.commentstring = '// %s'
