@@ -66,3 +66,5 @@ cmd('Time', function()
   local time = vim.fn.strftime('%H:%M:%S')
   feedkeys('O' .. time .. '<esc>', 'n')
 end)
+
+cmd('LspInfo', function() vim.cmd.checkhealth('vim.lsp') end)
