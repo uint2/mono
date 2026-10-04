@@ -1,6 +1,6 @@
 local M = {}
 
-M.default_on_attach = function(_, bufnr)
+local default_on_attach = function(_, bufnr)
   -- Disable LSP-based syntax highlighting. This introduces a color change
   -- after LSP gets attached.
   for _, group in ipairs(vim.fn.getcompletion('@lsp', 'highlight')) do
@@ -15,17 +15,21 @@ M.default_on_attach = function(_, bufnr)
   vim.keymap.set('n', 'K', vim.lsp.buf.hover, x)
 end
 
+M.add_on_attach = function(opts)
+  if opts.on_attach ~= nil then
+    local user_on_attach = opts.on_attach
+    opts.on_attach = function(client, bufnr)
+      default_on_attach(client, bufnr)
+      user_on_attach(client, bufnr)
+    end
+  else
+    opts.on_attach = default_on_attach
+  end
+end
+
 M.add = setmetatable({}, {
   __newindex = function(_, key, opts)
-    if opts.on_attach ~= nil then
-      local user_on_attach = opts.on_attach
-      opts.on_attach = function(client, bufnr)
-        M.default_on_attach(client, bufnr)
-        user_on_attach(clinet, bufnr)
-      end
-    else
-      opts.on_attach = M.default_on_attach
-    end
+    M.add_on_attach(opts)
     vim.lsp.config(key, opts)
     vim.lsp.enable(key)
   end,
