@@ -93,6 +93,10 @@ k('v', '<leader>xb', 'c\\x1b[m<left>')
 k('n', '[[', function() vim.fn.searchpair('\\[', '', '\\]', 'b') end)
 k('n', ']]', function() vim.fn.searchpair('\\[', '', '\\]') end)
 
+-- horizontal scrolling on long lines.
+k({ 'n', 'v' }, '<C-l>', '20zl')
+k({ 'n', 'v' }, '<C-h>', '20zh')
+
 -- diagnostics
 k('n', '<leader>e', vim.diagnostic.open_float)
 -- k('n', '<leader>p', ':Neoformat<CR>')
@@ -111,11 +115,39 @@ k('n', '<leader>Q', function()
   local tbl = {}
   local buf = vim.api.nvim_get_current_buf()
   for _, line in ipairs(vim.api.nvim_buf_get_lines(buf, 0, -1, false)) do
+    -- each line is FILENAME:LINE-NUMBER:MESSAGE
     local _, _, filename, lnum, text = line:find('(.*):(%d+):(.*)')
     table.insert(
       tbl,
       { filename = filename, lnum = tonumber(lnum), text = text }
     )
   end
+  vim.fn.setqflist(tbl)
+end, s)
+
+-- Load the maven build output ERROR lines into quickfix list.
+k('n', '<leader>J', function()
+  local tbl = {}
+  local filename, lnum, col, text
+  local buf = vim.api.nvim_get_current_buf()
+  for _, line in ipairs(vim.api.nvim_buf_get_lines(buf, 0, -1, false)) do
+    _, _, filename, lnum, col, text =
+      line:find('^%[ERROR%] (.*):%[(%d+),(%d+)%] (.*)')
+    if filename ~= nil then
+      table.insert(
+        tbl,
+        { filename = filename, lnum = tonumber(lnum), text = text, col = col }
+      )
+      -- else
+      --   _, _, filename, lnum, text = line:find('^%[ERROR%] *(.*):(%d+) (.*)')
+      --   if filename ~= nil then
+      --     table.insert(
+      --       tbl,
+      --       { filename = filename, lnum = tonumber(lnum), text = text }
+      --     )
+      --   end
+    end
+  end
+  print(('%d errors found'):format(#tbl))
   vim.fn.setqflist(tbl)
 end, s)
