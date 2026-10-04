@@ -3,6 +3,7 @@ local M, builtin = { files = {}, string = {} }, require('telescope.builtin')
 
 local t = {
   file_ignore_patterns = {
+    -- '%.properties', -- for Maven projects
     'node_modules',
     'LICENSE',
     'autoload/plug.vim',
