@@ -148,11 +148,7 @@ impl Index<(usize, usize)> for BlockMosaics {
     type Output = Color;
     fn index(&self, (x, y): (usize, usize)) -> &Self::Output {
         let d = self.d;
-        if x < d && y < d {
-            &self.qr[x + y * self.d]
-        } else {
-            &Color::Light
-        }
+        if x < d && y < d { &self.qr[x + y * self.d] } else { &Color::Light }
     }
 }
 
@@ -167,14 +163,14 @@ fn main() {
     const BUFSIZE: usize = 1600;
     let mut buffer = [0u8; BUFSIZE];
     for idx in 1.. {
-        match br.read(&mut buffer) {
+        buffer.fill(0);
+        let n = match br.read(&mut buffer) {
             Ok(0) | Err(_) => {
                 break;
             }
-            Ok(_) => {}
-        }
-
-        let qr = QrCode::new(&buffer).unwrap();
+            Ok(n) => n,
+        };
+        let qr = QrCode::new(&buffer[..n]).unwrap();
         let name = format!("{:0>3}.txt", idx);
         let mut file = File::create(name).unwrap();
         BlockMosaics::new(&qr).render(&mut file);
