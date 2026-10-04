@@ -16,7 +16,7 @@ local function close_menu()
 end
 
 local function create_window()
-  local width = 60
+  local width = 120
   local height = 10
   local bufnr = vim.api.nvim_create_buf(false, false)
 
