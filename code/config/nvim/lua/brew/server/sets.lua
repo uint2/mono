@@ -20,7 +20,6 @@ v.undofile = true -- enables persisted undos
 v.incsearch = true -- search as you type
 v.hlsearch = false -- unhighlight matches after searching
 v.laststatus = 2 -- statusline always on
-v.foldmethod = 'marker' -- enables folding
 v.spelllang = 'en_us' -- enables spell check
 v.errorbells = false -- disables terminal sounds
 v.swapfile = false -- disables swap file
@@ -37,7 +36,15 @@ v.formatoptions = 'jcroql' -- see :h fo-table too
 v.colorcolumn = '81'
 v.textwidth = 80
 
+-- Folding
+v.foldmethod = 'marker' -- enables folding
+v.foldtext = 'getline(v:foldstart)'
+v.fillchars = {
+  fold = ' ',
+}
+
 -- honorary set
 -- set leader to <space>
 vim.g.mapleader = ' '
--- vim.g.rust_recommended_style = false
+
+vim.g.rust_recommended_style = false
