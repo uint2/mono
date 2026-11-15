@@ -9,16 +9,20 @@ pub use {
 use std::fs;
 pub use std::path::Path;
 
+/// Creates a `std::process::Command` instance with "git" as `argv[0]`, and
+/// fills in the CLI arguments.
 macro_rules! git {
     ($($arg:expr),* $(,)?) => { std::process::Command::new("git")$(.arg($arg))* };
 }
 
+/// A shorthand for `Branch::new`.
 macro_rules! branch {
     ($value:expr) => {
         Branch::new($value)
     };
 }
 
+/// Creates a `std::process::Command` instance with arguments.
 #[allow(unused)]
 macro_rules! sh {
     ($first:expr) => { std::process::Command::new($first) };

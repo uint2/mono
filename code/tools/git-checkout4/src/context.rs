@@ -52,7 +52,7 @@ fn get_git_branch() -> Result<String, ()> {
 }
 
 fn get_git_branches() -> Result<String, ()> {
-    let output = git!("branch", "--format=%(refname:short)")
+    let output = git!("for-each-ref", "--format=%(refname:short)", "refs/heads/")
         .output()
         .map_err(|_| eprintln!("Failed to execute shell command to get git branches."))?;
     let mut output = String::from_utf8(output.stdout).unwrap();

@@ -283,21 +283,10 @@ impl<'a> App<'a> {
         self.bundles.iter().find(|v| v.branch == Some(branch)).map(|v| v.worktree)
     }
 
+    /// Maps a `branch` to a git `worktree`, and saves it to the git config.
     pub fn map_branch(&mut self, branch: Branch<'a>, worktree: Worktree<'a>) {
         self.git_config.set(branch, worktree);
         self.git_config.save();
-    }
-
-    pub fn save_git_config(&self) {
-        self.git_config.save();
-    }
-
-    pub fn git_config(&self) -> &GitConfig<'a> {
-        &self.git_config
-    }
-
-    pub fn toplevel(&self) -> Option<&'a Path> {
-        self.toplevel
     }
 
     pub fn get_worktrees(&self) -> Vec<Worktree<'a>> {

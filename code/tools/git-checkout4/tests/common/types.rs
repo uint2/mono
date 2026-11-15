@@ -53,6 +53,8 @@ impl Test {
         Self { root_dir: temp_dir }
     }
 
+    /// Runs an arbitrary function `f` with the current directory set to a path
+    /// (`relpath`) that is relative to the test's root directory.
     pub fn sh<T, P: AsRef<Path>, F: FnOnce() -> T>(&self, relpath: P, f: F) -> T {
         let _lock = CWD_MUTEX.lock();
         let cwd = self.join(relpath);

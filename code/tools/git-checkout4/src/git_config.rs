@@ -2,6 +2,7 @@ use crate::prelude::*;
 
 use std::collections::hash_map::Iter;
 
+/// The global git config key prefix.
 macro_rules! key {
     () => {
         "checkout4" // set the global git config key used for this project here.
@@ -22,8 +23,13 @@ pub struct GitConfig<'a> {
 }
 
 impl<'a> GitConfig<'a> {
+    /// Not thread-safe. There should only be one concurrent call to this
+    /// function at any given time.
     pub fn save(&self) {
+        // This is an internal mutex that guarantees that only one git command is
+        // ran at any given time.
         static MUTEX: Mutex<()> = Mutex::new(());
+
         // Unset all original keys.
         rayon::scope(|scope| {
             for key in &self.original_keys {
