@@ -55,6 +55,8 @@ impl Test {
 
     /// Runs an arbitrary function `f` with the current directory set to a path
     /// (`relpath`) that is relative to the test's root directory.
+    ///
+    /// Returns the output of the `f` function.
     pub fn sh<T, P: AsRef<Path>, F: FnOnce() -> T>(&self, relpath: P, f: F) -> T {
         let _lock = CWD_MUTEX.lock();
         let cwd = self.join(relpath);
@@ -79,6 +81,7 @@ impl Test {
             .get_stdout()
     }
 
+    /// Runs `Path::join` on the root directory of the test.
     pub fn join<P: AsRef<Path>>(&self, p: P) -> PathBuf {
         self.root_dir.join(p)
     }

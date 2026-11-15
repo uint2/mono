@@ -22,7 +22,6 @@ impl CommandExt for Command {
         self.output().unwrap()
     }
 
-    /// Spawn and wait.
     fn snw(&mut self) {
         let output = self.get();
         if !output.stderr.trim().is_empty() {

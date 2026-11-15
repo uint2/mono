@@ -6,8 +6,8 @@ pub use {
     types::{Test, at},
 };
 
-use std::fs;
-pub use std::path::Path;
+pub(crate) use std::fs;
+pub(crate) use std::path::Path;
 
 /// Creates a `std::process::Command` instance with "git" as `argv[0]`, and
 /// fills in the CLI arguments.

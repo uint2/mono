@@ -399,6 +399,45 @@ mod smart_jumps {
     }
 }
 
+/// Special cases, as seen in real life use.
+mod specials {
+    use super::*;
+    #[test]
+    fn work_01() {
+        let t = Test::new(function!());
+        t.sh("", || fs::create_dir_all("deps/xz").unwrap());
+        t.sh("", || fs::create_dir_all("workspace/xz").unwrap());
+        t.sh2("deps/xz", &["git", "init", "-b", "main"]);
+
+        t.sh("deps/xz", || some_commit("lib"));
+
+        t.sh("deps/xz", || sh!("ln", "-sf", t.join("worktree/xz/.git"), ".git").snw());
+
+        let x = t.sh("workspace/xz", || sh!("ls", "-a").get_stdout());
+        assert_eq!(x, ".git");
+
+        if true {
+            return;
+        }
+
+        t.sh("workspace/xz", || git!("worktree", "add", "develop").snw());
+        assert!(false);
+
+        let x = t.sh("workspace/develop", || sh!("ls").get_stdout());
+        assert_eq!(x, "");
+
+        let x = t.sh("deps/xz", || git!("log").get_stdout());
+        assert_eq!(x, "");
+
+        // t.sh("deps/xz", &["touch"]);
+
+        // t.sh("deps")
+
+        // let outcome = t.sh("deps", || sh!("ls").get_stdout());
+        // assert_eq!(outcome, "xz");
+    }
+}
+
 #[test]
 fn do_not_handle_git_submodule() {
     let t = Test::new(function!());
