@@ -404,31 +404,56 @@ mod specials {
     use super::*;
     #[test]
     fn work_01() {
-        let t = Test::new(function!()).no_cleanup();
-        t.sh("", || fs::create_dir_all("deps/xz").unwrap());
-        t.sh("", || fs::create_dir_all("workspace/xz").unwrap());
-        t.sh2("deps/xz", &["git", "init", "-b", "main"]);
+        let t = Test::new(function!());
 
-        t.sh("deps/xz", || some_commit("lib"));
+        let t = t.no_cleanup();
 
-        assert!(t.join("workspace/xz").is_dir());
-        assert!(t.join("deps/xz/.git").is_dir());
+        // Mock an external project (google's xz) at "./internet/xz".
+        t.sh("", || fs::create_dir_all("internet/xz").unwrap());
+        t.sh2("internet/xz", &["git", "init", "-b", "main"]);
+        t.sh("internet/xz", || some_commit("lib"));
 
-        t.sh("workspace/xz", || sh!("ln", "-sf", t.join("deps/xz/.git"), ".git").snw());
+        // Start the environment repository at "./delta".
+        t.sh("", || fs::create_dir("delta").unwrap());
+        t.sh2("delta", &["git", "init", "-b", "main"]);
 
-        // t.sh2("workspace/xz", &["git", "worktree", "add", "dev"]);
-        // t.sh2("workspace/xz", &["git", "worktree", "add", "pr"]);
-        // t.sh2("workspace/xz", &["git", "worktree", "add", "review"]);
+        // Add the xz project as a submodule.
+        t.sh("delta", || {
+            git!(
+                "-c",
+                "protocol.file.allow=always", // to allow using local repos as submodules
+                "submodule",
+                "add",
+                t.join("internet/xz/.git"),
+                "deps/xz"
+            )
+            .snw()
+        });
+        t.sh2("delta", &["git", "commit", "-m", "Add first submodule"]);
 
-        assert!(false, "END EARLY");
+        t.sh("delta", || fs::create_dir_all("workspace/xz").unwrap());
+        let git_dir =
+            t.sh("delta/deps/xz", || git!("rev-parse", "--git-dir").get_stdout());
+        assert!(Path::new(&git_dir).starts_with(t.join("delta")));
 
-        // let ctx = t.sh("workspace", || AppCtx::init(CONFIG)).unwrap();
-        // let mut app = App::new(&ctx);
-        // let outcome = app.execute("dev");
-        // assert_eq!(
-        //     outcome,
-        //     Outcome::Jump { worktree: Worktree::new(""), relpath: Path::new("") }
-        // );
+        // Manually create the ".git" file in the workspace root.
+        t.sh("delta/workspace/xz", || {
+            fs::write(".git", format!("gitdir: {}", git_dir)).unwrap()
+        });
+        assert_eq!(
+            t.sh("delta/workspace/xz", || git!("rev-parse", "--git-dir").get_stdout()),
+            git_dir,
+        );
+
+        t.sh2("delta/workspace/xz", &["git", "worktree", "add", "dev"]);
+
+        let ctx = t.sh("delta/workspace/xz", || AppCtx::init(CONFIG)).unwrap();
+        let mut app = App::new(&ctx);
+        let outcome = app.execute("dev");
+        assert_eq!(
+            outcome,
+            Outcome::Jump { worktree: Worktree::new("dev"), relpath: Path::new("dev") }
+        );
     }
 }
 
