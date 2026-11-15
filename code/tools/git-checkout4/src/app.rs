@@ -152,6 +152,8 @@ impl<'a> App<'a> {
         })
     }
 
+    /// Runs the core business logic of `git-checkout4` with the target set to
+    /// `goal`.
     pub fn execute(&mut self, goal: &str) -> Outcome<'a> {
         log::trace!("Called execute on \"{goal}\"");
         if self.is_in_submodule {

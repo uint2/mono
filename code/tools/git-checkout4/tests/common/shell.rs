@@ -39,6 +39,7 @@ impl CommandExt for Command {
     }
 
     fn get(&mut self) -> Output2 {
+        println!("Running command: {:?}", self);
         let output = self.stdout(Stdio::piped()).stderr(Stdio::piped()).output().unwrap();
         let stdout = core::str::from_utf8(&output.stdout).unwrap();
         let stderr = core::str::from_utf8(&output.stderr).unwrap();

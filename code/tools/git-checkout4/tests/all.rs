@@ -404,37 +404,31 @@ mod specials {
     use super::*;
     #[test]
     fn work_01() {
-        let t = Test::new(function!());
+        let t = Test::new(function!()).no_cleanup();
         t.sh("", || fs::create_dir_all("deps/xz").unwrap());
         t.sh("", || fs::create_dir_all("workspace/xz").unwrap());
         t.sh2("deps/xz", &["git", "init", "-b", "main"]);
 
         t.sh("deps/xz", || some_commit("lib"));
 
-        t.sh("deps/xz", || sh!("ln", "-sf", t.join("worktree/xz/.git"), ".git").snw());
+        assert!(t.join("workspace/xz").is_dir());
+        assert!(t.join("deps/xz/.git").is_dir());
 
-        let x = t.sh("workspace/xz", || sh!("ls", "-a").get_stdout());
-        assert_eq!(x, ".git");
+        t.sh("workspace/xz", || sh!("ln", "-sf", t.join("deps/xz/.git"), ".git").snw());
 
-        if true {
-            return;
-        }
+        // t.sh2("workspace/xz", &["git", "worktree", "add", "dev"]);
+        // t.sh2("workspace/xz", &["git", "worktree", "add", "pr"]);
+        // t.sh2("workspace/xz", &["git", "worktree", "add", "review"]);
 
-        t.sh("workspace/xz", || git!("worktree", "add", "develop").snw());
-        assert!(false);
+        assert!(false, "END EARLY");
 
-        let x = t.sh("workspace/develop", || sh!("ls").get_stdout());
-        assert_eq!(x, "");
-
-        let x = t.sh("deps/xz", || git!("log").get_stdout());
-        assert_eq!(x, "");
-
-        // t.sh("deps/xz", &["touch"]);
-
-        // t.sh("deps")
-
-        // let outcome = t.sh("deps", || sh!("ls").get_stdout());
-        // assert_eq!(outcome, "xz");
+        // let ctx = t.sh("workspace", || AppCtx::init(CONFIG)).unwrap();
+        // let mut app = App::new(&ctx);
+        // let outcome = app.execute("dev");
+        // assert_eq!(
+        //     outcome,
+        //     Outcome::Jump { worktree: Worktree::new(""), relpath: Path::new("") }
+        // );
     }
 }
 

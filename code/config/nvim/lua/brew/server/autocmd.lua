@@ -28,7 +28,7 @@ end
 
 -- Rust
 bufenter['*.rs'] = function()
-  --
+  set_tab(4)
   vim.opt.textwidth = 80
 end
 

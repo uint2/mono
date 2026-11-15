@@ -17,8 +17,11 @@ pub fn at<T, P: AsRef<Path>, F: FnOnce() -> T>(workdir: P, f: F) -> T {
 }
 
 pub struct Test {
-    // Root directory for the test files.
+    /// Root directory for the test files.
     root_dir: PathBuf,
+
+    /// Whether or not to remove the test directory after we're done.
+    cleanup: bool,
 }
 
 /// Gets an environment variable with a maximum of 100 retries.
@@ -50,7 +53,12 @@ impl Test {
         let temp_dir = Path::new(TMPDIR).join(name);
         let _ = fs::remove_dir_all(&temp_dir);
         fs::create_dir_all(&temp_dir).unwrap();
-        Self { root_dir: temp_dir }
+        Self { root_dir: temp_dir, cleanup: true }
+    }
+
+    pub fn no_cleanup(mut self) -> Self {
+        self.cleanup = false;
+        self
     }
 
     /// Runs an arbitrary function `f` with the current directory set to a path
@@ -95,6 +103,8 @@ impl AsRef<Path> for Test {
 
 impl Drop for Test {
     fn drop(&mut self) {
-        _ = fs::remove_dir_all(&self.root_dir);
+        if self.cleanup {
+            _ = fs::remove_dir_all(&self.root_dir);
+        }
     }
 }
