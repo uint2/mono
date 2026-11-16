@@ -107,14 +107,16 @@ impl AppCtx {
     }
 
     pub fn branches<'a>(&'a self) -> Vec<Branch<'a>> {
+        fn is_detached(branch: &str) -> bool {
+            branch.starts_with("(HEAD detached at") && branch.ends_with(')')
+        }
         self.r_git_branches
             .trim()
             .lines()
-            .filter(|&v| {
-                // Filter out things like "(HEAD detached at <SHA>)".
-                let v = v.strip_prefix('(').unwrap_or(v);
-                let v = v.strip_suffix(')').unwrap_or(v);
-                !v.starts_with("HEAD")
+            .filter(|&v| match v.trim() {
+                "(no branch)" => false,
+                v if is_detached(v) => false,
+                _ => true,
             })
             .map(Branch::new)
             .collect()
