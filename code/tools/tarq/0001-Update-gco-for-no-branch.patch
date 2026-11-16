@@ -1,0 +1,38 @@
+From 0e4107a3bb7cb909579a8482fbdc7884bd803a3e Mon Sep 17 00:00:00 2001
+From: Khang Nguyen <nvkhang@visa.com>
+Date: Mon, 12 Oct 2026 09:35:08 +0800
+Subject: [PATCH] Update gco for no-branch
+
+---
+ code/tools/git-checkout4/src/context.rs | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
+
+diff --git a/code/tools/git-checkout4/src/context.rs b/code/tools/git-checkout4/src/context.rs
+index 6d545fe..ef95685 100644
+--- a/code/tools/git-checkout4/src/context.rs
++++ b/code/tools/git-checkout4/src/context.rs
+@@ -107,14 +107,16 @@ impl AppCtx {
+     }
+ 
+     pub fn branches<'a>(&'a self) -> Vec<Branch<'a>> {
++        fn is_detached(branch: &str) -> bool {
++            branch.starts_with("(HEAD detached at") && branch.ends_with(')')
++        }
+         self.r_git_branches
+             .trim()
+             .lines()
+-            .filter(|&v| {
+-                // Filter out things like "(HEAD detached at <SHA>)".
+-                let v = v.strip_prefix('(').unwrap_or(v);
+-                let v = v.strip_suffix(')').unwrap_or(v);
+-                !v.starts_with("HEAD")
++            .filter(|&v| match v.trim() {
++                "(no branch)" => false,
++                v if is_detached(v) => false,
++                _ => true,
+             })
+             .map(Branch::new)
+             .collect()
+-- 
+2.54.0 (Apple Git-157)
+
