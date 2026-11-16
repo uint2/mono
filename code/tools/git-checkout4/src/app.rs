@@ -125,8 +125,10 @@ impl<'a> App<'a> {
 
     /// Gets the current bundle/worktree that we invoked the program from.
     ///
-    /// This may return None, for instance when we're in a submodule.
-    pub fn get_current_bundle(&self) -> &Bundle<'a> {
+    /// This may return None, for instance when we're in a submodule. Or for
+    /// instance when we're in the git directory, and all the worktrees are
+    /// subdirectories.
+    pub fn get_current_bundle(&self) -> Option<&Bundle<'a>> {
         self.bundles
             .iter()
             // CWD must be a descendant directory of the worktree root.
@@ -134,8 +136,6 @@ impl<'a> App<'a> {
             // Favour the longest match because there is a chance that worktrees
             // are nested. For instance, when there is a bare repo.
             .max_by(|a, b| a.worktree.len().cmp(&b.worktree.len()))
-            // There should be at least one match if ran in a git worktree.
-            .expect("This operation should be run in a worktree that's not a submodule")
     }
 
     fn find_branch(&self, goal: &str) -> Option<&Branch<'a>> {
@@ -213,11 +213,13 @@ impl<'a> App<'a> {
             panic!("Goal \"{goal}\" is not configred in git config.")
         };
 
-        if mapped_worktree.as_str() == current_bundle.worktree.as_str() {
-            // We permit the user to checkout the `goal` branch, since it
-            // belongs to this worktree.
-            log::info!("Goal \"{goal}\" belongs to worktree. Allow checkout.");
-            return Outcome::Bypass;
+        if let Some(current_bundle) = current_bundle {
+            if mapped_worktree.as_str() == current_bundle.worktree.as_str() {
+                // We permit the user to checkout the `goal` branch, since it
+                // belongs to this worktree.
+                log::info!("Goal \"{goal}\" belongs to worktree. Allow checkout.");
+                return Outcome::Bypass;
+            }
         }
 
         // We do not permit the user to checkout the `goal` branch on this
@@ -252,7 +254,7 @@ impl<'a> App<'a> {
     fn jump_and_checkout(
         &self,
         mapped_worktree: &Worktree<'a>,
-        current_bundle: &Bundle,
+        current_bundle: Option<&Bundle>,
         goal: &Branch<'a>,
     ) -> Outcome<'a> {
         // Here, we shall help the shell assistant a bit by first checking out
@@ -260,7 +262,9 @@ impl<'a> App<'a> {
         // best directory to cd to.
         // _ = git!("-C", mapped_worktree.as_str(), "checkout", goal.as_str()).output();
 
-        let relpath = self.resolve_relpath(current_bundle, mapped_worktree);
+        let relpath = current_bundle
+            .map(|current_bundle| self.resolve_relpath(current_bundle, mapped_worktree))
+            .unwrap_or(Path::new("."));
 
         log::info!("Jump worktree then jump branch -> {relpath:?}");
         return Outcome::JumpAndCheckout {
@@ -273,9 +277,11 @@ impl<'a> App<'a> {
     fn jump(
         &self,
         mapped_worktree: &Worktree<'a>,
-        current_bundle: &Bundle,
+        current_bundle: Option<&Bundle>,
     ) -> Outcome<'a> {
-        let relpath = self.resolve_relpath(current_bundle, mapped_worktree);
+        let relpath = current_bundle
+            .map(|current_bundle| self.resolve_relpath(current_bundle, mapped_worktree))
+            .unwrap_or(Path::new("."));
 
         log::info!("Jump worktree then cd -> {relpath:?}");
         return Outcome::Jump { worktree: *mapped_worktree, relpath };

@@ -1,5 +1,6 @@
 use crate::prelude::*;
 
+/// The directory line of the stdout output of `git worktree list --porcelain`.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct Worktree<'a>(&'a str);
 
