@@ -7,12 +7,16 @@ pub use {
 };
 
 pub(crate) use std::fs;
-pub(crate) use std::path::Path;
+pub(crate) use std::path::{Path, PathBuf};
 
 /// Creates a `std::process::Command` instance with "git" as `argv[0]`, and
 /// fills in the CLI arguments.
 macro_rules! git {
-    ($($arg:expr),* $(,)?) => { std::process::Command::new("git")$(.arg($arg))* };
+    ($($arg:expr),* $(,)?) => {{
+        let mut x = std::process::Command::new("git");
+        $(x.arg($arg);)*
+        x
+    }};
 }
 
 /// A shorthand for `Branch::new`.

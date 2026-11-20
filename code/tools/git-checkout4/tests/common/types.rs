@@ -3,6 +3,9 @@ use std::path::{Path, PathBuf};
 use std::sync::{LazyLock, Mutex};
 use std::{env, fs};
 
+use cucumber::World;
+use git_checkout4::Outcome;
+
 use super::CommandExt;
 
 static CWD_MUTEX: Mutex<()> = Mutex::new(());
@@ -13,7 +16,10 @@ pub fn at<T, P: AsRef<Path>, F: FnOnce() -> T>(workdir: P, f: F) -> T {
     f()
 }
 
+#[derive(Debug, Default, World)]
 pub struct Test {
+    name: String,
+
     /// Root directory for the test files.
     root_dir: PathBuf,
 
@@ -35,12 +41,14 @@ fn env_var(name: &str) -> String {
 
 impl Test {
     /// Creates an empty directory in which to start a test.
-    pub fn new(name: &'static str) -> Self {
-        static TEST_NAMES: LazyLock<Mutex<HashSet<&'static str>>> =
+    pub fn new<S: AsRef<str>>(name: S) -> Self {
+        let name = name.as_ref();
+
+        static TEST_NAMES: LazyLock<Mutex<HashSet<String>>> =
             LazyLock::new(|| Mutex::new(HashSet::new()));
 
         let mut lock = Mutex::lock(&TEST_NAMES).unwrap();
-        assert!(lock.insert(name), "Duplicate test name: {name}");
+        assert!(lock.insert(name.to_string()), "Duplicate test name: {name}");
         drop(lock);
 
         let bin_dir = Path::new(env!("CARGO_BIN_EXE_git-checkout4")).parent().unwrap();
@@ -51,13 +59,17 @@ impl Test {
         let _ = fs::remove_dir_all(&temp_dir);
         fs::create_dir_all(&temp_dir).unwrap();
 
-        println!("Complete test environment initialization: {:?}", name);
-        Self { root_dir: temp_dir, cleanup: true }
+        tracing::info!("Setup test: {}", name);
+        Self { root_dir: temp_dir, cleanup: true, name: name.to_string() }
     }
 
     pub fn no_cleanup(mut self) -> Self {
         self.cleanup = false;
         self
+    }
+
+    pub fn set_cleanup(&mut self, value: bool) {
+        self.cleanup = value;
     }
 
     /// Runs an arbitrary function `f` with the current directory set to a path
@@ -92,18 +104,19 @@ impl Test {
     pub fn join<P: AsRef<Path>>(&self, p: P) -> PathBuf {
         self.root_dir.join(p)
     }
+
+    pub fn cleanup(&self) {
+        if self.cleanup {
+            tracing::info!("Teardown test: {}", self.name);
+            _ = fs::remove_dir_all(&self.root_dir);
+        } else {
+            tracing::info!("Skip teardown test: {}", self.name);
+        }
+    }
 }
 
 impl AsRef<Path> for Test {
     fn as_ref(&self) -> &Path {
         self.root_dir.as_path()
-    }
-}
-
-impl Drop for Test {
-    fn drop(&mut self) {
-        if self.cleanup {
-            _ = fs::remove_dir_all(&self.root_dir);
-        }
     }
 }

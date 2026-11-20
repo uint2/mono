@@ -106,6 +106,7 @@ lsp.add['cucumber_language_server'] = {
         '**/src/test/java/**/*.java',
         '*/src/test/java/**/*.java',
         'src/test/java/**/*.java',
+        'tests/**/*.rs',
       },
     },
   },

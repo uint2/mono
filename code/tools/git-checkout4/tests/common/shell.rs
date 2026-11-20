@@ -19,11 +19,7 @@ fn cwd(cmd: &Command) -> Option<&Path> {
 
 fn report(cmd: &Command) {
     let cli_args = cmd_to_vec(cmd);
-    println!(
-        "[running] \x1b[33m{}\x1b[m @ \x1b[37m{:?}\x1b[m",
-        cli_args.join(" "),
-        cwd(cmd)
-    );
+    // println!("[running] \x1b[33m{}\x1b[m @ \x1b[37m{:?}\x1b[m", cli_args.join(" "), cwd(cmd));
 }
 
 #[derive(Debug)]
@@ -49,10 +45,10 @@ impl CommandExt for Command {
     fn snw(&mut self) {
         let output = self.get();
         if !output.stderr.trim().is_empty() {
-            println!("[stderr] {}", output.stderr.trim());
+            tracing::info!("[stderr] {}", output.stderr.trim());
         }
         if !output.stdout.trim().is_empty() {
-            println!("[stdout] {}", output.stdout.trim());
+            tracing::info!("[stdout] {}", output.stdout.trim());
         }
     }
 
