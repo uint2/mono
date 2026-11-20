@@ -5,9 +5,6 @@ use std::{env, fs};
 
 use super::CommandExt;
 
-const BIN: &str = env!("CARGO_BIN_EXE_git-checkout4");
-const TMPDIR: &str = env!("CARGO_TARGET_TMPDIR");
-
 static CWD_MUTEX: Mutex<()> = Mutex::new(());
 
 pub fn at<T, P: AsRef<Path>, F: FnOnce() -> T>(workdir: P, f: F) -> T {
@@ -46,13 +43,15 @@ impl Test {
         assert!(lock.insert(name), "Duplicate test name: {name}");
         drop(lock);
 
-        let bin_dir = Path::new(BIN).parent().unwrap();
+        let bin_dir = Path::new(env!("CARGO_BIN_EXE_git-checkout4")).parent().unwrap();
         let new_path = format!("{}:{}", bin_dir.display(), env_var("PATH"));
         unsafe { env::set_var("PATH", new_path) };
 
-        let temp_dir = Path::new(TMPDIR).join(name);
+        let temp_dir = Path::new(env!("CARGO_TARGET_TMPDIR")).join(name);
         let _ = fs::remove_dir_all(&temp_dir);
         fs::create_dir_all(&temp_dir).unwrap();
+
+        println!("Complete test environment initialization: {:?}", name);
         Self { root_dir: temp_dir, cleanup: true }
     }
 

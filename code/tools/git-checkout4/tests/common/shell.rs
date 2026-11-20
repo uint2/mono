@@ -1,6 +1,30 @@
 #![allow(unused)]
 
+use std::path::{Path, PathBuf};
 use std::process::{Command, ExitStatus, Output, Stdio};
+
+fn cmd_to_vec(cmd: &Command) -> Vec<String> {
+    fn s(s: &std::ffi::OsStr) -> String {
+        s.to_str().unwrap().to_string()
+    }
+    let mut vec = vec![s(cmd.get_program())];
+    vec.extend(cmd.get_args().map(s));
+    vec
+}
+
+fn cwd(cmd: &Command) -> Option<&Path> {
+    let cwd = cmd.get_current_dir()?;
+    Some(cwd.strip_prefix(env!("CARGO_TARGET_TMPDIR")).unwrap_or(cwd))
+}
+
+fn report(cmd: &Command) {
+    let cli_args = cmd_to_vec(cmd);
+    println!(
+        "[running] \x1b[33m{}\x1b[m @ \x1b[37m{:?}\x1b[m",
+        cli_args.join(" "),
+        cwd(cmd)
+    );
+}
 
 #[derive(Debug)]
 pub struct Output2 {
@@ -25,21 +49,22 @@ impl CommandExt for Command {
     fn snw(&mut self) {
         let output = self.get();
         if !output.stderr.trim().is_empty() {
-            println!("stderr: {}", output.stderr.trim());
+            println!("[stderr] {}", output.stderr.trim());
         }
         if !output.stdout.trim().is_empty() {
-            println!("stdout: {}", output.stdout.trim());
+            println!("[stdout] {}", output.stdout.trim());
         }
     }
 
     fn get_stdout(&mut self) -> String {
+        report(self);
         let output = self.stdout(Stdio::piped()).output().unwrap();
         let stdout = core::str::from_utf8(&output.stdout).unwrap();
         stdout.trim().to_string()
     }
 
     fn get(&mut self) -> Output2 {
-        println!("Running command: {:?}", self);
+        report(self);
         let output = self.stdout(Stdio::piped()).stderr(Stdio::piped()).output().unwrap();
         let stdout = core::str::from_utf8(&output.stdout).unwrap();
         let stderr = core::str::from_utf8(&output.stderr).unwrap();

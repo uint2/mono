@@ -56,14 +56,13 @@ pub const CONFIG: AppConfig = AppConfig {
 pub fn some_commit<P: AsRef<Path>>(dir: P) {
     let dir = dir.as_ref();
     let fingerprint = std::time::UNIX_EPOCH.elapsed().unwrap();
-    let fingerprint = format!("{:?}.txt", fingerprint.as_micros());
+    let fingerprint = format!("{:x}.txt", fingerprint.as_micros());
     let _ = std::fs::create_dir_all(&dir);
     let file = dir.join(&fingerprint);
     fs::write(&file, "hello").unwrap();
-    git!("-C", dir, "config", "user.name", "git").snw();
-    git!("-C", dir, "config", "user.email", "git@git.git").snw();
     git!("-C", dir, "add", fingerprint).snw();
-    git!("-C", dir, "commit", "-m", "boopus gloopus").snw();
+    git!("-C", dir, "-c", "user.name=x", "-c", "user.email=x", "commit", "-m", "boop")
+        .snw();
 }
 
 pub fn git_branch<P: AsRef<Path>>(dir: P) -> String {

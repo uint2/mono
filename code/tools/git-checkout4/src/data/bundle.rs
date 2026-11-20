@@ -50,6 +50,7 @@ impl<'a> Bundle<'a> {
 }
 
 impl<'a> Bundle<'a> {
+    /// Parses the output of `git worktree list --porcelain`.
     pub fn parse_all(mut text: &'a str) -> Vec<Self> {
         let mut vec = vec![];
         while let Some((worktree, next)) = Self::parse(text) {
@@ -62,7 +63,8 @@ impl<'a> Bundle<'a> {
         vec
     }
 
-    pub fn parse(text: &'a str) -> Option<(Self, &'a str)> {
+    /// Incrementally parses the output of `git worktree list --porcelain`.
+    fn parse(text: &'a str) -> Option<(Self, &'a str)> {
         let text = text
             .strip_prefix("worktree")
             .expect("git worktree stdout should start with \"worktree\".");

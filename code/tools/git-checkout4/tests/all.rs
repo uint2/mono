@@ -452,7 +452,11 @@ mod specials {
         let outcome = app.execute("dev");
         assert_eq!(
             outcome,
-            Outcome::Jump { worktree: Worktree::new("dev"), relpath: Path::new("dev") }
+            Outcome::JumpAndCheckout {
+                worktree: app.bundle(branch!("dev")).worktree,
+                relpath: Path::new("."),
+                branch: branch!("dev")
+            }
         );
     }
 }
