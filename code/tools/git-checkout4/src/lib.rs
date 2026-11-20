@@ -46,7 +46,7 @@ pub fn main() -> ExitCode {
         return ExitCode::FAILURE;
     };
 
-    let pool = rayon::ThreadPoolBuilder::new().num_threads(8).build().unwrap();
+    let pool = rayon::ThreadPoolBuilder::new().num_threads(4).build().unwrap();
     let ctx = pool.install(|| AppCtx::init(RUNTIME_CONFIG)).unwrap();
     match App::new(&ctx).execute(goal) {
         Outcome::Jump { worktree, relpath } => {
