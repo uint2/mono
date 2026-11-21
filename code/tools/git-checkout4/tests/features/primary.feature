@@ -20,7 +20,7 @@ Feature: Primary Git Repository
       [1] ${{ test.dir }}
       Pick one >
       """
-    When we feed keys "1" 
+    When we feed keys "1"
     Then stderr is
       """
       [gco] bypass.
@@ -41,7 +41,7 @@ Feature: Primary Git Repository
       [1] ${{ test.dir }}
       Pick one >
       """
-    When we feed keys "1" 
+    When we feed keys "1"
     Then stderr is
       """
       [gco] bypass.
@@ -67,7 +67,7 @@ Feature: Primary Git Repository
       [1] ${{ test.dir }}
       Pick one >
       """
-    When we feed keys "1" 
+    When we feed keys "1"
     Then stderr is
       """
       [gco] bypass.

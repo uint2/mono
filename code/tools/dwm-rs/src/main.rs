@@ -63,7 +63,7 @@ fn applyrules(c: Ptr<Client>) {
 /// (dwm) static int applysizehints(Client *c, int *x, int *y, int *w, int *h, int interact);
 /// (dwm) static void arrange(Monitor *m);
 /// (dwm) static void arrangemon(Monitor *m);
-*/
+ */
 
 /// (dwm) static void attach(Client *c);
 ///
@@ -96,7 +96,7 @@ fn attachstack(c: Ptr<Client>) {
 /// (dwm) static void configurerequest(XEvent *e);
 /// (dwm) static Monitor *createmon(void);
 /// (dwm) static void destroynotify(XEvent *e);
-*/
+ */
 
 /// (dwm) static void detach(Client *c);
 fn detach(c: Ptr<Client>) {
@@ -191,7 +191,7 @@ fn detach_two_test_b() {
 /// (dwm) static void monocle(Monitor *m);
 /// (dwm) static void motionnotify(XEvent *e);
 /// (dwm) static void movemouse(const Arg *arg);
-*/
+ */
 
 /// (dwm) static Client *nexttiled(Client *c);
 fn nexttiled(mut c: Ptr<Client>) -> Ptr<Client> {
@@ -250,7 +250,7 @@ fn nexttiled(mut c: Ptr<Client>) -> Ptr<Client> {
 /// (dwm) static int xerrordummy(Display *dpy, XErrorEvent *ee);
 /// (dwm) static int xerrorstart(Display *dpy, XErrorEvent *ee);
 /// (dwm) static void zoom(const Arg *arg);
-*/
+ */
 
 fn main() {
     let display = x!(XOpenDisplay(ptr::null()));

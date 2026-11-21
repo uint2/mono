@@ -13,7 +13,7 @@ index 6d545fe..ef95685 100644
 +++ b/code/tools/git-checkout4/src/context.rs
 @@ -107,14 +107,16 @@ impl AppCtx {
      }
- 
+
      pub fn branches<'a>(&'a self) -> Vec<Branch<'a>> {
 +        fn is_detached(branch: &str) -> bool {
 +            branch.starts_with("(HEAD detached at") && branch.ends_with(')')
@@ -33,6 +33,5 @@ index 6d545fe..ef95685 100644
              })
              .map(Branch::new)
              .collect()
--- 
+--
 2.54.0 (Apple Git-157)
-

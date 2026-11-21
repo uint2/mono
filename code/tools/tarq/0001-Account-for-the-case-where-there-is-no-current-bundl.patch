@@ -13,7 +13,7 @@ index f6724c8..6137c43 100644
 --- a/code/tools/git-checkout4/src/app.rs
 +++ b/code/tools/git-checkout4/src/app.rs
 @@ -125,8 +125,10 @@ impl<'a> App<'a> {
- 
+
      /// Gets the current bundle/worktree that we invoked the program from.
      ///
 -    /// This may return None, for instance when we're in a submodule.
@@ -32,12 +32,12 @@ index f6724c8..6137c43 100644
 -            // There should be at least one match if ran in a git worktree.
 -            .expect("This operation should be run in a worktree that's not a submodule")
      }
- 
+
      fn find_branch(&self, goal: &str) -> Option<&Branch<'a>> {
 @@ -211,11 +211,13 @@ impl<'a> App<'a> {
              panic!("Goal \"{goal}\" is not configred in git config.")
          };
- 
+
 -        if mapped_worktree.as_str() == current_bundle.worktree.as_str() {
 -            // We permit the user to checkout the `goal` branch, since it
 -            // belongs to this worktree.
@@ -51,7 +51,7 @@ index f6724c8..6137c43 100644
 +                return Outcome::Bypass;
 +            }
          }
- 
+
          // We do not permit the user to checkout the `goal` branch on this
 @@ -250,7 +252,7 @@ impl<'a> App<'a> {
      fn jump_and_checkout(
@@ -65,12 +65,12 @@ index f6724c8..6137c43 100644
 @@ -258,7 +260,9 @@ impl<'a> App<'a> {
          // best directory to cd to.
          // _ = git!("-C", mapped_worktree.as_str(), "checkout", goal.as_str()).output();
- 
+
 -        let relpath = self.resolve_relpath(current_bundle, mapped_worktree);
 +        let relpath = current_bundle
 +            .map(|current_bundle| self.resolve_relpath(current_bundle, mapped_worktree))
 +            .unwrap_or(Path::new("."));
- 
+
          log::info!("Jump worktree then jump branch -> {relpath:?}");
          return Outcome::JumpAndCheckout {
 @@ -271,9 +275,11 @@ impl<'a> App<'a> {
@@ -84,7 +84,7 @@ index f6724c8..6137c43 100644
 +        let relpath = current_bundle
 +            .map(|current_bundle| self.resolve_relpath(current_bundle, mapped_worktree))
 +            .unwrap_or(Path::new("."));
- 
+
          log::info!("Jump worktree then cd -> {relpath:?}");
          return Outcome::Jump { worktree: *mapped_worktree, relpath };
 diff --git a/code/tools/git-checkout4/src/data/worktree.rs b/code/tools/git-checkout4/src/data/worktree.rs
@@ -93,11 +93,10 @@ index 21bdca2..48e8e27 100644
 +++ b/code/tools/git-checkout4/src/data/worktree.rs
 @@ -1,5 +1,6 @@
  use crate::prelude::*;
- 
+
 +/// The directory line of the stdout output of `git worktree list --porcelain`.
  #[derive(Debug, Clone, Copy, PartialEq, Eq)]
  pub struct Worktree<'a>(&'a str);
- 
--- 
-2.54.0 (Apple Git-157)
 
+--
+2.54.0 (Apple Git-157)
