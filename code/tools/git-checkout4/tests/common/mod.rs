@@ -1,9 +1,8 @@
-pub use git_checkout4::{App, AppConfig, AppCtx, Branch, Outcome, Worktree};
+pub use git_checkout4::{AppConfig, AppCtx};
 
-#[allow(unused)]
 pub use {
     shell::{CommandExt, OutputExt},
-    types::{Test, at},
+    types::Test,
 };
 
 pub(crate) use std::fs;
@@ -17,13 +16,6 @@ macro_rules! git {
         $(x.arg($arg);)*
         x
     }};
-}
-
-/// A shorthand for `Branch::new`.
-macro_rules! branch {
-    ($value:expr) => {
-        Branch::new($value)
-    };
 }
 
 /// Creates a `std::process::Command` instance with arguments.
@@ -55,31 +47,3 @@ pub const CONFIG: AppConfig = AppConfig {
     log_level: log::LevelFilter::Trace,
     interactive: true,
 };
-
-/// Creates a random commit by making some file at `dir`.
-pub fn some_commit<P: AsRef<Path>>(dir: P) {
-    let dir = dir.as_ref();
-    let fingerprint = std::time::UNIX_EPOCH.elapsed().unwrap();
-    let fingerprint = format!("{:x}.txt", fingerprint.as_micros());
-    let _ = std::fs::create_dir_all(&dir);
-    let file = dir.join(&fingerprint);
-    fs::write(&file, "hello").unwrap();
-    git!("-C", dir, "add", fingerprint).snw();
-    git!("-C", dir, "-c", "user.name=x", "-c", "user.email=x", "commit", "-m", "boop")
-        .snw();
-}
-
-pub fn git_branch<P: AsRef<Path>>(dir: P) -> String {
-    at(dir, || git!("branch", "--show-current").get_stdout())
-}
-
-macro_rules! function {
-    () => {{
-        fn f() {}
-        type_name_of(f).strip_suffix("::f").unwrap()
-    }};
-}
-
-pub fn type_name_of<T>(_: T) -> &'static str {
-    core::any::type_name::<T>()
-}

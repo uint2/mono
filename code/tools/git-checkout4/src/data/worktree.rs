@@ -32,6 +32,8 @@ impl<'a> Worktree<'a> {
         &self.0[j + 1..]
     }
 
+    /// Splits along the right-most path separator. This is to be able to
+    /// highlight the direct parent directory in a different color.
     pub fn pretty_split(&self) -> (&'a str, &'a str) {
         let j = self.0.rfind(std::path::MAIN_SEPARATOR).unwrap();
         self.0.split_at(j + 1)

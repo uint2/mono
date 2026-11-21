@@ -5,15 +5,7 @@ use std::{env, fs};
 
 use cucumber::World;
 
-use super::CommandExt;
-
 static CWD_MUTEX: Mutex<()> = Mutex::new(());
-
-pub fn at<T, P: AsRef<Path>, F: FnOnce() -> T>(workdir: P, f: F) -> T {
-    let _lock = CWD_MUTEX.lock();
-    env::set_current_dir(workdir).unwrap();
-    f()
-}
 
 #[derive(Debug)]
 pub struct ShellState {
@@ -74,15 +66,6 @@ impl Test {
         }
     }
 
-    pub fn no_cleanup(mut self) -> Self {
-        self.cleanup = false;
-        self
-    }
-
-    pub fn set_cleanup(&mut self, value: bool) {
-        self.cleanup = value;
-    }
-
     pub fn set_shell_state(&mut self, proc: tokio::process::Child, cwd: PathBuf) {
         self.shell_state = Some(ShellState { proc, cwd })
     }
@@ -108,32 +91,20 @@ impl Test {
         result
     }
 
-    pub fn sh2<P: AsRef<Path>>(&self, relpath: P, args: &[&str]) {
-        std::process::Command::new(args[0])
-            .args(&args[1..])
-            .current_dir(self.join(relpath))
-            .snw();
-    }
-
-    /// Get the git branch.
-    pub fn branch_at<P: AsRef<Path>>(&self, relpath: P) -> String {
-        std::process::Command::new("git")
-            .args(["rev-parse", "--abbrev-ref", "--symbolic-full-name", "HEAD"])
-            .current_dir(self.join(relpath))
-            .get_stdout()
-    }
-
     /// Runs `Path::join` on the root directory of the test.
     pub fn join<P: AsRef<Path>>(&self, p: P) -> PathBuf {
         self.root_dir.join(p)
     }
 
-    pub fn cleanup(&self) {
+    pub async fn cleanup(&mut self) {
         if self.cleanup {
             tracing::info!("Teardown test: {}", self.name);
             _ = fs::remove_dir_all(&self.root_dir);
         } else {
             tracing::info!("Skip teardown test: {}", self.name);
+        }
+        if let Some(shell_state) = self.shell_state.as_mut() {
+            _ = shell_state.proc.wait().await;
         }
     }
 }

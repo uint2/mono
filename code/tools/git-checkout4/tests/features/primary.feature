@@ -90,22 +90,31 @@ Feature: Primary Git Repository
       """
     And stdout is
       """
-      ${{ test.dir }}/.git/dev/
+      ${{ test.dir }}/.git/dev
       """
 
-  Scenario: Checking out a branch in the git directory checks it out
+  Scenario: Checking out a branch in the git directory from a detached HEAD checks it out
     Given checkout at [.] a new branch [dev]
     And there is a non-trivial commit at [.]
     And at [.] we checkout [main]
     And a worktree is added at [./.git] called [dev]
     Then the current branch at [.] is [main]
     And the current branch at [./.git/dev] is [dev]
+    Given at [.] we checkout the current commit
     When we run [git checkout4 dev] at [.]
+    Then stderr is
+      """
+      Branch main is not mapped to any worktree.
+      [1] ${{ test.dir }}
+      [2] ${{ test.dir }}/.git/dev
+      Pick one >
+      """
+    When we feed keys "1"
     Then stderr is
       """
       [gco] jump to worktree
       """
     And stdout is
       """
-      ${{ test.dir }}/.git/dev/
+      ${{ test.dir }}/.git/dev
       """

@@ -87,30 +87,68 @@ impl<'a> App<'a> {
         self.git_config.save();
     }
 
-    fn prompt_user_for_worktree(&mut self, input_buf: &mut String, branch: Branch<'a>) {
-        let mut f = io::stderr().lock();
-        writeln!(f, "Branch \x1b[36m{branch}\x1b[m is not mapped to any worktree.")
-            .unwrap();
-        for (idx, bundle) in self.bundles.iter().enumerate() {
-            let idx = idx + 1;
-            let (left, right) = bundle.worktree.pretty_split();
-            writeln!(f, "[\x1b[32m{idx}\x1b[m] {left}\x1b[32m{right}\x1b[m").unwrap();
+    /// Returns the number of candidate bundles printed.
+    fn print_candidate_bundles(&self, branch: Branch<'a>) -> usize {
+        let candidate_bundles: Vec<_> = self.bundles.iter().filter(|v| !v.bare).collect();
+        let count = candidate_bundles.len();
+        if count == 0 {
+            log::info!("There are no candidate bundles to suggest for branch {branch}");
+            return 0;
         }
-        write!(f, "Pick one > ").unwrap();
-        _ = f.flush();
-        drop(f);
 
-        input_buf.clear();
-        io::stdin().read_line(input_buf).unwrap();
-        let choice = input_buf
-            .trim()
-            .parse::<usize>()
-            .ok()
-            .and_then(|v| v.checked_sub(1))
-            .unwrap();
-        let choice = &self.bundles[choice];
+        let mut f = io::stderr().lock();
+        macro_rules! w  { ($($arg:tt)*) => { write!  (f, $($arg)*).unwrap() } }
+        macro_rules! wl { ($($arg:tt)*) => { writeln!(f, $($arg)*).unwrap() } }
+        wl!("Branch \x1b[36m{branch}\x1b[m is not mapped to any worktree.");
+        let mut idx = 0;
+        for bundle in candidate_bundles {
+            idx += 1;
+            let (ancestors, direct_parent) = bundle.worktree.pretty_split();
+            // The assigned number, where only the number is green.
+            w!("[\x1b[32m{idx}\x1b[m] ");
+            // The path to the worktree, where the direct parent is
+            // highlighted in green.
+            wl!("{ancestors}\x1b[32m{direct_parent}\x1b[m");
+        }
+        f.write(b"Pick one > ").unwrap();
+        _ = f.flush();
+        count
+    }
+
+    fn prompt_user_for_worktree(
+        &mut self,
+        input_buf: &mut String,
+        branch: Branch<'a>,
+    ) -> io::Result<()> {
+        let num_candidates = self.print_candidate_bundles(branch);
+        if num_candidates == 0 {
+            return Ok(());
+        }
+
+        let choice_index = loop {
+            // Read the user's input.
+            input_buf.clear();
+            io::stdin().read_line(input_buf).unwrap();
+            // Parse the user's input as an integer.
+            let Ok(choice_int) = input_buf.trim().parse::<usize>() else {
+                return Err(io::Error::new(
+                    io::ErrorKind::InvalidInput,
+                    "Invalid choice for mapping worktree - cannot be parsed as integer",
+                ));
+            };
+            if 1 <= choice_int && choice_int <= num_candidates {
+                break choice_int - 1;
+            } else {
+                return Err(io::Error::new(
+                    io::ErrorKind::InvalidInput,
+                    "Invalid choice for mapping worktree - index out of range",
+                ));
+            }
+        };
+        let choice = &self.bundles[choice_index];
         self.git_config.set(branch, choice.worktree);
         self.git_config.save();
+        Ok(())
     }
 
     fn contained_in(&self, worktree: &Worktree) -> bool {
@@ -153,29 +191,31 @@ impl<'a> App<'a> {
         })
     }
 
-    fn interactively_register_branches(&mut self) {
+    fn interactively_register_branches(&mut self) -> io::Result<()> {
         let mut input_buf = String::new();
         for i in 0..self.git_branches.len() {
             let branch = self.git_branches[i];
             if self.git_config.get(&branch).is_none() && self.config.interactive {
-                self.prompt_user_for_worktree(&mut input_buf, branch);
+                self.prompt_user_for_worktree(&mut input_buf, branch)?;
             }
             if self.config.interactive {
                 assert!(self.git_config.get(&branch).is_some())
             }
         }
+        Ok(())
     }
+
     /// Runs the core business logic of `git-checkout4` with the target set to
     /// `goal`.
-    pub fn execute(&mut self, goal: &str) -> Outcome<'a> {
+    pub fn execute(&mut self, goal: &str) -> io::Result<Outcome<'a>> {
         log::trace!("Called execute on \"{goal}\"");
         if self.is_in_submodule {
             log::info!("Bypass because in submodule");
-            return Outcome::Bypass;
+            return Ok(Outcome::Bypass);
         }
         self.deregister_invalid_worktrees();
         self.auto_register();
-        self.interactively_register_branches();
+        self.interactively_register_branches()?;
 
         let current_bundle = self.get_current_bundle();
 
@@ -204,10 +244,10 @@ impl<'a> App<'a> {
                 log::info!(
                     "Goal \"{goal}\" is not a git branch, but found a worktree with a matching name."
                 );
-                return self.jump(&bundle.worktree, current_bundle);
+                return Ok(self.jump(&bundle.worktree, current_bundle));
             }
             log::info!("Goal \"{goal}\" is not a git branch, might be a file. Bypass.");
-            return Outcome::Bypass;
+            return Ok(Outcome::Bypass);
         };
 
         // Get the worktree that the `goal` branch belongs to.
@@ -220,7 +260,7 @@ impl<'a> App<'a> {
                 // We permit the user to checkout the `goal` branch, since it
                 // belongs to this worktree.
                 log::info!("Goal \"{goal}\" belongs to worktree. Allow checkout.");
-                return Outcome::Bypass;
+                return Ok(Outcome::Bypass);
             }
         }
 
@@ -258,7 +298,7 @@ impl<'a> App<'a> {
         mapped_worktree: &Worktree<'a>,
         current_bundle: Option<&Bundle>,
         goal: &Branch<'a>,
-    ) -> Outcome<'a> {
+    ) -> io::Result<Outcome<'a>> {
         // Here, we shall help the shell assistant a bit by first checking out
         // the `goal` branch in the mapped worktree, and then figuring out the
         // best directory to cd to.
@@ -274,16 +314,16 @@ impl<'a> App<'a> {
         if let Some(current_branch_at_target_bundle) = target_bundle.branch {
             if current_branch_at_target_bundle.eq(goal) {
                 log::info!("Jump worktree without jump branch -> {relpath:?}");
-                return Outcome::Jump { worktree: *mapped_worktree, relpath };
+                return Ok(Outcome::Jump { worktree: *mapped_worktree, relpath });
             }
         }
 
         log::info!("Jump worktree then jump branch -> {relpath:?}");
-        return Outcome::JumpAndCheckout {
+        Ok(Outcome::JumpAndCheckout {
             worktree: *mapped_worktree,
             branch: *goal,
             relpath,
-        };
+        })
     }
 
     fn jump(

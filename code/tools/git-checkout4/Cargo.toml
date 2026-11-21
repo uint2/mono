@@ -6,6 +6,7 @@ edition = "2024"
 [dependencies]
 log = { version = "0.1.0" , path = "../logger.rs" }
 rayon = "1.12.0"
+normpath = "1.5.2"
 
 [dev-dependencies]
 regex = "1.13.1"
@@ -27,5 +28,5 @@ doctest = false
 test = false
 
 [[test]]
-name = "all" # this should be the same as the filename of your test target
+name = "step_definitions" # this should be the same as the filename of your test target
 harness = false  # allows Cucumber to print output instead of libtest

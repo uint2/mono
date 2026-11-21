@@ -1,6 +1,9 @@
 use crate::prelude::*;
 
-/// git-checkout4 app context. An owned buffer all all data to be fetched.
+/// git-checkout4 app context. An owned buffer for all data to be fetched. This
+/// exists so that we don't have to allocate extra memory for all the data here.
+/// For instance, with this struct, we don't have to allocate extra memory for
+/// the branch names.
 pub struct AppCtx {
     pub config: AppConfig,
     /// Current working directory.
@@ -12,6 +15,7 @@ pub struct AppCtx {
     is_in_submodule: bool,
     /// Raw output of `git rev-parse --abbrev-ref --symbolic-full-name HEAD`.
     /// Shows the current branch, or "HEAD" if HEAD is detached.
+    #[allow(unused)]
     r_git_branch: String,
     /// Raw output of `git branch --format=%(refname:short)`.
     /// Shows the all the local branches, separated by newlines.

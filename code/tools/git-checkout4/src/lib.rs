@@ -15,6 +15,7 @@ mod shell;
 
 use prelude::*;
 
+use normpath::PathExt;
 pub use {
     app::{App, Outcome},
     context::AppCtx,
@@ -48,20 +49,29 @@ pub fn main() -> ExitCode {
 
     let pool = rayon::ThreadPoolBuilder::new().num_threads(4).build().unwrap();
     let ctx = pool.install(|| AppCtx::init(RUNTIME_CONFIG)).unwrap();
-    match App::new(&ctx).execute(goal) {
+
+    let outcome = match App::new(&ctx).execute(goal) {
+        Ok(v) => v,
+        Err(e) => {
+            eprintln!("{}", e);
+            return ExitCode::FAILURE;
+        }
+    };
+
+    const BANNER: &str = "[\x1b[36mgco\x1b[m]";
+
+    match outcome {
         Outcome::Jump { worktree, relpath } => {
-            let path = worktree.as_path().join(relpath);
-            eprintln!("[\x1b[36mgco\x1b[m] jump to worktree");
+            let path = worktree.as_path().join(relpath).normalize().unwrap();
+            eprintln!("{BANNER} jump to worktree");
             let mut stdout = io::stdout().lock();
             stdout.write(path.as_os_str().as_encoded_bytes()).unwrap();
             stdout.write(b"\n").unwrap();
             std::process::exit(61)
         }
         Outcome::JumpAndCheckout { worktree, branch, relpath } => {
-            let path = worktree.as_path().join(relpath);
-            eprintln!(
-                "[\x1b[36mgco\x1b[m] jump to worktree, and checkout \x1b[33m{branch}\x1b[m."
-            );
+            let path = worktree.as_path().join(relpath).normalize().unwrap();
+            eprintln!("{BANNER} jump to worktree, and checkout \x1b[33m{branch}\x1b[m.");
             let mut stdout = io::stdout().lock();
             stdout.write(path.as_os_str().as_encoded_bytes()).unwrap();
             stdout.write(b":").unwrap();
@@ -70,7 +80,7 @@ pub fn main() -> ExitCode {
             std::process::exit(62)
         }
         Outcome::Bypass => {
-            eprintln!("[\x1b[36mgco\x1b[m] bypass.");
+            eprintln!("{BANNER} bypass.");
             shell::run(git!("checkout", goal))
         }
     }
