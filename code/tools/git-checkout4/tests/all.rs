@@ -5,81 +5,14 @@ use common::*;
 
 use cucumber::gherkin::Step;
 use cucumber::{World, given, then, when};
+use tracing::level_filters::LevelFilter;
+use tracing_subscriber::fmt::format::{self, Format};
+use tracing_subscriber::prelude::*;
 
 use core::mem;
 use std::hash::{Hash, Hasher};
-use std::process::Command;
-
-/// Tests done with only the main worktree, and no linked worktrees.
-mod primary {
-    use super::*;
-
-    #[test]
-    fn checkout_an_owned_branch_2() {
-        let t = Test::new(function!());
-        t.sh2("", &["git", "init", "-b", "main"]);
-        t.sh("", || some_commit("."));
-
-        let ctx = t.sh("", || AppCtx::init(CONFIG)).unwrap();
-        App::new(&ctx).auto_register(); // Register the "main" branch.
-
-        t.sh2("", &["git", "checkout", "-b", "dev"]);
-        assert_eq!(git_branch(&t), "dev");
-
-        // Re-read the updated config from filesystem.
-        let ctx = t.sh("", || AppCtx::init(CONFIG)).unwrap();
-
-        let outcome = t.sh("", || App::new(&ctx).execute("main"));
-        assert_eq!(outcome, Outcome::Bypass);
-    }
-
-    /// Checkout a branch from a detached head state.
-    #[test]
-    fn checkout_from_detached() {
-        let t = Test::new(function!());
-        t.sh2("", &["git", "init", "-b", "main"]);
-        t.sh("", || some_commit("."));
-
-        let ctx = t.sh("", || AppCtx::init(CONFIG)).unwrap();
-        App::new(&ctx).auto_register(); // Register the "main" branch.
-
-        let sha = t.sh("", || git!("rev-parse", "--verify", "HEAD").get_stdout());
-        t.sh2("", &["git", "checkout", sha.as_str().trim()]);
-
-        // Verify that the HEAD is detached.
-        let output = t.sh("", || {
-            git!("rev-parse", "--abbrev-ref", "--symbolic-full-name", "HEAD").get_stdout()
-        });
-        assert_eq!(output, "HEAD", "HEAD is, in fact, not detached.");
-
-        let ctx = t.sh("", || AppCtx::init(CONFIG)).unwrap();
-        let outcome = t.sh("", || App::new(&ctx).execute("main"));
-        assert_eq!(outcome, Outcome::Bypass);
-    }
-
-    /// Checkout a branch in a worktree that's in the .git directory.
-    #[test]
-    fn checkout_branch_in_git_dir() {
-        let t = Test::new(function!());
-        t.sh2("", &["git", "init", "-b", "main"]);
-        t.sh("", || some_commit("."));
-
-        t.sh2(".git", &["git", "worktree", "add", "dev"]);
-
-        let ctx = t.sh("", || AppCtx::init(CONFIG)).unwrap();
-        let mut app = App::new(&ctx);
-        let outcome = t.sh("", || app.execute("dev"));
-
-        assert_eq!(
-            outcome,
-            Outcome::JumpAndCheckout {
-                worktree: app.bundle(branch!("dev")).worktree,
-                branch: branch!("dev"),
-                relpath: Path::new("")
-            }
-        );
-    }
-}
+use std::process::{Command, Stdio};
+use std::time::Duration;
 
 mod linked {
     use super::*;
@@ -147,19 +80,6 @@ mod linked {
         let ctx = t.sh("dev", || AppCtx::init(CONFIG)).unwrap();
         let mut app = App::new(&ctx);
         let outcome = t.sh("dev", || app.execute("dev"));
-        assert_eq!(outcome, Outcome::Bypass);
-    }
-
-    /// Run checkout on "zero", something that is not currently a valid branch
-    /// name.
-    #[test]
-    fn checkout_a_non_branch() {
-        let t = Test::new(function!());
-        setup_main_dev(&t);
-
-        let ctx = t.sh("dev", || AppCtx::init(CONFIG)).unwrap();
-        let mut app = App::new(&ctx);
-        let outcome = t.sh("dev", || app.execute("zero"));
         assert_eq!(outcome, Outcome::Bypass);
     }
 
@@ -253,7 +173,6 @@ mod linked {
 ///
 /// Just for fun, we shall refer to this directory as the "lift lobby".
 mod lobby {
-    use super::*;
 
     /// Jump from the lift lobby, with everything already registered.
     #[test]
@@ -373,7 +292,7 @@ mod smart_jumps {
 
 /// Special cases, as seen in real life use.
 mod specials {
-    use super::*;
+
     #[test]
     fn work_01() {
         let t = Test::new(function!());
@@ -526,6 +445,25 @@ fn a37cf66(t: &mut Test, cwd: PathBuf) {
     t.sh(cwd, || git_with_mock_user().args(["commit", "-m"]).arg(message).snw());
 }
 
+#[given(expr = "there is a non-trivial commit on file [{}] at [{}]")]
+fn a37cf67(t: &mut Test, file: PathBuf, cwd: PathBuf) {
+    let cwd = cwd.as_path();
+
+    // Write to the target file.
+    let target_file = t.join(cwd).join(file);
+    if let Some(parent) = target_file.parent() {
+        _ = fs::create_dir_all(parent);
+    }
+    fs::write(&target_file, fingerprint(8)).unwrap();
+
+    // Stage this file.
+    t.sh(cwd, || git!("add", target_file).snw());
+
+    // Commit this change.
+    let message = format!("New feature @ {}", fingerprint(8));
+    t.sh(cwd, || git_with_mock_user().args(["commit", "-m"]).arg(message).snw());
+}
+
 #[given(expr = "a bare repo is init'd at [{}]")]
 fn a3324ef(t: &mut Test, cwd: PathBuf) {
     _ = fs::create_dir_all(t.join(&cwd));
@@ -540,6 +478,17 @@ fn eb394e4(t: &mut Test, cwd: PathBuf) {
 #[given(expr = "checkout at [{}] a new branch [{}]")]
 fn a3296bc(t: &mut Test, cwd: PathBuf, branch: String) {
     t.sh(cwd, || git!("checkout", "-B", branch).snw());
+}
+
+#[given(expr = "at [{}] we checkout [{}]")]
+fn cdbafc0(t: &mut Test, cwd: PathBuf, thing: String) {
+    t.sh(cwd, || git!("checkout", thing).snw());
+}
+
+#[given(expr = "at [{}] we checkout the current commit")]
+fn cdbafc1(t: &mut Test, cwd: PathBuf) {
+    let head = t.sh(&cwd, || git!("rev-parse", "--verify", "HEAD").get_stdout());
+    t.sh(cwd, || git!("checkout", head).snw());
 }
 
 #[then("the output of listing worktrees matches regex")]
@@ -557,8 +506,125 @@ fn d0a0305(t: &mut Test, cwd: PathBuf, branch: String) {
     assert_eq!(actual_branch, branch);
 }
 
+#[when(expr = "we run [{}] at [{}]")]
+fn e774636(t: &mut Test, args: String, cwd: PathBuf) {
+    let args = args.split(' ').collect::<Vec<_>>();
+    let proc = t.sh(&cwd, || {
+        let mut git = tokio::process::Command::new(&args[0]);
+        git.args(&args[1..]);
+        git.stdout(Stdio::piped())
+            .stderr(Stdio::piped())
+            .stdin(Stdio::piped())
+            .spawn()
+            .unwrap()
+    });
+    t.set_shell_state(proc, cwd);
+}
+
+mod so_far {
+    use super::*;
+    use tokio::io::AsyncReadExt;
+    use tokio::process::{ChildStderr, ChildStdout};
+    use tokio::time::sleep;
+
+    const CHUNK_SIZE: usize = 1024;
+    const INTERVAL: Duration = Duration::from_millis(200);
+
+    fn convert(x: &[u8]) -> String {
+        core::str::from_utf8(x).unwrap().trim().to_string()
+    }
+
+    pub(super) async fn stderr(reader: &mut ChildStderr) -> String {
+        let mut output = Vec::new();
+        let mut chunk = [0u8; CHUNK_SIZE];
+        loop {
+            let winner = tokio::select! {
+                res = reader.read(&mut chunk) => res,
+                _ = sleep(INTERVAL) => Ok(0),
+            };
+            match winner {
+                Ok(0) | Err(_) => return convert(&output),
+                Ok(n) => output.extend_from_slice(&chunk[..n]),
+            }
+        }
+    }
+
+    pub(super) async fn stdout(reader: &mut ChildStdout) -> String {
+        let mut output = Vec::new();
+        let mut chunk = [0u8; CHUNK_SIZE];
+        loop {
+            let winner = tokio::select! {
+                res = reader.read(&mut chunk) => res,
+                _ = sleep(INTERVAL) => Ok(0),
+            };
+            match winner {
+                Ok(0) | Err(_) => return convert(&output),
+                Ok(n) => output.extend_from_slice(&chunk[..n]),
+            }
+        }
+    }
+}
+
+/// Trims the ending path separators from a path and exports that as a String.
+fn trim_end_sep<P: AsRef<Path>>(path: P) -> String {
+    let path_str = path.as_ref().to_str().unwrap();
+    path_str.trim_end_matches(std::path::MAIN_SEPARATOR_STR).to_string()
+}
+
+fn expected_output_from_docstring(t: &mut Test, step: &Step) -> String {
+    assert!(step.docstring().is_some());
+    let text = step.docstring().unwrap().trim();
+
+    let shell_state = t.get_shell_state().unwrap();
+    let head = t.sh(&shell_state.cwd, || {
+        git!("rev-parse", "--short", "--verify", "HEAD").get_stdout()
+    });
+
+    text.replace("${{ test.dir }}", trim_end_sep(&t).as_str())
+        .replace("${{ git.HEAD.short }}", &head[0..7])
+}
+
+#[then("stdout is")]
+async fn e774731(t: &mut Test, step: &Step) {
+    let shell_state = t.get_shell_state_mut().unwrap();
+    let stdout = shell_state.proc.stdout.as_mut().unwrap();
+    let stdout = so_far::stdout(stdout).await;
+    let stdout = strip_ansi_escapes::strip_str(&stdout);
+    assert_eq!(stdout, expected_output_from_docstring(t, step));
+}
+
+#[then("stderr is")]
+async fn e774732(t: &mut Test, step: &Step) {
+    let shell_state = t.get_shell_state_mut().unwrap();
+    let stderr = shell_state.proc.stderr.as_mut().unwrap();
+    let stderr = so_far::stderr(stderr).await;
+    let stderr = strip_ansi_escapes::strip_str(&stderr);
+    assert_eq!(stderr, expected_output_from_docstring(t, step));
+}
+
+#[when(expr = "we feed keys {string}")]
+async fn dcbc1c2(t: &mut Test, feedkeys: String) {
+    use tokio::io::AsyncWriteExt;
+
+    let shell_state = t.get_shell_state_mut().unwrap();
+    let stdin = shell_state.proc.stdin.as_mut().unwrap();
+    stdin.write(feedkeys.as_bytes()).await.unwrap();
+    stdin.write(b"\n").await.unwrap();
+    stdin.flush().await.unwrap();
+}
+
 #[then(expr = "running [git-checkout4 {}] at [{}] results in a bypass")]
-fn e774636(t: &mut Test, goal: String, cwd: PathBuf) {
+fn e774736(t: &mut Test, goal: String, cwd: PathBuf) {
+    let proc = t.sh(&cwd, || {
+        let mut git = tokio::process::Command::new("git");
+        git.args(["checkout4", goal.as_str()]);
+        git.stdout(Stdio::piped())
+            .stderr(Stdio::piped())
+            .stdin(Stdio::piped())
+            .spawn()
+            .unwrap()
+    });
+    t.set_shell_state(proc, cwd.clone());
     let ctx = t.sh(cwd, || AppCtx::init(CONFIG)).unwrap();
     let actual_outcome = App::new(&ctx).execute(goal.as_str());
     assert_eq!(actual_outcome, Outcome::Bypass);
@@ -570,12 +636,17 @@ fn bbca0ff(t: &mut Test, step: &Step, goal: String, cwd: PathBuf) {
     let actual_outcome = App::new(&ctx).execute(goal.as_str());
 
     assert!(step.docstring().is_some());
-    let expected_outcome = step.docstring().unwrap();
+    let _expected_outcome = step.docstring().unwrap();
     assert_eq!(actual_outcome, Outcome::Bypass);
 }
 
+#[given("init app")]
+fn bbca0fd(t: &mut Test) {
+    let _ctx = t.sh("", || AppCtx::init(CONFIG)).unwrap();
+}
+
 #[then("experiment")]
-fn experiment(t: &mut Test) {
+fn experiment(_t: &mut Test) {
     // let x = t.sh("", || git!("config", "get"))
 }
 
@@ -628,23 +699,50 @@ fn d7528d5(t: &mut Test, cwd: PathBuf, repository: PathBuf, relpath: PathBuf) {
     });
 }
 
+#[given(expr = "a worktree is added at [{}] called [{}]")]
+fn d7528d6(t: &mut Test, cwd: PathBuf, thing: String) {
+    t.sh(cwd, || git!("worktree", "add", "--", thing).snw());
+}
+
 #[then(expr = "the file [{}] exists at [{}]")]
 fn b263a3a(t: &mut Test, filename: String, relpath: PathBuf) {
-    t.set_cleanup(false);
     let filepath = t.join(relpath).join(filename);
     assert!(filepath.is_file(), "File not found: {filepath:?}");
 }
 
 fn cucumber_tests(print_logs: bool) {
-    let rt =
-        tokio::runtime::Builder::new_multi_thread().worker_threads(8).build().unwrap();
+    let rt = tokio::runtime::Builder::new_multi_thread()
+        .enable_io()
+        .enable_time()
+        .worker_threads(8)
+        .build()
+        .unwrap();
 
-    let t = Test::cucumber();
-    let t = if print_logs { t.init_tracing() } else { t };
+    const LEVEL_FILTER: LevelFilter = LevelFilter::INFO;
+
+    let t = Test::cucumber().fail_fast();
+    let t = match print_logs {
+        true => t.configure_and_init_tracing(
+            format::DefaultFields::new(),
+            Format::default().without_time().with_target(false),
+            |layer| tracing_subscriber::registry().with(LEVEL_FILTER.and_then(layer)),
+        ),
+        false => t,
+    };
     let t = t
-        .before(|_feature, _rule, _scenario, world| {
-            let default = mem::replace(world, Test::new(fingerprint(8)));
-            mem::forget(default);
+        .before(|feature, _rule, scenario, world| {
+            let fpr = fingerprint(8);
+            tracing::info!(
+                "----------------------------------------
+ -----
+ Feature:  {}
+ Scenario: {}
+ Test ID:  {fpr}
+ -----",
+                feature.name,
+                scenario.name
+            );
+            _ = mem::replace(world, Test::new(fpr));
             Box::pin(async {})
         })
         .after(|_feature, _rule, _scenario, _ev, world| {
@@ -655,5 +753,5 @@ fn cucumber_tests(print_logs: bool) {
 }
 
 fn main() {
-    cucumber_tests(true);
+    cucumber_tests(false);
 }

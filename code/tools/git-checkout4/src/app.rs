@@ -110,6 +110,7 @@ impl<'a> App<'a> {
             .unwrap();
         let choice = &self.bundles[choice];
         self.git_config.set(branch, choice.worktree);
+        self.git_config.save();
     }
 
     fn contained_in(&self, worktree: &Worktree) -> bool {
@@ -152,17 +153,7 @@ impl<'a> App<'a> {
         })
     }
 
-    /// Runs the core business logic of `git-checkout4` with the target set to
-    /// `goal`.
-    pub fn execute(&mut self, goal: &str) -> Outcome<'a> {
-        log::trace!("Called execute on \"{goal}\"");
-        if self.is_in_submodule {
-            log::info!("Bypass because in submodule");
-            return Outcome::Bypass;
-        }
-        self.deregister_invalid_worktrees();
-        self.auto_register();
-
+    fn interactively_register_branches(&mut self) {
         let mut input_buf = String::new();
         for i in 0..self.git_branches.len() {
             let branch = self.git_branches[i];
@@ -173,7 +164,18 @@ impl<'a> App<'a> {
                 assert!(self.git_config.get(&branch).is_some())
             }
         }
-        self.git_config.save();
+    }
+    /// Runs the core business logic of `git-checkout4` with the target set to
+    /// `goal`.
+    pub fn execute(&mut self, goal: &str) -> Outcome<'a> {
+        log::trace!("Called execute on \"{goal}\"");
+        if self.is_in_submodule {
+            log::info!("Bypass because in submodule");
+            return Outcome::Bypass;
+        }
+        self.deregister_invalid_worktrees();
+        self.auto_register();
+        self.interactively_register_branches();
 
         let current_bundle = self.get_current_bundle();
 
@@ -210,7 +212,7 @@ impl<'a> App<'a> {
 
         // Get the worktree that the `goal` branch belongs to.
         let Some(mapped_worktree) = self.git_config.get(goal) else {
-            panic!("Goal \"{goal}\" is not configred in git config.")
+            panic!("Goal \"{goal}\" is not configured in git config.")
         };
 
         if let Some(current_bundle) = current_bundle {
@@ -265,6 +267,16 @@ impl<'a> App<'a> {
         let relpath = current_bundle
             .map(|current_bundle| self.resolve_relpath(current_bundle, mapped_worktree))
             .unwrap_or(Path::new("."));
+
+        let target_bundle =
+            self.bundles.iter().find(|v| &v.worktree == mapped_worktree).unwrap();
+
+        if let Some(current_branch_at_target_bundle) = target_bundle.branch {
+            if current_branch_at_target_bundle.eq(goal) {
+                log::info!("Jump worktree without jump branch -> {relpath:?}");
+                return Outcome::Jump { worktree: *mapped_worktree, relpath };
+            }
+        }
 
         log::info!("Jump worktree then jump branch -> {relpath:?}");
         return Outcome::JumpAndCheckout {

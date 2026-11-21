@@ -4,7 +4,6 @@ use std::sync::{LazyLock, Mutex};
 use std::{env, fs};
 
 use cucumber::World;
-use git_checkout4::Outcome;
 
 use super::CommandExt;
 
@@ -16,6 +15,12 @@ pub fn at<T, P: AsRef<Path>, F: FnOnce() -> T>(workdir: P, f: F) -> T {
     f()
 }
 
+#[derive(Debug)]
+pub struct ShellState {
+    pub proc: tokio::process::Child,
+    pub cwd: PathBuf,
+}
+
 #[derive(Debug, Default, World)]
 pub struct Test {
     name: String,
@@ -25,6 +30,8 @@ pub struct Test {
 
     /// Whether or not to remove the test directory after we're done.
     cleanup: bool,
+
+    shell_state: Option<ShellState>,
 }
 
 /// Gets an environment variable with a maximum of 100 retries.
@@ -59,8 +66,12 @@ impl Test {
         let _ = fs::remove_dir_all(&temp_dir);
         fs::create_dir_all(&temp_dir).unwrap();
 
-        tracing::info!("Setup test: {}", name);
-        Self { root_dir: temp_dir, cleanup: true, name: name.to_string() }
+        Self {
+            root_dir: temp_dir,
+            cleanup: true,
+            name: name.to_string(),
+            shell_state: None,
+        }
     }
 
     pub fn no_cleanup(mut self) -> Self {
@@ -70,6 +81,18 @@ impl Test {
 
     pub fn set_cleanup(&mut self, value: bool) {
         self.cleanup = value;
+    }
+
+    pub fn set_shell_state(&mut self, proc: tokio::process::Child, cwd: PathBuf) {
+        self.shell_state = Some(ShellState { proc, cwd })
+    }
+
+    pub fn get_shell_state_mut(&mut self) -> Option<&mut ShellState> {
+        self.shell_state.as_mut()
+    }
+
+    pub fn get_shell_state(&self) -> Option<&ShellState> {
+        self.shell_state.as_ref()
     }
 
     /// Runs an arbitrary function `f` with the current directory set to a path

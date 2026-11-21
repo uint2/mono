@@ -53,7 +53,7 @@ mod types;
 pub const CONFIG: AppConfig = AppConfig {
     enable_logging: false,
     log_level: log::LevelFilter::Trace,
-    interactive: false,
+    interactive: true,
 };
 
 /// Creates a random commit by making some file at `dir`.

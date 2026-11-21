@@ -28,21 +28,25 @@ impl<'a> Bundle<'a> {
 /// Test setters.
 #[cfg(test)]
 impl<'a> Bundle<'a> {
+    /// Sets the HEAD value of the bundle. For testing only.
     pub const fn head(mut self, value: &'a str) -> Self {
         self.HEAD = Some(value);
         self
     }
 
+    /// Sets the branch of the bundle. For testing only.
     pub const fn branch(mut self, value: &'a str) -> Self {
         self.branch = Some(Branch::new(value));
         self
     }
 
+    /// Sets the `detached` (boolean) value of the bundle. For testing only.
     pub const fn detached(mut self, value: bool) -> Self {
         self.detached = value;
         self
     }
 
+    /// Sets the `bare` (boolean) value of the bundle. For testing only.
     pub const fn bare(mut self, value: bool) -> Self {
         self.bare = value;
         self

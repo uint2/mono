@@ -138,12 +138,16 @@ impl log::Log for Logger {
     }
 }
 
+static INITIALIZED: AtomicBool = AtomicBool::new(false);
+
 pub fn init(level_filter: Option<LevelFilter>) {
+    if INITIALIZED.swap(true, Ordering::Relaxed) {
+        return;
+    }
     if let Some(level_filter) = level_filter {
         log::set_max_level(level_filter);
     }
-    static INITIALIZED: AtomicBool = AtomicBool::new(false);
-    if !INITIALIZED.fetch_or(true, Ordering::Relaxed) {
-        Logger::init().unwrap();
-    }
+
+    // no unwrap because this can always conflict with other logging libraries.
+    _ = Logger::init();
 }

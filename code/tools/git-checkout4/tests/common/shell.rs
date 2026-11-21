@@ -45,10 +45,10 @@ impl CommandExt for Command {
     fn snw(&mut self) {
         let output = self.get();
         if !output.stderr.trim().is_empty() {
-            tracing::info!("[stderr] {}", output.stderr.trim());
+            tracing::info!("[stderr]\n{}", output.stderr.trim());
         }
         if !output.stdout.trim().is_empty() {
-            tracing::info!("[stdout] {}", output.stdout.trim());
+            tracing::info!("[stdout]\n{}", output.stdout.trim());
         }
     }
 
