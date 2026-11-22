@@ -2,9 +2,9 @@ pub(crate) use crate::context::AppCtx;
 pub(crate) use crate::data::{Branch, Bundle, Worktree};
 pub(crate) use crate::git_config::GitConfig;
 
+pub(crate) use core::cmp::Ordering;
 pub(crate) use core::{fmt, str};
 
-pub(crate) use std::collections::HashMap;
 pub(crate) use std::io::Write;
 pub(crate) use std::path::{Path, PathBuf};
 pub(crate) use std::process::{Command, ExitCode};

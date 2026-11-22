@@ -41,22 +41,24 @@ impl<'a> App<'a> {
         }
     }
 
-    /// Tries to find a worktree that we can auto-register the branch to.
+    /// Tries to find a worktree that we can auto-register the branch to. First
+    /// it finds the current worktree that the branch is checked out at.
     fn auto_find_worktree_for_branch(&self, branch: Branch<'a>) -> Option<Worktree<'a>> {
-        let bundle = self.bundles.iter().find(|b| b.branch == Some(branch))?;
+        let (bundle_index, bundle) =
+            self.bundles.iter().enumerate().find(|(_, b)| b.branch == Some(branch))?;
 
         let branch_name_matches_worktree_dir_name =
             bundle.worktree.as_path().ends_with(branch.as_str());
 
         // In the docs at [https://git-scm.com/docs/git-worktree], they
         // differentiate between "main worktree" and "linked worktree".
-        let is_main_worktree = bundle.worktree.as_path().join(".git").is_dir();
+        //
+        // In the git-worktree `list` command docs, it also says: "The main
+        // worktree is listed first, followed by each of the linked worktrees."
+        let is_main_worktree = bundle_index == 0;
 
-        if branch_name_matches_worktree_dir_name || is_main_worktree {
-            Some(bundle.worktree)
-        } else {
-            None
-        }
+        (branch_name_matches_worktree_dir_name || is_main_worktree)
+            .then_some(bundle.worktree)
     }
 
     /// Auto-register branches that match their worktree. So note that if a
@@ -125,28 +127,24 @@ impl<'a> App<'a> {
             return Ok(());
         }
 
-        let choice_index = loop {
-            // Read the user's input.
-            input_buf.clear();
-            io::stdin().read_line(input_buf).unwrap();
-            // Parse the user's input as an integer.
-            let Ok(choice_int) = input_buf.trim().parse::<usize>() else {
-                return Err(io::Error::new(
-                    io::ErrorKind::InvalidInput,
-                    "Invalid choice for mapping worktree - cannot be parsed as integer",
-                ));
-            };
-            if 1 <= choice_int && choice_int <= num_candidates {
-                break choice_int - 1;
-            } else {
-                return Err(io::Error::new(
-                    io::ErrorKind::InvalidInput,
-                    "Invalid choice for mapping worktree - index out of range",
-                ));
-            }
+        // Read the user's input.
+        input_buf.clear();
+        io::stdin().read_line(input_buf).unwrap();
+        // Parse the user's input as an integer.
+        let Ok(choice_int) = input_buf.trim().parse::<usize>() else {
+            return Err(io::Error::new(
+                io::ErrorKind::InvalidInput,
+                "Invalid choice for mapping worktree - cannot be parsed as integer",
+            ));
         };
-        let choice = &self.bundles[choice_index];
-        self.git_config.set(branch, choice.worktree);
+        if !(1 <= choice_int && choice_int <= num_candidates) {
+            return Err(io::Error::new(
+                io::ErrorKind::InvalidInput,
+                "Invalid choice for mapping worktree - index out of range",
+            ));
+        }
+        let map_choice = &self.bundles[choice_int - 1];
+        self.git_config.set(branch, map_choice.worktree);
         self.git_config.save();
         Ok(())
     }
@@ -158,8 +156,8 @@ impl<'a> App<'a> {
             self.cwd,
             worktree
         );
-        self.toplevel.map_or(false, |root| root == worktree.as_path())
-            || self.cwd.starts_with(worktree)
+        let Some(root) = self.toplevel else { return false };
+        root == worktree.as_path() || self.cwd.starts_with(worktree)
     }
 
     /// Gets the current bundle/worktree that we invoked the program from.
@@ -174,21 +172,29 @@ impl<'a> App<'a> {
             .filter(|b| self.contained_in(&b.worktree))
             // Favour the longest match because there is a chance that worktrees
             // are nested. For instance, when there is a bare repo.
-            .max_by(|a, b| a.worktree.len().cmp(&b.worktree.len()))
+            //
+            // This unwrap is safe because both `a` and `b`.
+            .min_by(|a, b| a.worktree.partial_cmp(&b.worktree).unwrap())
     }
 
     fn find_branch(&self, goal: &str) -> Option<&Branch<'a>> {
         self.git_branches.iter().find(|v| v.as_str() == goal)
     }
 
+    /// De-registers from the git config any mapping where the worktree no
+    /// longer exists.
+    ///
+    /// Notably, mappings where the branch is gone but the worktree still exists
+    /// are kept.
     fn deregister_invalid_worktrees(&mut self) {
         self.git_config.retain(|_, worktree| {
-            let valid = self.bundles.iter().any(|b| b.worktree == *worktree);
-            if !valid {
-                log::error!("Deregister worktree: \x1b[33m{worktree}\x1b[m")
+            let worktree_exists = worktree.exists(&self.bundles);
+            if !worktree_exists {
+                log::info!("Deregister worktree: \x1b[33m{worktree}\x1b[m")
             }
-            valid
-        })
+            worktree_exists
+        });
+        self.git_config.save();
     }
 
     fn interactively_register_branches(&mut self) -> io::Result<()> {

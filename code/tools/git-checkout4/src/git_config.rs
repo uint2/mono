@@ -1,7 +1,5 @@
 use crate::prelude::*;
 
-use std::collections::hash_map::Iter;
-
 /// The global git config key prefix.
 macro_rules! key {
     () => {
@@ -12,9 +10,19 @@ macro_rules! key {
     };
 }
 
+/// Declares a mapping of a branch to a worktree. So that using git-checkout4,
+/// this branch will only ever be checked out at this worktree's directory.
+#[derive(Debug, Clone, Copy)]
+struct Mapping<'a> {
+    /// The mapped branch.
+    branch: Branch<'a>,
+    /// The worktree that the branch in this [Mapping] is mapped to.
+    worktree: Worktree<'a>,
+}
+
 #[derive(Debug, Clone)]
 pub struct GitConfig<'a> {
-    data: HashMap<Branch<'a>, Worktree<'a>>,
+    data: Vec<Mapping<'a>>,
     /// To help with the unsetting.
     original_keys: Vec<&'a str>,
     /// To help with saving the git config reliably to the right repository
@@ -26,8 +34,8 @@ impl<'a> GitConfig<'a> {
     /// Not thread-safe. There should only be one concurrent call to this
     /// function at any given time.
     pub fn save(&self) {
-        // This is an internal mutex that guarantees that only one git command is
-        // ran at any given time.
+        // This is an internal mutex that guarantees that only one git command
+        // is ran at any given time.
         static MUTEX: Mutex<()> = Mutex::new(());
 
         // Unset all original keys.
@@ -46,7 +54,7 @@ impl<'a> GitConfig<'a> {
         });
         // Fill in the new data.
         rayon::scope(|scope| {
-            for (branch, worktree) in &self.data {
+            for Mapping { branch, worktree } in &self.data {
                 let key = [key!(), branch.as_str(), "worktree"].join(".");
                 scope.spawn(move |_| {
                     let _lock = MUTEX.lock().unwrap();
@@ -62,43 +70,44 @@ impl<'a> GitConfig<'a> {
     }
 
     pub fn set(&mut self, branch: Branch<'a>, worktree: Worktree<'a>) {
-        self.data.insert(branch, worktree);
+        if let Some(current) = self.data.iter_mut().find(|v| v.branch == branch) {
+            current.worktree = worktree
+        } else {
+            self.data.push(Mapping { branch, worktree });
+        }
     }
 
+    /// Gets the worktree that this branch is mapped to.
     pub fn get(&self, branch: &Branch<'a>) -> Option<&Worktree<'a>> {
-        self.data.get(branch)
+        self.data.iter().find(|v| v.branch.eq(branch)).map(|v| &v.worktree)
     }
 
     pub fn remove(&mut self, branch: &Branch<'a>) {
-        self.data.remove(branch);
+        self.data.retain(|v| v.branch.ne(branch));
     }
 
-    pub fn retain<F: FnMut(&Branch, &mut Worktree) -> bool>(&mut self, f: F) {
-        self.data.retain(f);
+    pub fn retain<F: FnMut(&Branch, &Worktree) -> bool>(&mut self, mut f: F) {
+        self.data.retain(|m| f(&m.branch, &m.worktree));
     }
 
-    pub fn iter<'r>(&'r self) -> Iter<'r, Branch<'a>, Worktree<'a>> {
-        self.data.iter()
-    }
-
+    /// Obtain a subset of the (local) git config that is relevant to this app.
     pub fn read() -> Result<String, ()> {
-        const ARGS: [&str; 7] =
-            ["config", "get", "--all", "-z", "--show-names", "--regexp", key!(regex)];
-        let output = Command::new("git")
-            .args(ARGS)
-            .output()
-            .map_err(|_| eprintln!("Unable to get git config"))?;
+        let output =
+            git!("config", "get", "--all", "-z", "--show-names", "--regexp", key!(regex))
+                .output()
+                .map_err(|_| eprintln!("Unable to get git config"))?;
         String::from_utf8(output.stdout)
             .map_err(|_| eprintln!("Unable to decode git config as utf-8"))
     }
 
+    /// Parses the output of [Self::read].
     pub fn parse(raw: &'a str, cwd: &'a Path) -> Result<Self, ()> {
-        let mut ht = HashMap::new();
+        let mut vec = Vec::new();
         let mut original_keys = vec![];
 
         let raw = raw.trim().trim_end_matches('\0').trim();
         if raw.is_empty() {
-            return Ok(Self { data: ht, original_keys: Vec::new(), cwd });
+            return Ok(Self { data: vec, original_keys: Vec::new(), cwd });
         }
 
         for line in raw.split('\0') {
@@ -116,8 +125,8 @@ impl<'a> GitConfig<'a> {
             };
             let branch = Branch::new(key);
             let worktree = Worktree::new(value);
-            ht.insert(branch, worktree);
+            vec.push(Mapping { branch, worktree });
         }
-        Ok(Self { data: ht, original_keys, cwd })
+        Ok(Self { data: vec, original_keys, cwd })
     }
 }

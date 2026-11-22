@@ -11,6 +11,8 @@ use crate::prelude::*;
 pub struct Bundle<'a> {
     pub worktree: Worktree<'a>,
     pub HEAD: Option<&'a str>,
+    /// The branch that is currently checked out at this worktree.
+    ///
     /// Note that by default this contains the full ref of the branch: The "dev"
     /// branch as we know it would appear as "refs/heads/dev". However, we shall
     /// strip off the "refs/heads/" prefix upon parsing.

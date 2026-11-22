@@ -102,7 +102,7 @@ fn a3324ef(t: &mut Test, cwd: PathBuf) {
 
 #[then(expr = "the git dir of [{}] is [{}]")]
 fn a3324e0(t: &mut Test, cwd: PathBuf, gitdir: PathBuf) {
-    let actual_path = t.sh(cwd, || git!("rev-parse", "--git-dir").get_stdout());
+    let actual_path = t.sh(cwd, || git!("rev-parse", "--absolute-git-dir").get_stdout());
     assert_eq!(realpath(actual_path), realpath(t.join(gitdir)));
 }
 
@@ -263,7 +263,7 @@ fn experiment(_t: &mut Test) {
 
 #[then(expr = "the git config value at [{}] for {string} is {string}")]
 fn a483d6d(t: &mut Test, cwd: PathBuf, config_key: String, expected_value: String) {
-    let x = t.sh(&cwd, || git!("rev-parse", "--git-dir").get_stdout());
+    let x = t.sh(&cwd, || git!("rev-parse", "--absolute-git-dir").get_stdout());
     tracing::info!("\n{}", fs::read_to_string(Path::new(&x).join("config")).unwrap());
     let actual_value = t.sh(cwd, || git!("config", "get", config_key).get_stdout());
     assert_eq!(actual_value, expected_value);

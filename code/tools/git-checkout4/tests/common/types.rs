@@ -1,6 +1,7 @@
 use std::collections::HashSet;
 use std::path::{Path, PathBuf};
 use std::sync::{LazyLock, Mutex};
+use std::time::Duration;
 use std::{env, fs};
 
 use cucumber::World;
@@ -104,7 +105,14 @@ impl Test {
             tracing::info!("Skip teardown test: {}", self.name);
         }
         if let Some(shell_state) = self.shell_state.as_mut() {
-            _ = shell_state.proc.wait().await;
+            tokio::select! {
+                _ = shell_state.proc.wait() => (),
+                _ = tokio::time::sleep(Duration::from_millis(500)) => ()
+            };
+            tokio::select! {
+                _ = shell_state.proc.kill() => (),
+                _ = tokio::time::sleep(Duration::from_millis(500)) => ()
+            };
         }
     }
 }

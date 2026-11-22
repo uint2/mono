@@ -10,6 +10,8 @@ pub struct AppCtx {
     cwd: PathBuf,
     /// The raw output of `git rev-parse --show-toplevel`, which is the root
     /// directory of the current worktree. None if it's a bare repo.
+    ///
+    /// Guaranteed to be absolute.
     r_git_toplevel: Option<String>,
     /// If we're current in a submodule.
     is_in_submodule: bool,
@@ -17,7 +19,7 @@ pub struct AppCtx {
     /// Shows the current branch, or "HEAD" if HEAD is detached.
     #[allow(unused)]
     r_git_branch: String,
-    /// Raw output of `git branch --format=%(refname:short)`.
+    /// Raw output of `git branch --format=%(refname:lstrip=2)`.
     /// Shows the all the local branches, separated by newlines.
     r_git_branches: String,
     /// Raw output of `git worktree list --porcelain`.
@@ -27,13 +29,26 @@ pub struct AppCtx {
     r_git_config: String,
 }
 
+#[inline]
+fn get_trimmed_string(mut bytes: Vec<u8>) -> String {
+    bytes.truncate(bytes.trim_ascii_end().len());
+    String::from_utf8(bytes).unwrap()
+}
+
 fn get_git_toplevel() -> Result<Option<String>, ()> {
-    let output = git!("rev-parse", "--show-toplevel")
+    let output = git!("rev-parse", "--path-format=absolute", "--show-toplevel")
         .output()
         .map_err(|_| eprintln!("Failed to execute shell command to get git root."))?;
-    let mut output = String::from_utf8(output.stdout).unwrap();
-    output.truncate(output.as_str().trim_end().len());
-    Ok(if output.is_empty() { None } else { Some(output) })
+    let output = get_trimmed_string(output.stdout);
+    if output.is_empty() {
+        Ok(None)
+    } else {
+        assert!(
+            Path::new(output.as_str()).is_absolute(),
+            "Top level should be absolute: {output}"
+        );
+        Ok(Some(output))
+    }
 }
 
 fn get_is_in_submodule() -> Result<bool, ()> {
@@ -50,18 +65,14 @@ fn get_git_branch() -> Result<String, ()> {
     let output = git!("rev-parse", "--abbrev-ref", "--symbolic-full-name", "HEAD")
         .output()
         .map_err(|_| eprintln!("Failed to execute shell command to get git branch."))?;
-    let mut output = String::from_utf8(output.stdout).unwrap();
-    output.truncate(output.as_str().trim_end().len());
-    Ok(output)
+    Ok(get_trimmed_string(output.stdout))
 }
 
 fn get_git_branches() -> Result<String, ()> {
     let output = git!("for-each-ref", "--format=%(refname:lstrip=2)", "refs/heads/")
         .output()
         .map_err(|_| eprintln!("Failed to execute shell command to get git branches."))?;
-    let mut output = String::from_utf8(output.stdout).unwrap();
-    output.truncate(output.as_str().trim_end().len());
-    Ok(output)
+    Ok(get_trimmed_string(output.stdout))
 }
 
 fn get_git_worktrees() -> Result<String, ()> {
@@ -111,19 +122,7 @@ impl AppCtx {
     }
 
     pub fn branches<'a>(&'a self) -> Vec<Branch<'a>> {
-        fn is_detached(branch: &str) -> bool {
-            branch.starts_with("(HEAD detached at") && branch.ends_with(')')
-        }
-        self.r_git_branches
-            .trim()
-            .lines()
-            .filter(|&v| match v.trim() {
-                "(no branch)" => false,
-                v if is_detached(v) => false,
-                _ => true,
-            })
-            .map(Branch::new)
-            .collect()
+        self.r_git_branches.trim().lines().map(Branch::new).collect()
     }
 
     pub fn git_config<'a>(&'a self) -> GitConfig<'a> {
@@ -139,10 +138,7 @@ impl AppCtx {
     }
 
     pub fn toplevel(&self) -> Option<&Path> {
-        match self.r_git_toplevel {
-            Some(ref x) => Some(Path::new(x)),
-            None => None,
-        }
+        self.r_git_toplevel.as_ref().map(Path::new)
     }
 
     pub fn is_in_submodule(&self) -> bool {
