@@ -2,7 +2,7 @@ import Lake
 
 open System Lake DSL
 
-package Vi where
+package Onigiri where
   version := v!"0.1.0"
   keywords := #["math"]
   leanOptions :=
@@ -12,4 +12,4 @@ package Vi where
 
 require "leanprover-community" / mathlib
 
-@[default_target] lean_lib Vi
+@[default_target] lean_lib Onigiri

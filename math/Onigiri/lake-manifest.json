@@ -91,6 +91,6 @@
    "inputRev": "v4.37.0-rc1",
    "inherited": true,
    "configFile": "lakefile.toml"}],
- "name": "Vi",
+ "name": "Onigiri",
  "lakeDir": ".lake",
  "fixedToolchain": false}
