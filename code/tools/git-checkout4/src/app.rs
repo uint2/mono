@@ -89,13 +89,16 @@ impl<'a> App<'a> {
         self.git_config.save();
     }
 
-    /// Returns the number of candidate bundles printed.
-    fn print_candidate_bundles(&self, branch: Branch<'a>) -> usize {
+    /// Gets (and prints) a list of candidate bundles that a branch could
+    /// possibly be mapped to.
+    fn get_and_print_candidate_bundles(
+        &self,
+        branch: Branch<'a>,
+    ) -> Option<Vec<&Bundle<'a>>> {
         let candidate_bundles: Vec<_> = self.bundles.iter().filter(|v| !v.bare).collect();
-        let count = candidate_bundles.len();
-        if count == 0 {
+        if candidate_bundles.is_empty() {
             log::info!("There are no candidate bundles to suggest for branch {branch}");
-            return 0;
+            return None;
         }
 
         let mut f = io::stderr().lock();
@@ -103,7 +106,7 @@ impl<'a> App<'a> {
         macro_rules! wl { ($($arg:tt)*) => { writeln!(f, $($arg)*).unwrap() } }
         wl!("Branch \x1b[36m{branch}\x1b[m is not mapped to any worktree.");
         let mut idx = 0;
-        for bundle in candidate_bundles {
+        for bundle in &candidate_bundles {
             idx += 1;
             let (ancestors, direct_parent) = bundle.worktree.pretty_split();
             // The assigned number, where only the number is green.
@@ -114,7 +117,7 @@ impl<'a> App<'a> {
         }
         f.write(b"Pick one > ").unwrap();
         _ = f.flush();
-        count
+        Some(candidate_bundles)
     }
 
     fn prompt_user_for_worktree(
@@ -122,10 +125,9 @@ impl<'a> App<'a> {
         input_buf: &mut String,
         branch: Branch<'a>,
     ) -> io::Result<()> {
-        let num_candidates = self.print_candidate_bundles(branch);
-        if num_candidates == 0 {
+        let Some(candidate_bundles) = self.get_and_print_candidate_bundles(branch) else {
             return Ok(());
-        }
+        };
 
         // Read the user's input.
         input_buf.clear();
@@ -137,13 +139,13 @@ impl<'a> App<'a> {
                 "Invalid choice for mapping worktree - cannot be parsed as integer",
             ));
         };
-        if !(1 <= choice_int && choice_int <= num_candidates) {
+        if !(1 <= choice_int && choice_int <= candidate_bundles.len()) {
             return Err(io::Error::new(
                 io::ErrorKind::InvalidInput,
                 "Invalid choice for mapping worktree - index out of range",
             ));
         }
-        let map_choice = &self.bundles[choice_int - 1];
+        let map_choice = candidate_bundles[choice_int - 1];
         self.git_config.set(branch, map_choice.worktree);
         self.git_config.save();
         Ok(())
