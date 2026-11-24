@@ -1,9 +1,16 @@
 LAKE_BUILD := lake build --log-level=warning
 
-current: focus
+current: onigiri
+
+onigiri:
+	# slope generate Onigiri.DnF.Chapter1
+	# lake build Onigiri.DnF.Chapter1
+	slope generate Onigiri
+	lake build Onigiri
 
 focus: check
-	slope build Onigiri
+	lake build
+	# slope build Onigiri
 
 all: check
 	slope build

@@ -1,0 +1,3 @@
+Any time the user feels the need to pendantically define everything from scratch
+to prevent overkill usage of existing theorems in Mathlib, please use the
+namespace `PendanticOnigiri`.
