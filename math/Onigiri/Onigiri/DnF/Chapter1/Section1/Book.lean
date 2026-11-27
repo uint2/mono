@@ -1,6 +1,6 @@
 module
 
-import Onigiri.DnF.Chapter1.Defs
+import Onigiri.DnF.Chapter1.Section1.Pedantic
 
 import Mathlib.Basic.ExistsUnique
 import Mathlib.Tactic.Lemma
