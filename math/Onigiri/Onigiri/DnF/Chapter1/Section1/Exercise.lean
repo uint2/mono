@@ -9,6 +9,7 @@ import Mathlib.Algebra.Group.Defs
 import Mathlib.Data.ZMod.Basic
 import Mathlib.Basic.Real.Basic
 import Onigiri.DnF.Chapter1.Section1.Bridge
+import Onigiri.Tools.AssertGoal
 
 /-! Dummit & Foote, Chapter 1, Section 1.1 Exercises. -/
 
@@ -195,41 +196,65 @@ namespace Problem5
 
 private def NoGroup (G : Type u) (φ : G → G → G) := IsEmpty { g : Group G // g.mul = φ }
 
-theorem problem_5 : ∀ n > 1, IsEmpty { g : Group (ZMod n) // g.mul = (· * ·) } := by
+/--
+For all n > 1, ℤ/nℤ is not a group under multiplication of residue classes.
+This is equivalent to saying that the set of all such groups is empty.
+-/
+theorem problem_5 : ∀ n > 1, IsEmpty { g : Group (ZMod n) // g.mul = (· * ·) }
+  := by --
   intro n hn
-  let φ : ZMod n → ZMod n → ZMod n := (· * ·)
+  -- We shall prove that if such a group exists, its multiplication cannot be φ.
   refine Subtype.isEmpty_of_false ?_
-  intro G
-  by_contra (hMul : G.mul = φ)
-  have hMul (a b : ZMod n) : G.mul a b = φ a b := congrFun₂ hMul a b
-  have h₀ : Nontrivial (ZMod n) := by
-    rw [ZMod.nontrivial_iff]
-    exact ne_of_gt hn
-  have h' : NeZero (1 : ZMod n) := by
-    have : Nontrivial (ZMod n) := by
-      rw [ZMod.nontrivial_iff]
-      exact ne_of_gt hn
-    exact NeZero.one
-  have hLeft : ∀ a : ZMod n, a * 0 ≠ 1 := by
-    intro a
+  intro Γ
+  -- We give a name, φ, to the multiplication of reside classes of ℤ/nℤ.
+  let φ : ZMod n → ZMod n → ZMod n := (· * ·)
+  -- We assume on the contrary that the multiplication on G __is__ φ.
+  by_contra (hφ : Γ.mul = φ)
+  -- We shall use these two statements to create the contradiction:
+  suffices h
+    : (∀ a : ZMod n, a * 0 ≠ 1)      --> intent: 0 * 0 ≠ 1
+    ∧ (∀ a : ZMod n, ∃ b, b * a = 1) --> intent: 0 * 0 = 1
+    by
+    obtain ⟨h₁, hInv⟩ := h
+    specialize hInv 0
+    obtain ⟨b, hInv⟩ := hInv -- b is 0's inverse element.
+    exact (h₁ b) hInv
+  refine ⟨?_, ?_⟩
+  -- We use the fact that we're in ℤ/nℤ with n > 1 to show that every element
+  -- operated on zero yields a non-1 result.
+  · intro a
+    assert_goal φ a 0 ≠ 1 -- we're on the φ channel.
     rw [mul_zero]
+    have : NeZero (1 : ZMod n) := by
+      have : Nontrivial (ZMod n) := by
+        rw [ZMod.nontrivial_iff]
+        exact ne_of_gt hn
+      exact NeZero.one
     exact zero_ne_one
-  have hRight : ∀ a : ZMod n, ∃ b, b * a = 1 := by
-    intro a
-    change ∃ b, φ b a = 1
-    refine ⟨@Inv.inv (ZMod n) G.toDivInvMonoid.toInv a, ?_⟩
-    rw [<-hMul]
-    let G' := G.toDivInvMonoid
-    have h₁ : G.one = (1 : ZMod n) := by
-      have h1 : G.mul (1 : ZMod n) G.one = (1 : ZMod n) := by
-        exact G.mul_one _
-      rw [<-h1, hMul]
-      exact (MulOneClass.one_mul G.one).symm
+  -- The assumption that ZMod n is a Group implies that every element has an
+  -- inverse.
+  · intro a
+    change ∃ b, φ b a = 1 -- again, we're starting on the φ channel.
+    --
+    -- At this point, since a ∈ ℤ/nℤ, invoking "a⁻¹" will canonically call
+    -- "@Inv.inv (ZMod n) (ZMod.instInv n) a" which is not what we want.
+    -- Instead, we want to make use of the fact that ℤ/nℤ is assumed to be a
+    -- group and use that to create the inverse.
+    --
+    -- Note that since the inverse is created from the assumption (Γ) that ℤ/nℤ
+    -- is a group, then the `inv_mul_cancel` theorem invoked shall also come
+    -- from Γ. Hence, we have to move everything over to being in terms of Γ.mul
+    refine ⟨Γ.inv a, ?_⟩
+    -- switch over from φ to Γ.mul.
+    rw [<-hφ]
+    assert_goal Γ.mul (Γ.inv a) a = (1 : ZMod n) -- now we're working with Γ.mul
+    -- One last thing to switch over: the 1 on the RHS.
+    have h₁ : Γ.one = (1 : ZMod n) := by
+      have mul_one : Γ.mul (1 : ZMod n) Γ.one = (1 : ZMod n) := Γ.mul_one (1 : ZMod n)
+      rw [<-mul_one, hφ]
+      change Γ.one = 1 * Γ.one
+      exact (one_mul Γ.one).symm
     rw [<-h₁]
-    exact G.inv_mul_cancel _
-  specialize hRight 0
-  obtain ⟨b, hRight⟩ := hRight
-  specialize hLeft b
-  refine hLeft hRight
+    exact Γ.inv_mul_cancel a -- ∎
 
 end Problem5
