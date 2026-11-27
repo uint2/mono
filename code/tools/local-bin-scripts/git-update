@@ -1,0 +1,10 @@
+#!/bin/sh
+
+git fetch &
+echo "Fetching..."
+PID1=$!
+git remote prune origin &
+echo "Pruning origin..."
+PID2=$!
+wait $PID1 $PID2
+echo "Done!"

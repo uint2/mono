@@ -289,6 +289,17 @@ gj() {
   git checkout $BRANCH
 }
 
+git-update() {
+  git fetch &
+  echo "Fetching..."
+  local pid1=$!
+  git remote prune origin &
+  echo "Pruning origin..."
+  local pid2=$!
+  wait $pid1 $pid2
+  echo "Done!"
+}
+
 yeet() {
   if [ $TMUX ]; then
     echo "Using tmux to push..."
