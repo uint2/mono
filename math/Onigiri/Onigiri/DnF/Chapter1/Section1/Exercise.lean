@@ -194,8 +194,6 @@ end Problem4
 
 namespace Problem5
 
-private def NoGroup (G : Type u) (φ : G → G → G) := IsEmpty { g : Group G // g.mul = φ }
-
 /--
 For all n > 1, ℤ/nℤ is not a group under multiplication of residue classes.
 This is equivalent to saying that the set of all such groups is empty.
@@ -258,3 +256,178 @@ theorem problem_5 : ∀ n > 1, IsEmpty { g : Group (ZMod n) // g.mul = (· * ·)
     exact Γ.inv_mul_cancel a -- ∎
 
 end Problem5
+
+namespace Problem6
+
+private def Q₀ : Set ℚ := { q | Even q.den ∨ q = 0 }
+private def Q₁ : Set ℚ := { q | Odd q.den ∨ q = 0 }
+
+/--
+If a is odd, then all factors of a are odd. This is because if there were any
+factors of a that is even, then a would be even.
+-/
+lemma problem_6a₁ {a d : ℕ} : Odd a → d ∣ a → Odd (a / d)
+  := by --
+  intro ha₁ ⟨k, hk⟩
+  have hd₀ : d ≠ 0 := by
+    by_contra hd₀
+    subst hd₀
+    rw [zero_mul] at hk
+    subst hk
+    exact Nat.not_odd_zero ha₁
+  have hDiv : k = a / d := Nat.eq_div_of_mul_eq_right hd₀ hk.symm
+  rw [<-hDiv]
+  by_contra hk₁ -- suppose on the contrary that k (factor of a) is even.
+  rw [Nat.not_odd_iff_even] at hk₁
+  have ha₂ : 2 ∣ a := by
+    rw [hk]
+    exact Nat.dvd_mul_left_of_dvd hk₁.two_dvd d
+  rw [<-even_iff_two_dvd] at ha₂
+  rw [<-Nat.not_odd_iff_even] at ha₂
+  exact ha₂ ha₁ -- ∎
+
+theorem problem_6a : Nonempty { g : AddSubgroup ℚ // g.carrier = Q₁ }
+  := by --
+  refine Nonempty.intro ⟨?_, ?_⟩
+  · exact {
+      carrier := Q₁
+      zero_mem' := Or.inr rfl
+      add_mem' {a b} ha hb := by
+        rcases ha with ha | ha₀ <;> rcases hb with hb | hb₀
+        · if h₀ : a + b = 0 then rw [h₀]; refine Or.inr rfl else
+          refine Or.inl ?_
+          rw [Rat.den_add]
+          let n₁ := a.num
+          let n₂ := b.num
+          let d₁ := a.den
+          let d₂ := b.den
+          change Odd (d₁ * d₂ / (n₁ * ↑d₂ + n₂ * ↑d₁).natAbs.gcd (d₁ * d₂))
+          have hdvd : (n₁ * ↑d₂ + n₂ * ↑d₁).natAbs.gcd (d₁ * d₂) ∣ d₁ * d₂ := by
+            exact Nat.gcd_dvd_right (n₁ * ↑d₂ + n₂ * ↑d₁).natAbs (d₁ * d₂)
+          exact problem_6a₁ (ha.mul hb) hdvd
+        · rw [hb₀, add_zero]
+          exact Or.inl ha
+        · rw [ha₀, zero_add]
+          exact Or.inl hb
+        · rw [ha₀, hb₀, zero_add]
+          exact Or.inr rfl
+      neg_mem' {a} ha := by
+        cases ha with
+        | inl ha => exact Or.inl (odd_iff_exists_bit1.mpr ha)
+        | inr ha =>
+          refine Or.inr ?_
+          rw [ha]
+          exact Rat.neg_zero
+    }
+  · rfl -- ∎
+
+theorem problem_6b : IsEmpty { g : AddSubgroup ℚ // g.carrier = Q₀ }
+  := by --
+  refine Subtype.isEmpty_of_false ?_
+  intro G
+  by_contra (hCarrier : G.carrier = Q₀)
+  have hQ₀ (a : ℚ) : a ∈ Q₀ ↔ a ∈ G := by
+    rw [<-G.mem_carrier, hCarrier]
+  let a : ℚ := 6⁻¹
+  have ha : a ∈ G := by
+    change a ∈ G.carrier
+    rw [hCarrier]
+    refine Or.inl ?_
+    have h₆ : a.den = 6 := by
+      rw [Rat.den_inv]
+      have h₆ : Rat.num 6 ≠ 0 := Ne.symm (OfNat.zero_ne_ofNat 6)
+      rw [ite_eq_right h₆]
+      rfl
+    rw [h₆, Nat.even_iff]
+  have h₃ : a + a = 3⁻¹ := by
+    dsimp only [a]
+    rw [<-two_mul]
+    refine Eq.symm (Rat.inv_eq_of_mul_eq_one ?_)
+    rw [<-mul_assoc]
+    have h₆ : (3 : ℚ) * 2 = 6 := by grind only
+    rw [h₆, Rat.mul_inv_cancel]
+    exact Rat.abs_pos_iff.mp rfl
+  have hIn : a + a ∈ G := add_mem ha ha
+  have hOut : 3⁻¹ ∉ G := by
+    rw [<-hQ₀]
+    dsimp only [Q₀]
+    rw [Set.notMem_ofPred_iff]
+    push Not
+    refine ⟨?_, ?_⟩
+    · have : (3 : ℚ)⁻¹.den = 3 := by
+        rw [Rat.den_inv]
+        have h₆ : Rat.num 3 ≠ 0 := Ne.symm (OfNat.zero_ne_ofNat 3)
+        rw [ite_eq_right h₆]
+        rfl
+      rw [this, Nat.odd_iff]
+    · exact inv_ne_zero (Rat.abs_pos_iff.mp rfl)
+  rw [h₃] at hIn
+  exact hOut hIn -- ∎
+
+theorem problem_6c : IsEmpty { g : AddSubgroup ℚ // g.carrier = { x | |x| < 1 } }
+  := by --
+  refine Subtype.isEmpty_of_false ?_
+  intro G
+  let S₁ := { x : ℚ | |x| < 1 }
+  by_contra (hCarrier : G.carrier = S₁)
+  have hS₁ (a : ℚ) : a ∈ S₁ ↔ a ∈ G := 
+    Iff.of_eq (congrFun (congrArg Membership.mem hCarrier.symm) a)
+  replace hS₁ (a : ℚ) : a ∈ S₁ ↔ a ∈ G := by
+    rw [<-G.mem_carrier, hCarrier]
+  let x : ℚ := 3 / 4
+  have hx₁ : x < 1 := (div_lt_one₀ rfl).mpr rfl
+  have hx₀ : 0 < x := div_pos rfl rfl
+  have hx₁' : |x| < 1 := abs_lt.mpr ⟨hx₀.trans' rfl, hx₁⟩
+  have hxG : x ∈ G := by
+    rw [<-hS₁]
+    exact hx₁'
+  have hMem : x + x ∈ G := G.add_mem hxG hxG
+  have hNotMem : x + x ∉ G := by
+    rw [<-hS₁]
+    dsimp only [x, S₁]
+    have hx₂ : x + x = 3 / 2 := by grind only
+    rw [hx₂, Set.notMem_ofPred_iff]
+    have hle : (1 : ℚ) ≤ |3 / 2| := by
+      grind =>
+        instantiate only [= abs_mul]
+        instantiate only [= abs.eq_1]
+        instantiate only [= max_def]
+        linarith
+    exact hle.not_gt
+  exact hNotMem hMem -- ∎
+
+theorem problem_6d : IsEmpty { g : AddSubgroup ℚ // g.carrier = { x | x = 0 ∨ 1 ≤ |x| } }
+  := by --
+  refine Subtype.isEmpty_of_false ?_
+  intro G
+  let S₁ := { x : ℚ | x = 0 ∨ 1 ≤ |x| }
+  by_contra (hCarrier : G.carrier = S₁)
+  have hS₁ (a : ℚ) : a ∈ S₁ ↔ a ∈ G := 
+    Iff.of_eq (congrFun (congrArg Membership.mem hCarrier.symm) a)
+  replace hS₁ (a : ℚ) : a ∈ S₁ ↔ a ∈ G := by
+    rw [<-G.mem_carrier, hCarrier]
+  let x : ℚ := 8 / 3
+  let y : ℚ := 7 / 3
+  have hxG : x ∈ G := by
+    rw [<-hS₁, Set.mem_ofPred]
+    refine Or.inr (le_abs.mpr (Or.inl ?_))
+    exact (one_le_div₀ rfl).mpr rfl
+  have hyG : y ∈ G := by
+    rw [<-hS₁, Set.mem_ofPred]
+    refine Or.inr (le_abs.mpr (Or.inl ?_))
+    exact (one_le_div₀ rfl).mpr rfl
+  have hMem : x - y ∈ G := G.sub_mem hxG hyG
+  have hNotMem : x - y ∉ G := by
+    rw [<-hS₁, Set.notMem_ofPred_iff]
+    push Not
+    have hxy : x - y = 1 / 3 := by grind only
+    rw [hxy]
+    refine ⟨?_, ?_⟩
+    · exact one_div_ne_zero (Rat.abs_pos_iff.mp rfl)
+    · have hlt : (1 : ℚ) < 3 := rfl
+      have : 0 < (1 : ℚ) / 3 := one_div_pos.mpr rfl
+      rw [abs_of_pos this]
+      exact (div_lt_one₀ hlt).mpr hlt
+  exact hNotMem hMem -- ∎
+
+end Problem6
