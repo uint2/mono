@@ -78,7 +78,7 @@ noncomputable def orderOfAddGroup (G : Type u) [AddGroup G] : ℕ := Nat.card G
 
 example : orderOfAddGroup (ZMod 2) = 2
   := by --
-  dsimp [orderOfAddGroup]
+  dsimp only [orderOfAddGroup]
   exact Nat.card_zmod 2 -- ∎
 
 example : addOrderOf (2 : ZMod 4) = 2
